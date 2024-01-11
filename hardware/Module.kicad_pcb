@@ -4653,6 +4653,8 @@
 
   (gr_line (start 108.825 87.25) (end 65.95 87.25)
     (stroke (width 0.15) (type default)) (layer "B.SilkS") (tstamp 8c2588b4-0591-4bc1-8132-781e53ea4832))
+  (gr_rect (start 87.3375 48.8) (end 97.8125 55.075)
+    (stroke (width 0.15) (type solid)) (fill solid) (layer "F.SilkS") (tstamp 46161f40-efae-48f1-8896-1f35c6bf20d0))
   (gr_circle (center 82.1 139) (end 82.170711 139)
     (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS") (tstamp a521be16-6edb-41b0-b819-fcd3d4e7da53))
   (gr_rect (start 64.9 54.825) (end 68.1 63.25)
@@ -5307,6 +5309,9 @@
   (gr_text "Pot" (at 84.225 70.975) (layer "B.SilkS") (tstamp f7bd012e-476b-4fa6-b65d-757c096bec6d)
     (effects (font (size 1 1) (thickness 0.15)) (justify left bottom mirror))
   )
+  (gr_text "Read the build manual.\nUse care not to damage\nSMD parts while soldering,\nPopulate all 5 connectors\non this side of the PCB.\nDrink a lot of water." (at 89.35 87.8) (layer "F.SilkS") (tstamp 21acacdc-4b05-4f75-bd7c-94cb3f5050ea)
+    (effects (font (size 1 1) (thickness 0.15)) (justify bottom))
+  )
   (gr_text "arplus board proto 1" (at 111.25 147.725 90) (layer "F.SilkS") (tstamp 2e9d1928-b878-4c29-acfa-f555ddadf66a)
     (effects (font (size 1 1) (thickness 0.15)) (justify left bottom))
   )
@@ -5338,6 +5343,9 @@
     (effects (font (size 1 1) (thickness 0.15)) (justify bottom))
   )
   (gr_text "SM" (at 75.2 64.025) (layer "F.SilkS") (tstamp cf6c3453-d365-4fb0-a02e-f398eda2de1a)
+    (effects (font (size 1 1) (thickness 0.15)) (justify left bottom))
+  )
+  (gr_text "S/N:" (at 90.875 48.15) (layer "F.SilkS") (tstamp e7fa87cd-7028-4275-bd23-b30439b30c4b)
     (effects (font (size 1 1) (thickness 0.15)) (justify left bottom))
   )
 
