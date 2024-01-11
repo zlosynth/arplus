@@ -1672,7 +1672,7 @@
     (property "Sheetname" "")
     (path "/742b031b-801c-4ee5-bd28-d552a5e95657")
     (attr through_hole allow_missing_courtyard)
-    (fp_text reference "U1" (at -32.8336 -12.9011) (layer "F.SilkS")
+    (fp_text reference "U1" (at -32.335 -19.055) (layer "F.SilkS") hide
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp bb5c3781-87a1-44e8-a65c-96889254284f)
     )
