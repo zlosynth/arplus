@@ -54,7 +54,7 @@ mod app {
         defmt::info!("Initialization was completed, starting tasks");
 
         audio_interface.spawn();
-        version_indicator_alarm::spawn().unwrap();
+        version_indicator_loop::spawn().unwrap();
 
         (
             Shared {},
@@ -95,9 +95,9 @@ mod app {
     }
 
     #[task(local = [version_indicator])]
-    fn version_indicator_alarm(cx: version_indicator_alarm::Context) {
+    fn version_indicator_loop(cx: version_indicator_loop::Context) {
         let version_indicator = cx.local.version_indicator;
         let required_sleep = version_indicator.cycle();
-        version_indicator_alarm::spawn_after(required_sleep).unwrap();
+        version_indicator_loop::spawn_after(required_sleep).unwrap();
     }
 }
