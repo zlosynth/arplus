@@ -9,6 +9,7 @@ mod app {
     use systick_monotonic::Systick;
 
     use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
+    use arplus_firmware::queue_utils;
     use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
@@ -82,9 +83,9 @@ mod app {
         let instrument = cx.local.instrument;
         let instrument_attributes_consumer = cx.local.instrument_attributes_consumer;
 
-        warn_about_queue_capacity("instrument_attributes", instrument_attributes_consumer);
+        queue_utils::warn_about_capacity("instrument_attributes", instrument_attributes_consumer);
 
-        if let Some(attributes) = dequeue_last(instrument_attributes_consumer) {
+        if let Some(attributes) = queue_utils::dequeue_last(instrument_attributes_consumer) {
             instrument.set_attributes(attributes);
         }
 
@@ -98,27 +99,5 @@ mod app {
         let version_indicator = cx.local.version_indicator;
         let required_sleep = version_indicator.cycle();
         version_indicator_alarm::spawn_after(required_sleep).unwrap();
-    }
-
-    fn dequeue_last<T, const N: usize>(consumer: &mut Consumer<'static, T, N>) -> Option<T> {
-        let mut last_item = None;
-        while let Some(attributes) = consumer.dequeue() {
-            last_item = Some(attributes);
-        }
-        last_item
-    }
-
-    fn warn_about_queue_capacity<T, const N: usize>(
-        name: &str,
-        consumer: &mut Consumer<'static, T, N>,
-    ) {
-        if consumer.len() > consumer.capacity() / 2 {
-            defmt::warn!(
-                "Queue={:?} is above the half of its capacity {:?}/{:?}",
-                name,
-                consumer.len(),
-                consumer.capacity()
-            );
-        }
     }
 }
