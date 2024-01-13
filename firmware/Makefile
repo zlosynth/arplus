@@ -25,4 +25,10 @@ clean:
 
 .PHONY: flash
 flash:
-	cargo run --release --bin firmware
+	$(CARGO) run --release --bin firmware
+
+.PHONY: flash-dfu
+flash:
+	$(CARGO) objcopy --release -- -O binary target/arplus.bin
+	dfu-util -a 0 -s 0x08000000:leave -D target/arplus.bin -d ,0483:df11
+

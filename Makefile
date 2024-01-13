@@ -33,3 +33,7 @@ clean:
 .PHONY: flash
 flash:
 	make -C firmware flash
+
+.PHONY: flash-dfu
+flash:
+	make -C firmware flash-dfu
