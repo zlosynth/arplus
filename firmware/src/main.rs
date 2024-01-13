@@ -10,10 +10,10 @@ mod app {
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
 
-    // Single blinks on the PCB's LED signalize the revision.
+    // Blinks on the PCB's LED signalize the current revision.
     const BLINKS: u8 = 1;
 
-    // 1 kHz / 1 ms granularity for task scheduling.
+    // 1 kHz granularity for task scheduling.
     #[monotonic(binds = SysTick, default = true)]
     type Mono = Systick<1000>;
 
