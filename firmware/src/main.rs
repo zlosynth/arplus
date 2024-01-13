@@ -5,11 +5,10 @@ use arplus_firmware as _; // Global logger and panicking behavior.
 
 #[rtic::app(device = stm32h7xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
-    use daisy::led::LedUser;
-    use fugit::ExtU64;
     use systick_monotonic::Systick;
 
     use arplus_firmware::system::System;
+    use arplus_firmware::version_indicator::VersionIndicator;
 
     // Single blinks on the PCB's LED signalize the revision.
     const BLINKS: u8 = 1;
@@ -23,7 +22,7 @@ mod app {
 
     #[local]
     struct Local {
-        status_led: LedUser,
+        version_indicator: VersionIndicator,
     }
 
     #[init]
@@ -32,31 +31,24 @@ mod app {
 
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
-        let status_led = system.status_led;
+
+        let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
         defmt::info!("Initialization was completed, starting tasks");
 
-        blink::spawn(true, BLINKS).unwrap();
+        version_indicator_alarm::spawn().unwrap();
 
-        (Shared {}, Local { status_led }, init::Monotonics(mono))
+        (
+            Shared {},
+            Local { version_indicator },
+            init::Monotonics(mono),
+        )
     }
-    #[task(local = [status_led])]
-    fn blink(cx: blink::Context, on: bool, mut blinks_left: u8) {
-        let time_on = 200.millis();
-        let time_off_short = 200.millis();
-        let time_off_long = 2.secs();
 
-        if on {
-            cx.local.status_led.set_high();
-            blink::spawn_after(time_on, false, blinks_left).unwrap();
-        } else {
-            cx.local.status_led.set_low();
-            blinks_left -= 1;
-            if blinks_left > 0 {
-                blink::spawn_after(time_off_short, true, blinks_left).unwrap();
-            } else {
-                blink::spawn_after(time_off_long, true, BLINKS).unwrap();
-            }
-        }
+    #[task(local = [version_indicator])]
+    fn version_indicator_alarm(cx: version_indicator_alarm::Context) {
+        let version_indicator = cx.local.version_indicator;
+        let required_sleep = version_indicator.cycle();
+        version_indicator_alarm::spawn_after(required_sleep).unwrap();
     }
 }
