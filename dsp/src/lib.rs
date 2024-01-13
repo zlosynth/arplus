@@ -1,14 +1,6 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+#![no_std]
+#![allow(clippy::new_without_default)]
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+mod instrument;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use instrument::{Attributes, Instrument};

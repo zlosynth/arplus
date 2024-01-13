@@ -3,15 +3,21 @@
 version = 3
 
 [[package]]
+name = "arplus-dsp"
+version = "0.1.0"
+
+[[package]]
 name = "arplus-firmware"
 version = "0.1.0"
 dependencies = [
+ "arplus-dsp",
  "cortex-m",
  "cortex-m-rtic",
  "daisy",
  "defmt",
  "defmt-rtt",
  "fugit",
+ "heapless",
  "nb 1.1.0",
  "panic-probe",
  "stm32h7xx-hal",

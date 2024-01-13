@@ -5,8 +5,11 @@ use arplus_firmware as _; // Global logger and panicking behavior.
 
 #[rtic::app(device = stm32h7xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
+    use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
+    use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
+    use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
 
@@ -23,26 +26,71 @@ mod app {
     #[local]
     struct Local {
         version_indicator: VersionIndicator,
+        audio_interface: AudioInterface,
+        instrument: Instrument,
+        _instrument_attributes_producer: Producer<'static, InstrumentAttributes, 8>,
+        instrument_attributes_consumer: Consumer<'static, InstrumentAttributes, 8>,
     }
 
-    #[init]
+    #[init(
+        local = [
+            instrument_attributes_queue: Queue<InstrumentAttributes, 8> = Queue::new(),
+        ]
+    )]
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         defmt::info!("Starting the firmware, initializing resources");
 
+        let (instrument_attributes_producer, instrument_attributes_consumer) =
+            cx.local.instrument_attributes_queue.split();
+
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
+        let mut audio_interface = system.audio_interface;
 
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
+        let instrument = Instrument::new(SAMPLE_RATE as f32);
 
         defmt::info!("Initialization was completed, starting tasks");
 
+        audio_interface.spawn();
         version_indicator_alarm::spawn().unwrap();
 
         (
             Shared {},
-            Local { version_indicator },
+            Local {
+                version_indicator,
+                audio_interface,
+                instrument,
+                _instrument_attributes_producer: instrument_attributes_producer,
+                instrument_attributes_consumer,
+            },
             init::Monotonics(mono),
         )
+    }
+
+    #[task(
+        binds = DMA1_STR1,
+        local = [
+            audio_interface,
+            instrument,
+            instrument_attributes_consumer,
+        ],
+        priority = 4,
+    )]
+    fn dsp_loop(cx: dsp_loop::Context) {
+        let audio_interface = cx.local.audio_interface;
+        let instrument = cx.local.instrument;
+        let instrument_attributes_consumer = cx.local.instrument_attributes_consumer;
+
+        warn_about_queue_capacity("instrument_attributes", instrument_attributes_consumer);
+
+        if let Some(attributes) = dequeue_last(instrument_attributes_consumer) {
+            instrument.set_attributes(attributes);
+        }
+
+        audio_interface.update_buffer(|buffer| {
+            instrument.process(buffer);
+        });
     }
 
     #[task(local = [version_indicator])]
@@ -50,5 +98,27 @@ mod app {
         let version_indicator = cx.local.version_indicator;
         let required_sleep = version_indicator.cycle();
         version_indicator_alarm::spawn_after(required_sleep).unwrap();
+    }
+
+    fn dequeue_last<T, const N: usize>(consumer: &mut Consumer<'static, T, N>) -> Option<T> {
+        let mut last_item = None;
+        while let Some(attributes) = consumer.dequeue() {
+            last_item = Some(attributes);
+        }
+        last_item
+    }
+
+    fn warn_about_queue_capacity<T, const N: usize>(
+        name: &str,
+        consumer: &mut Consumer<'static, T, N>,
+    ) {
+        if consumer.len() > consumer.capacity() / 2 {
+            defmt::warn!(
+                "Queue={:?} is above the half of its capacity {:?}/{:?}",
+                name,
+                consumer.len(),
+                consumer.capacity()
+            );
+        }
     }
 }

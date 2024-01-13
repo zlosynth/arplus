@@ -30,6 +30,8 @@ stm32h7xx-hal = { version = "0.14", features = [
 daisy = { version = "0.8.0", features = ["patch_sm"] }
 fugit = "0.3"
 nb = "1"
+heapless = "0.7"
+arplus-dsp = { path = "../dsp" }
 
 [profile.dev]
 codegen-units = 1 # better optimizations

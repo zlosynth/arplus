@@ -1,3 +1,5 @@
+pub mod audio;
+
 pub use stm32h7xx_hal as hal;
 
 use daisy::led::LedUser;
@@ -5,9 +7,12 @@ use hal::pac::CorePeripherals;
 use hal::pac::Peripherals as DevicePeripherals;
 use systick_monotonic::Systick;
 
+use self::audio::AudioInterface;
+
 pub struct System {
     pub mono: Systick<1000>,
     pub status_led: LedUser,
+    pub audio_interface: AudioInterface,
 }
 
 impl System {
@@ -24,10 +29,16 @@ impl System {
         let ccdr = daisy::board_freeze_clocks!(board, dp);
         let pins = daisy::board_split_gpios!(board, ccdr, dp);
 
-        let mono = Systick::new(cp.SYST, 480_000_000);
+        let system_frequency = ccdr.clocks.sys_ck();
+        let mono = Systick::new(cp.SYST, system_frequency.raw());
         let status_led = daisy::board_split_leds!(pins).USER;
+        let audio_interface = AudioInterface::init(daisy::board_split_audio!(ccdr, pins));
 
-        Self { mono, status_led }
+        Self {
+            mono,
+            status_led,
+            audio_interface,
+        }
     }
 }
 
