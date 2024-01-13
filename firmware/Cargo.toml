@@ -9,6 +9,11 @@ publish = false
 [lib]
 harness = false
 
+[[bin]]
+name = "main"
+path = "src/main.rs"
+harness = false
+
 [dependencies]
 cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 cortex-m-rtic = "1"
