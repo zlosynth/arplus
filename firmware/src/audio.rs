@@ -8,8 +8,7 @@ pub struct AudioInterface {
 }
 
 impl AudioInterface {
-    #[must_use]
-    pub fn init(interface: daisy::audio::Interface) -> Self {
+    pub fn new(interface: daisy::audio::Interface) -> Self {
         Self {
             interface: Some(interface),
         }

@@ -25,7 +25,6 @@ impl System {
     /// # Panics
     ///
     /// The system can be initialized only once. It panics otherwise.
-    #[must_use]
     pub fn init(mut cp: CorePeripherals, dp: DevicePeripherals) -> Self {
         enable_cache(&mut cp);
 
@@ -36,8 +35,9 @@ impl System {
         let system_frequency = ccdr.clocks.sys_ck();
         let mono = Systick::new(cp.SYST, system_frequency.raw());
         let status_led = daisy::board_split_leds!(pins).USER;
-        let audio_interface = AudioInterface::init(daisy::board_split_audio!(ccdr, pins));
-        let flash_memory_interface = FlashMemoryInterface;
+        let audio_interface = AudioInterface::new(daisy::board_split_audio!(ccdr, pins));
+        let flash_memory_interface =
+            FlashMemoryInterface::new(daisy::board_split_flash!(ccdr, dp, pins));
         let control_input_interface = ControlInputInterface;
         let control_output_interface = ControlOutputInterface;
 

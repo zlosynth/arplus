@@ -1,7 +1,11 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 
+pub mod save;
+
 use arplus_dsp::Attributes;
+
+use crate::save::Save;
 
 pub struct Controller;
 
@@ -9,8 +13,6 @@ pub struct Result {
     pub save: Option<Save>,
     pub instrument_attributes: Attributes,
 }
-
-pub struct Save;
 
 pub struct OutputState;
 pub struct ControlInputSnapshot;

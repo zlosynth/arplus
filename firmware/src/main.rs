@@ -9,7 +9,8 @@ mod app {
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
-    use arplus_control::{ControlInputSnapshot, Controller, Save};
+    use arplus_control::save::Save;
+    use arplus_control::{ControlInputSnapshot, Controller};
     use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
     use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::control_input::ControlInputInterface;
@@ -72,7 +73,7 @@ mod app {
         let control_output_interface = system.control_output_interface;
 
         let instrument = Instrument::new(SAMPLE_RATE as f32);
-        let controller = Controller::new(); // TODO: Warm up.
+        let controller = Controller::new(); // TODO: Warm up. // TODO: From save.
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
         defmt::info!("Initialization was completed, starting tasks");
@@ -229,7 +230,7 @@ mod app {
     )]
     fn save_coroutine(cx: save_coroutine::Context, save: Save) {
         let flash_memory_interface = cx.local.flash_memory_interface;
-        flash_memory_interface.save_save(save);
+        flash_memory_interface.save(save);
     }
 
     #[task(

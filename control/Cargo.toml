@@ -7,4 +7,5 @@ license = "GPL-3.0-or-later"
 publish = false
 
 [dependencies]
+crc = "2"
 arplus-dsp = { path = "../dsp" }
