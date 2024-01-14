@@ -5,6 +5,8 @@ use defmt_rtt as _;
 use panic_probe as _;
 use stm32h7xx_hal as _;
 
+pub mod input_manager;
+pub mod output_manager;
 pub mod queue_utils;
 pub mod system;
 pub mod version_indicator;

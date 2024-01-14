@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "arplus-control"
+version = "0.1.0"
+dependencies = [
+ "arplus-dsp",
+]
+
+[[package]]
 name = "arplus-dsp"
 version = "0.1.0"
 
@@ -10,6 +17,7 @@ version = "0.1.0"
 name = "arplus-firmware"
 version = "0.1.0"
 dependencies = [
+ "arplus-control",
  "arplus-dsp",
  "cortex-m",
  "cortex-m-rtic",
