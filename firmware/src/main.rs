@@ -33,13 +33,13 @@ mod app {
 
     #[local]
     struct Local {
-        version_indicator: VersionIndicator,
         audio_interface: AudioInterface,
         flash_memory_interface: FlashMemoryInterface,
         control_input_interface: ControlInputInterface,
         control_output_interface: ControlOutputInterface,
         instrument: Instrument,
         controller: Controller,
+        version_indicator: VersionIndicator,
         instrument_attributes_producer: Producer<'static, InstrumentAttributes, 8>,
         instrument_attributes_consumer: Consumer<'static, InstrumentAttributes, 8>,
         control_input_snapshot_producer: Producer<'static, ControlInputSnapshot, 8>,
@@ -87,13 +87,13 @@ mod app {
         (
             Shared { save_cache: None },
             Local {
-                version_indicator,
                 audio_interface,
                 flash_memory_interface,
-                instrument,
-                controller,
                 control_input_interface,
                 control_output_interface,
+                instrument,
+                controller,
+                version_indicator,
                 instrument_attributes_producer,
                 instrument_attributes_consumer,
                 control_input_snapshot_producer,
