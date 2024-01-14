@@ -17,7 +17,7 @@ pub struct Result {
 pub struct ControlInputSnapshot {
     pub pots: [f32; 6],
     pub buttons: [bool; 4],
-    pub cv: [f32; 6],
+    pub cvs: [Option<f32>; 6],
 }
 
 pub struct ControlOutputState {
