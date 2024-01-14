@@ -14,8 +14,15 @@ pub struct Result {
     pub instrument_attributes: Attributes,
 }
 
-pub struct OutputState;
-pub struct ControlInputSnapshot;
+pub struct ControlInputSnapshot {
+    pub pots: [f32; 6],
+    pub buttons: [bool; 4],
+    pub cv: [f32; 6],
+}
+
+pub struct ControlOutputState {
+    pub leds: [bool; 8],
+}
 
 impl Controller {
     pub fn new() -> Self {
@@ -30,7 +37,7 @@ impl Controller {
         todo!();
     }
 
-    pub fn desired_output_state(&self) -> OutputState {
+    pub fn desired_output_state(&self) -> ControlOutputState {
         todo!();
     }
 }

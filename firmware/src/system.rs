@@ -7,7 +7,7 @@ use systick_monotonic::Systick;
 
 use crate::audio::AudioInterface;
 use crate::control_input::ControlInputInterface;
-use crate::control_output::ControlOutputInterface;
+use crate::control_output::{ControlOutputInterface, Pins as ControlOutputPins};
 use crate::flash_memory::FlashMemoryInterface;
 
 pub struct System {
@@ -39,7 +39,18 @@ impl System {
         let flash_memory_interface =
             FlashMemoryInterface::new(daisy::board_split_flash!(ccdr, dp, pins));
         let control_input_interface = ControlInputInterface;
-        let control_output_interface = ControlOutputInterface;
+        let control_output_interface = ControlOutputInterface::new(ControlOutputPins {
+            leds: (
+                pins.GPIO.PIN_D7.into_push_pull_output(),
+                pins.GPIO.PIN_D6.into_push_pull_output(),
+                pins.GPIO.PIN_D5.into_push_pull_output(),
+                pins.GPIO.PIN_D4.into_push_pull_output(),
+                pins.GPIO.PIN_D3.into_push_pull_output(),
+                pins.GPIO.PIN_D2.into_push_pull_output(),
+                pins.GPIO.PIN_D1.into_push_pull_output(),
+                pins.GPIO.PIN_D10.into_push_pull_output(),
+            ),
+        });
 
         Self {
             mono,
