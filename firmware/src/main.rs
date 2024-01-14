@@ -15,6 +15,7 @@ mod app {
     use arplus_firmware::output_manager::OutputManager;
     use arplus_firmware::queue_utils;
     use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
+    use arplus_firmware::system::flash_memory::FlashMemoryInterface;
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
 
@@ -26,12 +27,15 @@ mod app {
     type Mono = Systick<1000>;
 
     #[shared]
-    struct Shared {}
+    struct Shared {
+        save_cache: Option<Save>,
+    }
 
     #[local]
     struct Local {
         version_indicator: VersionIndicator,
         audio_interface: AudioInterface,
+        flash_memory_interface: FlashMemoryInterface,
         instrument: Instrument,
         controller: Controller,
         input_manager: InputManager,
@@ -41,7 +45,7 @@ mod app {
         input_snapshot_producer: Producer<'static, InputSnapshot, 8>,
         input_snapshot_consumer: Consumer<'static, InputSnapshot, 8>,
         save_producer: Producer<'static, Save, 8>,
-        _save_consumer: Consumer<'static, Save, 8>,
+        save_consumer: Consumer<'static, Save, 8>,
     }
 
     #[init(
@@ -63,11 +67,13 @@ mod app {
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
         let mut audio_interface = system.audio_interface;
+        let flash_memory_interface = system.flash_memory_interface;
+        // TODO: Rename managers to interface
         let input_manager = system.input_manager;
         let output_manager = system.output_manager;
 
         let instrument = Instrument::new(SAMPLE_RATE as f32);
-        let controller = Controller::new();
+        let controller = Controller::new(); // TODO: Warm up.
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
         defmt::info!("Initialization was completed, starting tasks");
@@ -75,12 +81,16 @@ mod app {
         audio_interface.spawn();
         version_indicator_loop::spawn().unwrap();
         control_loop::spawn().unwrap();
+        input_collection_loop::spawn().unwrap();
+        save_caching_loop::spawn().unwrap();
+        save_pacing_loop::spawn().unwrap();
 
         (
-            Shared {},
+            Shared { save_cache: None },
             Local {
                 version_indicator,
                 audio_interface,
+                flash_memory_interface,
                 instrument,
                 controller,
                 input_manager,
@@ -90,7 +100,7 @@ mod app {
                 input_snapshot_producer,
                 input_snapshot_consumer,
                 save_producer,
-                _save_consumer: save_consumer,
+                save_consumer,
             },
             init::Monotonics(mono),
         )
@@ -172,7 +182,62 @@ mod app {
         });
     }
 
-    #[task(local = [version_indicator])]
+    #[task(
+        local = [
+            save_consumer,
+        ],
+        shared = [
+            save_cache,
+        ],
+        priority = 3,
+    )]
+    fn save_caching_loop(cx: save_caching_loop::Context) {
+        save_caching_loop::spawn_after(1.millis()).ok().unwrap();
+
+        let save_consumer = cx.local.save_consumer;
+        let mut save_cache = cx.shared.save_cache;
+
+        queue_utils::warn_about_capacity("save_consumer", save_consumer);
+
+        if let Some(save) = queue_utils::dequeue_last(save_consumer) {
+            save_cache.lock(|save_cache| {
+                *save_cache = Some(save);
+            });
+        }
+    }
+
+    #[task(
+        shared = [
+            save_cache,
+        ],
+        priority = 3,
+    )]
+    fn save_pacing_loop(mut cx: save_pacing_loop::Context) {
+        save_pacing_loop::spawn_after(1.secs()).ok().unwrap();
+
+        cx.shared.save_cache.lock(|save_cache| {
+            if let Some(save) = save_cache.take() {
+                save_coroutine::spawn(save)
+                    .unwrap_or_else(|_| defmt::warn!("Failed issuing store request"));
+            }
+        });
+    }
+
+    #[task(
+        local = [
+            flash_memory_interface
+        ]
+    )]
+    fn save_coroutine(cx: save_coroutine::Context, save: Save) {
+        let flash_memory_interface = cx.local.flash_memory_interface;
+        flash_memory_interface.save_save(save);
+    }
+
+    #[task(
+        local = [
+            version_indicator
+        ]
+    )]
     fn version_indicator_loop(cx: version_indicator_loop::Context) {
         let version_indicator = cx.local.version_indicator;
         let required_sleep = version_indicator.cycle();

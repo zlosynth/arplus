@@ -1,4 +1,6 @@
+// TODO: Move these to the root.
 pub mod audio;
+pub mod flash_memory;
 
 pub use stm32h7xx_hal as hal;
 
@@ -8,6 +10,7 @@ use hal::pac::Peripherals as DevicePeripherals;
 use systick_monotonic::Systick;
 
 use self::audio::AudioInterface;
+use self::flash_memory::FlashMemoryInterface;
 use crate::input_manager::InputManager;
 use crate::output_manager::OutputManager;
 
@@ -15,6 +18,7 @@ pub struct System {
     pub mono: Systick<1000>,
     pub status_led: LedUser,
     pub audio_interface: AudioInterface,
+    pub flash_memory_interface: FlashMemoryInterface,
     pub input_manager: InputManager,
     pub output_manager: OutputManager,
 }
@@ -37,6 +41,7 @@ impl System {
         let mono = Systick::new(cp.SYST, system_frequency.raw());
         let status_led = daisy::board_split_leds!(pins).USER;
         let audio_interface = AudioInterface::init(daisy::board_split_audio!(ccdr, pins));
+        let flash_memory_interface = FlashMemoryInterface;
         let input_manager = InputManager;
         let output_manager = OutputManager;
 
@@ -44,6 +49,7 @@ impl System {
             mono,
             status_led,
             audio_interface,
+            flash_memory_interface,
             input_manager,
             output_manager,
         }
