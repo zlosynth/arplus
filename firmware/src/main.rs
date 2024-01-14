@@ -11,6 +11,7 @@ mod app {
 
     use arplus_control::{Controller, InputSnapshot, Save};
     use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
+    use arplus_firmware::input_manager::InputManager;
     use arplus_firmware::output_manager::OutputManager;
     use arplus_firmware::queue_utils;
     use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
@@ -33,10 +34,11 @@ mod app {
         audio_interface: AudioInterface,
         instrument: Instrument,
         controller: Controller,
+        input_manager: InputManager,
         output_manager: OutputManager,
         instrument_attributes_producer: Producer<'static, InstrumentAttributes, 8>,
         instrument_attributes_consumer: Consumer<'static, InstrumentAttributes, 8>,
-        _input_snapshot_producer: Producer<'static, InputSnapshot, 8>,
+        input_snapshot_producer: Producer<'static, InputSnapshot, 8>,
         input_snapshot_consumer: Consumer<'static, InputSnapshot, 8>,
         save_producer: Producer<'static, Save, 8>,
         _save_consumer: Consumer<'static, Save, 8>,
@@ -61,6 +63,7 @@ mod app {
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
         let mut audio_interface = system.audio_interface;
+        let input_manager = system.input_manager;
         let output_manager = system.output_manager;
 
         let instrument = Instrument::new(SAMPLE_RATE as f32);
@@ -80,16 +83,35 @@ mod app {
                 audio_interface,
                 instrument,
                 controller,
+                input_manager,
                 output_manager,
                 instrument_attributes_producer,
                 instrument_attributes_consumer,
-                _input_snapshot_producer: input_snapshot_producer,
+                input_snapshot_producer,
                 input_snapshot_consumer,
                 save_producer,
                 _save_consumer: save_consumer,
             },
             init::Monotonics(mono),
         )
+    }
+
+    #[task(
+        local = [
+            input_manager,
+            input_snapshot_producer,
+        ],
+        priority = 2,
+    )]
+    fn input_collection_loop(cx: input_collection_loop::Context) {
+        input_collection_loop::spawn_after(1.millis()).ok().unwrap();
+
+        let input_manager = cx.local.input_manager;
+        let input_snapshot_producer = cx.local.input_snapshot_producer;
+
+        input_manager.sample();
+
+        let _ = input_snapshot_producer.enqueue(input_manager.snapshot());
     }
 
     #[task(
