@@ -11,16 +11,16 @@ use systick_monotonic::Systick;
 
 use self::audio::AudioInterface;
 use self::flash_memory::FlashMemoryInterface;
-use crate::input_manager::InputManager;
-use crate::output_manager::OutputManager;
+use crate::control_input_interface::ControlInputInterface;
+use crate::control_output_interface::ControlOutputInterface;
 
 pub struct System {
     pub mono: Systick<1000>,
     pub status_led: LedUser,
     pub audio_interface: AudioInterface,
     pub flash_memory_interface: FlashMemoryInterface,
-    pub input_manager: InputManager,
-    pub output_manager: OutputManager,
+    pub control_input_interface: ControlInputInterface,
+    pub control_output_interface: ControlOutputInterface,
 }
 
 impl System {
@@ -42,16 +42,16 @@ impl System {
         let status_led = daisy::board_split_leds!(pins).USER;
         let audio_interface = AudioInterface::init(daisy::board_split_audio!(ccdr, pins));
         let flash_memory_interface = FlashMemoryInterface;
-        let input_manager = InputManager;
-        let output_manager = OutputManager;
+        let control_input_interface = ControlInputInterface;
+        let control_output_interface = ControlOutputInterface;
 
         Self {
             mono,
             status_led,
             audio_interface,
             flash_memory_interface,
-            input_manager,
-            output_manager,
+            control_input_interface,
+            control_output_interface,
         }
     }
 }

@@ -1,7 +1,7 @@
 use arplus_control::OutputState;
 
-pub struct OutputManager;
+pub struct ControlOutputInterface;
 
-impl OutputManager {
+impl ControlOutputInterface {
     pub fn set_state(&mut self, _state: &OutputState) {}
 }

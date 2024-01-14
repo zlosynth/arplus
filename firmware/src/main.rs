@@ -9,10 +9,10 @@ mod app {
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
-    use arplus_control::{Controller, InputSnapshot, Save};
+    use arplus_control::{ControlInputSnapshot, Controller, Save};
     use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
-    use arplus_firmware::input_manager::InputManager;
-    use arplus_firmware::output_manager::OutputManager;
+    use arplus_firmware::control_input_interface::ControlInputInterface;
+    use arplus_firmware::control_output_interface::ControlOutputInterface;
     use arplus_firmware::queue_utils;
     use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::system::flash_memory::FlashMemoryInterface;
@@ -36,14 +36,14 @@ mod app {
         version_indicator: VersionIndicator,
         audio_interface: AudioInterface,
         flash_memory_interface: FlashMemoryInterface,
+        control_input_interface: ControlInputInterface,
+        control_output_interface: ControlOutputInterface,
         instrument: Instrument,
         controller: Controller,
-        input_manager: InputManager,
-        output_manager: OutputManager,
         instrument_attributes_producer: Producer<'static, InstrumentAttributes, 8>,
         instrument_attributes_consumer: Consumer<'static, InstrumentAttributes, 8>,
-        input_snapshot_producer: Producer<'static, InputSnapshot, 8>,
-        input_snapshot_consumer: Consumer<'static, InputSnapshot, 8>,
+        control_input_snapshot_producer: Producer<'static, ControlInputSnapshot, 8>,
+        control_input_snapshot_consumer: Consumer<'static, ControlInputSnapshot, 8>,
         save_producer: Producer<'static, Save, 8>,
         save_consumer: Consumer<'static, Save, 8>,
     }
@@ -51,7 +51,7 @@ mod app {
     #[init(
         local = [
             instrument_attributes_queue: Queue<InstrumentAttributes, 8> = Queue::new(),
-            input_snapshot_queue: Queue<InputSnapshot, 8> = Queue::new(),
+            input_snapshot_queue: Queue<ControlInputSnapshot, 8> = Queue::new(),
             save_queue: Queue<Save, 8> = Queue::new(),
         ]
     )]
@@ -60,7 +60,7 @@ mod app {
 
         let (instrument_attributes_producer, instrument_attributes_consumer) =
             cx.local.instrument_attributes_queue.split();
-        let (input_snapshot_producer, input_snapshot_consumer) =
+        let (control_input_snapshot_producer, control_input_snapshot_consumer) =
             cx.local.input_snapshot_queue.split();
         let (save_producer, save_consumer) = cx.local.save_queue.split();
 
@@ -68,9 +68,8 @@ mod app {
         let mono = system.mono;
         let mut audio_interface = system.audio_interface;
         let flash_memory_interface = system.flash_memory_interface;
-        // TODO: Rename managers to interface
-        let input_manager = system.input_manager;
-        let output_manager = system.output_manager;
+        let control_input_interface = system.control_input_interface;
+        let control_output_interface = system.control_output_interface;
 
         let instrument = Instrument::new(SAMPLE_RATE as f32);
         let controller = Controller::new(); // TODO: Warm up.
@@ -93,12 +92,12 @@ mod app {
                 flash_memory_interface,
                 instrument,
                 controller,
-                input_manager,
-                output_manager,
+                control_input_interface,
+                control_output_interface,
                 instrument_attributes_producer,
                 instrument_attributes_consumer,
-                input_snapshot_producer,
-                input_snapshot_consumer,
+                control_input_snapshot_producer,
+                control_input_snapshot_consumer,
                 save_producer,
                 save_consumer,
             },
@@ -108,28 +107,28 @@ mod app {
 
     #[task(
         local = [
-            input_manager,
-            input_snapshot_producer,
+            control_input_interface,
+            control_input_snapshot_producer,
         ],
         priority = 2,
     )]
     fn input_collection_loop(cx: input_collection_loop::Context) {
         input_collection_loop::spawn_after(1.millis()).ok().unwrap();
 
-        let input_manager = cx.local.input_manager;
-        let input_snapshot_producer = cx.local.input_snapshot_producer;
+        let control_input_interface = cx.local.control_input_interface;
+        let control_input_snapshot_producer = cx.local.control_input_snapshot_producer;
 
-        input_manager.sample();
+        control_input_interface.sample();
 
-        let _ = input_snapshot_producer.enqueue(input_manager.snapshot());
+        let _ = control_input_snapshot_producer.enqueue(control_input_interface.snapshot());
     }
 
     #[task(
         local = [
             controller,
-            output_manager,
+            control_output_interface,
             instrument_attributes_producer,
-            input_snapshot_consumer,
+            control_input_snapshot_consumer,
             save_producer,
         ],
         priority = 3,
@@ -138,14 +137,14 @@ mod app {
         control_loop::spawn_after(1.millis()).ok().unwrap();
 
         let controller = cx.local.controller;
-        let output_manager = cx.local.output_manager;
+        let control_output_interface = cx.local.control_output_interface;
         let instrument_attributes_producer = cx.local.instrument_attributes_producer;
-        let input_snapshot_consumer = cx.local.input_snapshot_consumer;
+        let control_input_snapshot_consumer = cx.local.control_input_snapshot_consumer;
         let save_producer = cx.local.save_producer;
 
-        queue_utils::warn_about_capacity("input_snapshot", input_snapshot_consumer);
+        queue_utils::warn_about_capacity("input_snapshot", control_input_snapshot_consumer);
 
-        if let Some(snapshot) = queue_utils::dequeue_last(input_snapshot_consumer) {
+        if let Some(snapshot) = queue_utils::dequeue_last(control_input_snapshot_consumer) {
             let result = controller.apply_input_snapshot(snapshot);
             if let Some(save) = result.save {
                 let _ = save_producer.enqueue(save);
@@ -154,7 +153,7 @@ mod app {
         }
 
         controller.tick();
-        output_manager.set_state(&controller.desired_output_state());
+        control_output_interface.set_state(&controller.desired_output_state());
     }
 
     #[task(

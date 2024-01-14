@@ -13,14 +13,14 @@ pub struct Result {
 pub struct Save;
 
 pub struct OutputState;
-pub struct InputSnapshot;
+pub struct ControlInputSnapshot;
 
 impl Controller {
     pub fn new() -> Self {
         Self
     }
 
-    pub fn apply_input_snapshot(&mut self, _snapshot: InputSnapshot) -> Result {
+    pub fn apply_input_snapshot(&mut self, _snapshot: ControlInputSnapshot) -> Result {
         todo!()
     }
 
