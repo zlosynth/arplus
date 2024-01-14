@@ -1,7 +1,3 @@
-// TODO: Move these to the root.
-pub mod audio;
-pub mod flash_memory;
-
 pub use stm32h7xx_hal as hal;
 
 use daisy::led::LedUser;
@@ -9,10 +5,10 @@ use hal::pac::CorePeripherals;
 use hal::pac::Peripherals as DevicePeripherals;
 use systick_monotonic::Systick;
 
-use self::audio::AudioInterface;
-use self::flash_memory::FlashMemoryInterface;
-use crate::control_input_interface::ControlInputInterface;
-use crate::control_output_interface::ControlOutputInterface;
+use crate::audio::AudioInterface;
+use crate::control_input::ControlInputInterface;
+use crate::control_output::ControlOutputInterface;
+use crate::flash_memory::FlashMemoryInterface;
 
 pub struct System {
     pub mono: Systick<1000>,

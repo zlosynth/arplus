@@ -11,11 +11,11 @@ mod app {
 
     use arplus_control::{ControlInputSnapshot, Controller, Save};
     use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
-    use arplus_firmware::control_input_interface::ControlInputInterface;
-    use arplus_firmware::control_output_interface::ControlOutputInterface;
+    use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
+    use arplus_firmware::control_input::ControlInputInterface;
+    use arplus_firmware::control_output::ControlOutputInterface;
+    use arplus_firmware::flash_memory::FlashMemoryInterface;
     use arplus_firmware::queue_utils;
-    use arplus_firmware::system::audio::{AudioInterface, SAMPLE_RATE};
-    use arplus_firmware::system::flash_memory::FlashMemoryInterface;
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
 
