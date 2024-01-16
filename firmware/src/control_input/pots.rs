@@ -6,15 +6,17 @@ use crate::system::hal::pac::{ADC1, ADC2};
 
 use super::one_pole_filter::OnePoleFilter;
 
+const POTS: usize = 6;
+
 #[derive(defmt::Format)]
 pub(super) struct Pots {
-    pub pots: [Pot; 6],
+    pots: [Pot; POTS],
     pins: Pins,
 }
 
 #[derive(defmt::Format)]
 pub(super) struct Pot {
-    pub value: f32,
+    value: f32,
     offset: f32,
     multiplier: f32,
     filter: OnePoleFilter,
@@ -78,6 +80,17 @@ impl Pots {
         let sample_6: u32 = block!(adc_1.read_sample()).unwrap_or_default();
         self.pots[4].set(sample_5, adc_2.slope());
         self.pots[5].set(sample_6, adc_1.slope());
+    }
+
+    pub(super) fn values(&self) -> [f32; POTS] {
+        [
+            self.pots[0].value,
+            self.pots[1].value,
+            self.pots[2].value,
+            self.pots[3].value,
+            self.pots[4].value,
+            self.pots[5].value,
+        ]
     }
 }
 

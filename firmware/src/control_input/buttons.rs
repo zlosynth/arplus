@@ -1,16 +1,17 @@
 use super::debouncer::Debouncer;
 use crate::system::hal::gpio;
 
+const BUTTONS: usize = 4;
+
 #[derive(Debug, defmt::Format)]
 pub(super) struct Buttons {
-    buttons: [Button; 4],
+    buttons: [Button; BUTTONS],
     pins: Pins,
 }
 
 #[derive(Debug, defmt::Format)]
 pub(super) struct Button {
-    pub active: bool,
-    pub active_no_filter: bool,
+    active: bool,
     debouncer: Debouncer<4>,
 }
 
@@ -41,6 +42,15 @@ impl Buttons {
         self.buttons[2].set(self.pins.button_3.is_high());
         self.buttons[3].set(self.pins.button_4.is_high());
     }
+
+    pub(super) fn values(&self) -> [bool; BUTTONS] {
+        [
+            self.buttons[0].active,
+            self.buttons[1].active,
+            self.buttons[2].active,
+            self.buttons[3].active,
+        ]
+    }
 }
 
 impl Button {
@@ -48,12 +58,10 @@ impl Button {
         Self {
             debouncer: Debouncer::new(),
             active: false,
-            active_no_filter: false,
         }
     }
 
     fn set(&mut self, is_high: bool) {
-        self.active_no_filter = is_high;
         self.active = self.debouncer.update(is_high);
     }
 }

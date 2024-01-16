@@ -2,15 +2,17 @@ use crate::system::hal::gpio;
 
 use super::debouncer::Debouncer;
 
+const TRIGGERS: usize = 1;
+
 #[derive(defmt::Format)]
 pub(super) struct Triggers {
-    pub triggers: [Trigger; 1],
+    triggers: [Trigger; TRIGGERS],
     pins: Pins,
 }
 
 #[derive(Debug, defmt::Format)]
 pub(super) struct Trigger {
-    pub active: bool,
+    active: bool,
     debouncer: Debouncer<4>,
 }
 
@@ -31,6 +33,10 @@ impl Triggers {
 
     pub fn sample(&mut self) {
         self.triggers[0].set(self.pins.trigger_1.is_high());
+    }
+
+    pub fn values(&self) -> [bool; TRIGGERS] {
+        [self.triggers[0].active]
     }
 }
 

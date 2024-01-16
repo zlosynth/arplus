@@ -6,15 +6,17 @@ use crate::system::hal::pac::{ADC1, ADC2};
 
 use super::probe::Detector as ProbeDetector;
 
+const CVS: usize = 6;
+
 #[derive(defmt::Format)]
 pub(super) struct Cvs {
-    pub cvs: [Cv; 6],
+    cvs: [Cv; CVS],
     pins: Pins,
 }
 
 #[derive(Default, defmt::Format)]
 pub(super) struct Cv {
-    pub value: Option<f32>,
+    value: Option<f32>,
     probe: ProbeDetector,
 }
 
@@ -71,6 +73,17 @@ impl Cvs {
         let sample_6: u32 = block!(adc_2.read_sample()).unwrap_or_default();
         self.cvs[4].set(sample_5, adc_1.slope());
         self.cvs[5].set(sample_6, adc_2.slope());
+    }
+
+    pub fn values(&self) -> [Option<f32>; CVS] {
+        [
+            self.cvs[0].value,
+            self.cvs[1].value,
+            self.cvs[2].value,
+            self.cvs[3].value,
+            self.cvs[4].value,
+            self.cvs[5].value,
+        ]
     }
 }
 

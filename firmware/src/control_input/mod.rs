@@ -61,6 +61,11 @@ impl ControlInputInterface {
     }
 
     pub fn snapshot(&self) -> ControlInputSnapshot {
-        todo!();
+        ControlInputSnapshot {
+            pots: self.pots.values(),
+            buttons: self.buttons.values(),
+            cvs: self.cvs.values(),
+            trigger: self.triggers.values()[0],
+        }
     }
 }
