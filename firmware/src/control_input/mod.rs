@@ -1,18 +1,24 @@
-pub mod buttons;
-pub mod cvs;
+mod buttons;
+mod cvs;
 mod debouncer;
 mod one_pole_filter;
-pub mod pots;
+mod pots;
 mod probe;
-pub mod triggers;
+mod triggers;
 
 use arplus_control::ControlInputSnapshot;
 
-use self::buttons::{Buttons, Pins as ButtonsPins};
-use self::cvs::{Cvs, Pins as CvsPins};
-use self::pots::{Pins as PotsPins, Pots};
-use self::probe::{Broadcaster as ProbeBroadcaster, BroadcasterPin as ProbeBroadcasterPin};
-use self::triggers::{Pins as TriggersPins, Triggers};
+pub use self::buttons::Pins as ButtonsPins;
+pub use self::cvs::Pins as CvsPins;
+pub use self::pots::Pins as PotsPins;
+pub use self::probe::BroadcasterPin as ProbeBroadcasterPin;
+pub use self::triggers::Pins as TriggersPins;
+
+use self::buttons::Buttons;
+use self::cvs::Cvs;
+use self::pots::Pots;
+use self::probe::Broadcaster as ProbeBroadcaster;
+use self::triggers::Triggers;
 use crate::system::hal::adc::{Adc, Enabled};
 use crate::system::hal::pac::{ADC1, ADC2};
 

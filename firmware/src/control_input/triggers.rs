@@ -5,13 +5,13 @@ use super::debouncer::Debouncer;
 const TRIGGERS: usize = 1;
 
 #[derive(defmt::Format)]
-pub(super) struct Triggers {
+pub struct Triggers {
     triggers: [Trigger; TRIGGERS],
     pins: Pins,
 }
 
 #[derive(Debug, defmt::Format)]
-pub(super) struct Trigger {
+pub struct Trigger {
     active: bool,
     debouncer: Debouncer<4>,
 }

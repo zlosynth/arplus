@@ -9,13 +9,13 @@ use super::probe::Detector as ProbeDetector;
 const CVS: usize = 6;
 
 #[derive(defmt::Format)]
-pub(super) struct Cvs {
+pub struct Cvs {
     cvs: [Cv; CVS],
     pins: Pins,
 }
 
 #[derive(Default, defmt::Format)]
-pub(super) struct Cv {
+pub struct Cv {
     value: Option<f32>,
     probe: ProbeDetector,
 }

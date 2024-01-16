@@ -10,9 +10,9 @@ use systick_monotonic::Systick;
 
 use crate::audio::AudioInterface;
 use crate::control_input::{
-    buttons::Pins as ControlInputButtonsPins, cvs::Pins as ControlInputCvsPins,
-    pots::Pins as ControlInputPotsPins, triggers::Pins as ControlInputTriggersPins,
-    Config as ControlInputConfig, ControlInputInterface,
+    ButtonsPins as ControlInputButtonsPins, Config as ControlInputConfig, ControlInputInterface,
+    CvsPins as ControlInputCvsPins, PotsPins as ControlInputPotsPins,
+    TriggersPins as ControlInputTriggersPins,
 };
 use crate::control_output::{
     Config as ControlOutputConfig, ControlOutputInterface, Pins as ControlOutputPins,

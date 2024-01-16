@@ -9,13 +9,13 @@ use super::one_pole_filter::OnePoleFilter;
 const POTS: usize = 6;
 
 #[derive(defmt::Format)]
-pub(super) struct Pots {
+pub struct Pots {
     pots: [Pot; POTS],
     pins: Pins,
 }
 
 #[derive(defmt::Format)]
-pub(super) struct Pot {
+pub struct Pot {
     value: f32,
     offset: f32,
     multiplier: f32,
@@ -32,15 +32,15 @@ pub struct Pins {
     pub pot_6: Pot6Pin,
 }
 
-pub(super) type Pot1Pin = gpio::gpioa::PA2<gpio::Analog>;
-pub(super) type Pot2Pin = gpio::gpioa::PA7<gpio::Analog>;
-pub(super) type Pot3Pin = gpio::gpioa::PA0<gpio::Analog>;
-pub(super) type Pot4Pin = gpio::gpioc::PC3<gpio::Analog>;
-pub(super) type Pot5Pin = gpio::gpioc::PC2<gpio::Analog>;
-pub(super) type Pot6Pin = gpio::gpioa::PA1<gpio::Analog>;
+pub type Pot1Pin = gpio::gpioa::PA2<gpio::Analog>;
+pub type Pot2Pin = gpio::gpioa::PA7<gpio::Analog>;
+pub type Pot3Pin = gpio::gpioa::PA0<gpio::Analog>;
+pub type Pot4Pin = gpio::gpioc::PC3<gpio::Analog>;
+pub type Pot5Pin = gpio::gpioc::PC2<gpio::Analog>;
+pub type Pot6Pin = gpio::gpioa::PA1<gpio::Analog>;
 
 impl Pots {
-    pub(super) fn new(pins: Pins) -> Self {
+    pub fn new(pins: Pins) -> Self {
         Self {
             pots: [
                 // TODO: Measure it in tests and set the actual range
@@ -55,11 +55,7 @@ impl Pots {
         }
     }
 
-    pub(super) fn sample(
-        &mut self,
-        adc_1: &mut Adc<ADC1, Enabled>,
-        adc_2: &mut Adc<ADC2, Enabled>,
-    ) {
+    pub fn sample(&mut self, adc_1: &mut Adc<ADC1, Enabled>, adc_2: &mut Adc<ADC2, Enabled>) {
         adc_1.start_conversion(&mut self.pins.pot_1);
         adc_2.start_conversion(&mut self.pins.pot_2);
         let sample_1: u32 = block!(adc_1.read_sample()).unwrap_or_default();
@@ -82,7 +78,7 @@ impl Pots {
         self.pots[5].set(sample_6, adc_1.slope());
     }
 
-    pub(super) fn values(&self) -> [f32; POTS] {
+    pub fn values(&self) -> [f32; POTS] {
         [
             self.pots[0].value,
             self.pots[1].value,
