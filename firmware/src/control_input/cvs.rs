@@ -8,12 +8,12 @@ use super::probe::Detector as ProbeDetector;
 
 #[derive(defmt::Format)]
 pub(super) struct Cvs {
-    pub cv: [Cv; 6],
+    pub cvs: [Cv; 6],
     pins: Pins,
 }
 
 #[derive(Default, defmt::Format)]
-pub struct Cv {
+pub(super) struct Cv {
     pub value: Option<f32>,
     probe: ProbeDetector,
 }
@@ -38,7 +38,7 @@ pub type Cv6Pin = gpio::gpiob::PB1<gpio::Analog>;
 impl Cvs {
     pub fn new(pins: Pins) -> Self {
         Self {
-            cv: [
+            cvs: [
                 Cv::default(),
                 Cv::default(),
                 Cv::default(),
@@ -55,22 +55,22 @@ impl Cvs {
         adc_2.start_conversion(&mut self.pins.cv_2);
         let sample_1: u32 = block!(adc_1.read_sample()).unwrap_or_default();
         let sample_2: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        self.cv[0].set(sample_1, adc_1.slope());
-        self.cv[1].set(sample_2, adc_2.slope());
+        self.cvs[0].set(sample_1, adc_1.slope());
+        self.cvs[1].set(sample_2, adc_2.slope());
 
         adc_1.start_conversion(&mut self.pins.cv_3);
         adc_2.start_conversion(&mut self.pins.cv_4);
         let sample_3: u32 = block!(adc_1.read_sample()).unwrap_or_default();
         let sample_4: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        self.cv[2].set(sample_3, adc_1.slope());
-        self.cv[3].set(sample_4, adc_2.slope());
+        self.cvs[2].set(sample_3, adc_1.slope());
+        self.cvs[3].set(sample_4, adc_2.slope());
 
         adc_1.start_conversion(&mut self.pins.cv_5);
         adc_2.start_conversion(&mut self.pins.cv_6);
         let sample_5: u32 = block!(adc_1.read_sample()).unwrap_or_default();
         let sample_6: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        self.cv[4].set(sample_5, adc_1.slope());
-        self.cv[5].set(sample_6, adc_2.slope());
+        self.cvs[4].set(sample_5, adc_1.slope());
+        self.cvs[5].set(sample_6, adc_2.slope());
     }
 }
 

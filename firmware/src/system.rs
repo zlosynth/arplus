@@ -11,7 +11,8 @@ use systick_monotonic::Systick;
 use crate::audio::AudioInterface;
 use crate::control_input::{
     buttons::Pins as ControlInputButtonsPins, cvs::Pins as ControlInputCvsPins,
-    pots::Pins as ControlInputPotsPins, Config as ControlInputConfig, ControlInputInterface,
+    pots::Pins as ControlInputPotsPins, triggers::Pins as ControlInputTriggersPins,
+    Config as ControlInputConfig, ControlInputInterface,
 };
 use crate::control_output::{
     Config as ControlOutputConfig, ControlOutputInterface, Pins as ControlOutputPins,
@@ -91,6 +92,9 @@ impl System {
                     cv_4: pins.GPIO.PIN_C6.into_analog(),
                     cv_5: pins.GPIO.PIN_C7.into_analog(),
                     cv_6: pins.GPIO.PIN_C8.into_analog(),
+                },
+                triggers_pins: ControlInputTriggersPins {
+                    trigger_1: pins.GPIO.PIN_B10.into_floating_input(),
                 },
                 // FIXME: Based on the layout, this should be B5. There is a mismatch between
                 // datasheet https://static1.squarespace.com/static/58d03fdc1b10e3bf442567b8/t/628bc1307a1e2b5bc04af099/1653326133665/ES_Patch_SM_datasheet_v1.0.4.pdf
