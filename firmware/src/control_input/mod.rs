@@ -1,20 +1,25 @@
 pub mod buttons;
+pub mod cvs;
 mod debouncer;
 mod one_pole_filter;
 pub mod pots;
+mod probe;
 
 use arplus_control::ControlInputSnapshot;
 
 use self::buttons::{Buttons, Pins as ButtonsPins};
+use self::cvs::{Cvs, Pins as CvsPins};
 use self::pots::{Pins as PotsPins, Pots};
+use self::probe::{Broadcaster as ProbeBroadcaster, BroadcasterPin as ProbeBroadcasterPin};
 use crate::system::hal::adc::{Adc, Enabled};
 use crate::system::hal::pac::{ADC1, ADC2};
 
 pub struct ControlInputInterface {
+    // TODO: Trigger input
     pots: Pots,
     buttons: Buttons,
-    #[allow(dead_code)]
-    cvs: (),
+    cvs: Cvs,
+    probe: ProbeBroadcaster,
     adc_1: Adc<ADC1, Enabled>,
     adc_2: Adc<ADC2, Enabled>,
 }
@@ -22,6 +27,8 @@ pub struct ControlInputInterface {
 pub struct Config {
     pub pots_pins: PotsPins,
     pub buttons_pins: ButtonsPins,
+    pub cvs_pins: CvsPins,
+    pub probe_pin: ProbeBroadcasterPin,
     pub adc_1: Adc<ADC1, Enabled>,
     pub adc_2: Adc<ADC2, Enabled>,
 }
@@ -31,7 +38,8 @@ impl ControlInputInterface {
         Self {
             pots: Pots::new(config.pots_pins),
             buttons: Buttons::new(config.buttons_pins),
-            cvs: (),
+            cvs: Cvs::new(config.cvs_pins),
+            probe: ProbeBroadcaster::new(config.probe_pin),
             adc_1: config.adc_1,
             adc_2: config.adc_2,
         }
@@ -40,6 +48,11 @@ impl ControlInputInterface {
     pub fn sample(&mut self) {
         self.pots.sample(&mut self.adc_1, &mut self.adc_2);
         self.buttons.sample();
+        self.cvs.sample(&mut self.adc_1, &mut self.adc_2);
+
+        // XXX: Selection happens at the end so the signal gets a chance
+        // to propagate to probe detectors before the next reading cycle.
+        self.probe.tick();
     }
 
     pub fn snapshot(&self) -> ControlInputSnapshot {

@@ -10,8 +10,8 @@ use systick_monotonic::Systick;
 
 use crate::audio::AudioInterface;
 use crate::control_input::{
-    buttons::Pins as ControlInputButtonsPins, pots::Pins as ControlInputPotsPins,
-    Config as ControlInputConfig, ControlInputInterface,
+    buttons::Pins as ControlInputButtonsPins, cvs::Pins as ControlInputCvsPins,
+    pots::Pins as ControlInputPotsPins, Config as ControlInputConfig, ControlInputInterface,
 };
 use crate::control_output::{
     Config as ControlOutputConfig, ControlOutputInterface, Pins as ControlOutputPins,
@@ -84,6 +84,19 @@ impl System {
                     pot_5: pins.GPIO.PIN_D8.into_analog(),
                     pot_6: pins.GPIO.PIN_A2.into_analog(),
                 },
+                cvs_pins: ControlInputCvsPins {
+                    cv_1: pins.GPIO.PIN_C4.into_analog(),
+                    cv_2: pins.GPIO.PIN_C5.into_analog(),
+                    cv_3: pins.GPIO.PIN_C9.into_analog(),
+                    cv_4: pins.GPIO.PIN_C6.into_analog(),
+                    cv_5: pins.GPIO.PIN_C7.into_analog(),
+                    cv_6: pins.GPIO.PIN_C8.into_analog(),
+                },
+                // FIXME: Based on the layout, this should be B5. There is a mismatch between
+                // datasheet https://static1.squarespace.com/static/58d03fdc1b10e3bf442567b8/t/628bc1307a1e2b5bc04af099/1653326133665/ES_Patch_SM_datasheet_v1.0.4.pdf
+                // and lib daisy https://github.com/electro-smith/libDaisy/blob/master/src/daisy_patch_sm.cpp
+                // report this issue, and fix it in my daisy library.
+                probe_pin: pins.GPIO.PIN_B6.into_push_pull_output(),
                 adc_1,
                 adc_2,
             })
