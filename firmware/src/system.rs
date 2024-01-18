@@ -1,6 +1,7 @@
 pub use stm32h7xx_hal as hal;
 
 use daisy::led::LedUser;
+use fugit::Hertz;
 use hal::adc::{AdcSampleTime, Resolution};
 use hal::delay::DelayFromCountDownTimer;
 use hal::pac::CorePeripherals;
@@ -20,6 +21,7 @@ use crate::control_output::{
 use crate::flash_memory::FlashMemoryInterface;
 
 pub struct System {
+    pub frequency: Hertz<u32>,
     pub mono: Systick<1000>,
     pub status_led: LedUser,
     pub audio_interface: AudioInterface,
@@ -41,10 +43,8 @@ impl System {
         let ccdr = daisy::board_freeze_clocks!(board, dp);
         let pins = daisy::board_split_gpios!(board, ccdr, dp);
 
-        let mono = {
-            let system_frequency = ccdr.clocks.sys_ck();
-            Systick::new(cp.SYST, system_frequency.raw())
-        };
+        let system_frequency = ccdr.clocks.sys_ck();
+        let mono = Systick::new(cp.SYST, system_frequency.raw());
         let status_led = daisy::board_split_leds!(pins).USER;
         let audio_interface = AudioInterface::new(daisy::board_split_audio!(ccdr, pins));
         let flash_memory_interface =
@@ -121,6 +121,7 @@ impl System {
         });
 
         Self {
+            frequency: system_frequency,
             mono,
             status_led,
             audio_interface,

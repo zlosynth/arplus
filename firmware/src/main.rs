@@ -5,7 +5,7 @@ use arplus_firmware as _; // Global logger and panicking behavior.
 
 #[rtic::app(device = stm32h7xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
-    use fugit::ExtU64;
+    use fugit::{ExtU64, Hertz};
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
@@ -17,6 +17,7 @@ mod app {
     use arplus_firmware::control_output::ControlOutputInterface;
     use arplus_firmware::flash_memory::FlashMemoryInterface;
     use arplus_firmware::queue_utils;
+    use arplus_firmware::startup_sequence;
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
 
@@ -68,15 +69,20 @@ mod app {
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
         let mut audio_interface = system.audio_interface;
-        let flash_memory_interface = system.flash_memory_interface;
-        let control_input_interface = system.control_input_interface;
+        let mut flash_memory_interface = system.flash_memory_interface;
+        let mut control_input_interface = system.control_input_interface;
         let control_output_interface = system.control_output_interface;
 
+        startup_sequence::warm_up_control_input(&mut control_input_interface);
+        let save = startup_sequence::retrieve_save(
+            &mut control_input_interface,
+            &mut flash_memory_interface,
+        );
+        let controller = Controller::from(save);
         let instrument = Instrument::new(SAMPLE_RATE as f32);
-        let controller = Controller::new(); // TODO: Warm up. // TODO: From save.
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
-        defmt::info!("Initialization was completed, starting tasks");
+        defmt::info!("Spawning tasks");
 
         audio_interface.spawn();
         version_indicator_loop::spawn().unwrap();

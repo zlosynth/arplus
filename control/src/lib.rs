@@ -30,6 +30,10 @@ impl Controller {
         Self
     }
 
+    pub fn warm_up(&mut self, _snapshot: ControlInputSnapshot) -> Result {
+        todo!()
+    }
+
     pub fn apply_input_snapshot(&mut self, _snapshot: ControlInputSnapshot) -> Result {
         todo!()
     }
@@ -40,5 +44,12 @@ impl Controller {
 
     pub fn desired_output_state(&self) -> ControlOutputState {
         todo!();
+    }
+}
+
+impl From<Save> for Controller {
+    fn from(save: Save) -> Self {
+        todo!("Make sure no warm-up is needed");
+        Self
     }
 }
