@@ -13,7 +13,7 @@ format:
 
 .PHONY: clippy
 clippy:
-	$(CARGO) clippy --all -- -D warnings
+	$(CARGO) clippy --all --tests -- -D warnings
 
 .PHONY: update
 update:
@@ -25,10 +25,14 @@ clean:
 
 .PHONY: flash
 flash:
-	$(CARGO) run --release --bin firmware
+	$(CARGO) run --release
 
 .PHONY: flash-dfu
-flash:
+flash-dfu:
 	$(CARGO) objcopy --release -- -O binary target/arplus.bin
 	dfu-util -a 0 -s 0x08000000:leave -D target/arplus.bin -d ,0483:df11
+
+.PHONY: diagnostics
+diagnostics:
+	$(CARGO) test --release --test diagnostics
 

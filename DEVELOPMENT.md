@@ -83,6 +83,17 @@ enter the bootloader. Then call this make target:
 make flash-dfu
 ```
 
+## Hardware diagnostics
+
+Analyze input values read from the hardware in real time.
+
+Before running an embedded test, first make sure to go through the guidance
+given in [Flash via ST-Link](#flash-via-st-link).
+
+```sh
+make diagnostics
+```
+
 ## Firmware size
 
 Daisy Patch SM can fit up to 128 kB of firmware. It is important to make sure that

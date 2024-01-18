@@ -41,5 +41,9 @@ flash:
 	make -C firmware flash
 
 .PHONY: flash-dfu
-flash:
+flash-dfu:
 	make -C firmware flash-dfu
+
+.PHONY: diagnostics
+diagnostics:
+	make -C firmware diagnostics

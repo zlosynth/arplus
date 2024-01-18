@@ -43,7 +43,9 @@ impl Pots {
     pub fn new(pins: Pins) -> Self {
         Self {
             pots: [
-                // TODO: Measure it in tests and set the actual range
+                // NOTE: To calibrate, set this to (0.0, 1.0), remove clamping
+                // from Pot.set, and run diagnostics. Note the minimum and
+                // maximum of each pot and then use it here.
                 Pot::new(0.5, 1.0),
                 Pot::new(0.5, 1.0),
                 Pot::new(0.0, 1.0),
@@ -105,7 +107,7 @@ impl Pot {
 
     fn set(&mut self, sample: u32, slope: u32) {
         let phased = (slope as f32 - sample as f32) / slope as f32;
-        let scaled = phased * self.multiplier + self.offset;
+        let scaled = (phased + self.offset) * self.multiplier;
         let clamped = scaled.clamp(0.0, 1.0);
         self.value = self.filter.tick(clamped);
     }

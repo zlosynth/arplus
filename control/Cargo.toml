@@ -9,3 +9,4 @@ publish = false
 [dependencies]
 crc = "2"
 arplus-dsp = { path = "../dsp" }
+defmt = "0.3"

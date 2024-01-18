@@ -3,8 +3,7 @@ use core::mem;
 use crc::{Crc, CRC_16_USB};
 
 /// Subset of control structures needed for recovery after restart.
-#[derive(Debug, Default, Clone, Copy, PartialEq)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[derive(Debug, Default, Clone, Copy, PartialEq, defmt::Format)]
 pub struct Save {
     foo: usize,
 }

@@ -8,6 +8,7 @@ version = "0.1.0"
 dependencies = [
  "arplus-dsp",
  "crc",
+ "defmt",
 ]
 
 [[package]]
@@ -21,6 +22,7 @@ dependencies = [
  "arplus-control",
  "arplus-dsp",
  "cortex-m",
+ "cortex-m-rt",
  "cortex-m-rtic",
  "daisy",
  "defmt",
