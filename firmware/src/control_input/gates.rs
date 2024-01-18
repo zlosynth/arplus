@@ -5,7 +5,7 @@ use super::debouncer::Debouncer;
 const TRIGGERS: usize = 1;
 
 #[derive(defmt::Format)]
-pub struct Triggers {
+pub struct Gates {
     triggers: [Trigger; TRIGGERS],
     pins: Pins,
 }
@@ -18,12 +18,12 @@ pub struct Trigger {
 
 #[derive(defmt::Format)]
 pub struct Pins {
-    pub trigger_1: Trigger1Pin,
+    pub gate_1: Trigger1Pin,
 }
 
 pub type Trigger1Pin = gpio::gpiog::PG13<gpio::Input>;
 
-impl Triggers {
+impl Gates {
     pub fn new(pins: Pins) -> Self {
         Self {
             triggers: [Trigger::new()],
@@ -32,7 +32,7 @@ impl Triggers {
     }
 
     pub fn sample(&mut self) {
-        self.triggers[0].set(self.pins.trigger_1.is_high());
+        self.triggers[0].set(self.pins.gate_1.is_high());
     }
 
     pub fn values(&self) -> [bool; TRIGGERS] {

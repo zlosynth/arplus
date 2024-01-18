@@ -8,7 +8,7 @@ use arplus_firmware::system::System;
 struct Statistics {
     pots: [PotStatistics; 6],
     input_cvs: [InputCvStatistics; 6],
-    input_triggers: [InputTriggersStatistics; 1],
+    input_gates: [InputGatesStatistics; 1],
     buttons: [ButtonStatistics; 4],
 }
 
@@ -31,7 +31,7 @@ impl Statistics {
                 InputCvStatistics::new(),
                 InputCvStatistics::new(),
             ],
-            input_triggers: [InputTriggersStatistics::new()],
+            input_gates: [InputGatesStatistics::new()],
             buttons: [
                 ButtonStatistics::new(),
                 ButtonStatistics::new(),
@@ -48,7 +48,7 @@ impl Statistics {
         for i in 0..snapshot.cvs.len() {
             self.input_cvs[i].sample(snapshot.cvs[i]);
         }
-        self.input_triggers[0].sample(snapshot.trigger);
+        self.input_gates[0].sample(snapshot.trigger);
         for i in 0..snapshot.buttons.len() {
             self.buttons[i].sample(snapshot.buttons[i]);
         }
@@ -86,14 +86,14 @@ impl defmt::Format for Statistics {
         }
 
         defmt::write!(fmt, "\nI.trig\tValue\tTrig(total)\tTrig(recent)\n");
-        for (i, trigger) in self.input_triggers.iter().enumerate() {
+        for (i, gate) in self.input_gates.iter().enumerate() {
             defmt::write!(
                 fmt,
                 "{}\t{}\t{}\t\t{}\n",
                 i + 1,
-                trigger.value,
-                trigger.triggered,
-                trigger.buffer.trues()
+                gate.value,
+                gate.triggered,
+                gate.buffer.trues()
             );
         }
 
@@ -163,13 +163,13 @@ impl InputCvStatistics {
     }
 }
 
-struct InputTriggersStatistics {
+struct InputGatesStatistics {
     value: bool,
     triggered: u32,
     buffer: BoolBuffer,
 }
 
-impl InputTriggersStatistics {
+impl InputGatesStatistics {
     fn new() -> Self {
         Self {
             value: false,
