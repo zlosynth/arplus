@@ -1,11 +1,12 @@
 #![no_main]
 #![no_std]
 
+use arplus_firmware::control_output::ControlOutputInterface;
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
 use stm32h7xx_hal::pac::interrupt;
 
-use arplus_control::ControlInputSnapshot;
+use arplus_control::{ControlInputSnapshot, ControlOutputState};
 use arplus_firmware as _;
 use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
 use arplus_firmware::system::System;
@@ -46,6 +47,30 @@ impl DualOscillator {
         } else if self.progression > 3 * SAMPLE_RATE {
             self.progression = 0;
         }
+    }
+}
+
+struct ControlOutputGenerator {
+    index: usize,
+}
+
+impl ControlOutputGenerator {
+    const LEDS: usize = 8;
+
+    fn new() -> Self {
+        Self { index: 0 }
+    }
+
+    fn next(&mut self) -> ControlOutputState {
+        let mut leds = [false; Self::LEDS];
+        leds[self.index] = true;
+
+        self.index += 1;
+        if self.index >= Self::LEDS {
+            self.index -= Self::LEDS;
+        }
+
+        ControlOutputState { leds }
     }
 }
 
@@ -344,6 +369,9 @@ fn main() -> ! {
     let mut statistics = Statistics::new();
     let mut control_input_interface = system.control_input_interface;
 
+    let mut control_output_generator = ControlOutputGenerator::new();
+    let mut control_output_interface = system.control_output_interface;
+
     // Warm up.
     for _ in 0..1000 {
         control_input_interface.sample();
@@ -357,6 +385,7 @@ fn main() -> ! {
             cortex_m::asm::delay(1_000_000);
         }
 
+        control_output_interface.set_state(&control_output_generator.next());
         defmt::println!("{}", statistics);
     }
 }
@@ -367,10 +396,6 @@ fn DMA1_STR1() {
         if let Some(audio_interface) = AUDIO_INTERFACE.borrow(cs).borrow_mut().as_mut() {
             if let Some(dual_oscillator) = DUAL_OSCILLATOR.borrow(cs).borrow_mut().as_mut() {
                 audio_interface.update_buffer(|buffer| {
-                    // for (i, (l, r)) in buffer.iter_mut().enumerate() {
-                    //     *l = (i % 2) as f32;
-                    //     *r = (i % 2) as f32;
-                    // }
                     dual_oscillator.populate(buffer);
                 })
             }
