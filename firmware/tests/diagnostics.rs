@@ -10,7 +10,6 @@ use arplus_firmware as _;
 use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
 use arplus_firmware::system::System;
 
-// TODO: This will keep changing beeps low for left, high for right, then both at the same time
 #[derive(Default)]
 struct DualOscillator {
     phase_l: f32,
@@ -26,13 +25,13 @@ impl DualOscillator {
         for (l, r) in buffer.iter_mut() {
             const PI_2: f32 = core::f32::consts::PI * 2.0;
 
-            *l = libm::sinf(PI_2 * self.phase_l);
+            *l = libm::sinf(PI_2 * self.phase_l) * 0.5;
             self.phase_l += Self::STEP_L;
             if self.phase_l > 1.0 {
                 self.phase_l -= 1.0;
             }
 
-            *r = libm::sinf(PI_2 * self.phase_r);
+            *r = libm::sinf(PI_2 * self.phase_r) * 0.5;
             self.phase_r += Self::STEP_R;
             if self.phase_r > 1.0 {
                 self.phase_r -= 1.0;
@@ -368,6 +367,10 @@ fn DMA1_STR1() {
         if let Some(audio_interface) = AUDIO_INTERFACE.borrow(cs).borrow_mut().as_mut() {
             if let Some(dual_oscillator) = DUAL_OSCILLATOR.borrow(cs).borrow_mut().as_mut() {
                 audio_interface.update_buffer(|buffer| {
+                    // for (i, (l, r)) in buffer.iter_mut().enumerate() {
+                    //     *l = (i % 2) as f32;
+                    //     *r = (i % 2) as f32;
+                    // }
                     dual_oscillator.populate(buffer);
                 })
             }
