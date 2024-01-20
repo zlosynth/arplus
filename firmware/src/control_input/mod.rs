@@ -71,7 +71,7 @@ impl ControlInputInterface {
             pots: self.pots.values(),
             buttons: self.buttons.values(),
             cvs: self.cvs.values(),
-            trigger: self.gates.values()[0],
+            gates: self.gates.values(),
         }
     }
 }

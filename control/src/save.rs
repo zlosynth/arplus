@@ -5,7 +5,7 @@ use crc::{Crc, CRC_16_USB};
 /// Subset of control structures needed for recovery after restart.
 #[derive(Debug, Default, Clone, Copy, PartialEq, defmt::Format)]
 pub struct Save {
-    foo: usize,
+    placeholder: usize,
 }
 
 impl Save {
@@ -120,14 +120,14 @@ mod tests {
     #[test]
     fn dump_store_as_bytes() {
         let save_a = Save {
-            foo: 1,
+            placeholder: 1,
             ..Save::default()
         };
         let store_a = WrappedSave::new(save_a, 0);
         let bytes_a = store_a.to_bytes();
 
         let save_b = Save {
-            foo: 2,
+            placeholder: 2,
             ..Save::default()
         };
         let store_b = WrappedSave::new(save_b, 0);

@@ -1,7 +1,6 @@
 #![no_main]
 #![no_std]
 
-use arplus_firmware::control_output::ControlOutputInterface;
 use core::cell::RefCell;
 use cortex_m::interrupt::Mutex;
 use stm32h7xx_hal::pac::interrupt;
@@ -117,7 +116,9 @@ impl Statistics {
         for i in 0..snapshot.cvs.len() {
             self.input_cvs[i].sample(snapshot.cvs[i]);
         }
-        self.input_gates[0].sample(snapshot.trigger);
+        for i in 0..snapshot.gates.len() {
+            self.input_gates[i].sample(snapshot.gates[i]);
+        }
         for i in 0..snapshot.buttons.len() {
             self.buttons[i].sample(snapshot.buttons[i]);
         }

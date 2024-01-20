@@ -5,7 +5,7 @@ use arplus_firmware as _; // Global logger and panicking behavior.
 
 #[rtic::app(device = stm32h7xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
-    use fugit::{ExtU64, Hertz};
+    use fugit::ExtU64;
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 

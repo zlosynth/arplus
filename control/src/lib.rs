@@ -1,24 +1,47 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 
+mod inputs;
 pub mod save;
 
-use arplus_dsp::Attributes;
+use arplus_dsp::Attributes as DSPAttributes;
 
 use crate::save::Save;
+pub use inputs::ControlInputSnapshot;
+use inputs::Inputs;
 
-pub struct Controller;
+pub struct Controller {
+    inputs: Inputs,
+    // state: State,
+    // queue: Queue,
+}
+
+// enum State {
+//     Calibrating(StateCalibrating),
+//     Normal,
+// }
+
+// struct StateCalibrating {
+//     input: usize,
+//     phase: CalibrationPhase,
+// }
+
+// enum CalibrationPhase {
+//     Octave1,
+//     Octave2(f32),
+// }
+
+// struct Queue {
+//     queue: Vec<ControlAction; 8>,
+// }
+
+// enum ControlAction {
+//     Calibrate(usize),
+// }
 
 pub struct Result {
     pub save: Option<Save>,
-    pub instrument_attributes: Attributes,
-}
-
-pub struct ControlInputSnapshot {
-    pub pots: [f32; 6],
-    pub buttons: [bool; 4],
-    pub cvs: [Option<f32>; 6],
-    pub trigger: bool,
+    pub instrument_attributes: DSPAttributes,
 }
 
 pub struct ControlOutputState {
@@ -27,15 +50,18 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new() -> Self {
-        Self
+        Self {
+            inputs: Inputs::new(),
+        }
     }
 
-    pub fn warm_up(&mut self, _snapshot: ControlInputSnapshot) -> Result {
-        todo!()
-    }
+    pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
+        self.inputs.apply_input_snapshot(snapshot);
 
-    pub fn apply_input_snapshot(&mut self, _snapshot: ControlInputSnapshot) -> Result {
-        todo!()
+        Result {
+            save: None,
+            instrument_attributes: DSPAttributes,
+        }
     }
 
     pub fn tick(&mut self) {
@@ -48,8 +74,8 @@ impl Controller {
 }
 
 impl From<Save> for Controller {
-    fn from(save: Save) -> Self {
-        todo!("Make sure no warm-up is needed");
-        Self
+    fn from(_save: Save) -> Self {
+        // TODO todo!("Make sure no warm-up is needed");
+        Self::new()
     }
 }
