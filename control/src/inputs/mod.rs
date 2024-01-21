@@ -1,3 +1,13 @@
+mod button;
+mod cv;
+mod cv_trigger;
+mod pot;
+
+use button::Button;
+use cv::Cv;
+use cv_trigger::CvTrigger;
+use pot::Pot;
+
 pub struct ControlInputSnapshot {
     pub pots: [f32; 6],
     pub buttons: [bool; 4],
@@ -6,9 +16,35 @@ pub struct ControlInputSnapshot {
 }
 
 pub struct Inputs {
-    pots: Pots,
-    cvs: Cvs,
-    buttons: Buttons,
+    pub pots: Pots,
+    pub cvs: Cvs,
+    pub buttons: Buttons,
+}
+
+pub struct Pots {
+    pub tone: Pot,
+    pub chord: Pot,
+    pub contour: Pot,
+    pub gain: Pot,
+    pub cutoff: Pot,
+    pub resonance: Pot,
+}
+
+pub struct Cvs {
+    pub tone: Cv,
+    pub chord: Cv,
+    pub contour: Cv,
+    pub gain: Cv,
+    pub cutoff: Cv,
+    pub resonance: Cv,
+    pub trigger: CvTrigger,
+}
+
+pub struct Buttons {
+    pub tonic: Button,
+    pub mode: Button,
+    pub arp: Button,
+    pub trigger: Button,
 }
 
 impl Inputs {
@@ -29,6 +65,7 @@ impl Inputs {
                 gain: Cv::new(),
                 cutoff: Cv::new(),
                 resonance: Cv::new(),
+                // TODO: Move this to its own gates category
                 trigger: CvTrigger::new(),
             },
             buttons: Buttons {
@@ -60,107 +97,5 @@ impl Inputs {
         self.buttons.mode.reconcile(snapshot.buttons[1]);
         self.buttons.arp.reconcile(snapshot.buttons[2]);
         self.buttons.trigger.reconcile(snapshot.buttons[3]);
-    }
-}
-
-pub struct Pots {
-    pub tone: Pot,
-    pub chord: Pot,
-    pub contour: Pot,
-    pub gain: Pot,
-    pub cutoff: Pot,
-    pub resonance: Pot,
-}
-
-pub struct Cvs {
-    pub tone: Cv,
-    pub chord: Cv,
-    pub contour: Cv,
-    pub gain: Cv,
-    pub cutoff: Cv,
-    pub resonance: Cv,
-    pub trigger: CvTrigger,
-}
-
-pub struct Buttons {
-    pub tonic: Button,
-    pub mode: Button,
-    pub arp: Button,
-    pub trigger: Button,
-}
-
-pub struct Pot {
-    pub value: f32,
-}
-
-impl Pot {
-    pub fn new() -> Self {
-        Self { value: 0.0 }
-    }
-
-    pub fn reconcile(&mut self, value: f32) {
-        self.value = value;
-    }
-}
-
-pub struct Cv {
-    pub value: Option<f32>,
-}
-
-impl Cv {
-    pub fn new() -> Self {
-        Self { value: None }
-    }
-
-    pub fn reconcile(&mut self, value: Option<f32>) {
-        self.value = value;
-    }
-}
-
-pub struct CvTrigger {
-    active: bool,
-    pub triggered: bool,
-}
-
-impl CvTrigger {
-    pub fn new() -> Self {
-        Self {
-            active: false,
-            triggered: false,
-        }
-    }
-
-    pub fn reconcile(&mut self, active: bool) {
-        self.triggered = !self.active && active;
-        self.active = active;
-    }
-}
-
-pub struct Button {
-    pub pressed: bool,
-    pub clicked: bool,
-    pub released: bool,
-    pub held_for: usize,
-}
-
-impl Button {
-    pub fn new() -> Self {
-        Self {
-            pressed: false,
-            clicked: false,
-            released: false,
-            held_for: 0,
-        }
-    }
-
-    pub fn reconcile(&mut self, pressed: bool) {
-        self.clicked = !self.pressed && pressed;
-        self.released = self.pressed && !pressed;
-        self.pressed = pressed;
-        if pressed {
-            self.held_for += 1;
-        } else {
-            self.held_for = 0;
-        }
     }
 }

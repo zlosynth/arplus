@@ -2,10 +2,12 @@ use core::mem;
 
 use crc::{Crc, CRC_16_USB};
 
+use crate::parameters::PersistentConfig;
+
 /// Subset of control structures needed for recovery after restart.
 #[derive(Debug, Default, Clone, Copy, PartialEq, defmt::Format)]
 pub struct Save {
-    placeholder: usize,
+    pub parameters: PersistentConfig,
 }
 
 impl Save {
@@ -119,18 +121,12 @@ mod tests {
 
     #[test]
     fn dump_store_as_bytes() {
-        let save_a = Save {
-            placeholder: 1,
-            ..Save::default()
-        };
+        let save_a = Save::default();
         let store_a = WrappedSave::new(save_a, 0);
         let bytes_a = store_a.to_bytes();
 
-        let save_b = Save {
-            placeholder: 2,
-            ..Save::default()
-        };
-        let store_b = WrappedSave::new(save_b, 0);
+        let save_b = Save::default();
+        let store_b = WrappedSave::new(save_b, 1);
         let bytes_b = store_b.to_bytes();
 
         assert!(bytes_a != bytes_b);

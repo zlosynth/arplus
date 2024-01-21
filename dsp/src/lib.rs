@@ -3,4 +3,4 @@
 
 mod instrument;
 
-pub use instrument::{Attributes, Instrument};
+pub use instrument::{Attributes, Instrument, TriggerAttributes};

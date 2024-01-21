@@ -159,8 +159,8 @@ mod app {
             let _ = instrument_attributes_producer.enqueue(result.instrument_attributes);
         }
 
-        controller.tick();
-        control_output_interface.set_state(&controller.desired_output_state());
+        let desired_output_state = controller.tick();
+        control_output_interface.set_state(&desired_output_state);
     }
 
     #[task(

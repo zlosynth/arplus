@@ -1,6 +1,17 @@
+// TODO: Move this to lib directly
 pub struct Instrument;
 
-pub struct Attributes;
+pub struct Attributes {
+    pub gain: f32,
+    pub resonance: f32,
+    pub cutoff: f32,
+    pub trigger: Option<TriggerAttributes>,
+}
+
+pub struct TriggerAttributes {
+    pub frequency: f32,
+    pub contour: f32,
+}
 
 impl Instrument {
     pub fn new(_sample_rate: f32) -> Self {
