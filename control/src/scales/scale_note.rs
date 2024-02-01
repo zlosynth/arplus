@@ -1,6 +1,6 @@
 use super::quarter_tones::QuarterTone;
 
-#[derive(Debug, PartialEq, defmt::Format)]
+#[derive(Clone, Copy, Debug, PartialEq, defmt::Format)]
 pub struct ScaleNote {
     pub tone: QuarterTone,
     pub index: u8,

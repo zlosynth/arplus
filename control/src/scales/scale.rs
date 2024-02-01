@@ -6,9 +6,9 @@ use super::tonic::Tonic;
 
 pub type Step = u8;
 
-const Q: Step = 1;
-const S: Step = 2;
-const T: Step = 4;
+pub const Q: Step = 1;
+pub const S: Step = 2;
+pub const T: Step = 4;
 
 pub struct Scale {
     tonic: Tonic,
