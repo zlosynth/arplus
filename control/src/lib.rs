@@ -2,6 +2,7 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
 
+mod arpeggiator;
 mod chords;
 mod inputs;
 mod parameters;
