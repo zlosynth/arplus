@@ -191,6 +191,21 @@ mod tests {
 
     #[test]
     fn change_root() {
-        todo!();
+        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
+        let chord = Chord::from_slice(&[0, 1, 2]).unwrap();
+
+        let mut arp = Arpeggiator::new_with_configuration(Configuration {
+            scale: scale.clone(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            chord: chord.clone(),
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        arp.apply_configuration(Configuration {
+            scale: scale.clone(),
+            root: ScaleNote::new(QuarterTone::C1, 0),
+            chord: chord.clone(),
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
     }
 }
