@@ -103,6 +103,7 @@ mod tests {
     use super::*;
 
     const IONIAN: [Step; 7] = [T, T, S, T, T, T, S];
+    const DORIAN: [Step; 7] = [T, S, T, T, T, S, T];
 
     #[test]
     fn initialize() {
@@ -170,7 +171,22 @@ mod tests {
 
     #[test]
     fn change_scale() {
-        todo!();
+        let root = ScaleNote::new(QuarterTone::D1, 1);
+        let chord = Chord::from_slice(&[0, 1, 2]).unwrap();
+
+        let mut arp = Arpeggiator::new_with_configuration(Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root,
+            chord: chord.clone(),
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        arp.apply_configuration(Configuration {
+            scale: Scale::new(Tonic::C, &DORIAN).unwrap(),
+            root,
+            chord: chord.clone(),
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
     }
 
     #[test]
