@@ -1,4 +1,5 @@
 #[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, defmt::Format)]
 pub enum QuarterTone {
     CMinus1 = 0,
     CQSharpMinus1,
@@ -486,3 +487,35 @@ const FREQUENCIES: [f32; 241] = [
     8133.68298598,
     8372.01808962,
 ];
+
+impl QuarterTone {
+    const HIGHEST_NOTE: Self = Self::BQSharp8;
+
+    pub fn voct(self) -> f32 {
+        self as u8 as f32 / 24.0
+    }
+
+    pub fn index(self) -> u8 {
+        self as u8
+    }
+
+    pub fn try_from_u8(index: u8) -> Option<QuarterTone> {
+        if index <= Self::HIGHEST_NOTE.index() {
+            Some(unsafe { core::mem::transmute(index) })
+        } else {
+            None
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_voct_from_tone() {
+        assert_eq!(QuarterTone::CMinus1.voct(), 0.0);
+        assert_eq!(QuarterTone::C0.voct(), 1.0);
+        assert_eq!(QuarterTone::CSharp0.voct(), 1.0 + 1.0 / 12.0);
+    }
+}
