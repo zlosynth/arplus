@@ -10,6 +10,7 @@ pub const Q: Step = 1;
 pub const S: Step = 2;
 pub const T: Step = 4;
 
+#[derive(Clone, Debug, defmt::Format)]
 pub struct Scale {
     tonic: Tonic,
     ascending: Vec<Step, 7>,

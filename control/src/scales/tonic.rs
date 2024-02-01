@@ -1,4 +1,4 @@
-#[derive(Debug, defmt::Format)]
+#[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum Tonic {
     C,
     CSharp,

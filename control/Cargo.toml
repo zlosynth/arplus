@@ -10,4 +10,4 @@ publish = false
 crc = "2"
 arplus-dsp = { path = "../dsp" }
 defmt = "0.3"
-heapless = "0.8"
+heapless = { version = "0.8", features = [ "defmt-03" ] }
