@@ -2,7 +2,7 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
 
-// mod arp;
+mod chords;
 mod inputs;
 mod parameters;
 pub mod save;
