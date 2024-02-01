@@ -2,10 +2,11 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
 
-mod harmony;
+// mod arp;
 mod inputs;
 mod parameters;
 pub mod save;
+mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 pub use inputs::ControlInputSnapshot;

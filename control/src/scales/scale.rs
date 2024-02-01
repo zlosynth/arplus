@@ -126,8 +126,8 @@ impl Scale {
 
 #[cfg(test)]
 mod tests {
-    use crate::harmony::quarter_tones::QuarterTone;
-    use crate::harmony::scale_note::ScaleNote;
+    use crate::scales::quarter_tones::QuarterTone;
+    use crate::scales::scale_note::ScaleNote;
 
     use super::*;
 
