@@ -42,6 +42,41 @@ impl Scale {
         }
     }
 
+    pub fn get_note_in_interval_ascending(
+        &self,
+        source: ScaleNote,
+        interval: i16,
+    ) -> Option<ScaleNote> {
+        let steps_in_octave = self.ascending.len();
+        let octaves = interval / steps_in_octave as i16;
+        let remaining_steps = interval % steps_in_octave as i16;
+
+        let remaining_distance = if remaining_steps > 0 {
+            let mut remaining_distance = 0;
+            for i in 0..remaining_steps {
+                remaining_distance += self.ascending
+                    [((source.index + i as u8) % steps_in_octave as u8) as usize]
+                    as i16;
+            }
+            remaining_distance
+        } else {
+            let mut remaining_distance = 0;
+            for i in 1..=remaining_steps.abs() {
+                remaining_distance -= self.ascending
+                    [(source.index as i16 - i as i16).rem_euclid(steps_in_octave as i16) as usize]
+                    as i16;
+            }
+            remaining_distance
+        };
+
+        let total_distance = octaves as i16 * 24 + remaining_distance;
+        let tone = QuarterTone::try_from_u8((source.tone.index() as i16 + total_distance) as u8)?;
+        let index = (source.index as i16 + remaining_steps as i16)
+            .rem_euclid(self.ascending.len() as i16) as u8;
+
+        Some(ScaleNote::new(tone, index))
+    }
+
     fn lowest_tonic(&self) -> QuarterTone {
         match self.tonic {
             Tonic::C => QuarterTone::CMinus1,
@@ -171,4 +206,50 @@ mod tests {
             assert_eq!((below, above), (expected_below, expected_above));
         }
     }
+
+    #[test]
+    fn get_note_in_interval_ascending() {
+        let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
+        let checks = [
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                0,
+                ScaleNote::new(QuarterTone::D1, 0),
+            ),
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                1,
+                ScaleNote::new(QuarterTone::E1, 1),
+            ),
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                7,
+                ScaleNote::new(QuarterTone::D2, 0),
+            ),
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                -1,
+                ScaleNote::new(QuarterTone::CSharp1, 6),
+            ),
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                -7,
+                ScaleNote::new(QuarterTone::D0, 0),
+            ),
+            (
+                ScaleNote::new(QuarterTone::D1, 0),
+                -8,
+                ScaleNote::new(QuarterTone::CSharp0, 6),
+            ),
+        ];
+        for (source, interval, expected_note) in checks {
+            assert_eq!(
+                scale.get_note_in_interval_ascending(source, interval),
+                Some(expected_note),
+            );
+        }
+    }
+
+    // TODO: Add fuzzy test making sure that no matter the operation, the
+    // result is always in scale.
 }
