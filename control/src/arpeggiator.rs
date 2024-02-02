@@ -25,6 +25,7 @@ pub enum Mode {
 
 #[derive(Clone, Debug, defmt::Format)]
 pub enum State {
+    Root,
     Up(usize),
     Down(usize),
     Random,
@@ -48,7 +49,10 @@ impl Arpeggiator {
             root: config.root,
             chord: config.chord,
             mode: config.mode,
-            state: State::Up(0),
+            state: match config.mode {
+                Mode::Root => State::Root,
+                _ => State::Up(0),
+            },
         }
     }
 
@@ -56,7 +60,8 @@ impl Arpeggiator {
         if self.mode != configuration.mode {
             self.mode = configuration.mode;
             match self.mode {
-                Mode::Root | Mode::Up | Mode::UpDownRepeat | Mode::UpDownNoRepeat => {
+                Mode::Root => self.state = State::Root,
+                Mode::Up | Mode::UpDownRepeat | Mode::UpDownNoRepeat => {
                     if !matches!(self.state, State::Up(_)) {
                         self.state = State::Up(0);
                     }
@@ -77,6 +82,7 @@ impl Arpeggiator {
         assert!(!self.chord.is_empty());
 
         let chord_degree = match self.state {
+            State::Root => self.chord[0],
             State::Up(index) => {
                 let last_index = self.chord.len() - 1;
                 if last_index == 0 {
@@ -147,6 +153,20 @@ mod tests {
             mode: Mode::Up,
         };
         let _arp = Arpeggiator::new_with_configuration(configuration);
+    }
+
+    #[test]
+    fn root_arp() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Root,
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration);
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
     }
 
     #[test]
