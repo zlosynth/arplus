@@ -13,7 +13,7 @@ pub struct Arpeggiator {
     state: State,
 }
 
-#[derive(Clone, Debug, defmt::Format)]
+#[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum Mode {
     Root,
     Up,
@@ -38,6 +38,7 @@ pub struct Configuration {
     pub scale: Scale,
     pub root: ScaleNote,
     pub chord: Chord,
+    pub mode: Mode,
 }
 
 impl Arpeggiator {
@@ -46,12 +47,25 @@ impl Arpeggiator {
             scale: config.scale,
             root: config.root,
             chord: config.chord,
-            mode: Mode::Up,
+            mode: config.mode,
             state: State::Up(0),
         }
     }
 
     pub fn apply_configuration(&mut self, configuration: Configuration) {
+        if self.mode != configuration.mode {
+            self.mode = configuration.mode;
+            match self.mode {
+                Mode::Root | Mode::Up | Mode::UpDownRepeat | Mode::UpDownNoRepeat => {
+                    if !matches!(self.state, State::Up(_)) {
+                        self.state = State::Up(0);
+                    }
+                }
+                Mode::Random => self.state = State::Random,
+                Mode::Moving => self.state = State::Moving(0, self.chord.clone()),
+            }
+        }
+
         self.scale = configuration.scale;
         self.root = configuration.root;
         self.chord = configuration.chord;
@@ -64,15 +78,16 @@ impl Arpeggiator {
 
         let chord_degree = match self.state {
             State::Up(index) => {
-                let last_degree_index = self.chord.len() - 1;
-                if last_degree_index == 0 {
+                let last_index = self.chord.len() - 1;
+                if last_index == 0 {
                     self.chord[0]
-                } else if index < last_degree_index {
+                } else if index < last_index {
                     self.state = State::Up(index + 1);
                     self.chord[index]
-                } else if index == last_degree_index {
+                } else if index == last_index {
                     let (new_state, new_index) = match self.mode {
-                        Mode::Up => (State::Up(0), last_degree_index),
+                        Mode::Up => (State::Up(0), last_index),
+                        Mode::UpDownNoRepeat => (State::Down(last_index - 1), last_index),
                         _ => todo!(),
                     };
                     self.state = new_state;
@@ -80,9 +95,27 @@ impl Arpeggiator {
                 } else {
                     let (new_state, new_index) = match self.mode {
                         Mode::Up => (State::Up(1), 0),
+                        Mode::UpDownNoRepeat => (State::Down(last_index - 1), last_index),
                         _ => todo!(),
                     };
                     self.state = new_state;
+                    self.chord[new_index]
+                }
+            }
+            State::Down(index) => {
+                let last_index = self.chord.len() - 1;
+                if last_index == 0 {
+                    self.chord[0]
+                } else if index == 0 {
+                    let (new_state, new_index) = match self.mode {
+                        Mode::Up | Mode::UpDownNoRepeat => (State::Up(index + 1), index),
+                        _ => unreachable!(),
+                    };
+                    self.state = new_state;
+                    self.chord[new_index]
+                } else {
+                    let new_index = usize::min(index, last_index);
+                    self.state = State::Down(new_index - 1);
                     self.chord[new_index]
                 }
             }
@@ -107,19 +140,24 @@ mod tests {
 
     #[test]
     fn initialize() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
-        let root = ScaleNote::new(QuarterTone::C1, 0);
-        let chord = Chord::from_slice(&[0, 1]).unwrap();
-        let _arp = Arpeggiator::new_with_configuration(Configuration { scale, root, chord });
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::C1, 0),
+            chord: Chord::from_slice(&[0, 1]).unwrap(),
+            mode: Mode::Up,
+        };
+        let _arp = Arpeggiator::new_with_configuration(configuration);
     }
 
     #[test]
     fn up_arp() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
-        let root = ScaleNote::new(QuarterTone::D1, 1);
-        let chord = Chord::from_slice(&[0, 1, 2]).unwrap();
-
-        let mut arp = Arpeggiator::new_with_configuration(Configuration { scale, root, chord });
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Up,
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration);
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -127,85 +165,156 @@ mod tests {
     }
 
     #[test]
-    fn change_chord_but_keep_size() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
-        let root = ScaleNote::new(QuarterTone::D1, 1);
-
-        let mut arp = Arpeggiator::new_with_configuration(Configuration {
-            scale: scale.clone(),
-            root,
+    fn up_down_no_repeat_arp() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-        });
+            mode: Mode::UpDownNoRepeat,
+            root: ScaleNote::new(QuarterTone::D1, 1),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+    }
+
+    #[test]
+    fn change_chord_but_keep_size() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            mode: Mode::Up,
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
         arp.apply_configuration(Configuration {
-            scale: scale.clone(),
-            root,
             chord: Chord::from_slice(&[0, 1, 3]).unwrap(),
+            ..configuration.clone()
         });
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::G1, 4)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
     }
 
     #[test]
-    fn change_chord_and_reduce_size() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
-        let root = ScaleNote::new(QuarterTone::D1, 1);
-
-        let mut arp = Arpeggiator::new_with_configuration(Configuration {
-            scale: scale.clone(),
-            root,
+    fn change_chord_and_reduce_size_with_up() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
-        });
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
         arp.apply_configuration(Configuration {
-            scale: scale.clone(),
-            root,
             chord: Chord::from_slice(&[0, 1]).unwrap(),
+            ..configuration.clone()
         });
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
     }
 
     #[test]
-    fn change_scale() {
-        let root = ScaleNote::new(QuarterTone::D1, 1);
-        let chord = Chord::from_slice(&[0, 1, 2]).unwrap();
-
-        let mut arp = Arpeggiator::new_with_configuration(Configuration {
+    fn change_chord_and_reduce_size_with_up_down_no_repeat_when_going_up() {
+        let configuration = Configuration {
             scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
-            root,
-            chord: chord.clone(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            mode: Mode::UpDownNoRepeat,
+            chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        arp.apply_configuration(Configuration {
+            chord: Chord::from_slice(&[0, 1]).unwrap(),
+            ..configuration.clone()
         });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+    }
+
+    #[test]
+    fn change_chord_and_reduce_size_with_up_down_no_repeat_when_going_down() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            mode: Mode::UpDownNoRepeat,
+            chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::G1, 4)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::A1, 5)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::G1, 4)));
+        arp.apply_configuration(Configuration {
+            chord: Chord::from_slice(&[0, 1]).unwrap(),
+            ..configuration.clone()
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+    }
+
+    #[test]
+    fn change_scale() {
+        let configuration = Configuration {
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Up,
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
         arp.apply_configuration(Configuration {
             scale: Scale::new(Tonic::C, &DORIAN).unwrap(),
-            root,
-            chord: chord.clone(),
+            ..configuration.clone()
         });
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
     }
 
     #[test]
     fn change_root() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
-        let chord = Chord::from_slice(&[0, 1, 2]).unwrap();
-
-        let mut arp = Arpeggiator::new_with_configuration(Configuration {
-            scale: scale.clone(),
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
-            chord: chord.clone(),
-        });
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
         arp.apply_configuration(Configuration {
-            scale: scale.clone(),
             root: ScaleNote::new(QuarterTone::C1, 0),
-            chord: chord.clone(),
+            ..configuration.clone()
         });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+    }
+
+    #[test]
+    fn change_mode() {
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Up,
+            root: ScaleNote::new(QuarterTone::D1, 1),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        arp.apply_configuration(Configuration {
+            mode: Mode::UpDownNoRepeat,
+            ..configuration.clone()
+        });
+        assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::F1, 3)));
         assert_eq!(arp.pop(), Some(ScaleNote::new(QuarterTone::E1, 2)));
     }
 }
