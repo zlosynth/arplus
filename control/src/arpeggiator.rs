@@ -1,3 +1,5 @@
+use core::str::SplitAsciiWhitespace;
+
 use heapless::Vec;
 
 use crate::chords::Chord;
@@ -51,13 +53,14 @@ impl Arpeggiator {
         Self {
             scale: config.scale,
             root: config.root,
-            chord: config.chord,
             mode: config.mode,
             state: match config.mode {
                 Mode::Root => State::Root,
                 Mode::Random => State::Random,
+                Mode::Moving => State::Moving(0, config.chord.clone()),
                 _ => State::Up(0),
             },
+            chord: config.chord,
         }
     }
 
@@ -76,9 +79,15 @@ impl Arpeggiator {
             }
         }
 
+        if self.chord != configuration.chord {
+            if let State::Moving(_, schuffled_chord) = &mut self.state {
+                *schuffled_chord = configuration.chord.clone();
+            }
+            self.chord = configuration.chord;
+        }
+
         self.scale = configuration.scale;
         self.root = configuration.root;
-        self.chord = configuration.chord;
     }
 
     pub fn pop(&mut self, random: &mut impl Random) -> Option<ScaleNote> {
@@ -100,7 +109,7 @@ impl Arpeggiator {
                         Mode::Up => (State::Up(0), last_index),
                         Mode::UpDownRepeats => (State::Down(last_index), last_index),
                         Mode::UpDownNoRepeats => (State::Down(last_index - 1), last_index),
-                        _ => todo!(),
+                        _ => unreachable!(),
                     };
                     self.state = new_state;
                     self.chord[new_index]
@@ -109,7 +118,7 @@ impl Arpeggiator {
                         Mode::Up => (State::Up(1), 0),
                         Mode::UpDownRepeats => (State::Down(last_index), last_index),
                         Mode::UpDownNoRepeats => (State::Down(last_index - 1), last_index),
-                        _ => todo!(),
+                        _ => unreachable!(),
                     };
                     self.state = new_state;
                     self.chord[new_index]
@@ -139,12 +148,39 @@ impl Arpeggiator {
                 let index = (random_phase * (last_index as f32 + 0.99)) as usize;
                 self.chord[index]
             }
-            _ => todo!(),
+            State::Moving(ref mut index, ref mut schuffled_chord) => {
+                let last_index = self.chord.len() - 1;
+                if last_index == 0 {
+                    self.chord[last_index]
+                } else if *index >= last_index {
+                    let degree = schuffled_chord[last_index];
+                    let (random_a, random_b) = two_distinct_random_values(last_index, random);
+                    schuffled_chord.swap(random_a, random_b);
+                    *index = 0;
+                    degree
+                } else {
+                    let degree = schuffled_chord[*index];
+                    *index += 1;
+                    degree
+                }
+            }
         };
 
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
     }
+}
+
+fn two_distinct_random_values(max: usize, random: &mut impl Random) -> (usize, usize) {
+    let a = (random.pop() * (max as f32 + 0.99)) as usize;
+    let mut b = (random.pop() * (max as f32 + 0.99)) as usize;
+    if b == a {
+        b += 1;
+        if b > max {
+            b -= max + 1;
+        }
+    }
+    (a, b)
 }
 
 #[cfg(test)]
@@ -281,6 +317,27 @@ mod tests {
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
+    }
+
+    #[test]
+    fn moving_arp() {
+        let mut r = TestRandom::new_with_values([0.0, 1.0, 0.5]);
+        let configuration = Configuration {
+            scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::Moving,
+            root: ScaleNote::new(QuarterTone::D1, 1),
+        };
+        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
+        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
     }
 
     #[test]
