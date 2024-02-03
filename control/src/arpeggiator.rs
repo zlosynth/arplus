@@ -35,10 +35,10 @@ pub enum State {
     Up(usize),
     Down(usize),
     Random,
-    Moving(usize, Progression),
+    Moving(usize, SchuffledChord),
 }
 
-pub type Progression = Vec<i16, 7>;
+pub type SchuffledChord = Vec<i16, 7>;
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Configuration {
