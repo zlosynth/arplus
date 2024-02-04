@@ -14,7 +14,7 @@ use core::mem::MaybeUninit;
 ///
 /// ```
 /// use core::mem::MaybeUninit;
-/// use arplus_dsp::memory_manager::MemoryManager;
+/// use arplus_dsp::MemoryManager;
 ///
 /// static mut MEMORY: [MaybeUninit<u32>; 10] = unsafe { MaybeUninit::uninit().assume_init() };
 /// let mut memory_manager = MemoryManager::from(unsafe { &mut MEMORY[..] });
@@ -30,7 +30,7 @@ use core::mem::MaybeUninit;
 ///
 /// ```
 /// use core::mem::MaybeUninit;
-/// use arplus_dsp::memory_manager::MemoryManager;
+/// use arplus_dsp::MemoryManager;
 ///
 /// let mut fake_ram: [u32; 10] = [0; 10];
 /// let ram_size = core::mem::size_of::<[u32; 10]>();

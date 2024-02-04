@@ -1,6 +1,8 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 
+use karplus_strong::KarplusStrong;
+
 #[cfg(test)]
 #[macro_use]
 extern crate approx;
@@ -9,12 +11,18 @@ mod ad_envelope;
 mod envelope_follower;
 mod karplus_strong;
 mod math;
-pub mod memory_manager;
+mod memory_manager;
+mod random;
 mod ring_buffer;
 mod state_variable_filter;
 mod taper;
 
-pub struct Dsp;
+pub use crate::memory_manager::MemoryManager;
+pub use crate::random::Random;
+
+pub struct Dsp {
+    string: KarplusStrong,
+}
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct Attributes {
@@ -30,16 +38,35 @@ pub struct TriggerAttributes {
     pub contour: f32,
 }
 
-pub trait Random {
-    fn normal(&mut self) -> f32;
-}
-
 impl Dsp {
-    pub fn new(_sample_rate: f32) -> Self {
-        Self
+    pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
+        Self {
+            string: KarplusStrong::new(sample_rate, memory_manager),
+        }
     }
 
-    pub fn process(&mut self, _buffer: &mut [(f32, f32); 32]) {}
+    pub fn process(&mut self, buffer: &mut [(f32, f32); 32], random: &mut impl Random) {
+        let mut buffer_left = [0.0; 32];
+        let mut buffer_right = [0.0; 32];
 
-    pub fn set_attributes(&mut self, _attributes: Attributes) {}
+        self.string.populate_add(&mut buffer_left, random);
+
+        // TODO: DC blocker
+        // TODO: Overdrive
+
+        buffer.iter_mut().enumerate().for_each(|(i, x)| {
+            *x = (buffer_left[i], buffer_right[i]);
+        })
+    }
+
+    pub fn set_attributes(&mut self, attributes: Attributes) {
+        // self.string.set_resonance(attributes.resonance);
+        // self.string.set_cutoff(attributes.cutoff);
+        self.string.set_resonance(0.9);
+        self.string.set_cutoff(1.0);
+        if let Some(trigger) = attributes.trigger {
+            self.string.trigger(0.99, 100.0, 0.0);
+            // .trigger(0.99, trigger.frequency, trigger.contour);
+        }
+    }
 }

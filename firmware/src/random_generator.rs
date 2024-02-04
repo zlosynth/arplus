@@ -14,3 +14,12 @@ impl RandomGenerator {
         RngCore::<u16>::gen(&mut self.rng)
     }
 }
+
+impl arplus_dsp::Random for RandomGenerator {
+    fn normal(&mut self) -> f32 {
+        match self.u16() {
+            Ok(x) => x as f32 / (2 << 15) as f32,
+            Err(_) => 0.0,
+        }
+    }
+}

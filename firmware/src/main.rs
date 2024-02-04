@@ -5,13 +5,16 @@ use arplus_firmware as _; // Global logger and panicking behavior.
 
 #[rtic::app(device = stm32h7xx_hal::pac, peripherals = true, dispatchers = [EXTI0, EXTI1, EXTI2])]
 mod app {
+    use core::mem::MaybeUninit;
+
+    use arplus_firmware::random_generator::RandomGenerator;
     use fugit::ExtU64;
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
     use arplus_control::save::Save;
     use arplus_control::{ControlInputSnapshot, Controller};
-    use arplus_dsp::{Attributes as DspAttributes, Dsp};
+    use arplus_dsp::{Attributes as DspAttributes, Dsp, MemoryManager};
     use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::control_input::ControlInputInterface;
     use arplus_firmware::control_output::ControlOutputInterface;
@@ -23,6 +26,10 @@ mod app {
 
     // Blinks on the PCB's LED signalize the current revision.
     const BLINKS: u8 = 1;
+
+    #[link_section = ".sram"]
+    static mut MEMORY: [MaybeUninit<u32>; 96 * 1024] =
+        unsafe { MaybeUninit::uninit().assume_init() };
 
     // 1 kHz granularity for task scheduling.
     #[monotonic(binds = SysTick, default = true)]
@@ -36,6 +43,7 @@ mod app {
     #[local]
     struct Local {
         audio_interface: AudioInterface,
+        random_generator: RandomGenerator,
         flash_memory_interface: FlashMemoryInterface,
         control_input_interface: ControlInputInterface,
         control_output_interface: ControlOutputInterface,
@@ -89,7 +97,8 @@ mod app {
         });
         defmt::debug!("Using seed={:?}", seed);
         let controller = Controller::new(seed, save);
-        let dsp = Dsp::new(SAMPLE_RATE as f32);
+        let mut stack_manager = MemoryManager::from(unsafe { &mut MEMORY[..] });
+        let dsp = Dsp::new(SAMPLE_RATE as f32, &mut stack_manager);
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
         defmt::info!("Spawning tasks");
@@ -105,6 +114,7 @@ mod app {
             Shared { save_cache: None },
             Local {
                 audio_interface,
+                random_generator,
                 flash_memory_interface,
                 control_input_interface,
                 control_output_interface,
@@ -177,6 +187,7 @@ mod app {
         binds = DMA1_STR1,
         local = [
             audio_interface,
+            random_generator,
             dsp,
             dsp_attributes_consumer,
         ],
@@ -184,6 +195,7 @@ mod app {
     )]
     fn dsp_loop(cx: dsp_loop::Context) {
         let audio_interface = cx.local.audio_interface;
+        let random_generator = cx.local.random_generator;
         let dsp = cx.local.dsp;
         let dsp_attributes_consumer = cx.local.dsp_attributes_consumer;
 
@@ -194,7 +206,7 @@ mod app {
         }
 
         audio_interface.update_buffer(|buffer| {
-            dsp.process(buffer);
+            dsp.process(buffer, random_generator);
         });
     }
 
