@@ -2,6 +2,8 @@
 #![allow(clippy::new_without_default)]
 
 use karplus_strong::KarplusStrong;
+use overdrive::Overdrive;
+use oversampling::{Downsampler4, Upsampler4};
 
 #[cfg(test)]
 #[macro_use]
@@ -24,6 +26,11 @@ pub use crate::random::Random;
 
 pub struct Dsp {
     string: KarplusStrong,
+    overdrive: Overdrive,
+    upsampler_left: Upsampler4,
+    upsampler_right: Upsampler4,
+    downsampler_left: Downsampler4,
+    downsampler_right: Downsampler4,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
@@ -44,6 +51,11 @@ impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
             string: KarplusStrong::new(sample_rate, memory_manager),
+            overdrive: Overdrive::new(0.5),
+            upsampler_left: Upsampler4::new_4(memory_manager),
+            upsampler_right: Upsampler4::new_4(memory_manager),
+            downsampler_left: Downsampler4::new_4(memory_manager),
+            downsampler_right: Downsampler4::new_4(memory_manager),
         }
     }
 
@@ -54,7 +66,20 @@ impl Dsp {
         self.string.populate_add(&mut buffer_left, random);
 
         // TODO: DC blocker
-        // TODO: Overdrive
+
+        let mut buffer_left_os = [0.0; 32 * 4];
+        self.upsampler_left
+            .process(&buffer_left, &mut buffer_left_os);
+        self.overdrive.process(&mut buffer_left_os);
+        self.downsampler_left
+            .process(&buffer_left_os, &mut buffer_left[..]);
+
+        let mut buffer_right_os = [0.0; 32 * 4];
+        self.upsampler_right
+            .process(&buffer_right, &mut buffer_right_os);
+        self.overdrive.process(&mut buffer_right_os);
+        self.downsampler_right
+            .process(&buffer_right_os, &mut buffer_right[..]);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
             *x = (buffer_left[i], buffer_right[i]);

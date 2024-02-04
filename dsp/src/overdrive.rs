@@ -8,7 +8,11 @@ impl Overdrive {
         Self { gain }
     }
 
-    pub fn process(&self, mut value: f32) -> f32 {
+    pub fn process(&self, buffer: &mut [f32]) {
+        buffer.iter_mut().for_each(|x| *x = self.process_sample(*x));
+    }
+
+    fn process_sample(&self, mut value: f32) -> f32 {
         value *= self.gain;
         if value < -1.0 {
             -1.0
