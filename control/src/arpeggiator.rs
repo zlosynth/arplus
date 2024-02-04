@@ -14,9 +14,10 @@ pub struct Arpeggiator {
     state: State,
 }
 
+#[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum Mode {
-    Root,
+    Root = 0,
     Up,
     UpDownNoRepeats,
     UpDownRepeats,
@@ -162,6 +163,22 @@ impl Arpeggiator {
 
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
+    }
+}
+
+impl Mode {
+    const LAST_MODE: Self = Self::Moving;
+
+    pub fn index(self) -> usize {
+        self as usize
+    }
+
+    pub fn try_from_index(index: usize) -> Option<Self> {
+        if index <= Self::LAST_MODE.index() {
+            Some(unsafe { core::mem::transmute(index as u8) })
+        } else {
+            None
+        }
     }
 }
 

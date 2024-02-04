@@ -145,7 +145,7 @@ impl Controller {
             let _ = self.parameters.chord.selected_value();
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
-            let _ = self.parameters.arp.selected_value();
+            let arp_index = self.parameters.arp.selected_value();
             // todo!("Pass that to arp");
             // todo!("Pop note and its frequency");
             // todo!("Pass proper random");
@@ -157,7 +157,7 @@ impl Controller {
                 root: scale.get_note_by_index_ascending(note_index).unwrap(),
                 scale,
                 chord: Chord::from_slice(&[0, 2, 4]).unwrap(),
-                mode: ArpeggiatorMode::Moving,
+                mode: ArpeggiatorMode::try_from_index(arp_index).unwrap(),
             });
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
