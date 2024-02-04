@@ -146,9 +146,6 @@ impl Controller {
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
             let arp_index = self.parameters.arp.selected_value();
-            // todo!("Pass that to arp");
-            // todo!("Pop note and its frequency");
-            // todo!("Pass proper random");
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
