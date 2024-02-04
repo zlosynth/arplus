@@ -11,6 +11,7 @@ mod math;
 pub mod memory_manager;
 mod ring_buffer;
 mod state_variable_filter;
+mod taper;
 
 pub struct Dsp;
 
