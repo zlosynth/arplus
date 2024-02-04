@@ -25,7 +25,7 @@ pub use crate::memory_manager::MemoryManager;
 pub use crate::random::Random;
 
 pub struct Dsp {
-    string: KarplusStrong,
+    strings: [KarplusStrong; 1],
     overdrive: Overdrive,
     upsampler_left: Upsampler4,
     upsampler_right: Upsampler4,
@@ -50,7 +50,7 @@ pub struct TriggerAttributes {
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
-            string: KarplusStrong::new(sample_rate, memory_manager),
+            strings: [KarplusStrong::new(sample_rate, memory_manager)],
             overdrive: Overdrive::new(0.5),
             upsampler_left: Upsampler4::new_4(memory_manager),
             upsampler_right: Upsampler4::new_4(memory_manager),
@@ -63,7 +63,7 @@ impl Dsp {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
 
-        self.string.populate_add(&mut buffer_left, random);
+        self.strings[0].populate_add(&mut buffer_left, random);
 
         // TODO: DC blocker
 
@@ -87,12 +87,12 @@ impl Dsp {
     }
 
     pub fn set_attributes(&mut self, attributes: Attributes) {
-        self.string.set_resonance(attributes.resonance);
-        self.string.set_cutoff(attributes.cutoff);
+        self.strings[0].set_resonance(attributes.resonance);
+        self.strings[0].set_cutoff(attributes.cutoff);
         if let Some(trigger) = attributes.trigger {
-            defmt::info!("{:?}", attributes);
-            self.string
-                .trigger(0.99, trigger.frequency, trigger.contour);
+            self.strings[0].trigger(0.99, trigger.frequency, trigger.contour);
         }
+        self.overdrive.gain =
+            1.0 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32;
     }
 }

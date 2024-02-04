@@ -1,6 +1,6 @@
 /// Basic sigmoid approximation overdrive.
 pub struct Overdrive {
-    gain: f32,
+    pub gain: f32,
 }
 
 impl Overdrive {
