@@ -1,6 +1,7 @@
 #![no_std]
 #![allow(clippy::new_without_default)]
 
+use dc_blocker::DCBlocker;
 use karplus_strong::KarplusStrong;
 use overdrive::Overdrive;
 use oversampling::{Downsampler4, Upsampler4};
@@ -28,8 +29,9 @@ pub use crate::random::Random;
 pub struct Dsp {
     strings: [KarplusStrong; 1],
     overdrive: Overdrive,
-    upsampler: Stereo<Upsampler4>,
-    downsampler: Stereo<Downsampler4>,
+    dc_blocker: [DCBlocker; 2],
+    upsampler: [Upsampler4; 2],
+    downsampler: [Downsampler4; 2],
 }
 
 struct Stereo<T> {
@@ -56,14 +58,15 @@ impl Dsp {
         Self {
             strings: [KarplusStrong::new(sample_rate, memory_manager)],
             overdrive: Overdrive::new(0.5),
-            upsampler: Stereo::new(
+            dc_blocker: [DCBlocker::new(), DCBlocker::new()],
+            upsampler: [
                 Upsampler4::new_4(memory_manager),
                 Upsampler4::new_4(memory_manager),
-            ),
-            downsampler: Stereo::new(
+            ],
+            downsampler: [
                 Downsampler4::new_4(memory_manager),
                 Downsampler4::new_4(memory_manager),
-            ),
+            ],
         }
     }
 
@@ -73,25 +76,18 @@ impl Dsp {
 
         self.strings[0].populate_add(&mut buffer_left, random);
 
-        // TODO: DC blocker
+        self.dc_blocker[0].process(&mut buffer_left);
+        self.dc_blocker[1].process(&mut buffer_right);
 
         let mut buffer_left_os = [0.0; 32 * 4];
-        self.upsampler
-            .left
-            .process(&buffer_left, &mut buffer_left_os);
+        self.upsampler[0].process(&buffer_left, &mut buffer_left_os);
         self.overdrive.process(&mut buffer_left_os);
-        self.downsampler
-            .left
-            .process(&buffer_left_os, &mut buffer_left[..]);
+        self.downsampler[0].process(&buffer_left_os, &mut buffer_left[..]);
 
         let mut buffer_right_os = [0.0; 32 * 4];
-        self.upsampler
-            .right
-            .process(&buffer_right, &mut buffer_right_os);
+        self.upsampler[1].process(&buffer_right, &mut buffer_right_os);
         self.overdrive.process(&mut buffer_right_os);
-        self.downsampler
-            .right
-            .process(&buffer_right_os, &mut buffer_right[..]);
+        self.downsampler[1].process(&buffer_right_os, &mut buffer_right[..]);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
             *x = (buffer_left[i], buffer_right[i]);
@@ -106,11 +102,5 @@ impl Dsp {
         }
         self.overdrive.gain =
             1.0 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32;
-    }
-}
-
-impl<T> Stereo<T> {
-    fn new(left: T, right: T) -> Self {
-        Self { left, right }
     }
 }

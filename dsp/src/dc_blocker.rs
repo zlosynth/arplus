@@ -13,6 +13,10 @@ pub struct DCBlocker {
 }
 
 impl DCBlocker {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn process(&mut self, buffer: &mut [f32]) {
         for x in buffer.iter_mut() {
             *x = self.tick(*x);
