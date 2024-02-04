@@ -10,6 +10,7 @@ mod enveloe_follower;
 mod math;
 pub mod memory_manager;
 mod ring_buffer;
+mod state_variable_filter;
 
 pub struct Dsp;
 
