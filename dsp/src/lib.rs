@@ -27,7 +27,8 @@ pub use crate::memory_manager::MemoryManager;
 pub use crate::random::Random;
 
 pub struct Dsp {
-    strings: [KarplusStrong; 1],
+    strings: [KarplusStrong; 4],
+    active_string_index: usize,
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
     upsampler: [Upsampler4; 2],
@@ -51,8 +52,14 @@ pub struct TriggerAttributes {
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
-            strings: [KarplusStrong::new(sample_rate, memory_manager)],
-            overdrive: Overdrive::new(0.5),
+            strings: [
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+            ],
+            active_string_index: 0,
+            overdrive: Overdrive::new(),
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
             upsampler: [
                 Upsampler4::new_4(memory_manager),
@@ -69,7 +76,14 @@ impl Dsp {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
 
-        self.strings[0].populate_add(&mut buffer_left, random);
+        for string_pair in self.strings.chunks_mut(2) {
+            if let Some(left_string) = string_pair.get_mut(0) {
+                left_string.populate_add(&mut buffer_left, random);
+            }
+            if let Some(right_string) = string_pair.get_mut(1) {
+                right_string.populate_add(&mut buffer_right, random);
+            }
+        }
 
         self.dc_blocker[0].process(&mut buffer_left);
         self.dc_blocker[1].process(&mut buffer_right);
@@ -90,12 +104,26 @@ impl Dsp {
     }
 
     pub fn set_attributes(&mut self, attributes: Attributes) {
-        self.strings[0].set_resonance(attributes.resonance);
-        self.strings[0].set_cutoff(attributes.cutoff);
-        if let Some(trigger) = attributes.trigger {
-            self.strings[0].trigger(0.99, trigger.frequency, trigger.contour);
+        for string in self.strings.iter_mut() {
+            string.set_resonance(attributes.resonance);
+            string.set_cutoff(attributes.cutoff);
         }
+
+        if let Some(trigger) = attributes.trigger {
+            self.strings[self.active_string_index].trigger(
+                0.99,
+                trigger.frequency,
+                trigger.contour,
+            );
+
+            self.active_string_index += 1;
+            self.active_string_index %= self.strings.len();
+
+            // let next_string = &mut self.strings[self.active_string_index];
+            // next_string.reset();
+        }
+
         self.overdrive.gain =
-            0.5 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32 * 10.0;
+            0.5 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32;
     }
 }

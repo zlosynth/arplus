@@ -4,8 +4,8 @@ pub struct Overdrive {
 }
 
 impl Overdrive {
-    pub fn new(gain: f32) -> Self {
-        Self { gain }
+    pub fn new() -> Self {
+        Self { gain: 1.0 }
     }
 
     pub fn process(&self, buffer: &mut [f32]) {
