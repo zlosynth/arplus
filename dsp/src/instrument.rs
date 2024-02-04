@@ -1,6 +1,7 @@
 // TODO: Move this to lib directly
 pub struct Instrument;
 
+#[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct Attributes {
     pub gain: f32,
     pub resonance: f32,
@@ -8,6 +9,7 @@ pub struct Attributes {
     pub trigger: Option<TriggerAttributes>,
 }
 
+#[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct TriggerAttributes {
     pub frequency: f32,
     pub contour: f32,

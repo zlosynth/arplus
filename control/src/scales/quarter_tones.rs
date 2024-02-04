@@ -506,6 +506,10 @@ impl QuarterTone {
             None
         }
     }
+
+    pub fn frequency(self) -> f32 {
+        FREQUENCIES[self as usize]
+    }
 }
 
 #[cfg(test)]

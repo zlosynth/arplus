@@ -9,15 +9,27 @@ mod parameters;
 pub mod save;
 mod scales;
 
+use arpeggiator::{
+    Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
+};
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
+use chords::Chord;
 pub use inputs::ControlInputSnapshot;
 use inputs::Inputs;
 use parameters::Parameters;
 use save::Save;
+use scales::{
+    scale::{Scale, Q, S, T},
+    scale_note::ScaleNote,
+    tonic::Tonic,
+};
+
+use crate::arpeggiator::Random;
 
 pub struct Controller {
     inputs: Inputs,
     parameters: Parameters,
+    arp: Arpeggiator,
     // state: State,
     // queue: Queue,
 }
@@ -56,9 +68,18 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new(save: Save) -> Self {
+        // TODO: This will require input snapshot to initialize itself as well.
+        // TODO: This would be recovered from save.
+        let arp_config = ArpeggiatorConfiguration {
+            scale: Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap(),
+            root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
+            chord: Chord::from_slice(&[0, 2, 4]).unwrap(),
+            mode: ArpeggiatorMode::Root,
+        };
         Self {
             inputs: Inputs::new(),
             parameters: Parameters::new(save.parameters),
+            arp: Arpeggiator::new_with_configuration(arp_config),
         }
     }
 
@@ -72,7 +93,6 @@ impl Controller {
         } else {
             None
         };
-        // TODO: Converge internal state - reconfigure arp
         let dsp_attributes = self.generate_dsp_attributes();
 
         Result {
@@ -89,46 +109,63 @@ impl Controller {
 
         let mut needs_save = false;
 
-        let tone = linear_sum(pots.tone.value, cvs.tone.value);
-        needs_save |= parameters.tone.reconcile(tone);
-
-        let chord = linear_sum(pots.chord.value, cvs.chord.value);
-        needs_save |= parameters.chord.reconcile(chord);
-
-        let contour = linear_sum(pots.contour.value, cvs.contour.value);
-        parameters.contour.reconcile(contour);
-
-        let gain = linear_sum(pots.gain.value, cvs.gain.value);
-        parameters.gain.reconcile(gain);
-
-        let cutoff = linear_sum(pots.cutoff.value, cvs.cutoff.value);
-        parameters.cutoff.reconcile(cutoff);
-
-        let resonance = linear_sum(pots.resonance.value, cvs.resonance.value);
-        parameters.resonance.reconcile(resonance);
-
-        needs_save |= parameters.tonic.reconcile(buttons.tonic.released);
-
+        needs_save |= parameters
+            .tone
+            .reconcile(linear_sum(pots.tone.value, cvs.tone.value));
+        needs_save |= parameters
+            .chord
+            .reconcile(linear_sum(pots.chord.value, cvs.chord.value));
+        parameters
+            .contour
+            .reconcile(linear_sum(pots.contour.value, cvs.contour.value));
+        parameters
+            .gain
+            .reconcile(linear_sum(pots.gain.value, cvs.gain.value));
+        parameters
+            .cutoff
+            .reconcile(linear_sum(pots.cutoff.value, cvs.cutoff.value));
+        parameters
+            .resonance
+            .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
+        needs_save |= parameters.scale.reconcile(buttons.tonic.released);
         needs_save |= parameters.mode.reconcile(buttons.mode.released);
-
         needs_save |= parameters.arp.reconcile(buttons.arp.released);
-
-        let triggered = buttons.trigger.clicked || cvs.trigger.triggered;
-        parameters.trigger.reconcile(triggered);
+        parameters
+            .trigger
+            .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
         needs_save
     }
 
-    fn generate_dsp_attributes(&self) -> DSPAttributes {
+    fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let _ = self.parameters.tone.selected_value();
             let _ = self.parameters.chord.selected_value();
-            let _ = self.parameters.tonic.selected_value();
+            let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
-            Some(DSPTriggerAttributes {
-                frequency: 200.0,
-                contour: 0.0,
-            })
+            let _ = self.parameters.arp.selected_value();
+            // todo!("Pass that to arp");
+            // todo!("Pop note and its frequency");
+            // todo!("Pass proper random");
+
+            struct FakeRandom;
+            impl Random for FakeRandom {
+                fn pop(&mut self) -> f32 {
+                    0.0
+                }
+            }
+
+            if let Some(note) = self.arp.pop(&mut FakeRandom) {
+                let contour = self.parameters.contour.value();
+                let dsp_trigger_attributes = DSPTriggerAttributes {
+                    frequency: note.tone.frequency(),
+                    contour,
+                };
+                defmt::info!("DSP trigger attributes={:?}", dsp_trigger_attributes);
+                Some(dsp_trigger_attributes)
+            } else {
+                None
+            }
         } else {
             None
         };

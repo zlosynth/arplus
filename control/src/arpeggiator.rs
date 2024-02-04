@@ -1,5 +1,3 @@
-use core::str::SplitAsciiWhitespace;
-
 use heapless::Vec;
 
 use crate::chords::Chord;

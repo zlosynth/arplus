@@ -78,7 +78,7 @@ mod app {
             &mut control_input_interface,
             &mut flash_memory_interface,
         );
-        let controller = Controller::from(save);
+        let controller = Controller::new(save);
         let instrument = Instrument::new(SAMPLE_RATE as f32);
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
