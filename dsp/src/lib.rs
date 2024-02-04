@@ -60,13 +60,12 @@ impl Dsp {
     }
 
     pub fn set_attributes(&mut self, attributes: Attributes) {
-        // self.string.set_resonance(attributes.resonance);
-        // self.string.set_cutoff(attributes.cutoff);
-        self.string.set_resonance(0.9);
-        self.string.set_cutoff(1.0);
+        self.string.set_resonance(attributes.resonance);
+        self.string.set_cutoff(attributes.cutoff);
         if let Some(trigger) = attributes.trigger {
-            self.string.trigger(0.99, 100.0, 0.0);
-            // .trigger(0.99, trigger.frequency, trigger.contour);
+            defmt::info!("{:?}", attributes);
+            self.string
+                .trigger(0.99, trigger.frequency, trigger.contour);
         }
     }
 }
