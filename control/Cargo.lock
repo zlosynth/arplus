@@ -9,6 +9,7 @@ dependencies = [
  "arplus-dsp",
  "crc",
  "defmt",
+ "fastrand",
  "heapless",
 ]
 
@@ -77,6 +78,12 @@ checksum = "269924c02afd7f94bc4cecbfa5c379f6ffcf9766b3408fe63d22c728654eccd0"
 dependencies = [
  "thiserror",
 ]
+
+[[package]]
+name = "fastrand"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
 
 [[package]]
 name = "hash32"

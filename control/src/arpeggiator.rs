@@ -1,12 +1,9 @@
 use heapless::Vec;
 
 use crate::chords::Chord;
+use crate::random::Random;
 use crate::scales::scale::Scale;
 use crate::scales::scale_note::ScaleNote;
-
-pub trait Random {
-    fn pop(&mut self) -> f32;
-}
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Arpeggiator {
@@ -142,8 +139,7 @@ impl Arpeggiator {
             }
             State::Random => {
                 let last_index = self.chord.len() - 1;
-                let random_phase = random.pop();
-                let index = (random_phase * (last_index as f32 + 0.99)) as usize;
+                let index = random.u8_mod(last_index as u8 + 1) as usize;
                 self.chord[index]
             }
             State::Moving(ref mut index, ref mut schuffled_chord) => {
@@ -170,8 +166,8 @@ impl Arpeggiator {
 }
 
 fn two_distinct_random_values(max: usize, random: &mut impl Random) -> (usize, usize) {
-    let a = (random.pop() * (max as f32 + 0.99)) as usize;
-    let mut b = (random.pop() * (max as f32 + 0.99)) as usize;
+    let a = random.u8_mod(max as u8 + 1) as usize;
+    let mut b = random.u8_mod(max as u8 + 1) as usize;
     if b == a {
         b += 1;
         if b > max {
@@ -193,25 +189,25 @@ mod tests {
     const DORIAN: [Step; 7] = [T, S, T, T, T, S, T];
 
     struct TestRandom {
-        values: [f32; 3],
+        values: [u8; 3],
         index: usize,
     }
 
     impl TestRandom {
         fn new() -> Self {
             Self {
-                values: [0.0; 3],
+                values: [0; 3],
                 index: 0,
             }
         }
 
-        fn new_with_values(values: [f32; 3]) -> Self {
+        fn new_with_values(values: [u8; 3]) -> Self {
             Self { values, index: 0 }
         }
     }
 
     impl Random for TestRandom {
-        fn pop(&mut self) -> f32 {
+        fn u8_mod(&mut self, _mod: u8) -> u8 {
             let value = self.values[self.index];
             self.index += 1;
             self.index %= self.values.len();
@@ -301,7 +297,7 @@ mod tests {
 
     #[test]
     fn random_arp() {
-        let mut r = TestRandom::new_with_values([0.0, 1.0, 0.5]);
+        let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
             scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
@@ -319,7 +315,7 @@ mod tests {
 
     #[test]
     fn moving_arp() {
-        let mut r = TestRandom::new_with_values([0.0, 1.0, 0.5]);
+        let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
             scale: Scale::new(Tonic::C, &IONIAN).unwrap(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),

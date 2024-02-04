@@ -6,6 +6,7 @@ mod arpeggiator;
 mod chords;
 mod inputs;
 mod parameters;
+mod random;
 pub mod save;
 mod scales;
 
@@ -14,6 +15,7 @@ use arpeggiator::{
 };
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 use chords::Chord;
+use fastrand::Rng;
 pub use inputs::ControlInputSnapshot;
 use inputs::Inputs;
 use parameters::Parameters;
@@ -24,12 +26,13 @@ use scales::{
     tonic::Tonic,
 };
 
-use crate::arpeggiator::Random;
+use crate::random::RandomGenerator;
 
 pub struct Controller {
     inputs: Inputs,
     parameters: Parameters,
     arp: Arpeggiator,
+    random_generator: RandomGenerator,
     // state: State,
     // queue: Queue,
 }
@@ -67,7 +70,7 @@ pub struct ControlOutputState {
 }
 
 impl Controller {
-    pub fn new(save: Save) -> Self {
+    pub fn new(seed: u64, save: Save) -> Self {
         // TODO: This will require input snapshot to initialize itself as well.
         // TODO: This would be recovered from save.
         let arp_config = ArpeggiatorConfiguration {
@@ -80,6 +83,7 @@ impl Controller {
             inputs: Inputs::new(),
             parameters: Parameters::new(save.parameters),
             arp: Arpeggiator::new_with_configuration(arp_config),
+            random_generator: RandomGenerator::with_seed(seed),
         }
     }
 
@@ -148,14 +152,7 @@ impl Controller {
             // todo!("Pop note and its frequency");
             // todo!("Pass proper random");
 
-            struct FakeRandom;
-            impl Random for FakeRandom {
-                fn pop(&mut self) -> f32 {
-                    0.0
-                }
-            }
-
-            if let Some(note) = self.arp.pop(&mut FakeRandom) {
+            if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 let contour = self.parameters.contour.value();
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone.frequency(),

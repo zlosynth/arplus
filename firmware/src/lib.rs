@@ -10,6 +10,7 @@ pub mod control_input;
 pub mod control_output;
 pub mod flash_memory;
 pub mod queue_utils;
+pub mod random_generator;
 pub mod startup_sequence;
 pub mod system;
 pub mod version_indicator;

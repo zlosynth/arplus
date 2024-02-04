@@ -19,11 +19,13 @@ use crate::control_output::{
     Config as ControlOutputConfig, ControlOutputInterface, Pins as ControlOutputPins,
 };
 use crate::flash_memory::FlashMemoryInterface;
+use crate::random_generator::RandomGenerator;
 
 pub struct System {
     pub frequency: Hertz<u32>,
     pub mono: Systick<1000>,
     pub status_led: LedUser,
+    pub random_generator: RandomGenerator,
     pub audio_interface: AudioInterface,
     pub flash_memory_interface: FlashMemoryInterface,
     pub control_input_interface: ControlInputInterface,
@@ -46,6 +48,8 @@ impl System {
         let system_frequency = ccdr.clocks.sys_ck();
         let mono = Systick::new(cp.SYST, system_frequency.raw());
         let status_led = daisy::board_split_leds!(pins).USER;
+        let random_generator =
+            RandomGenerator::from_rng(dp.RNG.constrain(ccdr.peripheral.RNG, &ccdr.clocks));
         let audio_interface = AudioInterface::new(daisy::board_split_audio!(ccdr, pins));
         let flash_memory_interface =
             FlashMemoryInterface::new(daisy::board_split_flash!(ccdr, dp, pins));
@@ -124,6 +128,7 @@ impl System {
             frequency: system_frequency,
             mono,
             status_led,
+            random_generator,
             audio_interface,
             flash_memory_interface,
             control_input_interface,

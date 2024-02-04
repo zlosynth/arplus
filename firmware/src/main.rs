@@ -16,10 +16,10 @@ mod app {
     use arplus_firmware::control_input::ControlInputInterface;
     use arplus_firmware::control_output::ControlOutputInterface;
     use arplus_firmware::flash_memory::FlashMemoryInterface;
-    use arplus_firmware::queue_utils;
     use arplus_firmware::startup_sequence;
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
+    use arplus_firmware::{queue_utils, random_generator};
 
     // Blinks on the PCB's LED signalize the current revision.
     const BLINKS: u8 = 1;
@@ -68,6 +68,7 @@ mod app {
 
         let system = System::init(cx.core, cx.device);
         let mono = system.mono;
+        let mut random_generator = system.random_generator;
         let mut audio_interface = system.audio_interface;
         let mut flash_memory_interface = system.flash_memory_interface;
         let mut control_input_interface = system.control_input_interface;
@@ -78,7 +79,16 @@ mod app {
             &mut control_input_interface,
             &mut flash_memory_interface,
         );
-        let controller = Controller::new(save);
+        let seed = u64::from_be_bytes(unsafe {
+            core::mem::transmute([
+                random_generator.u16().unwrap().to_be_bytes(),
+                random_generator.u16().unwrap().to_be_bytes(),
+                random_generator.u16().unwrap().to_be_bytes(),
+                random_generator.u16().unwrap().to_be_bytes(),
+            ])
+        });
+        defmt::debug!("Using seed={:?}", seed);
+        let controller = Controller::new(seed, save);
         let instrument = Instrument::new(SAMPLE_RATE as f32);
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
