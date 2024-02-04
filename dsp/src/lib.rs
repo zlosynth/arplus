@@ -6,7 +6,8 @@
 extern crate approx;
 
 mod ad_envelope;
-mod enveloe_follower;
+mod envelope_follower;
+mod karplus_strong;
 mod math;
 pub mod memory_manager;
 mod ring_buffer;
