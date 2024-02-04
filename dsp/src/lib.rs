@@ -34,11 +34,6 @@ pub struct Dsp {
     downsampler: [Downsampler4; 2],
 }
 
-struct Stereo<T> {
-    pub left: T,
-    pub right: T,
-}
-
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct Attributes {
     pub gain: f32,
