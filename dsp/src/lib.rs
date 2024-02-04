@@ -29,6 +29,10 @@ pub struct TriggerAttributes {
     pub contour: f32,
 }
 
+pub trait Random {
+    fn normal(&mut self) -> f32;
+}
+
 impl Dsp {
     pub fn new(_sample_rate: f32) -> Self {
         Self
