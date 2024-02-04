@@ -6,6 +6,7 @@
 extern crate approx;
 
 mod ad_envelope;
+mod enveloe_follower;
 
 pub struct Dsp;
 
