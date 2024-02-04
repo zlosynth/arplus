@@ -7,6 +7,9 @@ extern crate approx;
 
 mod ad_envelope;
 mod enveloe_follower;
+mod math;
+pub mod memory_manager;
+mod ring_buffer;
 
 pub struct Dsp;
 
