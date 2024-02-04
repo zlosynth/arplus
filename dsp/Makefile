@@ -17,7 +17,11 @@ clippy:
 
 .PHONY: test
 test:
+ifdef SLOW
+	$(CARGO) test -- --ignored
+else
 	$(CARGO) test
+endif
 
 .PHONY: update
 update:

@@ -25,6 +25,12 @@ Run formatting, linter and unit tests:
 make
 ```
 
+Slow unit tests are skipped by default. You can run them with:
+
+```sh
+SLOW=yes make
+```
+
 ## Flash via ST-Link
 
 This requires external probe, such as the ST LINK-V3 MINI. The benefit of this

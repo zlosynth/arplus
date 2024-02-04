@@ -16,10 +16,10 @@ mod app {
     use arplus_firmware::control_input::ControlInputInterface;
     use arplus_firmware::control_output::ControlOutputInterface;
     use arplus_firmware::flash_memory::FlashMemoryInterface;
+    use arplus_firmware::queue_utils;
     use arplus_firmware::startup_sequence;
     use arplus_firmware::system::System;
     use arplus_firmware::version_indicator::VersionIndicator;
-    use arplus_firmware::{queue_utils, random_generator};
 
     // Blinks on the PCB's LED signalize the current revision.
     const BLINKS: u8 = 1;

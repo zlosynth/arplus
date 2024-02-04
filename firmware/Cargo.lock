@@ -18,6 +18,7 @@ name = "arplus-dsp"
 version = "0.1.0"
 dependencies = [
  "defmt",
+ "libm",
 ]
 
 [[package]]

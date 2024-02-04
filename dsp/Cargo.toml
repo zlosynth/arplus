@@ -8,3 +8,9 @@ publish = false
 
 [dependencies]
 defmt = "0.3"
+libm = "0.2"
+
+[dev-dependencies]
+approx = "0.4"
+test-case = "1.2"
+proptest = "1"
