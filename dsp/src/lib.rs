@@ -119,8 +119,8 @@ impl Dsp {
             self.active_string_index += 1;
             self.active_string_index %= self.strings.len();
 
-            // let next_string = &mut self.strings[self.active_string_index];
-            // next_string.reset();
+            let next_string = &mut self.strings[self.active_string_index];
+            next_string.reset();
         }
 
         self.overdrive.gain =
