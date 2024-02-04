@@ -11,7 +11,7 @@ mod app {
 
     use arplus_control::save::Save;
     use arplus_control::{ControlInputSnapshot, Controller};
-    use arplus_dsp::{Attributes as InstrumentAttributes, Instrument};
+    use arplus_dsp::{Attributes as DspAttributes, Dsp};
     use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::control_input::ControlInputInterface;
     use arplus_firmware::control_output::ControlOutputInterface;
@@ -39,11 +39,11 @@ mod app {
         flash_memory_interface: FlashMemoryInterface,
         control_input_interface: ControlInputInterface,
         control_output_interface: ControlOutputInterface,
-        instrument: Instrument,
+        dsp: Dsp,
         controller: Controller,
         version_indicator: VersionIndicator,
-        instrument_attributes_producer: Producer<'static, InstrumentAttributes, 8>,
-        instrument_attributes_consumer: Consumer<'static, InstrumentAttributes, 8>,
+        dsp_attributes_producer: Producer<'static, DspAttributes, 8>,
+        dsp_attributes_consumer: Consumer<'static, DspAttributes, 8>,
         control_input_snapshot_producer: Producer<'static, ControlInputSnapshot, 8>,
         control_input_snapshot_consumer: Consumer<'static, ControlInputSnapshot, 8>,
         save_producer: Producer<'static, Save, 8>,
@@ -52,7 +52,7 @@ mod app {
 
     #[init(
         local = [
-            instrument_attributes_queue: Queue<InstrumentAttributes, 8> = Queue::new(),
+            dsp_attributes_queue: Queue<DspAttributes, 8> = Queue::new(),
             input_snapshot_queue: Queue<ControlInputSnapshot, 8> = Queue::new(),
             save_queue: Queue<Save, 8> = Queue::new(),
         ]
@@ -60,8 +60,8 @@ mod app {
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         defmt::info!("Starting the firmware, initializing resources");
 
-        let (instrument_attributes_producer, instrument_attributes_consumer) =
-            cx.local.instrument_attributes_queue.split();
+        let (dsp_attributes_producer, dsp_attributes_consumer) =
+            cx.local.dsp_attributes_queue.split();
         let (control_input_snapshot_producer, control_input_snapshot_consumer) =
             cx.local.input_snapshot_queue.split();
         let (save_producer, save_consumer) = cx.local.save_queue.split();
@@ -89,7 +89,7 @@ mod app {
         });
         defmt::debug!("Using seed={:?}", seed);
         let controller = Controller::new(seed, save);
-        let instrument = Instrument::new(SAMPLE_RATE as f32);
+        let dsp = Dsp::new(SAMPLE_RATE as f32);
         let version_indicator = VersionIndicator::new(BLINKS, system.status_led);
 
         defmt::info!("Spawning tasks");
@@ -108,11 +108,11 @@ mod app {
                 flash_memory_interface,
                 control_input_interface,
                 control_output_interface,
-                instrument,
+                dsp,
                 controller,
                 version_indicator,
-                instrument_attributes_producer,
-                instrument_attributes_consumer,
+                dsp_attributes_producer,
+                dsp_attributes_consumer,
                 control_input_snapshot_producer,
                 control_input_snapshot_consumer,
                 save_producer,
@@ -144,7 +144,7 @@ mod app {
         local = [
             controller,
             control_output_interface,
-            instrument_attributes_producer,
+            dsp_attributes_producer,
             control_input_snapshot_consumer,
             save_producer,
         ],
@@ -155,7 +155,7 @@ mod app {
 
         let controller = cx.local.controller;
         let control_output_interface = cx.local.control_output_interface;
-        let instrument_attributes_producer = cx.local.instrument_attributes_producer;
+        let dsp_attributes_producer = cx.local.dsp_attributes_producer;
         let control_input_snapshot_consumer = cx.local.control_input_snapshot_consumer;
         let save_producer = cx.local.save_producer;
 
@@ -166,7 +166,7 @@ mod app {
             if let Some(save) = result.save {
                 let _ = save_producer.enqueue(save);
             }
-            let _ = instrument_attributes_producer.enqueue(result.instrument_attributes);
+            let _ = dsp_attributes_producer.enqueue(result.dsp_attributes);
         }
 
         let desired_output_state = controller.tick();
@@ -177,24 +177,24 @@ mod app {
         binds = DMA1_STR1,
         local = [
             audio_interface,
-            instrument,
-            instrument_attributes_consumer,
+            dsp,
+            dsp_attributes_consumer,
         ],
         priority = 4,
     )]
     fn dsp_loop(cx: dsp_loop::Context) {
         let audio_interface = cx.local.audio_interface;
-        let instrument = cx.local.instrument;
-        let instrument_attributes_consumer = cx.local.instrument_attributes_consumer;
+        let dsp = cx.local.dsp;
+        let dsp_attributes_consumer = cx.local.dsp_attributes_consumer;
 
-        queue_utils::warn_about_capacity("instrument_attributes", instrument_attributes_consumer);
+        queue_utils::warn_about_capacity("dsp_attributes", dsp_attributes_consumer);
 
-        if let Some(attributes) = queue_utils::dequeue_last(instrument_attributes_consumer) {
-            instrument.set_attributes(attributes);
+        if let Some(attributes) = queue_utils::dequeue_last(dsp_attributes_consumer) {
+            dsp.set_attributes(attributes);
         }
 
         audio_interface.update_buffer(|buffer| {
-            instrument.process(buffer);
+            dsp.process(buffer);
         });
     }
 

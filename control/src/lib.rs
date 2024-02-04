@@ -15,13 +15,12 @@ use arpeggiator::{
 };
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 use chords::Chord;
-use fastrand::Rng;
 pub use inputs::ControlInputSnapshot;
 use inputs::Inputs;
 use parameters::Parameters;
 use save::Save;
 use scales::{
-    scale::{Scale, Q, S, T},
+    scale::{Scale, S, T},
     scale_note::ScaleNote,
     tonic::Tonic,
 };
@@ -62,7 +61,7 @@ pub struct Controller {
 
 pub struct Result {
     pub save: Option<Save>,
-    pub instrument_attributes: DSPAttributes,
+    pub dsp_attributes: DSPAttributes,
 }
 
 pub struct ControlOutputState {
@@ -101,7 +100,7 @@ impl Controller {
 
         Result {
             save,
-            instrument_attributes: dsp_attributes,
+            dsp_attributes,
         }
     }
 
