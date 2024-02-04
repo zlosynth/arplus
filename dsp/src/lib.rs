@@ -12,6 +12,7 @@ mod envelope_follower;
 mod karplus_strong;
 mod math;
 mod memory_manager;
+mod overdrive;
 mod random;
 mod ring_buffer;
 mod state_variable_filter;

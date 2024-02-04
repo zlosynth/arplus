@@ -18,14 +18,13 @@ use chords::Chord;
 pub use inputs::ControlInputSnapshot;
 use inputs::Inputs;
 use parameters::Parameters;
+use random::RandomGenerator;
 use save::Save;
 use scales::{
     scale::{Scale, S, T},
     scale_note::ScaleNote,
     tonic::Tonic,
 };
-
-use crate::random::RandomGenerator;
 
 pub struct Controller {
     inputs: Inputs,
