@@ -43,6 +43,11 @@ impl Scale {
         }
     }
 
+    pub fn get_note_by_index_ascending(&self, index: u8) -> Option<ScaleNote> {
+        let lowest_tonic = self.lowest_tonic();
+        self.get_note_in_interval_ascending(ScaleNote::new(lowest_tonic, 0), index as i16)
+    }
+
     pub fn get_note_in_interval_ascending(
         &self,
         source: ScaleNote,
@@ -157,6 +162,23 @@ mod tests {
     fn quantize_voct_to_scale_note_ascending_below_the_lowest_tonic_returns_none() {
         let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
         assert!(scale.quantize_voct_ascending(0.0).is_none());
+    }
+
+    #[test]
+    fn get_note_by_index_ascending() {
+        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
+        let checks = [
+            (0, ScaleNote::new(QuarterTone::CMinus1, 0)),
+            (7, ScaleNote::new(QuarterTone::C0, 0)),
+            (8, ScaleNote::new(QuarterTone::D0, 1)),
+            (9, ScaleNote::new(QuarterTone::E0, 2)),
+        ];
+        for (index, expected_note) in checks {
+            assert_eq!(
+                scale.get_note_by_index_ascending(index),
+                Some(expected_note)
+            );
+        }
     }
 
     #[test]
