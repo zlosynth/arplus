@@ -96,6 +96,6 @@ impl Dsp {
             self.strings[0].trigger(0.99, trigger.frequency, trigger.contour);
         }
         self.overdrive.gain =
-            1.0 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32;
+            0.5 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32 * 10.0;
     }
 }

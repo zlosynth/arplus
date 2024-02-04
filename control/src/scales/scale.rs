@@ -43,9 +43,13 @@ impl Scale {
         }
     }
 
-    pub fn get_note_by_index_ascending(&self, index: u8) -> Option<ScaleNote> {
+    pub fn get_note_by_index_ascending(&self, index: usize) -> Option<ScaleNote> {
         let lowest_tonic = self.lowest_tonic();
         self.get_note_in_interval_ascending(ScaleNote::new(lowest_tonic, 0), index as i16)
+    }
+
+    pub fn steps_in_octave(&self) -> u8 {
+        self.ascending.len() as u8
     }
 
     pub fn get_note_in_interval_ascending(

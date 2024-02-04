@@ -141,7 +141,7 @@ impl Controller {
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            let _ = self.parameters.tone.selected_value();
+            let note_index = self.parameters.tone.selected_value();
             let _ = self.parameters.chord.selected_value();
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
@@ -149,6 +149,16 @@ impl Controller {
             // todo!("Pass that to arp");
             // todo!("Pop note and its frequency");
             // todo!("Pass proper random");
+
+            // TODO: Figure out where to keep the scale. In control and pass it by
+            // reference to arp, or fully in arp.
+            let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
+            self.arp.apply_configuration(ArpeggiatorConfiguration {
+                root: scale.get_note_by_index_ascending(note_index).unwrap(),
+                scale,
+                chord: Chord::from_slice(&[0, 2, 4]).unwrap(),
+                mode: ArpeggiatorMode::Moving,
+            });
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 let contour = self.parameters.contour.value();
