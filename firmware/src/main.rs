@@ -140,14 +140,17 @@ mod app {
         priority = 2,
     )]
     fn input_collection_loop(cx: input_collection_loop::Context) {
-        input_collection_loop::spawn_after(1.millis()).ok().unwrap();
-
         let control_input_interface = cx.local.control_input_interface;
         let control_input_snapshot_producer = cx.local.control_input_snapshot_producer;
 
         control_input_interface.sample();
 
         let _ = control_input_snapshot_producer.enqueue(control_input_interface.snapshot());
+
+        // NOTE: This must be timed at the end. Otherwise, this task may get an interrupt
+        // during sampling, which would then follow by immediate second execution of this
+        // task, not giving enough time for the probe signal to propagate.
+        input_collection_loop::spawn_after(1.millis()).ok().unwrap();
     }
 
     #[task(
