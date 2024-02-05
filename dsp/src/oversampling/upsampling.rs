@@ -2,7 +2,7 @@
 
 use core::fmt;
 
-use crate::memory_manager::MemoryManager;
+use crate::MemoryManager;
 
 use super::coefficients::COEFFICIENTS_4;
 use crate::math;

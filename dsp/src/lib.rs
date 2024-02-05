@@ -27,7 +27,7 @@ pub use crate::memory_manager::MemoryManager;
 pub use crate::random::Random;
 
 pub struct Dsp {
-    strings: [KarplusStrong; 4],
+    strings: [KarplusStrong; 9],
     active_string_index: usize,
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
@@ -53,6 +53,11 @@ impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
             strings: [
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
+                KarplusStrong::new(sample_rate, memory_manager),
                 KarplusStrong::new(sample_rate, memory_manager),
                 KarplusStrong::new(sample_rate, memory_manager),
                 KarplusStrong::new(sample_rate, memory_manager),
@@ -123,7 +128,6 @@ impl Dsp {
             next_string.reset();
         }
 
-        self.overdrive.gain =
-            0.5 / self.strings.len() as f32 + attributes.gain * self.strings.len() as f32;
+        self.overdrive.gain = 0.3 + attributes.gain * 0.6;
     }
 }
