@@ -37,10 +37,10 @@ impl Buttons {
     }
 
     pub fn sample(&mut self) {
-        self.buttons[0].set(self.pins.button_1.is_high());
-        self.buttons[1].set(self.pins.button_2.is_high());
-        self.buttons[2].set(self.pins.button_3.is_high());
-        self.buttons[3].set(self.pins.button_4.is_high());
+        self.buttons[0].set(self.pins.button_1.is_low());
+        self.buttons[1].set(self.pins.button_2.is_low());
+        self.buttons[2].set(self.pins.button_3.is_low());
+        self.buttons[3].set(self.pins.button_4.is_low());
     }
 
     pub fn values(&self) -> [bool; BUTTONS] {
