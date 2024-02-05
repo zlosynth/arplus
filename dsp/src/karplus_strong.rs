@@ -17,7 +17,7 @@ const TRESHOLD: f32 = 0.5;
 const ENV_MAX: f32 = 1.0;
 const ENV_COEF: f32 = 2.0;
 
-const RESET: usize = 20;
+const RESET: usize = 40;
 
 pub struct KarplusStrong {
     sample_rate: f32,
