@@ -46,12 +46,12 @@ impl Pots {
                 // NOTE: To calibrate, set this to (0.0, 1.0), remove clamping
                 // from Pot.set, and run diagnostics. Note the minimum and
                 // maximum of each pot and then use it here.
-                Pot::new(0.5, 1.0),
-                Pot::new(0.5, 1.0),
-                Pot::new(0.0, 1.0),
-                Pot::new(0.0, 1.0),
-                Pot::new(0.0, 1.0),
-                Pot::new(0.0, 1.0),
+                Pot::new(0.505, 0.99),
+                Pot::new(0.505, 0.99),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
             ],
             pins,
         }
