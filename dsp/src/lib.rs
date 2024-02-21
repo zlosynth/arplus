@@ -37,7 +37,6 @@ pub struct Dsp {
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct Attributes {
-    pub gain: f32,
     pub resonance: f32,
     pub cutoff: f32,
     pub trigger: Option<TriggerAttributes>,
@@ -127,6 +126,8 @@ impl Dsp {
             next_string.reset();
         }
 
-        self.overdrive.gain = 0.3 + attributes.gain * 0.6;
+        // TODO: Make this static.
+        let ideal_gain = 0.5;
+        self.overdrive.gain = 0.3 + ideal_gain * 0.6;
     }
 }

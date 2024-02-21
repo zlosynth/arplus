@@ -75,7 +75,12 @@ impl Controller {
 
         // TODO: Get group from parameters too.
         // TODO: No unwrap or safety note
-        let selected_chord = chords.chord(0, parameters.chord.selected_value()).unwrap();
+        let selected_chord = chords
+            .chord(
+                parameters.size.selected_value(),
+                parameters.chord.selected_value(),
+            )
+            .unwrap();
 
         // TODO: This will require input snapshot to initialize itself as well.
         // TODO: This would be recovered from save.
@@ -127,12 +132,12 @@ impl Controller {
         needs_save |= parameters
             .chord
             .reconcile(linear_sum(pots.chord.value, cvs.chord.value));
+        needs_save |= parameters
+            .size
+            .reconcile(linear_sum(pots.size.value, cvs.size.value));
         parameters
             .contour
             .reconcile(linear_sum(pots.contour.value, cvs.contour.value));
-        parameters
-            .gain
-            .reconcile(linear_sum(pots.gain.value, cvs.gain.value));
         parameters
             .cutoff
             .reconcile(linear_sum(pots.cutoff.value, cvs.cutoff.value));
@@ -146,7 +151,14 @@ impl Controller {
             .trigger
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
-        // TODO: Adjust discrete parameters if a parameter dictating their
+        // TODO: Only on change of size
+        let group_index = self.parameters.size.selected_value();
+        // TODO: No unwrap or safety note.
+        self.parameters
+            .chord
+            .set_output_values(self.chords.number_of_chords(group_index).unwrap());
+
+        // TODO: Adjust other discrete parameters if a parameter dictating their
         // length was changed.
 
         needs_save
@@ -156,6 +168,7 @@ impl Controller {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
             let chord_index = self.parameters.chord.selected_value();
+            let group_index = self.parameters.size.selected_value();
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
             let arp_index = self.parameters.arp.selected_value();
@@ -165,9 +178,8 @@ impl Controller {
             // TODO: No unwrap or safety note
             let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
 
-            // TODO: Get group from parameters too.
             // TODO: No unwrap or a safety note
-            let selected_chord = self.chords.chord(0, chord_index).unwrap();
+            let selected_chord = self.chords.chord(group_index, chord_index).unwrap();
             // TODO: Later take it from the library based on selected chord
             // TODO: Later take it from the library based on selected group too
 
@@ -196,7 +208,6 @@ impl Controller {
         };
 
         DSPAttributes {
-            gain: self.parameters.gain.value(),
             resonance: self.parameters.resonance.value(),
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,

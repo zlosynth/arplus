@@ -3,6 +3,7 @@ use heapless::Vec;
 pub type Chord = Vec<i16, 7>;
 
 pub struct Chords {
+    // TODO: Rename groups to sizes.
     group_1: LibraryGroup<3, 3>,
     group_2: LibraryGroup<2, 3>,
 }

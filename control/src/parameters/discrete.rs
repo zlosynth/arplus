@@ -3,6 +3,7 @@ pub struct Discrete {
     margin: f32,
     values: usize,
     selected_value: usize,
+    relative_margin: f32,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -17,7 +18,15 @@ impl Discrete {
             margin: relative_margin / output_values as f32,
             values: output_values,
             selected_value: config.selected_value,
+            relative_margin,
         }
+    }
+
+    pub fn set_output_values(&mut self, output_values: usize) {
+        self.block_width = 1.0 / output_values as f32;
+        self.margin = self.relative_margin / output_values as f32;
+        self.values = output_values;
+        self.selected_value = 0;
     }
 
     pub fn reconcile(&mut self, input_level: f32) -> bool {
