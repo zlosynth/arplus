@@ -77,7 +77,7 @@ impl Controller {
         // TODO: No unwrap or safety note
         let selected_chord = chords
             .chord(
-                parameters.size.selected_value(),
+                parameters.chord_group.selected_value(),
                 parameters.chord.selected_value(),
             )
             .unwrap();
@@ -133,7 +133,7 @@ impl Controller {
             .chord
             .reconcile(linear_sum(pots.chord.value, cvs.chord.value));
         needs_save |= parameters
-            .size
+            .chord_group
             .reconcile(linear_sum(pots.size.value, cvs.size.value));
         parameters
             .contour
@@ -152,11 +152,11 @@ impl Controller {
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
         // TODO: Only on change of size
-        let group_index = self.parameters.size.selected_value();
+        let chord_group_index = self.parameters.chord_group.selected_value();
         // TODO: No unwrap or safety note.
         self.parameters
             .chord
-            .set_output_values(self.chords.number_of_chords(group_index).unwrap());
+            .set_output_values(self.chords.number_of_chords(chord_group_index).unwrap());
 
         // TODO: Adjust other discrete parameters if a parameter dictating their
         // length was changed.
@@ -168,7 +168,7 @@ impl Controller {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
             let chord_index = self.parameters.chord.selected_value();
-            let group_index = self.parameters.size.selected_value();
+            let chord_group_index = self.parameters.chord_group.selected_value();
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
             let arp_index = self.parameters.arp.selected_value();
@@ -179,7 +179,7 @@ impl Controller {
             let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
 
             // TODO: No unwrap or a safety note
-            let selected_chord = self.chords.chord(group_index, chord_index).unwrap();
+            let selected_chord = self.chords.chord(chord_group_index, chord_index).unwrap();
             // TODO: Later take it from the library based on selected chord
             // TODO: Later take it from the library based on selected group too
 
