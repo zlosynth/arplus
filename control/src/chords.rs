@@ -5,7 +5,7 @@ pub type Chord = Vec<i16, 7>;
 pub struct Chords {
     // TODO: Rename groups to sizes.
     group_1: LibraryGroup<3, 3>,
-    group_2: LibraryGroup<2, 3>,
+    group_2: LibraryGroup<3, 4>,
 }
 
 type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
@@ -34,8 +34,9 @@ impl Chords {
         ])
         .unwrap();
         let group_2 = LibraryGroup::from_slice(&[
-            LibraryChord::from_slice(&[1, 2, 3]).unwrap(),
-            LibraryChord::from_slice(&[1, 2, 3]).unwrap(),
+            LibraryChord::from_slice(&[0, 2, 4, 6]).unwrap(),
+            LibraryChord::from_slice(&[0, 1, 4, 6]).unwrap(),
+            LibraryChord::from_slice(&[0, 3, 4, 6]).unwrap(),
         ])
         .unwrap();
         // TODO: Check that groups are utilized to full capacity
