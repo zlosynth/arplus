@@ -40,10 +40,13 @@ impl Parameters {
         let chord_group_parameter =
             Discrete::new(config.chord_group, chords.number_of_groups(), 0.1);
 
-        let selected_chord_group = chord_group_parameter.selected_value();
-        // TODO: No unwrap or safety note
-        let number_of_chords_in_the_group = chords.number_of_chords(selected_chord_group).unwrap();
-        let chord_parameter = Discrete::new(config.chord, number_of_chords_in_the_group, 0.1);
+        let chord_parameter = {
+            let selected_chord_group = chord_group_parameter.selected_value();
+            // TODO: No unwrap or safety note
+            let number_of_chords_in_the_group =
+                chords.number_of_chords(selected_chord_group).unwrap();
+            Discrete::new(config.chord, number_of_chords_in_the_group, 0.1)
+        };
 
         Self {
             // TODO: Set proper ranges
