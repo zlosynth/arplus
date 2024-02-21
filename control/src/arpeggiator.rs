@@ -1,5 +1,3 @@
-use heapless::Vec;
-
 use crate::chords::Chord;
 use crate::random::Random;
 use crate::scales::scale::Scale;
@@ -31,10 +29,8 @@ pub enum State {
     Up(usize),
     Down(usize),
     Random,
-    Moving(usize, SchuffledChord),
+    Moving(usize, Chord),
 }
-
-pub type SchuffledChord = Vec<i16, 7>;
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Configuration {

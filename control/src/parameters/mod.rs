@@ -8,6 +8,8 @@ use discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
 use toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 use trigger::DualTrigger;
 
+use crate::chords::Chords;
+
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
     pub tone: Discrete,
@@ -32,12 +34,15 @@ pub struct PersistentConfig {
 }
 
 impl Parameters {
-    pub fn new(config: PersistentConfig) -> Self {
+    pub fn new(config: PersistentConfig, chords: &Chords) -> Self {
+        // TODO: Consider selected chord group too. Recovered from save Discrete attribute.
+        // TODO: No unwrap or safety note
+        let number_of_chords_in_the_group = chords.number_of_chords(0).unwrap();
         Self {
             // TODO: Set proper ranges
             // TODO: Allow configuration of tonic
             tone: Discrete::new(config.tone, 7 * 6, 0.1),
-            chord: Discrete::new(config.chord, 18, 0.1),
+            chord: Discrete::new(config.chord, number_of_chords_in_the_group, 0.1),
             contour: Continuous::new(),
             gain: Continuous::new(),
             cutoff: Continuous::new(),

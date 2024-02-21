@@ -14,7 +14,7 @@ use arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
 };
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
-use chords::Chord;
+use chords::Chords;
 pub use inputs::ControlInputSnapshot;
 use inputs::Inputs;
 use parameters::Parameters;
@@ -29,6 +29,7 @@ use scales::{
 pub struct Controller {
     inputs: Inputs,
     parameters: Parameters,
+    chords: Chords,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
     // state: State,
@@ -69,17 +70,26 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
+        let chords = Chords::new();
+        let parameters = Parameters::new(save.parameters, &chords);
+
+        // TODO: Get group from parameters too.
+        // TODO: No unwrap or safety note
+        let selected_chord = chords.chord(0, parameters.chord.selected_value()).unwrap();
+
         // TODO: This will require input snapshot to initialize itself as well.
         // TODO: This would be recovered from save.
         let arp_config = ArpeggiatorConfiguration {
+            // TODO: No unwrap or safety note
             scale: Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap(),
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
-            chord: Chord::from_slice(&[0, 2, 4]).unwrap(),
+            chord: selected_chord,
             mode: ArpeggiatorMode::Root,
         };
         Self {
             inputs: Inputs::new(),
-            parameters: Parameters::new(save.parameters),
+            parameters,
+            chords,
             arp: Arpeggiator::new_with_configuration(arp_config),
             random_generator: RandomGenerator::with_seed(seed),
         }
@@ -136,24 +146,37 @@ impl Controller {
             .trigger
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
+        // TODO: Adjust discrete parameters if a parameter dictating their
+        // length was changed.
+
         needs_save
     }
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
-            let _ = self.parameters.chord.selected_value();
+            let chord_index = self.parameters.chord.selected_value();
             let _ = self.parameters.scale.selected_value();
             let _ = self.parameters.mode.selected_value();
             let arp_index = self.parameters.arp.selected_value();
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
+            // TODO: No unwrap or safety note
             let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
+
+            // TODO: Get group from parameters too.
+            // TODO: No unwrap or a safety note
+            let selected_chord = self.chords.chord(0, chord_index).unwrap();
+            // TODO: Later take it from the library based on selected chord
+            // TODO: Later take it from the library based on selected group too
+
             self.arp.apply_configuration(ArpeggiatorConfiguration {
+                // TODO: No unwrap or safety note
                 root: scale.get_note_by_index_ascending(note_index).unwrap(),
                 scale,
-                chord: Chord::from_slice(&[0, 2, 4]).unwrap(),
+                chord: selected_chord,
+                // TODO: No unwrap or safety note
                 mode: ArpeggiatorMode::try_from_index(arp_index).unwrap(),
             });
 
