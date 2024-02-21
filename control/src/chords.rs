@@ -3,7 +3,6 @@ use heapless::Vec;
 pub type Chord = Vec<i16, 7>;
 
 pub struct Chords {
-    // TODO: Rename groups to sizes.
     group_1: LibraryGroup<3, 3>,
     group_2: LibraryGroup<3, 4>,
 }
@@ -11,17 +10,6 @@ pub struct Chords {
 type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
 
 type LibraryChord<const D: usize> = Vec<i16, D>;
-
-#[derive(Clone, Copy)]
-pub struct GroupHandle {
-    index: usize,
-}
-
-#[derive(Clone, Copy)]
-pub struct ChordHandle {
-    group_handle: GroupHandle,
-    index: usize,
-}
 
 impl Chords {
     const GROUPS: usize = 2;
