@@ -178,16 +178,12 @@ impl Controller {
             // TODO: No unwrap or safety note
             let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
 
-            // TODO: No unwrap or a safety note
-            let selected_chord = self.chords.chord(chord_group_index, chord_index).unwrap();
-            // TODO: Later take it from the library based on selected chord
-            // TODO: Later take it from the library based on selected group too
-
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO: No unwrap or safety note
                 root: scale.get_note_by_index_ascending(note_index).unwrap(),
                 scale,
-                chord: selected_chord,
+                // TODO: No unwrap or a safety note
+                chord: self.chords.chord(chord_group_index, chord_index).unwrap(),
                 // TODO: No unwrap or safety note
                 mode: ArpeggiatorMode::try_from_index(arp_index).unwrap(),
             });

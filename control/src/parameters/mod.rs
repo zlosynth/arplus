@@ -36,7 +36,6 @@ pub struct PersistentConfig {
 
 impl Parameters {
     pub fn new(config: PersistentConfig, chords: &Chords) -> Self {
-        // TODO: Consider selected chord group too. Recovered from save Discrete attribute.
         let chord_group_parameter =
             Discrete::new(config.chord_group, chords.number_of_groups(), 0.1);
 
