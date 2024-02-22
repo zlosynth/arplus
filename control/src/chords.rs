@@ -15,20 +15,8 @@ impl Chords {
     const GROUPS: usize = 2;
 
     pub fn new() -> Self {
-        let group_1 = LibraryGroup::from_slice(&[
-            LibraryChord::from_slice(&[0, 2, 4]).unwrap(),
-            LibraryChord::from_slice(&[0, 1, 4]).unwrap(),
-            LibraryChord::from_slice(&[0, 3, 4]).unwrap(),
-        ])
-        .unwrap();
-        let group_2 = LibraryGroup::from_slice(&[
-            LibraryChord::from_slice(&[0, 2, 4, 6]).unwrap(),
-            LibraryChord::from_slice(&[0, 1, 4, 6]).unwrap(),
-            LibraryChord::from_slice(&[0, 3, 4, 6]).unwrap(),
-        ])
-        .unwrap();
-        // TODO: Check that groups are utilized to full capacity
-        // TODO: Check that no LibraryChord is bigger than Chord
+        let group_1 = initialize_group(&[&[0, 2, 4], &[0, 1, 4], &[0, 3, 4]]);
+        let group_2 = initialize_group(&[&[0, 2, 4, 6], &[0, 1, 4, 6], &[0, 3, 4, 6]]);
         Self { group_1, group_2 }
     }
 
@@ -44,9 +32,7 @@ impl Chords {
         Some(match group_index {
             0 => self.group_1.len(),
             1 => self.group_2.len(),
-            // TODO: Is this statically checked?
-            // Self::GROUPS.. => unreachable!(),
-            _ => unreachable!(),
+            _ => panic!("A valid group index is not covered"),
         })
     }
 
@@ -58,12 +44,32 @@ impl Chords {
         match group_index {
             0 => Chord::from_slice(self.group_1.get(chord_index).unwrap()),
             1 => Chord::from_slice(self.group_2.get(chord_index).unwrap()),
-            // TODO: Is this statically checked?
-            // Self::GROUPS.. => unreachable!(),
-            _ => unreachable!(),
+            _ => panic!("A valid group index is not covered"),
         }
         .ok()
     }
+}
+
+fn initialize_group<const N: usize, const D: usize>(chords_slice: &[&[i16]]) -> LibraryGroup<N, D> {
+    assert!(
+        D <= Chord::new().capacity(),
+        "LibraryGroup would contain bigger chords than is the maximum Chord capacity"
+    );
+    assert!(
+        chords_slice.len() == N,
+        "LibraryGroup would be over or underutilized"
+    );
+
+    let mut group = LibraryGroup::new();
+
+    for chord_slice in chords_slice {
+        let chord = LibraryChord::from_slice(chord_slice)
+            .expect("Given chord is bigger than LibraryGroup allows");
+        // SAFETY: The capacity is checked at the beginning of the function.
+        group.push(chord).unwrap();
+    }
+
+    group
 }
 
 #[cfg(test)]
