@@ -42,6 +42,7 @@ impl Chords {
         }
 
         match group_index {
+            // SAFETY: Correct capacity is checked during the initialization.
             0 => Chord::from_slice(self.group_1.get(chord_index).unwrap()),
             1 => Chord::from_slice(self.group_2.get(chord_index).unwrap()),
             _ => panic!("A valid group index is not covered"),
