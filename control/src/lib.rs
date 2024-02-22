@@ -10,17 +10,18 @@ mod random;
 pub mod save;
 mod scales;
 
-use arpeggiator::{
+use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
+
+use crate::arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
 };
-use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
-use chords::Chords;
-pub use inputs::ControlInputSnapshot;
-use inputs::Inputs;
-use parameters::Parameters;
-use random::RandomGenerator;
-use save::Save;
-use scales::{
+use crate::chords::Chords;
+pub use crate::inputs::ControlInputSnapshot;
+use crate::inputs::Inputs;
+use crate::parameters::Parameters;
+use crate::random::RandomGenerator;
+use crate::save::Save;
+use crate::scales::{
     scale::{Scale, S, T},
     scale_note::ScaleNote,
     tonic::Tonic,
@@ -73,8 +74,8 @@ impl Controller {
         let chords = Chords::new();
         let parameters = Parameters::new(save.parameters, &chords);
 
-        // TODO: Get group from parameters too.
-        // TODO: No unwrap or safety note
+        // SAFETY: Parameter values are always limited based on the selected
+        // chord group.
         let selected_chord = chords
             .chord(
                 parameters.chord_group.selected_value(),
@@ -82,20 +83,19 @@ impl Controller {
             )
             .unwrap();
 
-        // TODO: This will require input snapshot to initialize itself as well.
-        // TODO: This would be recovered from save.
-        let arp_config = ArpeggiatorConfiguration {
-            // TODO: No unwrap or safety note
+        // TODO: This will require input snapshot and save to initialize itself as well.
+        let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
             scale: Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap(),
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: selected_chord,
             mode: ArpeggiatorMode::Root,
-        };
+        });
+
         Self {
-            inputs: Inputs::new(),
             parameters,
             chords,
-            arp: Arpeggiator::new_with_configuration(arp_config),
+            arp,
+            inputs: Inputs::new(),
             random_generator: RandomGenerator::with_seed(seed),
         }
     }
@@ -151,9 +151,9 @@ impl Controller {
             .trigger
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
-        // TODO: Only on change of size
+        // SAFETY: Chord group index parameter is always limited by the maximum
+        // number of chord groups.
         let chord_group_index = self.parameters.chord_group.selected_value();
-        // TODO: No unwrap or safety note.
         self.parameters
             .chord
             .set_output_values(self.chords.number_of_chords(chord_group_index).unwrap());

@@ -23,6 +23,10 @@ impl Discrete {
     }
 
     pub fn set_output_values(&mut self, output_values: usize) {
+        if self.values == output_values {
+            return;
+        }
+
         self.block_width = 1.0 / output_values as f32;
         self.margin = self.relative_margin / output_values as f32;
         self.values = output_values;
