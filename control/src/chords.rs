@@ -71,8 +71,34 @@ mod tests {
     use super::*;
 
     #[test]
-    fn todo() {
+    fn initialize_chords() {
+        let _chords = Chords::new();
+    }
+
+    #[test]
+    fn get_chord() {
         let chords = Chords::new();
-        todo!();
+        let chord = chords.chord(0, 0).unwrap();
+        assert_eq!(&chord, &[0, 2, 4]);
+    }
+
+    #[test]
+    fn try_getting_group_out_of_range() {
+        let chords = Chords::new();
+        assert!(chords.chord(chords.number_of_groups(), 0).is_none());
+    }
+
+    #[test]
+    fn try_getting_chord_out_of_range() {
+        let chords = Chords::new();
+        assert!(chords
+            .chord(0, chords.number_of_chords(0).unwrap())
+            .is_none());
+    }
+
+    #[test]
+    fn try_getting_number_of_chords_out_of_range() {
+        let chords = Chords::new();
+        assert!(chords.number_of_chords(chords.number_of_groups()).is_none());
     }
 }
