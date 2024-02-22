@@ -24,21 +24,21 @@ impl Chords {
         Self::GROUPS
     }
 
-    pub fn number_of_chords(&self, group_index: usize) -> Option<usize> {
+    pub fn number_of_chords(&self, group_index: usize) -> Result<usize, ()> {
         if group_index >= self.number_of_groups() {
-            return None;
+            return Err(());
         }
 
-        Some(match group_index {
+        Ok(match group_index {
             0 => self.group_1.len(),
             1 => self.group_2.len(),
             _ => panic!("A valid group index is not covered"),
         })
     }
 
-    pub fn chord(&self, group_index: usize, chord_index: usize) -> Option<Chord> {
+    pub fn chord(&self, group_index: usize, chord_index: usize) -> Result<Chord, ()> {
         if chord_index >= self.number_of_chords(group_index)? {
-            return None;
+            return Err(());
         }
 
         match group_index {
@@ -46,7 +46,6 @@ impl Chords {
             1 => Chord::from_slice(self.group_2.get(chord_index).unwrap()),
             _ => panic!("A valid group index is not covered"),
         }
-        .ok()
     }
 }
 
@@ -91,7 +90,7 @@ mod tests {
     #[test]
     fn try_getting_group_out_of_range() {
         let chords = Chords::new();
-        assert!(chords.chord(chords.number_of_groups(), 0).is_none());
+        assert!(chords.chord(chords.number_of_groups(), 0).is_err());
     }
 
     #[test]
@@ -99,12 +98,12 @@ mod tests {
         let chords = Chords::new();
         assert!(chords
             .chord(0, chords.number_of_chords(0).unwrap())
-            .is_none());
+            .is_err());
     }
 
     #[test]
     fn try_getting_number_of_chords_out_of_range() {
         let chords = Chords::new();
-        assert!(chords.number_of_chords(chords.number_of_groups()).is_none());
+        assert!(chords.number_of_chords(chords.number_of_groups()).is_err());
     }
 }
