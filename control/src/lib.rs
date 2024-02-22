@@ -175,16 +175,17 @@ impl Controller {
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
-            // TODO: No unwrap or safety note
             let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
 
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO: No unwrap or safety note
                 root: scale.get_note_by_index_ascending(note_index).unwrap(),
                 scale,
-                // TODO: No unwrap or a safety note
+                // SAFETY: Parameter values used to get group and chord index
+                // are always limited based on the selected chord group.
                 chord: self.chords.chord(chord_group_index, chord_index).unwrap(),
-                // TODO: No unwrap or safety note
+                // SAFETY: Parameter values used to get arp index are
+                // statically limited by the maximum number of modes.
                 mode: ArpeggiatorMode::try_from_index(arp_index).unwrap(),
             });
 
