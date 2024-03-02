@@ -33,6 +33,19 @@ impl Toggle {
     }
 
     pub fn selected_value(&self) -> usize {
-        self.selected_value
+        // NOTE: In case the number of output values was changed,
+        // stick to the previous value, even if it is beyond the range.
+        // With this, it is possible to recover back to the original
+        // range without losing the position. The position is only
+        // lost on toggle.
+        usize::min(self.selected_value, self.values - 1)
+    }
+
+    pub fn set_output_values(&mut self, output_values: usize) {
+        if self.values == output_values {
+            return;
+        }
+
+        self.values = output_values;
     }
 }

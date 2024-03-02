@@ -8,7 +8,7 @@ use discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
 use toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 use trigger::DualTrigger;
 
-use crate::chords::Chords;
+use crate::{chords::Chords, scales::Scales};
 
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
@@ -18,8 +18,8 @@ pub struct Parameters {
     pub contour: Continuous,
     pub cutoff: Continuous,
     pub resonance: Continuous,
+    pub scale_group: Toggle,
     pub scale: Toggle,
-    pub mode: Toggle,
     pub arp: Toggle,
     pub trigger: DualTrigger,
 }
@@ -27,15 +27,15 @@ pub struct Parameters {
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
 pub struct PersistentConfig {
     pub tone: DiscretePersistentConfig,
-    pub chord: DiscretePersistentConfig,
     pub chord_group: DiscretePersistentConfig,
+    pub chord: DiscretePersistentConfig,
+    pub scale_group: TogglePersistentConfig,
     pub scale: TogglePersistentConfig,
-    pub mode: TogglePersistentConfig,
     pub arp: TogglePersistentConfig,
 }
 
 impl Parameters {
-    pub fn new(config: PersistentConfig, chords: &Chords) -> Self {
+    pub fn new(config: PersistentConfig, chords: &Chords, scales: &Scales) -> Self {
         let chord_group_parameter =
             Discrete::new(config.chord_group, chords.number_of_groups(), 0.1);
 
@@ -47,6 +47,16 @@ impl Parameters {
             Discrete::new(config.chord, number_of_chords_in_the_group, 0.1)
         };
 
+        let scale_group_parameter = Toggle::new(config.scale_group, scales.number_of_groups());
+
+        let scale_parameter = {
+            let selected_scale_group = scale_group_parameter.selected_value();
+            // TODO: No unwrap or safety note
+            let number_of_scales_in_the_group =
+                scales.number_of_scales(selected_scale_group).unwrap();
+            Toggle::new(config.scale, number_of_scales_in_the_group)
+        };
+
         Self {
             // TODO: Set proper ranges
             // TODO: Allow configuration of tonic
@@ -56,8 +66,8 @@ impl Parameters {
             contour: Continuous::new(),
             cutoff: Continuous::new(),
             resonance: Continuous::new(),
-            scale: Toggle::new(config.scale, 12),
-            mode: Toggle::new(config.mode, 8),
+            scale_group: scale_group_parameter,
+            scale: scale_parameter,
             arp: Toggle::new(config.arp, 6),
             trigger: DualTrigger::new(),
         }
@@ -68,8 +78,8 @@ impl Parameters {
             tone: self.tone.copy_config(),
             chord: self.chord.copy_config(),
             chord_group: self.chord_group.copy_config(),
+            scale_group: self.scale_group.copy_config(),
             scale: self.scale.copy_config(),
-            mode: self.mode.copy_config(),
             arp: self.arp.copy_config(),
         }
     }

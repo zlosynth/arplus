@@ -71,7 +71,7 @@ impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
         let scales = Scales::new();
         let chords = Chords::new();
-        let parameters = Parameters::new(save.parameters, &chords);
+        let parameters = Parameters::new(save.parameters, &chords, &scales);
 
         // SAFETY: Parameter values are always limited based on the selected
         // chord group.
@@ -146,8 +146,8 @@ impl Controller {
         parameters
             .resonance
             .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
-        needs_save |= parameters.scale.reconcile(buttons.tonic.released);
-        needs_save |= parameters.mode.reconcile(buttons.mode.released);
+        needs_save |= parameters.scale_group.reconcile(buttons.tonic.released);
+        needs_save |= parameters.scale.reconcile(buttons.mode.released);
         needs_save |= parameters.arp.reconcile(buttons.arp.released);
         parameters
             .trigger
@@ -160,8 +160,12 @@ impl Controller {
             .chord
             .set_output_values(self.chords.number_of_chords(chord_group_index).unwrap());
 
-        // TODO: Adjust other discrete parameters if a parameter dictating their
-        // length was changed.
+        // SAFETY: Scale group index parameter is always limited by the maximum
+        // number of scale groups.
+        let scale_group_index = self.parameters.scale_group.selected_value();
+        self.parameters
+            .scale
+            .set_output_values(self.scales.number_of_scales(scale_group_index).unwrap());
 
         needs_save
     }
@@ -169,15 +173,15 @@ impl Controller {
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
-            let chord_index = self.parameters.chord.selected_value();
             let chord_group_index = self.parameters.chord_group.selected_value();
-            let _ = self.parameters.scale.selected_value();
-            let _ = self.parameters.mode.selected_value();
+            let chord_index = self.parameters.chord.selected_value();
+            let scale_group_index = self.parameters.scale_group.selected_value();
+            let scale_index = self.parameters.scale.selected_value();
             let arp_index = self.parameters.arp.selected_value();
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
-            let scale = self.scales.scale(0, 0).unwrap();
+            let scale = self.scales.scale(scale_group_index, scale_index).unwrap();
 
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO
