@@ -82,11 +82,19 @@ impl Controller {
             )
             .unwrap();
 
+        // SAFETY: Parameter values are always limited based on the selected
+        // scale group.
+        let selected_scale = scales
+            .scale(
+                parameters.scale_group.selected_value(),
+                parameters.chord.selected_value(),
+            )
+            .unwrap();
+
         // TODO: This will require input snapshot and save to initialize itself as well.
         let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
             tonic: Tonic::C,
-            // TODO
-            scale: scales.scale(0, 0).unwrap(),
+            scale: selected_scale,
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: selected_chord,
             mode: ArpeggiatorMode::Root,
