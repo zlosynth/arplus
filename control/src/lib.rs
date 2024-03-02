@@ -21,16 +21,14 @@ use crate::inputs::Inputs;
 use crate::parameters::Parameters;
 use crate::random::RandomGenerator;
 use crate::save::Save;
-use crate::scales::{
-    scale::{Scale, S, T},
-    scale_note::ScaleNote,
-    tonic::Tonic,
-};
+use crate::scales::Scales;
+use crate::scales::{scale_note::ScaleNote, tonic::Tonic};
 
 pub struct Controller {
     inputs: Inputs,
     parameters: Parameters,
     chords: Chords,
+    scales: Scales,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
     // state: State,
@@ -71,6 +69,7 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
+        let scales = Scales::new();
         let chords = Chords::new();
         let parameters = Parameters::new(save.parameters, &chords);
 
@@ -85,7 +84,9 @@ impl Controller {
 
         // TODO: This will require input snapshot and save to initialize itself as well.
         let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
-            scale: Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap(),
+            tonic: Tonic::C,
+            // TODO
+            scale: scales.scale(0, 0).unwrap(),
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: selected_chord,
             mode: ArpeggiatorMode::Root,
@@ -93,6 +94,7 @@ impl Controller {
 
         Self {
             parameters,
+            scales,
             chords,
             arp,
             inputs: Inputs::new(),
@@ -175,11 +177,16 @@ impl Controller {
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
-            let scale = Scale::new(Tonic::C, &[T, T, S, T, T, T, S]).unwrap();
+            let scale = self.scales.scale(0, 0).unwrap();
 
             self.arp.apply_configuration(ArpeggiatorConfiguration {
+                // TODO
+                tonic: Tonic::C,
                 // TODO: No unwrap or safety note
-                root: scale.get_note_by_index_ascending(note_index).unwrap(),
+                root: scale
+                    .with_tonic(Tonic::C)
+                    .get_note_by_index_ascending(note_index)
+                    .unwrap(),
                 scale,
                 // SAFETY: Parameter values used to get group and chord index
                 // are always limited based on the selected chord group.

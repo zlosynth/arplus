@@ -11,17 +11,21 @@ pub const S: Step = 2;
 pub const T: Step = 4;
 
 #[derive(Clone, Debug, defmt::Format)]
-pub struct Scale {
+pub struct Scale<const N: usize> {
     tonic: Tonic,
-    ascending: Vec<Step, 7>,
+    ascending: Vec<Step, N>,
 }
 
-impl Scale {
+impl<const N: usize> Scale<N> {
     pub fn new(tonic: Tonic, ascending: &[Step]) -> Result<Self, ()> {
         Ok(Self {
             tonic,
             ascending: Vec::from_slice(ascending)?,
         })
+    }
+
+    pub fn capacity() -> usize {
+        N
     }
 
     pub fn quantize_voct_ascending(&self, voct: f32) -> Option<ScaleNote> {
@@ -145,12 +149,12 @@ mod tests {
 
     #[test]
     fn initialize_a_scale() {
-        let _scale = Scale::new(Tonic::C, &IONIAN).unwrap();
+        let _scale: Scale<7> = Scale::new(Tonic::C, &IONIAN).unwrap();
     }
 
     #[test]
     fn quantize_voct_to_scale_note_ascending_returns_note() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::C, &IONIAN).unwrap();
         let checks = [
             (1.0, ScaleNote::new(QuarterTone::C0, 0)),
             (1.0 + 0.9 / 12.0, ScaleNote::new(QuarterTone::C0, 0)),
@@ -164,13 +168,13 @@ mod tests {
 
     #[test]
     fn quantize_voct_to_scale_note_ascending_below_the_lowest_tonic_returns_none() {
-        let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::D, &IONIAN).unwrap();
         assert!(scale.quantize_voct_ascending(0.0).is_none());
     }
 
     #[test]
     fn get_note_by_index_ascending() {
-        let scale = Scale::new(Tonic::C, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::C, &IONIAN).unwrap();
         let checks = [
             (0, ScaleNote::new(QuarterTone::CMinus1, 0)),
             (7, ScaleNote::new(QuarterTone::C0, 0)),
@@ -187,7 +191,7 @@ mod tests {
 
     #[test]
     fn find_closest_tonic_below_voct() {
-        let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::D, &IONIAN).unwrap();
         let checks = [
             (1.0, QuarterTone::DMinus1),
             (1.0 + 2.1 / 12.0, QuarterTone::D0),
@@ -202,7 +206,7 @@ mod tests {
 
     #[test]
     fn find_surrounding_notes_ascending() {
-        let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::D, &IONIAN).unwrap();
         let checks = [
             (
                 1.0 + 1.9 / 12.0,
@@ -236,7 +240,7 @@ mod tests {
 
     #[test]
     fn get_note_in_interval_ascending() {
-        let scale = Scale::new(Tonic::D, &IONIAN).unwrap();
+        let scale: Scale<7> = Scale::new(Tonic::D, &IONIAN).unwrap();
         let checks = [
             (
                 ScaleNote::new(QuarterTone::D1, 0),
