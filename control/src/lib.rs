@@ -71,6 +71,7 @@ impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
         let scales = Scales::new();
         let chords = Chords::new();
+        // TODO: Recover them from an input snapshot too.
         let parameters = Parameters::new(save.parameters, &chords, &scales);
 
         // SAFETY: Parameter values are always limited based on the selected
@@ -92,12 +93,18 @@ impl Controller {
             .unwrap();
 
         // TODO: This will require input snapshot and save to initialize itself as well.
+        // Otherwise the root would move during the start. Once done, take all options
+        // from parameters.
+        // TODO: Once everything is taken from parameters, this can be move into
+        // a function shared with the attribute reconciliation.
         let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
             tonic: Tonic::C,
             scale: selected_scale,
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: selected_chord,
-            mode: ArpeggiatorMode::Root,
+            // SAFETY: Parameter values used to get arp index are
+            // statically limited by the maximum number of modes.
+            mode: ArpeggiatorMode::try_from_index(parameters.arp.selected_value()).unwrap(),
         });
 
         Self {
