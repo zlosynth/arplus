@@ -20,7 +20,7 @@ pub mod tonic;
 pub type Scale = LibraryScale<12>;
 
 pub struct Scales {
-    group_1: LibraryGroup<8, 7>, // Diatonic
+    group_1: LibraryGroup<7, 7>, // Diatonic
     group_2: LibraryGroup<1, 12>, // Chromatic
                                  // blues: (),
                                  // arabic: (),
