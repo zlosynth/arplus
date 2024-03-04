@@ -17,7 +17,7 @@ use crate::arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
 };
 use crate::chords::Chords;
-use crate::display::{CurrentStepScreen, Display, Priority, Screen};
+use crate::display::{ArpModeScreen, Display, Priority, Screen, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::parameters::Parameters;
@@ -167,7 +167,31 @@ impl Controller {
             .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
         needs_save |= parameters.scale_group.reconcile(buttons.tonic.released);
         needs_save |= parameters.scale.reconcile(buttons.mode.released);
-        needs_save |= parameters.arp.reconcile(buttons.arp.released);
+        needs_save |= if buttons.arp.held_for > 400 {
+            self.display.set(
+                Priority::Active,
+                Screen::ArpMode(ArpModeScreen::with_selected(
+                    parameters.arp.selected_value(),
+                )),
+            );
+            false
+        } else if buttons.arp.released && buttons.arp.released_after <= 400 {
+            // TODO: Use a constant
+            // TODO: Set a temporary display
+            let changed = parameters.arp.reconcile(buttons.arp.released);
+            self.display.set(
+                Priority::Active,
+                Screen::ArpMode(ArpModeScreen::with_selected(
+                    parameters.arp.selected_value(),
+                )),
+            );
+            changed
+        } else if buttons.arp.released {
+            self.display.reset(Priority::Active);
+            false
+        } else {
+            false
+        };
         parameters
             .trigger
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
@@ -233,7 +257,7 @@ impl Controller {
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 self.display.set(
                     Priority::Fallback,
-                    Screen::CurrentStep(CurrentStepScreen::with_step(note.index as usize)),
+                    Screen::Step(StepScreen::with_step(note.index as usize)),
                 );
                 let contour = self.parameters.contour.value();
                 let dsp_trigger_attributes = DSPTriggerAttributes {
