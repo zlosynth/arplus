@@ -87,6 +87,20 @@ impl Scales {
             _ => panic!("A valid group index is not covered"),
         }
     }
+
+    pub fn number_of_steps_in_group(&self, group_index: usize) -> Result<usize, ()> {
+        if group_index >= self.number_of_groups() {
+            return Err(());
+        }
+
+        // TODO: Get size. Maybe from a trait over the wrapper type?
+        Ok(match group_index {
+            // TODO: No unwrap or safety note
+            0 => self.group_1.get(0).unwrap().steps(),
+            1 => self.group_2.get(0).unwrap().steps(),
+            _ => panic!("A valid group index is not covered"),
+        })
+    }
 }
 
 impl<const S: usize> LibraryScale<S> {
@@ -113,6 +127,16 @@ impl<const S: usize> LibraryScale<S> {
     // TODO: Get a specific instance with tonic too
 }
 
+trait LibraryScaleTrait {
+    fn steps(&self) -> usize;
+}
+
+impl<const S: usize> LibraryScaleTrait for LibraryScale<S> {
+    fn steps(&self) -> usize {
+        S
+    }
+}
+
 fn initialize_group<const N: usize, const S: usize>(
     scales_slice: &[(&[Step], Option<&[Step]>)],
 ) -> LibraryGroup<N, S> {
@@ -127,7 +151,7 @@ fn initialize_group<const N: usize, const S: usize>(
 
     let mut group = LibraryGroup::new();
 
-    for (ascending_scale_slice, descending_scale_slice) in scales_slice {
+    for (ascending_scale_slice, _descending_scale_slice) in scales_slice {
         let chord = LibraryScale::new(ascending_scale_slice)
             .expect("Given scale is bigger than LibraryGroup allows");
         // SAFETY: The capacity is checked at the beginning of the function.

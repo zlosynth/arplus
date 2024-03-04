@@ -57,10 +57,19 @@ impl Parameters {
             Toggle::new(config.scale, number_of_scales_in_the_group)
         };
 
+        let tone_parameter = {
+            const OCTAVES: usize = 7;
+            // TODO: No unwrap or safety note
+            let steps_in_scale = scales
+                .number_of_steps_in_group(scale_group_parameter.selected_value())
+                .unwrap();
+            Discrete::new(config.tone, OCTAVES * steps_in_scale, 0.1)
+        };
+
         Self {
             // TODO: Set proper ranges
             // TODO: Allow configuration of tonic
-            tone: Discrete::new(config.tone, 7 * 6, 0.1),
+            tone: tone_parameter,
             chord: chord_parameter,
             chord_group: chord_group_parameter,
             contour: Continuous::new(),

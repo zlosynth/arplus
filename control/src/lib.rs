@@ -88,7 +88,7 @@ impl Controller {
         let selected_scale = scales
             .scale(
                 parameters.scale_group.selected_value(),
-                parameters.chord.selected_value(),
+                parameters.scale.selected_value(),
             )
             .unwrap();
 
@@ -181,6 +181,17 @@ impl Controller {
         self.parameters
             .scale
             .set_output_values(self.scales.number_of_scales(scale_group_index).unwrap());
+
+        // TODO: Safety
+        const OCTAVES: usize = 7;
+        // TODO: No unwrap or safety note
+        let steps_in_scale = self
+            .scales
+            .number_of_steps_in_group(self.parameters.scale_group.selected_value())
+            .unwrap();
+        self.parameters
+            .tone
+            .set_output_values(steps_in_scale * OCTAVES);
 
         needs_save
     }
