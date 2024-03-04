@@ -4,6 +4,7 @@
 
 mod arpeggiator;
 mod chords;
+mod display;
 mod inputs;
 mod parameters;
 mod random;
@@ -16,6 +17,7 @@ use crate::arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
 };
 use crate::chords::Chords;
+use crate::display::{CurrentStepScreen, Display, Priority, Screen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::parameters::Parameters;
@@ -25,6 +27,7 @@ use crate::scales::Scales;
 use crate::scales::{scale_note::ScaleNote, tonic::Tonic};
 
 pub struct Controller {
+    display: Display,
     inputs: Inputs,
     parameters: Parameters,
     chords: Chords,
@@ -108,6 +111,7 @@ impl Controller {
         });
 
         Self {
+            display: Display::new(),
             parameters,
             scales,
             chords,
@@ -227,6 +231,10 @@ impl Controller {
             });
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
+                self.display.set(
+                    Priority::Fallback,
+                    Screen::CurrentStep(CurrentStepScreen::with_step(note.index as usize)),
+                );
                 let contour = self.parameters.contour.value();
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone.frequency(),
@@ -249,7 +257,14 @@ impl Controller {
     }
 
     pub fn tick(&mut self) -> ControlOutputState {
-        ControlOutputState { leds: [true; 8] }
+        self.display.tick();
+        ControlOutputState {
+            leds: if let Some(active_screen) = self.display.active_screen() {
+                active_screen.leds()
+            } else {
+                [false; 8]
+            },
+        }
     }
 }
 
