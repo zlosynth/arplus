@@ -3,6 +3,7 @@
 pub enum Priority {
     Failure = 0,
     Dialog,
+    Queried,
     Active,
     Fallback,
 }
@@ -114,7 +115,6 @@ impl ArpModeScreen {
         if self.countdown > 0 {
             Some(Screen::ArpMode(self))
         } else {
-            defmt::info!("NONENONENONE");
             None
         }
     }

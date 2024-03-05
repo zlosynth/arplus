@@ -123,7 +123,7 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
-        let needs_save = self.reconcile_parameters_with_inputs();
+        let needs_save = self.reconcile_display_and_parameters_with_inputs();
         let save = if needs_save {
             Some(Save {
                 parameters: self.parameters.copy_config(),
@@ -139,7 +139,7 @@ impl Controller {
         }
     }
 
-    fn reconcile_parameters_with_inputs(&mut self) -> bool {
+    fn reconcile_display_and_parameters_with_inputs(&mut self) -> bool {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
@@ -167,31 +167,36 @@ impl Controller {
             .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
         needs_save |= parameters.scale_group.reconcile(buttons.tonic.released);
         needs_save |= parameters.scale.reconcile(buttons.mode.released);
+
+        let mut queried_display = None;
+        let mut active_display = None;
         needs_save |= if buttons.arp.held_for > 400 {
-            self.display.set(
-                Priority::Active,
-                Screen::ArpMode(ArpModeScreen::with_selected(
-                    parameters.arp.selected_value(),
-                )),
-            );
+            queried_display = Some(Screen::ArpMode(ArpModeScreen::with_selected(
+                parameters.arp.selected_value(),
+            )));
             false
         } else if buttons.arp.released && buttons.arp.released_after <= 400 {
             // TODO: Use a constant
             // TODO: Set a temporary display
             let changed = parameters.arp.reconcile(buttons.arp.released);
-            self.display.set(
-                Priority::Active,
-                Screen::ArpMode(ArpModeScreen::with_selected(
-                    parameters.arp.selected_value(),
-                )),
-            );
+            active_display = Some(Screen::ArpMode(ArpModeScreen::with_selected(
+                parameters.arp.selected_value(),
+            )));
             changed
-        } else if buttons.arp.released {
-            self.display.reset(Priority::Active);
-            false
         } else {
             false
         };
+
+        if let Some(active_display) = active_display {
+            self.display.set(Priority::Active, active_display);
+        };
+
+        if let Some(queried_display) = queried_display {
+            self.display.set(Priority::Queried, queried_display);
+        } else {
+            self.display.reset(Priority::Queried);
+        };
+
         parameters
             .trigger
             .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
