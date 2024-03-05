@@ -41,8 +41,8 @@ pub struct Cvs {
 }
 
 pub struct Buttons {
-    pub tonic: Button,
-    pub mode: Button,
+    pub scale_group: Button,
+    pub scale: Button,
     pub arp: Button,
     pub trigger: Button,
 }
@@ -69,8 +69,8 @@ impl Inputs {
                 trigger: CvTrigger::new(),
             },
             buttons: Buttons {
-                tonic: Button::new(),
-                mode: Button::new(),
+                scale_group: Button::new(),
+                scale: Button::new(),
                 arp: Button::new(),
                 trigger: Button::new(),
             },
@@ -93,8 +93,8 @@ impl Inputs {
         self.cvs.resonance.reconcile(snapshot.cvs[5]);
         self.cvs.trigger.reconcile(snapshot.gates[0]);
 
-        self.buttons.tonic.reconcile(snapshot.buttons[0]);
-        self.buttons.mode.reconcile(snapshot.buttons[1]);
+        self.buttons.scale_group.reconcile(snapshot.buttons[0]);
+        self.buttons.scale.reconcile(snapshot.buttons[1]);
         self.buttons.arp.reconcile(snapshot.buttons[2]);
         self.buttons.trigger.reconcile(snapshot.buttons[3]);
     }

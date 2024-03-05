@@ -169,8 +169,24 @@ impl Controller {
         parameters
             .resonance
             .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
-        needs_save |= parameters.scale_group.reconcile(buttons.tonic.released);
-        needs_save |= parameters.scale.reconcile(buttons.mode.released);
+
+        if buttons.scale_group.held_for > HOLD_TO_QUERY {
+            queried_display = Some(Screen::scale_group(parameters.scale_group.selected_value()));
+        } else if buttons.scale_group.released
+            && buttons.scale_group.released_after <= HOLD_TO_QUERY
+        {
+            needs_save |= parameters
+                .scale_group
+                .reconcile(buttons.scale_group.released);
+            active_display = Some(Screen::scale_group(parameters.scale_group.selected_value()));
+        };
+
+        if buttons.scale.held_for > HOLD_TO_QUERY {
+            queried_display = Some(Screen::scale(parameters.scale.selected_value()));
+        } else if buttons.scale.released && buttons.scale.released_after <= HOLD_TO_QUERY {
+            needs_save |= parameters.scale.reconcile(buttons.scale.released);
+            active_display = Some(Screen::scale(parameters.scale.selected_value()));
+        };
 
         if buttons.arp.held_for > HOLD_TO_QUERY {
             queried_display = Some(Screen::arp_mode(parameters.arp.selected_value()));
