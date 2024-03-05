@@ -132,7 +132,7 @@ impl Controller {
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
         // TODO: the following should return both save and display requests
-        let needs_save = self.reconcile_display_and_parameters_with_inputs();
+        let (needs_save, display_request) = self.reconcile_display_and_parameters_with_inputs();
         let save = if needs_save {
             Some(Save {
                 parameters: self.parameters.copy_config(),
@@ -144,6 +144,7 @@ impl Controller {
         let dsp_attributes = self.generate_dsp_attributes();
 
         // TODO: Here display requests should be merged and applied
+        self.apply_display_request(display_request);
 
         Result {
             save,
@@ -151,7 +152,19 @@ impl Controller {
         }
     }
 
-    fn reconcile_display_and_parameters_with_inputs(&mut self) -> bool {
+    fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
+        if let Some(active_screen) = display_request.take_active_screen() {
+            self.display.set(Priority::Active, active_screen);
+        };
+
+        if let Some(queried_screen) = display_request.take_queried_screen() {
+            self.display.set(Priority::Queried, queried_screen);
+        } else {
+            self.display.reset(Priority::Queried);
+        };
+    }
+
+    fn reconcile_display_and_parameters_with_inputs(&mut self) -> (bool, DisplayRequest) {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
@@ -199,17 +212,6 @@ impl Controller {
         );
         reconcile_dual_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
 
-        // TODO: This would be moved to the higher level. All this method would do is returning the display request.
-        if let Some(active_screen) = display_request.take_active_screen() {
-            self.display.set(Priority::Active, active_screen);
-        };
-
-        if let Some(queried_screen) = display_request.take_queried_screen() {
-            self.display.set(Priority::Queried, queried_screen);
-        } else {
-            self.display.reset(Priority::Queried);
-        };
-
         // TODO: Move what's bellow to its own function or method called from the parent
         // TODO: See if what's bellow could be shared with the initialization code too
 
@@ -238,7 +240,7 @@ impl Controller {
             .tone
             .set_output_values(steps_in_scale * OCTAVES);
 
-        needs_save
+        (needs_save, display_request)
     }
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
@@ -355,10 +357,6 @@ impl DisplayRequest {
 
     fn set(&mut self, priority: Priority, screen: Screen) {
         self.prioritized[priority as usize] = Some(screen);
-    }
-
-    fn reset(&mut self, priority: Priority) {
-        self.prioritized[priority as usize] = None;
     }
 
     fn merge(mut self, mut other: Self) -> Self {
