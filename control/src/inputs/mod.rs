@@ -3,10 +3,10 @@ mod cv;
 mod cv_trigger;
 mod pot;
 
-use button::Button;
-use cv::Cv;
-use cv_trigger::CvTrigger;
-use pot::Pot;
+pub use button::Button;
+pub use cv::Cv;
+pub use cv_trigger::CvTrigger;
+pub use pot::Pot;
 
 pub struct ControlInputSnapshot {
     pub pots: [f32; 6],
@@ -24,7 +24,7 @@ pub struct Inputs {
 pub struct Pots {
     pub tone: Pot,
     pub chord: Pot,
-    pub size: Pot,
+    pub chord_group: Pot,
     pub contour: Pot,
     pub cutoff: Pot,
     pub resonance: Pot,
@@ -33,7 +33,7 @@ pub struct Pots {
 pub struct Cvs {
     pub tone: Cv,
     pub chord: Cv,
-    pub size: Cv,
+    pub chord_group: Cv,
     pub contour: Cv,
     pub cutoff: Cv,
     pub resonance: Cv,
@@ -53,7 +53,7 @@ impl Inputs {
             pots: Pots {
                 tone: Pot::new(),
                 chord: Pot::new(),
-                size: Pot::new(),
+                chord_group: Pot::new(),
                 contour: Pot::new(),
                 cutoff: Pot::new(),
                 resonance: Pot::new(),
@@ -61,7 +61,7 @@ impl Inputs {
             cvs: Cvs {
                 tone: Cv::new(),
                 chord: Cv::new(),
-                size: Cv::new(),
+                chord_group: Cv::new(),
                 contour: Cv::new(),
                 cutoff: Cv::new(),
                 resonance: Cv::new(),
@@ -82,14 +82,14 @@ impl Inputs {
         self.pots.contour.reconcile(snapshot.pots[1]);
         self.pots.cutoff.reconcile(snapshot.pots[2]);
         self.pots.chord.reconcile(snapshot.pots[3]);
-        self.pots.size.reconcile(snapshot.pots[4]);
+        self.pots.chord_group.reconcile(snapshot.pots[4]);
         self.pots.resonance.reconcile(snapshot.pots[5]);
 
         self.cvs.tone.reconcile(snapshot.cvs[0]);
         self.cvs.contour.reconcile(snapshot.cvs[1]);
         self.cvs.cutoff.reconcile(snapshot.cvs[2]);
         self.cvs.chord.reconcile(snapshot.cvs[3]);
-        self.cvs.size.reconcile(snapshot.cvs[4]);
+        self.cvs.chord_group.reconcile(snapshot.cvs[4]);
         self.cvs.resonance.reconcile(snapshot.cvs[5]);
         self.cvs.trigger.reconcile(snapshot.gates[0]);
 

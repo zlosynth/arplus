@@ -12,6 +12,8 @@ pub mod save;
 mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
+use inputs::{Button, Buttons, Cv, CvTrigger, Pot};
+use parameters::{Continuous, Discrete, DualTrigger};
 
 use crate::arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
@@ -20,11 +22,13 @@ use crate::chords::Chords;
 use crate::display::{ArpModeScreen, Display, Priority, Screen, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
-use crate::parameters::Parameters;
+use crate::parameters::{Parameters, Toggle};
 use crate::random::RandomGenerator;
 use crate::save::Save;
 use crate::scales::Scales;
 use crate::scales::{scale_note::ScaleNote, tonic::Tonic};
+
+const HOLD_TO_QUERY: usize = 400;
 
 pub struct Controller {
     display: Display,
@@ -68,6 +72,10 @@ pub struct Result {
 
 pub struct ControlOutputState {
     pub leds: [bool; 8],
+}
+
+struct DisplayRequest {
+    prioritized: [Option<Screen>; 5],
 }
 
 impl Controller {
@@ -123,6 +131,7 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
+        // TODO: the following should return both save and display requests
         let needs_save = self.reconcile_display_and_parameters_with_inputs();
         let save = if needs_save {
             Some(Save {
@@ -131,7 +140,10 @@ impl Controller {
         } else {
             None
         };
+        // TODO: This should also return display requests
         let dsp_attributes = self.generate_dsp_attributes();
+
+        // TODO: Here display requests should be merged and applied
 
         Result {
             save,
@@ -140,74 +152,66 @@ impl Controller {
     }
 
     fn reconcile_display_and_parameters_with_inputs(&mut self) -> bool {
-        const HOLD_TO_QUERY: usize = 400;
-
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
         let parameters = &mut self.parameters;
 
         let mut needs_save = false;
-        let mut queried_display = None;
-        let mut active_display = None;
+        let mut display_request = DisplayRequest::new();
 
-        needs_save |= parameters
-            .tone
-            .reconcile(linear_sum(pots.tone.value, cvs.tone.value));
-        needs_save |= parameters
-            .chord
-            .reconcile(linear_sum(pots.chord.value, cvs.chord.value));
-        needs_save |= parameters
-            .chord_group
-            .reconcile(linear_sum(pots.size.value, cvs.size.value));
-        parameters
-            .contour
-            .reconcile(linear_sum(pots.contour.value, cvs.contour.value));
-        parameters
-            .cutoff
-            .reconcile(linear_sum(pots.cutoff.value, cvs.cutoff.value));
-        parameters
-            .resonance
-            .reconcile(linear_sum(pots.resonance.value, cvs.resonance.value));
+        reconcile_discrete(&pots.tone, &cvs.tone, &mut parameters.tone, &mut needs_save);
+        reconcile_discrete(
+            &pots.chord,
+            &cvs.chord,
+            &mut parameters.chord,
+            &mut needs_save,
+        );
+        reconcile_discrete(
+            &pots.chord_group,
+            &cvs.chord_group,
+            &mut parameters.chord_group,
+            &mut needs_save,
+        );
+        reconcile_continuous(&pots.contour, &cvs.contour, &mut parameters.contour);
+        reconcile_continuous(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
+        reconcile_continuous(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
+        reconcile_toggle(
+            &buttons.scale_group,
+            &mut parameters.scale_group,
+            &mut display_request,
+            &mut needs_save,
+            |selected| Screen::scale_group(selected),
+        );
+        reconcile_toggle(
+            &buttons.scale,
+            &mut parameters.scale,
+            &mut display_request,
+            &mut needs_save,
+            |selected| Screen::scale(selected),
+        );
+        reconcile_toggle(
+            &buttons.arp,
+            &mut parameters.arp,
+            &mut display_request,
+            &mut needs_save,
+            |selected| Screen::arp_mode(selected),
+        );
+        reconcile_dual_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
 
-        if buttons.scale_group.held_for > HOLD_TO_QUERY {
-            queried_display = Some(Screen::scale_group(parameters.scale_group.selected_value()));
-        } else if buttons.scale_group.released
-            && buttons.scale_group.released_after <= HOLD_TO_QUERY
-        {
-            needs_save |= parameters
-                .scale_group
-                .reconcile(buttons.scale_group.released);
-            active_display = Some(Screen::scale_group(parameters.scale_group.selected_value()));
+        // TODO: This would be moved to the higher level. All this method would do is returning the display request.
+        if let Some(active_screen) = display_request.take_active_screen() {
+            self.display.set(Priority::Active, active_screen);
         };
 
-        if buttons.scale.held_for > HOLD_TO_QUERY {
-            queried_display = Some(Screen::scale(parameters.scale.selected_value()));
-        } else if buttons.scale.released && buttons.scale.released_after <= HOLD_TO_QUERY {
-            needs_save |= parameters.scale.reconcile(buttons.scale.released);
-            active_display = Some(Screen::scale(parameters.scale.selected_value()));
-        };
-
-        if buttons.arp.held_for > HOLD_TO_QUERY {
-            queried_display = Some(Screen::arp_mode(parameters.arp.selected_value()));
-        } else if buttons.arp.released && buttons.arp.released_after <= HOLD_TO_QUERY {
-            needs_save |= parameters.arp.reconcile(buttons.arp.released);
-            active_display = Some(Screen::arp_mode(parameters.arp.selected_value()));
-        };
-
-        parameters
-            .trigger
-            .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
-
-        if let Some(active_display) = active_display {
-            self.display.set(Priority::Active, active_display);
-        };
-
-        if let Some(queried_display) = queried_display {
-            self.display.set(Priority::Queried, queried_display);
+        if let Some(queried_screen) = display_request.take_queried_screen() {
+            self.display.set(Priority::Queried, queried_screen);
         } else {
             self.display.reset(Priority::Queried);
         };
+
+        // TODO: Move what's bellow to its own function or method called from the parent
+        // TODO: See if what's bellow could be shared with the initialization code too
 
         // SAFETY: Chord group index parameter is always limited by the maximum
         // number of chord groups.
@@ -302,6 +306,74 @@ impl Controller {
                 [false; 8]
             },
         }
+    }
+}
+
+fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: &mut bool) {
+    *needs_save |= parameter.reconcile(linear_sum(pot.value, cv.value));
+}
+
+fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
+    parameter.reconcile(linear_sum(pot.value, cv.value));
+}
+
+fn reconcile_dual_trigger(button: &Button, cv: &CvTrigger, parameter: &mut DualTrigger) {
+    parameter.reconcile(button.clicked || cv.triggered);
+}
+
+fn reconcile_toggle<F: FnOnce(usize) -> Screen>(
+    button: &Button,
+    parameter: &mut Toggle,
+    display_request: &mut DisplayRequest,
+    needs_save: &mut bool,
+    screen_constructor: F,
+) {
+    if is_button_held(button) {
+        let selected = parameter.selected_value();
+        display_request.set(Priority::Queried, screen_constructor(selected));
+    } else if was_button_tapped(button) {
+        *needs_save |= parameter.reconcile(true);
+        let selected = parameter.selected_value();
+        display_request.set(Priority::Active, screen_constructor(selected));
+    };
+}
+
+fn was_button_tapped(button: &Button) -> bool {
+    button.released && button.released_after <= HOLD_TO_QUERY
+}
+
+fn is_button_held(button: &Button) -> bool {
+    button.held_for > HOLD_TO_QUERY
+}
+
+impl DisplayRequest {
+    fn new() -> Self {
+        Self {
+            prioritized: [None, None, None, None, None],
+        }
+    }
+
+    fn set(&mut self, priority: Priority, screen: Screen) {
+        self.prioritized[priority as usize] = Some(screen);
+    }
+
+    fn reset(&mut self, priority: Priority) {
+        self.prioritized[priority as usize] = None;
+    }
+
+    fn merge(mut self, mut other: Self) -> Self {
+        for (i, screen) in self.prioritized.iter_mut().enumerate() {
+            *screen = screen.take().or(other.prioritized[i].take());
+        }
+        self
+    }
+
+    fn take_active_screen(&mut self) -> Option<Screen> {
+        self.prioritized[Priority::Active as usize].take()
+    }
+
+    fn take_queried_screen(&mut self) -> Option<Screen> {
+        self.prioritized[Priority::Queried as usize].take()
     }
 }
 

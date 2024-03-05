@@ -3,10 +3,13 @@ mod discrete;
 mod toggle;
 mod trigger;
 
-use continuous::Continuous;
-use discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
-use toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
-use trigger::DualTrigger;
+use discrete::PersistentConfig as DiscretePersistentConfig;
+use toggle::PersistentConfig as TogglePersistentConfig;
+
+pub use continuous::Continuous;
+pub use discrete::Discrete;
+pub use toggle::Toggle;
+pub use trigger::DualTrigger;
 
 use crate::{chords::Chords, scales::Scales};
 
