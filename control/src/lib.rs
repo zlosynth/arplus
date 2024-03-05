@@ -131,12 +131,9 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
-        // TODO: the following should return both save and display requests
-        let (needs_save, display_request) = self.reconcile_display_and_parameters_with_inputs();
+        let (needs_save, display_request) = self.reconcile_parameters_with_inputs();
         let save = if needs_save {
-            Some(Save {
-                parameters: self.parameters.copy_config(),
-            })
+            Some(self.generate_save())
         } else {
             None
         };
@@ -152,19 +149,7 @@ impl Controller {
         }
     }
 
-    fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
-        if let Some(active_screen) = display_request.take_active_screen() {
-            self.display.set(Priority::Active, active_screen);
-        };
-
-        if let Some(queried_screen) = display_request.take_queried_screen() {
-            self.display.set(Priority::Queried, queried_screen);
-        } else {
-            self.display.reset(Priority::Queried);
-        };
-    }
-
-    fn reconcile_display_and_parameters_with_inputs(&mut self) -> (bool, DisplayRequest) {
+    fn reconcile_parameters_with_inputs(&mut self) -> (bool, DisplayRequest) {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
@@ -297,6 +282,25 @@ impl Controller {
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
         }
+    }
+
+    fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
+        if let Some(active_screen) = display_request.take_active_screen() {
+            self.display.set(Priority::Active, active_screen);
+        };
+
+        if let Some(queried_screen) = display_request.take_queried_screen() {
+            self.display.set(Priority::Queried, queried_screen);
+        } else {
+            self.display.reset(Priority::Queried);
+        };
+    }
+
+    fn generate_save(&mut self) -> Save {
+        let save = Save {
+            parameters: self.parameters.copy_config(),
+        };
+        save
     }
 
     pub fn tick(&mut self) -> ControlOutputState {
