@@ -140,12 +140,16 @@ impl Controller {
     }
 
     fn reconcile_display_and_parameters_with_inputs(&mut self) -> bool {
+        const HOLD_TO_QUERY: usize = 400;
+
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
         let parameters = &mut self.parameters;
 
         let mut needs_save = false;
+        let mut queried_display = None;
+        let mut active_display = None;
 
         needs_save |= parameters
             .tone
@@ -168,24 +172,16 @@ impl Controller {
         needs_save |= parameters.scale_group.reconcile(buttons.tonic.released);
         needs_save |= parameters.scale.reconcile(buttons.mode.released);
 
-        let mut queried_display = None;
-        let mut active_display = None;
-        needs_save |= if buttons.arp.held_for > 400 {
-            queried_display = Some(Screen::ArpMode(ArpModeScreen::with_selected(
-                parameters.arp.selected_value(),
-            )));
-            false
-        } else if buttons.arp.released && buttons.arp.released_after <= 400 {
-            // TODO: Use a constant
-            // TODO: Set a temporary display
-            let changed = parameters.arp.reconcile(buttons.arp.released);
-            active_display = Some(Screen::ArpMode(ArpModeScreen::with_selected(
-                parameters.arp.selected_value(),
-            )));
-            changed
-        } else {
-            false
+        if buttons.arp.held_for > HOLD_TO_QUERY {
+            queried_display = Some(Screen::arp_mode(parameters.arp.selected_value()));
+        } else if buttons.arp.released && buttons.arp.released_after <= HOLD_TO_QUERY {
+            needs_save |= parameters.arp.reconcile(buttons.arp.released);
+            active_display = Some(Screen::arp_mode(parameters.arp.selected_value()));
         };
+
+        parameters
+            .trigger
+            .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
         if let Some(active_display) = active_display {
             self.display.set(Priority::Active, active_display);
@@ -196,10 +192,6 @@ impl Controller {
         } else {
             self.display.reset(Priority::Queried);
         };
-
-        parameters
-            .trigger
-            .reconcile(buttons.trigger.clicked || cvs.trigger.triggered);
 
         // SAFETY: Chord group index parameter is always limited by the maximum
         // number of chord groups.

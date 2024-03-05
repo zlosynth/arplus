@@ -18,6 +18,12 @@ pub enum Screen {
     ArpMode(ArpModeScreen),
 }
 
+impl Screen {
+    pub fn arp_mode(mode: usize) -> Self {
+        Self::ArpMode(ArpModeScreen::with_selected(mode))
+    }
+}
+
 #[derive(Debug, defmt::Format)]
 pub struct StepScreen {
     step: usize,
