@@ -131,17 +131,14 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
-        let (needs_save, display_request) = self.reconcile_parameters_with_inputs();
+        let (needs_save, display_request_a) = self.reconcile_parameters_with_inputs();
         let save = if needs_save {
             Some(self.generate_save())
         } else {
             None
         };
-        // TODO: This should also return display requests
-        let dsp_attributes = self.generate_dsp_attributes();
-
-        // TODO: Here display requests should be merged and applied
-        self.apply_display_request(display_request);
+        let (dsp_attributes, display_request_b) = self.generate_dsp_attributes();
+        self.apply_display_request(display_request_a.merge(display_request_b));
 
         Result {
             save,
@@ -228,7 +225,7 @@ impl Controller {
         (needs_save, display_request)
     }
 
-    fn generate_dsp_attributes(&mut self) -> DSPAttributes {
+    fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
             let chord_group_index = self.parameters.chord_group.selected_value();
@@ -277,11 +274,14 @@ impl Controller {
             None
         };
 
-        DSPAttributes {
-            resonance: self.parameters.resonance.value(),
-            cutoff: self.parameters.cutoff.value(),
-            trigger: trigger_attributes,
-        }
+        (
+            DSPAttributes {
+                resonance: self.parameters.resonance.value(),
+                cutoff: self.parameters.cutoff.value(),
+                trigger: trigger_attributes,
+            },
+            DisplayRequest::new(),
+        )
     }
 
     fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
