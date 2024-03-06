@@ -20,6 +20,7 @@ pub enum Screen {
     ArpMode(ArpModeScreen),
     Scale(ScaleScreen),
     ScaleGroup(ScaleGroupScreen),
+    ChordGroup(ChordGroupScreen),
 }
 
 impl Screen {
@@ -33,6 +34,10 @@ impl Screen {
 
     pub fn scale_group(scale_group: usize) -> Self {
         Self::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
+    }
+
+    pub fn chord_group(selected: crate::chords::GroupId, chords: &crate::chords::Chords) -> Screen {
+        Self::ChordGroup(ChordGroupScreen::with_size(chords.group_size(selected)))
     }
 }
 
@@ -56,6 +61,12 @@ pub struct ScaleScreen {
 #[derive(Debug, defmt::Format)]
 pub struct ScaleGroupScreen {
     scale_group: usize,
+    countdown: usize,
+}
+
+#[derive(Debug, defmt::Format)]
+pub struct ChordGroupScreen {
+    chord_group_size: usize,
     countdown: usize,
 }
 
@@ -93,6 +104,7 @@ impl Screen {
             Screen::ArpMode(s) => s.leds(),
             Screen::Scale(s) => s.leds(),
             Screen::ScaleGroup(s) => s.leds(),
+            Screen::ChordGroup(s) => s.leds(),
         }
     }
 
@@ -102,6 +114,7 @@ impl Screen {
             Screen::ArpMode(s) => s.ticked(),
             Screen::Scale(s) => s.ticked(),
             Screen::ScaleGroup(s) => s.ticked(),
+            Screen::ChordGroup(s) => s.ticked(),
         }
     }
 }
@@ -204,6 +217,34 @@ impl ScaleGroupScreen {
         self.countdown -= 1;
         if self.countdown > 0 {
             Some(Screen::ScaleGroup(self))
+        } else {
+            None
+        }
+    }
+}
+
+impl ChordGroupScreen {
+    pub fn with_size(chord_group_size: usize) -> Self {
+        Self {
+            chord_group_size,
+            countdown: 2000,
+        }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        // TODO: Show properly steps above 8
+        let mut leds = [false; 8];
+        if let Some(led) = leds.get_mut(self.chord_group_size) {
+            *led = true;
+        }
+        leds
+    }
+
+    fn ticked(mut self) -> Option<Screen> {
+        // TODO: It's odd to return it wrapped in an outter type?
+        self.countdown -= 1;
+        if self.countdown > 0 {
+            Some(Screen::ChordGroup(self))
         } else {
             None
         }

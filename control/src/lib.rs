@@ -163,7 +163,9 @@ impl Controller {
         reconcile_chord_group_id(
             &pots.chord_group,
             &cvs.chord_group,
+            &self.chords,
             &mut parameters.chord_group_id,
+            &mut display_request,
             &mut needs_save,
         );
         reconcile_continuous(&pots.contour, &cvs.contour, &mut parameters.contour);
@@ -323,11 +325,19 @@ fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: 
 fn reconcile_chord_group_id(
     pot: &Pot,
     cv: &Cv,
+    chords: &Chords,
     parameter: &mut parameters::ChordGroupId,
+    display_request: &mut DisplayRequest,
     needs_save: &mut bool,
 ) {
-    // TODO: Update display too
-    *needs_save |= parameter.reconcile(pot.value, cv.value);
+    let changed = parameter.reconcile(pot.value, cv.value);
+    *needs_save |= changed;
+    // TODO: If changed, show it as active on display.
+    if changed {
+        let selected = parameter.selected();
+        display_request.set(Priority::Active, Screen::chord_group(selected, chords));
+    }
+    // TODO: If active above treshold, show it too
 }
 
 fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {

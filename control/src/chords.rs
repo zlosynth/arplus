@@ -45,6 +45,14 @@ impl Chords {
             GroupId::Size4 => Chord::from_slice(self.size_4.get(chord_index).unwrap()),
         }
     }
+
+    pub fn group_size(&self, group_id: GroupId) -> usize {
+        // TODO: Add safety note, or implement it as a const method of group
+        match group_id {
+            GroupId::Size3 => self.size_3.get(0).unwrap().len(),
+            GroupId::Size4 => self.size_4.get(0).unwrap().len(),
+        }
+    }
 }
 
 impl TryFrom<usize> for GroupId {
