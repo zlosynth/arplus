@@ -1,3 +1,5 @@
+use crate::arpeggiator::Mode as ArpMode;
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
 pub enum Priority {
@@ -21,7 +23,7 @@ pub enum Screen {
 }
 
 impl Screen {
-    pub fn arp_mode(mode: usize) -> Self {
+    pub fn arp_mode(mode: ArpMode) -> Self {
         Self::ArpMode(ArpModeScreen::with_selected(mode))
     }
 
@@ -41,7 +43,7 @@ pub struct StepScreen {
 
 #[derive(Debug, defmt::Format)]
 pub struct ArpModeScreen {
-    mode: usize,
+    mode: ArpMode,
     countdown: usize,
 }
 
@@ -125,7 +127,7 @@ impl StepScreen {
 }
 
 impl ArpModeScreen {
-    pub fn with_selected(mode: usize) -> Self {
+    pub fn with_selected(mode: ArpMode) -> Self {
         Self {
             mode,
             countdown: 2000,
@@ -135,7 +137,7 @@ impl ArpModeScreen {
     fn leds(&self) -> [bool; 8] {
         // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(2 + self.mode) {
+        if let Some(led) = leds.get_mut(2 + self.mode as usize) {
             *led = true;
         }
         leds

@@ -1,3 +1,4 @@
+mod arp_mode;
 mod continuous;
 mod discrete;
 mod toggle;
@@ -6,12 +7,15 @@ mod trigger;
 use discrete::PersistentConfig as DiscretePersistentConfig;
 use toggle::PersistentConfig as TogglePersistentConfig;
 
+// TODO: Do not use these directly. Instead, use them as primitives in types dedicated to what they represent.
 pub use continuous::Continuous;
 pub use discrete::Discrete;
 pub use toggle::Toggle;
-pub use trigger::DualTrigger;
+pub use trigger::Trigger;
 
 use crate::{chords::Chords, scales::Scales};
+
+pub use self::arp_mode::ArpMode;
 
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
@@ -23,8 +27,8 @@ pub struct Parameters {
     pub resonance: Continuous,
     pub scale_group: Toggle,
     pub scale: Toggle,
-    pub arp: Toggle,
-    pub trigger: DualTrigger,
+    pub arp_mode: ArpMode,
+    pub trigger: Trigger,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -34,7 +38,7 @@ pub struct PersistentConfig {
     pub chord: DiscretePersistentConfig,
     pub scale_group: TogglePersistentConfig,
     pub scale: TogglePersistentConfig,
-    pub arp: TogglePersistentConfig,
+    pub arp_mode: TogglePersistentConfig,
 }
 
 impl Parameters {
@@ -80,8 +84,8 @@ impl Parameters {
             resonance: Continuous::new(),
             scale_group: scale_group_parameter,
             scale: scale_parameter,
-            arp: Toggle::new(config.arp, 6),
-            trigger: DualTrigger::new(),
+            arp_mode: ArpMode::new(config.arp_mode),
+            trigger: Trigger::new(),
         }
     }
 
@@ -92,7 +96,7 @@ impl Parameters {
             chord_group: self.chord_group.copy_config(),
             scale_group: self.scale_group.copy_config(),
             scale: self.scale.copy_config(),
-            arp: self.arp.copy_config(),
+            arp_mode: self.arp_mode.copy_config(),
         }
     }
 }

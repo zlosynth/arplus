@@ -13,7 +13,7 @@ mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 use inputs::{Button, Buttons, Cv, CvTrigger, Pot};
-use parameters::{Continuous, Discrete, DualTrigger};
+use parameters::{Continuous, Discrete, Trigger};
 
 use crate::arpeggiator::{
     Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
@@ -115,7 +115,7 @@ impl Controller {
             chord: selected_chord,
             // SAFETY: Parameter values used to get arp index are
             // statically limited by the maximum number of modes.
-            mode: ArpeggiatorMode::try_from_index(parameters.arp.selected_value()).unwrap(),
+            mode: parameters.arp_mode.selected_mode(),
         });
 
         Self {
@@ -185,14 +185,16 @@ impl Controller {
             &mut needs_save,
             |selected| Screen::scale(selected),
         );
-        reconcile_toggle(
+        reconcile_arp_mode(
             &buttons.arp,
-            &mut parameters.arp,
+            &mut parameters.arp_mode,
             &mut display_request,
             &mut needs_save,
-            |selected| Screen::arp_mode(selected),
         );
-        reconcile_dual_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
+        reconcile_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
+
+        // TODO: Move the calculation of chords and tones here. It will be used for display
+        // and then returned as an output.
 
         // TODO: Move what's bellow to its own function or method called from the parent
         // TODO: See if what's bellow could be shared with the initialization code too
@@ -232,7 +234,6 @@ impl Controller {
             let chord_index = self.parameters.chord.selected_value();
             let scale_group_index = self.parameters.scale_group.selected_value();
             let scale_index = self.parameters.scale.selected_value();
-            let arp_index = self.parameters.arp.selected_value();
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
@@ -252,7 +253,7 @@ impl Controller {
                 chord: self.chords.chord(chord_group_index, chord_index).unwrap(),
                 // SAFETY: Parameter values used to get arp index are
                 // statically limited by the maximum number of modes.
-                mode: ArpeggiatorMode::try_from_index(arp_index).unwrap(),
+                mode: self.parameters.arp_mode.selected_mode(),
             });
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
@@ -315,16 +316,16 @@ impl Controller {
     }
 }
 
+fn reconcile_trigger(button: &Button, cv: &CvTrigger, parameter: &mut Trigger) {
+    parameter.reconcile(button.clicked, cv.triggered);
+}
+
 fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: &mut bool) {
     *needs_save |= parameter.reconcile(linear_sum(pot.value, cv.value));
 }
 
 fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
     parameter.reconcile(linear_sum(pot.value, cv.value));
-}
-
-fn reconcile_dual_trigger(button: &Button, cv: &CvTrigger, parameter: &mut DualTrigger) {
-    parameter.reconcile(button.clicked || cv.triggered);
 }
 
 fn reconcile_toggle<F: FnOnce(usize) -> Screen>(
@@ -341,6 +342,22 @@ fn reconcile_toggle<F: FnOnce(usize) -> Screen>(
         *needs_save |= parameter.reconcile(true);
         let selected = parameter.selected_value();
         display_request.set(Priority::Active, screen_constructor(selected));
+    };
+}
+
+fn reconcile_arp_mode(
+    button: &Button,
+    parameter: &mut parameters::ArpMode,
+    display_request: &mut DisplayRequest,
+    needs_save: &mut bool,
+) {
+    if is_button_held(button) {
+        let selected = parameter.selected_mode();
+        display_request.set(Priority::Queried, Screen::arp_mode(selected));
+    } else if was_button_tapped(button) {
+        *needs_save |= parameter.reconcile(true);
+        let selected = parameter.selected_mode();
+        display_request.set(Priority::Active, Screen::arp_mode(selected));
     };
 }
 

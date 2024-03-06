@@ -1,8 +1,8 @@
-pub struct DualTrigger {
+pub struct Trigger {
     triggered: bool,
 }
 
-impl DualTrigger {
+impl Trigger {
     pub fn new() -> Self {
         Self { triggered: false }
     }
@@ -11,7 +11,7 @@ impl DualTrigger {
         self.triggered
     }
 
-    pub fn reconcile(&mut self, triggered: bool) {
-        self.triggered = triggered;
+    pub fn reconcile(&mut self, button_pushed: bool, cv_triggered: bool) {
+        self.triggered = button_pushed || cv_triggered;
     }
 }

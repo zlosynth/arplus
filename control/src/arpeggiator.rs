@@ -168,7 +168,7 @@ impl Arpeggiator {
 }
 
 impl Mode {
-    const LAST_MODE: Self = Self::Moving;
+    pub const LAST_MODE: Self = Self::Moving;
 
     pub fn index(self) -> usize {
         self as usize
