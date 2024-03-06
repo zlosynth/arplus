@@ -89,8 +89,8 @@ impl Controller {
         // chord group.
         let selected_chord = chords
             .chord(
-                parameters.chord_group_id.selected(),
-                parameters.chord.selected_value(),
+                parameters.chord.selected_group_id(),
+                parameters.chord.selected_chord_index(),
             )
             .unwrap();
 
@@ -154,17 +154,13 @@ impl Controller {
         let mut display_request = DisplayRequest::new();
 
         reconcile_discrete(&pots.tone, &cvs.tone, &mut parameters.tone, &mut needs_save);
-        reconcile_discrete(
-            &pots.chord,
-            &cvs.chord,
-            &mut parameters.chord,
-            &mut needs_save,
-        );
-        reconcile_chord_group_id(
+        reconcile_chord(
             &pots.chord_group,
             &cvs.chord_group,
+            &pots.chord,
+            &cvs.chord,
             &self.chords,
-            &mut parameters.chord_group_id,
+            &mut parameters.chord,
             &mut display_request,
             &mut needs_save,
         );
@@ -199,13 +195,6 @@ impl Controller {
         // TODO: Move what's bellow to its own function or method called from the parent
         // TODO: See if what's bellow could be shared with the initialization code too
 
-        // SAFETY: Chord group index parameter is always limited by the maximum
-        // number of chord groups.
-        let chord_group_index = self.parameters.chord_group_id.selected();
-        self.parameters
-            .chord
-            .set_output_values(self.chords.number_of_chords(chord_group_index));
-
         // SAFETY: Scale group index parameter is always limited by the maximum
         // number of scale groups.
         let scale_group_index = self.parameters.scale_group.selected_value();
@@ -230,8 +219,8 @@ impl Controller {
     fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
-            let chord_group_id = self.parameters.chord_group_id.selected();
-            let chord_index = self.parameters.chord.selected_value();
+            let chord_group_id = self.parameters.chord.selected_group_id();
+            let chord_index = self.parameters.chord.selected_chord_index();
             let scale_group_index = self.parameters.scale_group.selected_value();
             let scale_index = self.parameters.scale.selected_value();
 
@@ -322,20 +311,29 @@ fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: 
     *needs_save |= parameter.reconcile(linear_sum(pot.value, cv.value));
 }
 
-fn reconcile_chord_group_id(
-    pot: &Pot,
-    cv: &Cv,
+fn reconcile_chord(
+    group_pot: &Pot,
+    group_cv: &Cv,
+    chord_pot: &Pot,
+    chord_cv: &Cv,
     chords: &Chords,
-    parameter: &mut parameters::ChordGroupId,
+    parameter: &mut parameters::Chord,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
 ) {
-    let changed = parameter.reconcile(pot.value, cv.value);
-    *needs_save |= changed;
-    // TODO: If changed, show it as active on display.
-    if changed {
-        let selected = parameter.selected();
+    let (changed_group, changed_chord) = parameter.reconcile_group_and_chord(
+        group_pot.value,
+        group_cv.value,
+        chord_pot.value,
+        chord_cv.value,
+        chords,
+    );
+    *needs_save |= changed_group || changed_chord;
+    if changed_group {
+        let selected = parameter.selected_group_id();
         display_request.set(Priority::Active, Screen::chord_group(selected, chords));
+    } else if changed_chord {
+        // TODO: Update display
     }
     // TODO: If active above treshold, show it too
 }
@@ -396,6 +394,8 @@ impl DisplayRequest {
         self.prioritized[priority as usize] = Some(screen);
     }
 
+    // TODO: This may not be needed in the end. And if it is not,
+    // is the whole structure needed?
     fn merge(mut self, mut other: Self) -> Self {
         for (i, screen) in self.prioritized.iter_mut().enumerate() {
             *screen = screen.take().or(other.prioritized[i].take());
