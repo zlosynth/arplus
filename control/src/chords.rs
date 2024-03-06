@@ -3,8 +3,15 @@ use heapless::Vec;
 pub type Chord = Vec<i16, 7>;
 
 pub struct Chords {
-    group_1: LibraryGroup<3, 3>,
-    group_2: LibraryGroup<3, 4>,
+    size_3: LibraryGroup<3, 3>,
+    size_4: LibraryGroup<3, 4>,
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, defmt::Format)]
+pub enum GroupId {
+    Size3 = 0,
+    Size4,
 }
 
 type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
@@ -12,41 +19,42 @@ type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
 type LibraryChord<const D: usize> = Vec<i16, D>;
 
 impl Chords {
-    const GROUPS: usize = 2;
+    pub const GROUPS: usize = 2;
 
     pub fn new() -> Self {
-        let group_1 = initialize_group(&[&[0, 2, 4], &[0, 1, 4], &[0, 3, 4]]);
-        let group_2 = initialize_group(&[&[0, 2, 4, 6], &[0, 1, 4, 6], &[0, 3, 4, 6]]);
-        Self { group_1, group_2 }
+        let size_3 = initialize_group(&[&[0, 2, 4], &[0, 1, 4], &[0, 3, 4]]);
+        let size_4 = initialize_group(&[&[0, 2, 4, 6], &[0, 1, 4, 6], &[0, 3, 4, 6]]);
+        Self { size_3, size_4 }
     }
 
-    pub fn number_of_groups(&self) -> usize {
-        Self::GROUPS
+    pub fn number_of_chords(&self, group_id: GroupId) -> usize {
+        match group_id {
+            GroupId::Size3 => self.size_3.len(),
+            GroupId::Size4 => self.size_4.len(),
+        }
     }
 
-    pub fn number_of_chords(&self, group_index: usize) -> Result<usize, ()> {
-        if group_index >= self.number_of_groups() {
+    pub fn chord(&self, group_id: GroupId, chord_index: usize) -> Result<Chord, ()> {
+        if chord_index >= self.number_of_chords(group_id) {
             return Err(());
         }
 
-        Ok(match group_index {
-            0 => self.group_1.len(),
-            1 => self.group_2.len(),
-            _ => panic!("A valid group index is not covered"),
-        })
-    }
-
-    pub fn chord(&self, group_index: usize, chord_index: usize) -> Result<Chord, ()> {
-        if chord_index >= self.number_of_chords(group_index)? {
-            return Err(());
-        }
-
-        match group_index {
+        match group_id {
             // SAFETY: Correct capacity is checked during the initialization.
-            0 => Chord::from_slice(self.group_1.get(chord_index).unwrap()),
-            1 => Chord::from_slice(self.group_2.get(chord_index).unwrap()),
-            _ => panic!("A valid group index is not covered"),
+            GroupId::Size3 => Chord::from_slice(self.size_3.get(chord_index).unwrap()),
+            GroupId::Size4 => Chord::from_slice(self.size_4.get(chord_index).unwrap()),
         }
+    }
+}
+
+impl TryFrom<usize> for GroupId {
+    type Error = ();
+
+    fn try_from(index: usize) -> Result<Self, Self::Error> {
+        if index >= Chords::GROUPS {
+            return Err(());
+        }
+        Ok(unsafe { core::mem::transmute(index as u8) })
     }
 }
 
@@ -84,27 +92,15 @@ mod tests {
     #[test]
     fn get_chord() {
         let chords = Chords::new();
-        let chord = chords.chord(0, 0).unwrap();
+        let chord = chords.chord(GroupId::Size3, 0).unwrap();
         assert_eq!(&chord, &[0, 2, 4]);
-    }
-
-    #[test]
-    fn try_getting_group_out_of_range() {
-        let chords = Chords::new();
-        assert!(chords.chord(chords.number_of_groups(), 0).is_err());
     }
 
     #[test]
     fn try_getting_chord_out_of_range() {
         let chords = Chords::new();
         assert!(chords
-            .chord(0, chords.number_of_chords(0).unwrap())
+            .chord(GroupId::Size3, chords.number_of_chords(GroupId::Size3))
             .is_err());
-    }
-
-    #[test]
-    fn try_getting_number_of_chords_out_of_range() {
-        let chords = Chords::new();
-        assert!(chords.number_of_chords(chords.number_of_groups()).is_err());
     }
 }

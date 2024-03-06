@@ -89,7 +89,7 @@ impl Controller {
         // chord group.
         let selected_chord = chords
             .chord(
-                parameters.chord_group.selected_value(),
+                parameters.chord_group_id.selected(),
                 parameters.chord.selected_value(),
             )
             .unwrap();
@@ -113,9 +113,7 @@ impl Controller {
             scale: selected_scale,
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: selected_chord,
-            // SAFETY: Parameter values used to get arp index are
-            // statically limited by the maximum number of modes.
-            mode: parameters.arp_mode.selected_mode(),
+            mode: parameters.arp_mode.selected(),
         });
 
         Self {
@@ -162,10 +160,10 @@ impl Controller {
             &mut parameters.chord,
             &mut needs_save,
         );
-        reconcile_discrete(
+        reconcile_chord_group_id(
             &pots.chord_group,
             &cvs.chord_group,
-            &mut parameters.chord_group,
+            &mut parameters.chord_group_id,
             &mut needs_save,
         );
         reconcile_continuous(&pots.contour, &cvs.contour, &mut parameters.contour);
@@ -201,10 +199,10 @@ impl Controller {
 
         // SAFETY: Chord group index parameter is always limited by the maximum
         // number of chord groups.
-        let chord_group_index = self.parameters.chord_group.selected_value();
+        let chord_group_index = self.parameters.chord_group_id.selected();
         self.parameters
             .chord
-            .set_output_values(self.chords.number_of_chords(chord_group_index).unwrap());
+            .set_output_values(self.chords.number_of_chords(chord_group_index));
 
         // SAFETY: Scale group index parameter is always limited by the maximum
         // number of scale groups.
@@ -230,7 +228,7 @@ impl Controller {
     fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.tone.selected_value();
-            let chord_group_index = self.parameters.chord_group.selected_value();
+            let chord_group_id = self.parameters.chord_group_id.selected();
             let chord_index = self.parameters.chord.selected_value();
             let scale_group_index = self.parameters.scale_group.selected_value();
             let scale_index = self.parameters.scale.selected_value();
@@ -250,10 +248,8 @@ impl Controller {
                 scale,
                 // SAFETY: Parameter values used to get group and chord index
                 // are always limited based on the selected chord group.
-                chord: self.chords.chord(chord_group_index, chord_index).unwrap(),
-                // SAFETY: Parameter values used to get arp index are
-                // statically limited by the maximum number of modes.
-                mode: self.parameters.arp_mode.selected_mode(),
+                chord: self.chords.chord(chord_group_id, chord_index).unwrap(),
+                mode: self.parameters.arp_mode.selected(),
             });
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
@@ -324,6 +320,16 @@ fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: 
     *needs_save |= parameter.reconcile(linear_sum(pot.value, cv.value));
 }
 
+fn reconcile_chord_group_id(
+    pot: &Pot,
+    cv: &Cv,
+    parameter: &mut parameters::ChordGroupId,
+    needs_save: &mut bool,
+) {
+    // TODO: Update display too
+    *needs_save |= parameter.reconcile(pot.value, cv.value);
+}
+
 fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
     parameter.reconcile(linear_sum(pot.value, cv.value));
 }
@@ -352,11 +358,11 @@ fn reconcile_arp_mode(
     needs_save: &mut bool,
 ) {
     if is_button_held(button) {
-        let selected = parameter.selected_mode();
+        let selected = parameter.selected();
         display_request.set(Priority::Queried, Screen::arp_mode(selected));
     } else if was_button_tapped(button) {
         *needs_save |= parameter.reconcile(true);
-        let selected = parameter.selected_mode();
+        let selected = parameter.selected();
         display_request.set(Priority::Active, Screen::arp_mode(selected));
     };
 }

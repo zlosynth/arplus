@@ -57,9 +57,7 @@ impl Discrete {
     pub fn selected_value(&self) -> usize {
         self.selected_value
     }
-}
 
-impl Discrete {
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
             selected_value: self.selected_value,

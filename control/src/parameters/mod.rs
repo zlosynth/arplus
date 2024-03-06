@@ -1,8 +1,10 @@
 mod arp_mode;
+mod chord_group_id;
+mod trigger;
+
 mod continuous;
 mod discrete;
 mod toggle;
-mod trigger;
 
 use discrete::PersistentConfig as DiscretePersistentConfig;
 use toggle::PersistentConfig as TogglePersistentConfig;
@@ -16,12 +18,13 @@ pub use trigger::Trigger;
 use crate::{chords::Chords, scales::Scales};
 
 pub use self::arp_mode::ArpMode;
+pub use self::chord_group_id::ChordGroupId;
 
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
     pub tone: Discrete,
     pub chord: Discrete,
-    pub chord_group: Discrete,
+    pub chord_group_id: ChordGroupId,
     pub contour: Continuous,
     pub cutoff: Continuous,
     pub resonance: Continuous,
@@ -34,7 +37,7 @@ pub struct Parameters {
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
 pub struct PersistentConfig {
     pub tone: DiscretePersistentConfig,
-    pub chord_group: DiscretePersistentConfig,
+    pub chord_group_id: DiscretePersistentConfig,
     pub chord: DiscretePersistentConfig,
     pub scale_group: TogglePersistentConfig,
     pub scale: TogglePersistentConfig,
@@ -43,14 +46,11 @@ pub struct PersistentConfig {
 
 impl Parameters {
     pub fn new(config: PersistentConfig, chords: &Chords, scales: &Scales) -> Self {
-        let chord_group_parameter =
-            Discrete::new(config.chord_group, chords.number_of_groups(), 0.1);
+        let chord_group_parameter = ChordGroupId::new(config.chord_group_id);
 
         let chord_parameter = {
-            let selected_chord_group = chord_group_parameter.selected_value();
-            // TODO: No unwrap or safety note
-            let number_of_chords_in_the_group =
-                chords.number_of_chords(selected_chord_group).unwrap();
+            let selected_chord_group = chord_group_parameter.selected();
+            let number_of_chords_in_the_group = chords.number_of_chords(selected_chord_group);
             Discrete::new(config.chord, number_of_chords_in_the_group, 0.1)
         };
 
@@ -78,7 +78,7 @@ impl Parameters {
             // TODO: Allow configuration of tonic
             tone: tone_parameter,
             chord: chord_parameter,
-            chord_group: chord_group_parameter,
+            chord_group_id: chord_group_parameter,
             contour: Continuous::new(),
             cutoff: Continuous::new(),
             resonance: Continuous::new(),
@@ -93,7 +93,7 @@ impl Parameters {
         PersistentConfig {
             tone: self.tone.copy_config(),
             chord: self.chord.copy_config(),
-            chord_group: self.chord_group.copy_config(),
+            chord_group_id: self.chord_group_id.copy_config(),
             scale_group: self.scale_group.copy_config(),
             scale: self.scale.copy_config(),
             arp_mode: self.arp_mode.copy_config(),

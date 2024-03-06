@@ -24,7 +24,7 @@ impl ArpMode {
         self.toggle.reconcile(toggle)
     }
 
-    pub fn selected_mode(&self) -> Mode {
+    pub fn selected(&self) -> Mode {
         // SAFETY: Parameter values used to get arp index are statically limited
         // by the maximum number of modes.
         Mode::try_from_index(self.toggle.selected_value()).unwrap()
