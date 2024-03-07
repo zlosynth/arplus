@@ -98,8 +98,8 @@ impl Controller {
         // scale group.
         let selected_scale = scales
             .scale(
-                parameters.scale_group.selected_value(),
-                parameters.scale.selected_value(),
+                parameters.scale.selected_group_id(),
+                parameters.scale.selected_scale_index(),
             )
             .unwrap();
 
@@ -167,19 +167,13 @@ impl Controller {
         reconcile_continuous(&pots.contour, &cvs.contour, &mut parameters.contour);
         reconcile_continuous(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
         reconcile_continuous(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
-        reconcile_toggle(
+        reconcile_scale(
             &buttons.scale_group,
-            &mut parameters.scale_group,
-            &mut display_request,
-            &mut needs_save,
-            |selected| Screen::scale_group(selected),
-        );
-        reconcile_toggle(
             &buttons.scale,
+            &self.scales,
             &mut parameters.scale,
             &mut display_request,
             &mut needs_save,
-            |selected| Screen::scale(selected),
         );
         reconcile_arp_mode(
             &buttons.arp,
@@ -195,20 +189,12 @@ impl Controller {
         // TODO: Move what's bellow to its own function or method called from the parent
         // TODO: See if what's bellow could be shared with the initialization code too
 
-        // SAFETY: Scale group index parameter is always limited by the maximum
-        // number of scale groups.
-        let scale_group_index = self.parameters.scale_group.selected_value();
-        self.parameters
-            .scale
-            .set_output_values(self.scales.number_of_scales(scale_group_index).unwrap());
-
         // TODO: Safety
         const OCTAVES: usize = 7;
         // TODO: No unwrap or safety note
         let steps_in_scale = self
             .scales
-            .number_of_steps_in_group(self.parameters.scale_group.selected_value())
-            .unwrap();
+            .number_of_steps_in_group(self.parameters.scale.selected_group_id());
         self.parameters
             .tone
             .set_output_values(steps_in_scale * OCTAVES);
@@ -221,12 +207,12 @@ impl Controller {
             let note_index = self.parameters.tone.selected_value();
             let chord_group_id = self.parameters.chord.selected_group_id();
             let chord_index = self.parameters.chord.selected_chord_index();
-            let scale_group_index = self.parameters.scale_group.selected_value();
-            let scale_index = self.parameters.scale.selected_value();
+            let scale_group_id = self.parameters.scale.selected_group_id();
+            let scale_index = self.parameters.scale.selected_scale_index();
 
             // TODO: Figure out where to keep the scale. In control and pass it by
             // reference to arp, or fully in arp.
-            let scale = self.scales.scale(scale_group_index, scale_index).unwrap();
+            let scale = self.scales.scale(scale_group_id, scale_index).unwrap();
 
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO
@@ -342,21 +328,37 @@ fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
     parameter.reconcile(linear_sum(pot.value, cv.value));
 }
 
-fn reconcile_toggle<F: FnOnce(usize) -> Screen>(
-    button: &Button,
-    parameter: &mut Toggle,
+fn reconcile_scale(
+    group_button: &Button,
+    scale_button: &Button,
+    scales: &Scales,
+    parameter: &mut parameters::Scale,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
-    screen_constructor: F,
 ) {
-    if is_button_held(button) {
-        let selected = parameter.selected_value();
-        display_request.set(Priority::Queried, screen_constructor(selected));
-    } else if was_button_tapped(button) {
-        *needs_save |= parameter.reconcile(true);
-        let selected = parameter.selected_value();
-        display_request.set(Priority::Active, screen_constructor(selected));
-    };
+    let group_held = is_button_held(group_button);
+    let scale_held = is_button_held(scale_button);
+    let group_tapped = was_button_tapped(group_button);
+    let scale_tapped = was_button_tapped(scale_button);
+
+    if group_tapped || scale_tapped {
+        let (group_changed, scale_changed) =
+            parameter.reconcile_group_and_scale(group_tapped, scale_tapped, scales);
+        *needs_save = group_changed || scale_changed;
+        if group_changed {
+            let selected = parameter.selected_group_id();
+            display_request.set(Priority::Active, Screen::scale_group(selected));
+        } else if scale_changed {
+            let selected = parameter.selected_scale_index();
+            display_request.set(Priority::Active, Screen::scale(selected));
+        }
+    } else if group_held {
+        let selected = parameter.selected_group_id();
+        display_request.set(Priority::Queried, Screen::scale_group(selected));
+    } else if scale_held {
+        let selected = parameter.selected_scale_index();
+        display_request.set(Priority::Queried, Screen::scale(selected));
+    }
 }
 
 fn reconcile_arp_mode(

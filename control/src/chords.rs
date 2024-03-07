@@ -66,6 +66,8 @@ impl TryFrom<usize> for GroupId {
     }
 }
 
+// TODO: Implement something similar to LibraryScaleTrait from Scales
+
 fn initialize_group<const N: usize, const D: usize>(chords_slice: &[&[i16]]) -> LibraryGroup<N, D> {
     assert!(
         D <= Chord::new().capacity(),

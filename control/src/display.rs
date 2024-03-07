@@ -32,7 +32,7 @@ impl Screen {
         Self::Scale(ScaleScreen::with_selected(scale))
     }
 
-    pub fn scale_group(scale_group: usize) -> Self {
+    pub fn scale_group(scale_group: crate::scales::GroupId) -> Self {
         Self::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
     }
 
@@ -60,7 +60,7 @@ pub struct ScaleScreen {
 
 #[derive(Debug, defmt::Format)]
 pub struct ScaleGroupScreen {
-    scale_group: usize,
+    scale_group: crate::scales::GroupId,
     countdown: usize,
 }
 
@@ -196,7 +196,7 @@ impl ScaleScreen {
 }
 
 impl ScaleGroupScreen {
-    pub fn with_selected(scale_group: usize) -> Self {
+    pub fn with_selected(scale_group: crate::scales::GroupId) -> Self {
         Self {
             scale_group,
             countdown: 2000,
@@ -206,7 +206,7 @@ impl ScaleGroupScreen {
     fn leds(&self) -> [bool; 8] {
         // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.scale_group) {
+        if let Some(led) = leds.get_mut(self.scale_group as usize) {
             *led = true;
         }
         leds

@@ -20,15 +20,22 @@ pub mod tonic;
 pub type Scale = LibraryScale<12>;
 
 pub struct Scales {
-    group_1: LibraryGroup<7, 7>, // Diatonic
-    group_2: LibraryGroup<1, 12>, // Chromatic
-                                 // blues: (),
-                                 // arabic: (),
-                                 // hexatonic: (),
-                                 // tetratonic: (),
-                                 // special heptatonic scales
-                                 // indian scales
-                                 // melakarta
+    diatonic: LibraryGroup<7, 7>,
+    chromatic: LibraryGroup<1, 12>,
+    // blues: (),
+    // arabic: (),
+    // hexatonic: (),
+    // tetratonic: (),
+    // special heptatonic scales
+    // indian scales
+    // melakarta
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, defmt::Format)]
+pub enum GroupId {
+    Diatonic,
+    Chromatic,
 }
 
 type LibraryGroup<const N: usize, const S: usize> = Vec<LibraryScale<S>, N>;
@@ -39,7 +46,7 @@ pub struct LibraryScale<const S: usize> {
 }
 
 impl Scales {
-    const GROUPS: usize = 2;
+    pub const GROUPS: usize = 2;
 
     pub fn new() -> Self {
         let diatonic = initialize_group(&[
@@ -53,53 +60,37 @@ impl Scales {
         ]);
         let chromatic = initialize_group(&[(&[S, S, S, S, S, S, S, S, S, S, S, S], None)]);
         Self {
-            group_1: diatonic,
-            group_2: chromatic,
+            diatonic,
+            chromatic,
         }
     }
 
-    pub fn number_of_groups(&self) -> usize {
-        Self::GROUPS
+    pub fn number_of_scales(&self, group_id: GroupId) -> usize {
+        match group_id {
+            GroupId::Diatonic => self.diatonic.len(),
+            GroupId::Chromatic => self.chromatic.len(),
+        }
     }
 
-    pub fn number_of_scales(&self, group_index: usize) -> Result<usize, ()> {
-        if group_index >= self.number_of_groups() {
+    pub fn scale(&self, group_id: GroupId, scale_index: usize) -> Result<Scale, ()> {
+        if scale_index >= self.number_of_scales(group_id) {
             return Err(());
         }
 
-        Ok(match group_index {
-            0 => self.group_1.len(),
-            1 => self.group_2.len(),
-            _ => panic!("A valid group index is not covered"),
-        })
-    }
-
-    pub fn scale(&self, group_index: usize, scale_index: usize) -> Result<Scale, ()> {
-        if scale_index >= self.number_of_scales(group_index)? {
-            return Err(());
-        }
-
-        match group_index {
-            // SAFETY: Correct capacity is checked during the initialization.
+        match group_id {
             // SAFETY: The index is checked on the entry.
-            0 => Scale::new(&self.group_1.get(scale_index).unwrap().ascending),
-            1 => Scale::new(&self.group_2.get(scale_index).unwrap().ascending),
-            _ => panic!("A valid group index is not covered"),
+            GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
+            GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
         }
     }
 
-    pub fn number_of_steps_in_group(&self, group_index: usize) -> Result<usize, ()> {
-        if group_index >= self.number_of_groups() {
-            return Err(());
-        }
-
+    pub fn number_of_steps_in_group(&self, group_id: GroupId) -> usize {
         // TODO: Get size. Maybe from a trait over the wrapper type?
-        Ok(match group_index {
+        match group_id {
             // TODO: No unwrap or safety note
-            0 => self.group_1.get(0).unwrap().steps(),
-            1 => self.group_2.get(0).unwrap().steps(),
-            _ => panic!("A valid group index is not covered"),
-        })
+            GroupId::Diatonic => self.diatonic.get(0).unwrap().steps(),
+            GroupId::Chromatic => self.chromatic.get(0).unwrap().steps(),
+        }
     }
 }
 
@@ -134,6 +125,17 @@ trait LibraryScaleTrait {
 impl<const S: usize> LibraryScaleTrait for LibraryScale<S> {
     fn steps(&self) -> usize {
         S
+    }
+}
+
+impl TryFrom<usize> for GroupId {
+    type Error = ();
+
+    fn try_from(index: usize) -> Result<Self, Self::Error> {
+        if index >= Scales::GROUPS {
+            return Err(());
+        }
+        Ok(unsafe { core::mem::transmute(index as u8) })
     }
 }
 
