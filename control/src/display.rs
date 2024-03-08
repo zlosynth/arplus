@@ -21,6 +21,7 @@ pub enum Screen {
     Scale(ScaleScreen),
     ScaleGroup(ScaleGroupScreen),
     ChordGroup(ChordGroupScreen),
+    Note(NoteScreen),
 }
 
 impl Screen {
@@ -38,6 +39,10 @@ impl Screen {
 
     pub fn chord_group(size: usize) -> Screen {
         Self::ChordGroup(ChordGroupScreen::with_size(size))
+    }
+
+    pub fn note(index: usize) -> Screen {
+        Self::Note(NoteScreen::with_index(index))
     }
 }
 
@@ -67,6 +72,12 @@ pub struct ScaleGroupScreen {
 #[derive(Debug, defmt::Format)]
 pub struct ChordGroupScreen {
     chord_group_size: usize,
+    countdown: usize,
+}
+
+#[derive(Debug, defmt::Format)]
+pub struct NoteScreen {
+    index: usize,
     countdown: usize,
 }
 
@@ -105,6 +116,7 @@ impl Screen {
             Screen::Scale(s) => s.leds(),
             Screen::ScaleGroup(s) => s.leds(),
             Screen::ChordGroup(s) => s.leds(),
+            Screen::Note(s) => s.leds(),
         }
     }
 
@@ -115,6 +127,7 @@ impl Screen {
             Screen::Scale(s) => s.ticked(),
             Screen::ScaleGroup(s) => s.ticked(),
             Screen::ChordGroup(s) => s.ticked(),
+            Screen::Note(s) => s.ticked(),
         }
     }
 }
@@ -245,6 +258,34 @@ impl ChordGroupScreen {
         self.countdown -= 1;
         if self.countdown > 0 {
             Some(Screen::ChordGroup(self))
+        } else {
+            None
+        }
+    }
+}
+
+impl NoteScreen {
+    pub fn with_index(index: usize) -> Self {
+        Self {
+            index,
+            countdown: 2000,
+        }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        // TODO: Show properly steps above 8
+        let mut leds = [false; 8];
+        if let Some(led) = leds.get_mut(self.index) {
+            *led = true;
+        }
+        leds
+    }
+
+    fn ticked(mut self) -> Option<Screen> {
+        // TODO: It's odd to return it wrapped in an outter type?
+        self.countdown -= 1;
+        if self.countdown > 0 {
+            Some(Screen::Note(self))
         } else {
             None
         }

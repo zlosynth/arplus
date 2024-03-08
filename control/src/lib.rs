@@ -301,9 +301,8 @@ fn reconcile_scale(
             let selected = parameter.selected_scale_index();
             display_request.set(Priority::Active, Screen::scale(selected));
         } else if note_changed {
-            let selected = parameter.selected_note();
-            // TODO: Display the note. This will be easier once
-            // the parameter retuns the actual note, instead of an index.
+            let selected = parameter.selected_note().index;
+            display_request.set(Priority::Active, Screen::note(selected as usize));
         }
     } else if group_held {
         let selected = parameter.selected_group_id();
