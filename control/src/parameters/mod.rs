@@ -44,7 +44,7 @@ pub struct PersistentConfig {
 }
 
 impl Parameters {
-    pub fn new(config: PersistentConfig, chords: Chords, scales: &Scales) -> Self {
+    pub fn new(config: PersistentConfig, chords: Chords, scales: Scales) -> Self {
         Self {
             // TODO: Allow configuration of tonic
             chord: Chord::new(config.chord, chords),

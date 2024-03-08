@@ -34,7 +34,6 @@ pub struct Controller {
     display: Display,
     inputs: Inputs,
     parameters: Parameters,
-    scales: Scales,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
     // state: State,
@@ -82,16 +81,7 @@ impl Controller {
         let scales = Scales::new();
         let chords = Chords::new();
         // TODO: Recover them from an input snapshot too.
-        let parameters = Parameters::new(save.parameters, chords, &scales);
-
-        // SAFETY: Parameter values are always limited based on the selected
-        // scale group.
-        let selected_scale = scales
-            .scale(
-                parameters.scale.selected_group_id(),
-                parameters.scale.selected_scale_index(),
-            )
-            .unwrap();
+        let parameters = Parameters::new(save.parameters, chords, scales);
 
         // TODO: This will require input snapshot and save to initialize itself as well.
         // Otherwise the root would move during the start. Once done, take all options
@@ -100,7 +90,7 @@ impl Controller {
         // a function shared with the attribute reconciliation.
         let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
             tonic: Tonic::C,
-            scale: selected_scale,
+            scale: parameters.scale.selected_scale(),
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: parameters.chord.selected_chord(),
             mode: parameters.arp_mode.selected(),
@@ -109,7 +99,6 @@ impl Controller {
         Self {
             display: Display::new(),
             parameters,
-            scales,
             arp,
             inputs: Inputs::new(),
             random_generator: RandomGenerator::with_seed(seed),
@@ -160,7 +149,6 @@ impl Controller {
             &cvs.tone,
             &buttons.scale_group,
             &buttons.scale,
-            &self.scales,
             &mut parameters.scale,
             &mut display_request,
             &mut needs_save,
@@ -182,14 +170,7 @@ impl Controller {
     fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             let note_index = self.parameters.scale.selected_note_index();
-            let chord_group_id = self.parameters.chord.selected_group_id();
-            let chord_index = self.parameters.chord.selected_chord_index();
-            let scale_group_id = self.parameters.scale.selected_group_id();
-            let scale_index = self.parameters.scale.selected_scale_index();
-
-            // TODO: Figure out where to keep the scale. In control and pass it by
-            // reference to arp, or fully in arp.
-            let scale = self.scales.scale(scale_group_id, scale_index).unwrap();
+            let scale = self.parameters.scale.selected_scale();
 
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO
@@ -302,7 +283,6 @@ fn reconcile_scale(
     tone_cv: &Cv,
     group_button: &Button,
     scale_button: &Button,
-    scales: &Scales,
     parameter: &mut parameters::Scale,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
@@ -319,7 +299,6 @@ fn reconcile_scale(
                 tone_cv.value,
                 group_tapped,
                 scale_tapped,
-                scales,
             );
         *needs_save |= note_changed || group_changed || scale_changed;
         if group_changed {

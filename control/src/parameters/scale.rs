@@ -3,6 +3,7 @@ use crate::scales::{GroupId, Scales};
 use super::{Discrete, DiscretePersistentConfig, Toggle, TogglePersistentConfig};
 
 pub struct Scale {
+    library: Scales,
     note: Discrete,
     group: Toggle,
     scale: Toggle,
@@ -19,14 +20,14 @@ pub struct PersistentConfig {
 
 // TODO: Should it own scales and handle note fetching as well?
 impl Scale {
-    pub fn new(config: PersistentConfig, scales: &Scales) -> Self {
+    pub fn new(config: PersistentConfig, library: Scales) -> Self {
         let group = Toggle::new(config.group, Scales::GROUPS);
 
         // TODO: Share the adjustement code with reconcile group
         let scale = {
             // TODO: Safety
             let selected_group = group.selected_value().try_into().unwrap();
-            let number_of_scales_in_the_group = scales.number_of_scales(selected_group);
+            let number_of_scales_in_the_group = library.number_of_scales(selected_group);
             Toggle::new(config.scale, number_of_scales_in_the_group)
         };
 
@@ -34,11 +35,16 @@ impl Scale {
             const OCTAVES: usize = 7;
             // TODO: Safety
             let selected_group = group.selected_value().try_into().unwrap();
-            let steps_in_scale = scales.number_of_steps_in_group(selected_group);
+            let steps_in_scale = library.number_of_steps_in_group(selected_group);
             Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1)
         };
 
-        Self { note, group, scale }
+        Self {
+            library,
+            note,
+            group,
+            scale,
+        }
     }
 
     pub fn reconcile_note_group_and_scale(
@@ -47,18 +53,18 @@ impl Scale {
         note_cv: Option<f32>,
         group_toggle: bool,
         scale_toggle: bool,
-        scales: &Scales,
     ) -> (bool, bool, bool) {
         let changed_group = self.group.reconcile(group_toggle);
 
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
 
-            let number_of_chords_in_the_group = scales.number_of_scales(selected_group);
+            let number_of_chords_in_the_group = self.library.number_of_scales(selected_group);
             self.scale.set_output_values(number_of_chords_in_the_group);
 
             const OCTAVES: usize = 7;
-            let number_of_steps_in_the_group = scales.number_of_steps_in_group(selected_group);
+            let number_of_steps_in_the_group =
+                self.library.number_of_steps_in_group(selected_group);
             self.note.set_output_values(number_of_steps_in_the_group);
         }
 
@@ -77,6 +83,13 @@ impl Scale {
 
     pub fn selected_scale_index(&self) -> usize {
         self.scale.selected_value()
+    }
+
+    pub fn selected_scale(&self) -> crate::scales::Scale {
+        // TODO: Safety
+        self.library
+            .scale(self.selected_group_id(), self.selected_scale_index())
+            .unwrap()
     }
 
     pub fn selected_note_index(&self) -> usize {
