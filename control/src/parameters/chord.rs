@@ -3,6 +3,7 @@ use crate::chords::{Chords, GroupId};
 use super::{discrete::PersistentConfig as DiscretePersistentConfig, Discrete};
 
 pub struct Chord {
+    library: Chords,
     group: Discrete,
     chord: Discrete,
 }
@@ -15,18 +16,22 @@ pub struct PersistentConfig {
 
 // TODO: Should it own chords and handle their fetching as well?
 impl Chord {
-    pub fn new(config: PersistentConfig, chords: &Chords) -> Self {
+    pub fn new(config: PersistentConfig, library: Chords) -> Self {
         let group = Discrete::new(config.group, Chords::GROUPS, 0.1);
 
         // TODO: Share the adjustement code with reconcile group
         let chord = {
             // TODO: Safety
             let selected_group = group.selected_value().try_into().unwrap();
-            let number_of_chords_in_the_group = chords.number_of_chords(selected_group);
+            let number_of_chords_in_the_group = library.number_of_chords(selected_group);
             Discrete::new(config.chord, number_of_chords_in_the_group, 0.1)
         };
 
-        Self { group, chord }
+        Self {
+            library,
+            group,
+            chord,
+        }
     }
 
     pub fn reconcile_group_and_chord(
@@ -35,13 +40,12 @@ impl Chord {
         group_cv: Option<f32>,
         chord_pot: f32,
         chord_cv: Option<f32>,
-        chords: &Chords,
     ) -> (bool, bool) {
         let changed_group = self.group.reconcile(linear_sum(group_pot, group_cv));
 
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
-            let number_of_chords_in_the_group = chords.number_of_chords(selected_group);
+            let number_of_chords_in_the_group = self.library.number_of_chords(selected_group);
             self.chord.set_output_values(number_of_chords_in_the_group);
         }
 
@@ -58,6 +62,18 @@ impl Chord {
 
     pub fn selected_chord_index(&self) -> usize {
         self.chord.selected_value()
+    }
+
+    pub fn selected_chord(&self) -> crate::chords::Chord {
+        // SAFETY: Parameter values used to get group and chord index
+        // are always limited based on the selected chord group.
+        self.library
+            .chord(self.selected_group_id(), self.selected_chord_index())
+            .unwrap()
+    }
+
+    pub fn selected_group_size(&self) -> usize {
+        self.library.group_size(self.selected_group_id())
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

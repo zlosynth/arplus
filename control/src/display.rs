@@ -36,8 +36,8 @@ impl Screen {
         Self::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
     }
 
-    pub fn chord_group(selected: crate::chords::GroupId, chords: &crate::chords::Chords) -> Screen {
-        Self::ChordGroup(ChordGroupScreen::with_size(chords.group_size(selected)))
+    pub fn chord_group(size: usize) -> Screen {
+        Self::ChordGroup(ChordGroupScreen::with_size(size))
     }
 }
 

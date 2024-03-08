@@ -34,7 +34,6 @@ pub struct Controller {
     display: Display,
     inputs: Inputs,
     parameters: Parameters,
-    chords: Chords,
     scales: Scales,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
@@ -83,16 +82,7 @@ impl Controller {
         let scales = Scales::new();
         let chords = Chords::new();
         // TODO: Recover them from an input snapshot too.
-        let parameters = Parameters::new(save.parameters, &chords, &scales);
-
-        // SAFETY: Parameter values are always limited based on the selected
-        // chord group.
-        let selected_chord = chords
-            .chord(
-                parameters.chord.selected_group_id(),
-                parameters.chord.selected_chord_index(),
-            )
-            .unwrap();
+        let parameters = Parameters::new(save.parameters, chords, &scales);
 
         // SAFETY: Parameter values are always limited based on the selected
         // scale group.
@@ -112,7 +102,7 @@ impl Controller {
             tonic: Tonic::C,
             scale: selected_scale,
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
-            chord: selected_chord,
+            chord: parameters.chord.selected_chord(),
             mode: parameters.arp_mode.selected(),
         });
 
@@ -120,7 +110,6 @@ impl Controller {
             display: Display::new(),
             parameters,
             scales,
-            chords,
             arp,
             inputs: Inputs::new(),
             random_generator: RandomGenerator::with_seed(seed),
@@ -158,7 +147,6 @@ impl Controller {
             &cvs.chord_group,
             &pots.chord,
             &cvs.chord,
-            &self.chords,
             &mut parameters.chord,
             &mut display_request,
             &mut needs_save,
@@ -212,9 +200,7 @@ impl Controller {
                     .get_note_by_index_ascending(note_index)
                     .unwrap(),
                 scale,
-                // SAFETY: Parameter values used to get group and chord index
-                // are always limited based on the selected chord group.
-                chord: self.chords.chord(chord_group_id, chord_index).unwrap(),
+                chord: self.parameters.chord.selected_chord(),
                 mode: self.parameters.arp_mode.selected(),
             });
 
@@ -287,7 +273,6 @@ fn reconcile_chord(
     group_cv: &Cv,
     chord_pot: &Pot,
     chord_cv: &Cv,
-    chords: &Chords,
     parameter: &mut parameters::Chord,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
@@ -297,12 +282,11 @@ fn reconcile_chord(
         group_cv.value,
         chord_pot.value,
         chord_cv.value,
-        chords,
     );
     *needs_save |= changed_group || changed_chord;
     if changed_group {
-        let selected = parameter.selected_group_id();
-        display_request.set(Priority::Active, Screen::chord_group(selected, chords));
+        let size = parameter.selected_group_size();
+        display_request.set(Priority::Active, Screen::chord_group(size));
     } else if changed_chord {
         // TODO: Update display
     }
