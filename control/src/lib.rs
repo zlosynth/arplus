@@ -107,14 +107,14 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         self.inputs.apply_input_snapshot(snapshot);
-        let (needs_save, display_request_a) = self.reconcile_parameters_with_inputs();
+        let (needs_save, display_request) = self.reconcile_parameters_with_inputs();
         let save = if needs_save {
             Some(self.generate_save())
         } else {
             None
         };
-        let (dsp_attributes, display_request_b) = self.generate_dsp_attributes();
-        self.apply_display_request(display_request_a.merge(display_request_b));
+        self.apply_display_request(display_request);
+        let dsp_attributes = self.generate_dsp_attributes();
 
         Result {
             save,
@@ -167,7 +167,7 @@ impl Controller {
         (needs_save, display_request)
     }
 
-    fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
+    fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             self.arp.apply_configuration(ArpeggiatorConfiguration {
                 // TODO: Move tonic config to scale
@@ -197,14 +197,11 @@ impl Controller {
             None
         };
 
-        (
-            DSPAttributes {
-                resonance: self.parameters.resonance.value(),
-                cutoff: self.parameters.cutoff.value(),
-                trigger: trigger_attributes,
-            },
-            DisplayRequest::new(),
-        )
+        DSPAttributes {
+            resonance: self.parameters.resonance.value(),
+            cutoff: self.parameters.cutoff.value(),
+            trigger: trigger_attributes,
+        }
     }
 
     fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
@@ -346,15 +343,6 @@ impl DisplayRequest {
 
     fn set(&mut self, priority: Priority, screen: Screen) {
         self.prioritized[priority as usize] = Some(screen);
-    }
-
-    // TODO: This may not be needed in the end. And if it is not,
-    // is the whole structure needed?
-    fn merge(mut self, mut other: Self) -> Self {
-        for (i, screen) in self.prioritized.iter_mut().enumerate() {
-            *screen = screen.take().or(other.prioritized[i].take());
-        }
-        self
     }
 
     fn take_active_screen(&mut self) -> Option<Screen> {
