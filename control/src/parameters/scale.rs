@@ -65,7 +65,8 @@ impl Scale {
             const OCTAVES: usize = 7;
             let number_of_steps_in_the_group =
                 self.library.number_of_steps_in_group(selected_group);
-            self.note.set_output_values(number_of_steps_in_the_group);
+            self.note
+                .set_output_values(OCTAVES * number_of_steps_in_the_group);
         }
 
         let changed_chord = self.scale.reconcile(scale_toggle);
