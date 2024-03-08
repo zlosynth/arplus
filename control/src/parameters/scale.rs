@@ -1,4 +1,4 @@
-use crate::scales::{GroupId, Scales};
+use crate::scales::{scale_note::ScaleNote, GroupId, Scales};
 
 use super::{Discrete, DiscretePersistentConfig, Toggle, TogglePersistentConfig};
 
@@ -95,6 +95,14 @@ impl Scale {
 
     pub fn selected_note_index(&self) -> usize {
         self.note.selected_value()
+    }
+
+    pub fn selected_note(&self) -> ScaleNote {
+        // TODO: Safety
+        self.selected_scale()
+            .with_tonic(crate::scales::tonic::Tonic::C)
+            .get_note_by_index_ascending(self.selected_note_index())
+            .unwrap()
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

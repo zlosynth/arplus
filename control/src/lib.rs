@@ -169,18 +169,11 @@ impl Controller {
 
     fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            let note_index = self.parameters.scale.selected_note_index();
-            let scale = self.parameters.scale.selected_scale();
-
             self.arp.apply_configuration(ArpeggiatorConfiguration {
-                // TODO
+                // TODO: Move tonic config to scale
                 tonic: Tonic::C,
-                // TODO: No unwrap or safety note
-                root: scale
-                    .with_tonic(Tonic::C)
-                    .get_note_by_index_ascending(note_index)
-                    .unwrap(),
-                scale,
+                root: self.parameters.scale.selected_note(),
+                scale: self.parameters.scale.selected_scale(),
                 chord: self.parameters.chord.selected_chord(),
                 mode: self.parameters.arp_mode.selected(),
             });
@@ -308,6 +301,7 @@ fn reconcile_scale(
             let selected = parameter.selected_scale_index();
             display_request.set(Priority::Active, Screen::scale(selected));
         } else if note_changed {
+            let selected = parameter.selected_note();
             // TODO: Display the note. This will be easier once
             // the parameter retuns the actual note, instead of an index.
         }
