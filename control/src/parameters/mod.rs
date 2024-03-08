@@ -27,7 +27,6 @@ pub use self::scale::Scale;
 
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
-    pub tone: Discrete,
     pub chord: Chord,
     pub contour: Continuous,
     pub cutoff: Continuous,
@@ -39,7 +38,6 @@ pub struct Parameters {
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
 pub struct PersistentConfig {
-    pub tone: DiscretePersistentConfig,
     pub chord: ChordPersistentConfig,
     pub scale: ScalePersistentConfig,
     pub arp_mode: TogglePersistentConfig,
@@ -47,23 +45,13 @@ pub struct PersistentConfig {
 
 impl Parameters {
     pub fn new(config: PersistentConfig, chords: &Chords, scales: &Scales) -> Self {
-        let scale_parameter = Scale::new(config.scale, scales);
-        let tone_parameter = {
-            const OCTAVES: usize = 7;
-            // TODO: No unwrap or safety note
-            let steps_in_scale =
-                scales.number_of_steps_in_group(scale_parameter.selected_group_id());
-            Discrete::new(config.tone, OCTAVES * steps_in_scale, 0.1)
-        };
-
         Self {
             // TODO: Allow configuration of tonic
-            tone: tone_parameter,
             chord: Chord::new(config.chord, chords),
             contour: Continuous::new(),
             cutoff: Continuous::new(),
             resonance: Continuous::new(),
-            scale: scale_parameter,
+            scale: Scale::new(config.scale, scales),
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),
         }
@@ -71,7 +59,6 @@ impl Parameters {
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
-            tone: self.tone.copy_config(),
             chord: self.chord.copy_config(),
             scale: self.scale.copy_config(),
             arp_mode: self.arp_mode.copy_config(),

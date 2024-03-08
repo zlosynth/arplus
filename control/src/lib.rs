@@ -153,7 +153,6 @@ impl Controller {
         let mut needs_save = false;
         let mut display_request = DisplayRequest::new();
 
-        reconcile_discrete(&pots.tone, &cvs.tone, &mut parameters.tone, &mut needs_save);
         reconcile_chord(
             &pots.chord_group,
             &cvs.chord_group,
@@ -168,6 +167,9 @@ impl Controller {
         reconcile_continuous(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
         reconcile_continuous(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
         reconcile_scale(
+            // TODO: Unify tone/note naming
+            &pots.tone,
+            &cvs.tone,
             &buttons.scale_group,
             &buttons.scale,
             &self.scales,
@@ -186,25 +188,12 @@ impl Controller {
         // TODO: Move the calculation of chords and tones here. It will be used for display
         // and then returned as an output.
 
-        // TODO: Move what's bellow to its own function or method called from the parent
-        // TODO: See if what's bellow could be shared with the initialization code too
-
-        // TODO: Safety
-        const OCTAVES: usize = 7;
-        // TODO: No unwrap or safety note
-        let steps_in_scale = self
-            .scales
-            .number_of_steps_in_group(self.parameters.scale.selected_group_id());
-        self.parameters
-            .tone
-            .set_output_values(steps_in_scale * OCTAVES);
-
         (needs_save, display_request)
     }
 
     fn generate_dsp_attributes(&mut self) -> (DSPAttributes, DisplayRequest) {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            let note_index = self.parameters.tone.selected_value();
+            let note_index = self.parameters.scale.selected_note_index();
             let chord_group_id = self.parameters.chord.selected_group_id();
             let chord_index = self.parameters.chord.selected_chord_index();
             let scale_group_id = self.parameters.scale.selected_group_id();
@@ -293,10 +282,6 @@ fn reconcile_trigger(button: &Button, cv: &CvTrigger, parameter: &mut Trigger) {
     parameter.reconcile(button.clicked, cv.triggered);
 }
 
-fn reconcile_discrete(pot: &Pot, cv: &Cv, parameter: &mut Discrete, needs_save: &mut bool) {
-    *needs_save |= parameter.reconcile(linear_sum(pot.value, cv.value));
-}
-
 fn reconcile_chord(
     group_pot: &Pot,
     group_cv: &Cv,
@@ -329,6 +314,8 @@ fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
 }
 
 fn reconcile_scale(
+    tone_pot: &Pot,
+    tone_cv: &Cv,
     group_button: &Button,
     scale_button: &Button,
     scales: &Scales,
@@ -342,15 +329,24 @@ fn reconcile_scale(
     let scale_tapped = was_button_tapped(scale_button);
 
     if group_tapped || scale_tapped {
-        let (group_changed, scale_changed) =
-            parameter.reconcile_group_and_scale(group_tapped, scale_tapped, scales);
-        *needs_save = group_changed || scale_changed;
+        let (note_changed, group_changed, scale_changed) = parameter
+            .reconcile_note_group_and_scale(
+                tone_pot.value,
+                tone_cv.value,
+                group_tapped,
+                scale_tapped,
+                scales,
+            );
+        *needs_save |= note_changed || group_changed || scale_changed;
         if group_changed {
             let selected = parameter.selected_group_id();
             display_request.set(Priority::Active, Screen::scale_group(selected));
         } else if scale_changed {
             let selected = parameter.selected_scale_index();
             display_request.set(Priority::Active, Screen::scale(selected));
+        } else if note_changed {
+            // TODO: Display the note. This will be easier once
+            // the parameter retuns the actual note, instead of an index.
         }
     } else if group_held {
         let selected = parameter.selected_group_id();
