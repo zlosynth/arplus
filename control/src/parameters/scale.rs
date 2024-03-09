@@ -1,4 +1,4 @@
-use crate::scales::{scale_note::ScaleNote, GroupId, Scales};
+use crate::scales::{scale_note::ScaleNote, tonic::Tonic, GroupId, Scales};
 
 use super::{Discrete, DiscretePersistentConfig, Toggle, TogglePersistentConfig};
 
@@ -7,6 +7,7 @@ pub struct Scale {
     note: Discrete,
     group: Toggle,
     scale: Toggle,
+    tonic: Tonic,
     // TODO: Tonic
     // TODO: CV mapping
 }
@@ -44,6 +45,7 @@ impl Scale {
             note,
             group,
             scale,
+            tonic: Tonic::C,
         }
     }
 
@@ -100,9 +102,13 @@ impl Scale {
     pub fn selected_note(&self) -> ScaleNote {
         // TODO: Safety
         self.selected_scale()
-            .with_tonic(crate::scales::tonic::Tonic::C)
+            .with_tonic(self.tonic)
             .get_note_by_index_ascending(self.selected_note_index())
             .unwrap()
+    }
+
+    pub fn selected_tonic(&self) -> Tonic {
+        self.tonic
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

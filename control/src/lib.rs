@@ -25,8 +25,8 @@ use crate::inputs::Inputs;
 use crate::parameters::{Parameters, Toggle};
 use crate::random::RandomGenerator;
 use crate::save::Save;
+use crate::scales::scale_note::ScaleNote;
 use crate::scales::Scales;
-use crate::scales::{scale_note::ScaleNote, tonic::Tonic};
 
 const HOLD_TO_QUERY: usize = 400;
 
@@ -89,7 +89,7 @@ impl Controller {
         // TODO: Once everything is taken from parameters, this can be move into
         // a function shared with the attribute reconciliation.
         let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
-            tonic: Tonic::C,
+            tonic: parameters.scale.selected_tonic(),
             scale: parameters.scale.selected_scale(),
             root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
             chord: parameters.chord.selected_chord(),
@@ -170,8 +170,7 @@ impl Controller {
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             self.arp.apply_configuration(ArpeggiatorConfiguration {
-                // TODO: Move tonic config to scale
-                tonic: Tonic::C,
+                tonic: self.parameters.scale.selected_tonic(),
                 root: self.parameters.scale.selected_note(),
                 scale: self.parameters.scale.selected_scale(),
                 chord: self.parameters.chord.selected_chord(),

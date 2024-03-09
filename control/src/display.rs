@@ -24,6 +24,7 @@ pub enum Screen {
     Note(NoteScreen),
 }
 
+// TODO: Improve naming of methods and their parameters
 impl Screen {
     pub fn arp_mode(mode: ArpMode) -> Self {
         Self::ArpMode(ArpModeScreen::with_selected(mode))
