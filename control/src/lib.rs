@@ -12,20 +12,17 @@ pub mod save;
 mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
-use inputs::{Button, Buttons, Cv, CvTrigger, Pot};
-use parameters::{Continuous, Discrete, Trigger};
 
-use crate::arpeggiator::{
-    Arpeggiator, Configuration as ArpeggiatorConfiguration, Mode as ArpeggiatorMode,
-};
+use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
-use crate::display::{ArpModeScreen, Display, Priority, Screen, StepScreen};
+use crate::display::{Display, Priority, Screen, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
-use crate::parameters::{Parameters, Toggle};
+use crate::inputs::{Button, Cv, CvTrigger, Pot};
+use crate::parameters::Parameters;
+use crate::parameters::{Continuous, Trigger};
 use crate::random::RandomGenerator;
 use crate::save::Save;
-use crate::scales::scale_note::ScaleNote;
 use crate::scales::Scales;
 
 const HOLD_TO_QUERY: usize = 400;
