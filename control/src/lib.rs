@@ -83,23 +83,10 @@ impl Controller {
         // TODO: Recover them from an input snapshot too.
         let parameters = Parameters::new(save.parameters, chords, scales);
 
-        // TODO: This will require input snapshot and save to initialize itself as well.
-        // Otherwise the root would move during the start. Once done, take all options
-        // from parameters.
-        // TODO: Once everything is taken from parameters, this can be move into
-        // a function shared with the attribute reconciliation.
-        let arp = Arpeggiator::new_with_configuration(ArpeggiatorConfiguration {
-            tonic: parameters.scale.selected_tonic(),
-            scale: parameters.scale.selected_scale(),
-            root: ScaleNote::new(scales::quarter_tones::QuarterTone::C1, 0),
-            chord: parameters.chord.selected_chord(),
-            mode: parameters.arp_mode.selected(),
-        });
-
         Self {
             display: Display::new(),
+            arp: Arpeggiator::new_with_configuration(build_arp_config(&parameters)),
             parameters,
-            arp,
             inputs: Inputs::new(),
             random_generator: RandomGenerator::with_seed(seed),
         }
@@ -161,21 +148,13 @@ impl Controller {
         );
         reconcile_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
 
-        // TODO: Move the calculation of chords and tones here. It will be used for display
-        // and then returned as an output.
-
         (needs_save, display_request)
     }
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            self.arp.apply_configuration(ArpeggiatorConfiguration {
-                tonic: self.parameters.scale.selected_tonic(),
-                root: self.parameters.scale.selected_note(),
-                scale: self.parameters.scale.selected_scale(),
-                chord: self.parameters.chord.selected_chord(),
-                mode: self.parameters.arp_mode.selected(),
-            });
+            self.arp
+                .apply_configuration(build_arp_config(&self.parameters));
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 self.display.set(
@@ -358,4 +337,14 @@ fn linear_sum(pot: f32, cv: Option<f32>) -> f32 {
     let sum = pot + offset_cv;
     let clamped = sum.clamp(0.0, 1.0);
     clamped
+}
+
+fn build_arp_config(parameters: &Parameters) -> ArpeggiatorConfiguration {
+    ArpeggiatorConfiguration {
+        tonic: parameters.scale.selected_tonic(),
+        root: parameters.scale.selected_note(),
+        scale: parameters.scale.selected_scale(),
+        chord: parameters.chord.selected_chord(),
+        mode: parameters.arp_mode.selected(),
+    }
 }
