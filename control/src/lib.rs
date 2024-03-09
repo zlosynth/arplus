@@ -75,10 +75,8 @@ struct DisplayRequest {
 
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
-        let scales = Scales::new();
-        let chords = Chords::new();
         // TODO: Recover them from an input snapshot too.
-        let parameters = Parameters::new(save.parameters, chords, scales);
+        let parameters = Parameters::new(save.parameters, Chords::new(), Scales::new());
 
         Self {
             display: Display::new(),
@@ -124,9 +122,9 @@ impl Controller {
             &mut display_request,
             &mut needs_save,
         );
-        reconcile_continuous(&pots.contour, &cvs.contour, &mut parameters.contour);
-        reconcile_continuous(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
-        reconcile_continuous(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
+        reconcile_contour(&pots.contour, &cvs.contour, &mut parameters.contour);
+        reconcile_cutoff(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
+        reconcile_resonance(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
         reconcile_scale(
             // TODO: Unify tone/note naming
             &pots.tone,
@@ -239,8 +237,16 @@ fn reconcile_chord(
     // TODO: If active above treshold, show it too
 }
 
-fn reconcile_continuous(pot: &Pot, cv: &Cv, parameter: &mut Continuous) {
-    parameter.reconcile(linear_sum(pot.value, cv.value));
+fn reconcile_resonance(pot: &Pot, cv: &Cv, parameter: &mut parameters::Resonance) {
+    parameter.reconcile(pot.value, cv.value);
+}
+
+fn reconcile_cutoff(pot: &Pot, cv: &Cv, parameter: &mut parameters::Cutoff) {
+    parameter.reconcile(pot.value, cv.value);
+}
+
+fn reconcile_contour(pot: &Pot, cv: &Cv, parameter: &mut parameters::Contour) {
+    parameter.reconcile(pot.value, cv.value);
 }
 
 fn reconcile_scale(
