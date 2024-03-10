@@ -20,7 +20,6 @@ pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, CvTrigger, Pot};
 use crate::parameters::Parameters;
-use crate::parameters::{Continuous, Trigger};
 use crate::random::RandomGenerator;
 use crate::save::Save;
 use crate::scales::Scales;
@@ -208,7 +207,7 @@ impl Controller {
     }
 }
 
-fn reconcile_trigger(button: &Button, cv: &CvTrigger, parameter: &mut Trigger) {
+fn reconcile_trigger(button: &Button, cv: &CvTrigger, parameter: &mut parameters::Trigger) {
     parameter.reconcile(button.clicked, cv.triggered);
 }
 
@@ -232,7 +231,8 @@ fn reconcile_chord(
         let size = parameter.selected_group_size();
         display_request.set(Priority::Active, Screen::chord_group(size));
     } else if changed_chord {
-        // TODO: Update display
+        let chord = parameter.selected_chord();
+        display_request.set(Priority::Active, Screen::chord(chord));
     }
     // TODO: If active above treshold, show it too
 }
@@ -289,6 +289,7 @@ fn reconcile_scale(
         let selected = parameter.selected_scale_index();
         display_request.set(Priority::Queried, Screen::scale(selected));
     }
+    // TODO: If tone active above treshold, show it too
 }
 
 fn reconcile_arp_mode(
@@ -333,13 +334,6 @@ impl DisplayRequest {
     fn take_queried_screen(&mut self) -> Option<Screen> {
         self.prioritized[Priority::Queried as usize].take()
     }
-}
-
-fn linear_sum(pot: f32, cv: Option<f32>) -> f32 {
-    let offset_cv = cv.unwrap_or(0.0) / 5.0;
-    let sum = pot + offset_cv;
-    let clamped = sum.clamp(0.0, 1.0);
-    clamped
 }
 
 fn build_arp_config(parameters: &Parameters) -> ArpeggiatorConfiguration {

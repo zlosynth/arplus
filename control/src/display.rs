@@ -22,6 +22,7 @@ pub enum Screen {
     ScaleGroup(ScaleGroupScreen),
     ChordGroup(ChordGroupScreen),
     Note(NoteScreen),
+    Chord(ChordScreen),
 }
 
 // TODO: Improve naming of methods and their parameters
@@ -44,6 +45,10 @@ impl Screen {
 
     pub fn note(index: usize) -> Screen {
         Self::Note(NoteScreen::with_index(index))
+    }
+
+    pub fn chord(chord: crate::chords::Chord) -> Screen {
+        Self::Chord(ChordScreen::with_chord(chord))
     }
 }
 
@@ -79,6 +84,12 @@ pub struct ChordGroupScreen {
 #[derive(Debug, defmt::Format)]
 pub struct NoteScreen {
     index: usize,
+    countdown: usize,
+}
+
+#[derive(Debug, defmt::Format)]
+pub struct ChordScreen {
+    chord: crate::chords::Chord,
     countdown: usize,
 }
 
@@ -118,6 +129,7 @@ impl Screen {
             Screen::ScaleGroup(s) => s.leds(),
             Screen::ChordGroup(s) => s.leds(),
             Screen::Note(s) => s.leds(),
+            Screen::Chord(s) => s.leds(),
         }
     }
 
@@ -129,6 +141,7 @@ impl Screen {
             Screen::ScaleGroup(s) => s.ticked(),
             Screen::ChordGroup(s) => s.ticked(),
             Screen::Note(s) => s.ticked(),
+            Screen::Chord(s) => s.ticked(),
         }
     }
 }
@@ -287,6 +300,39 @@ impl NoteScreen {
         self.countdown -= 1;
         if self.countdown > 0 {
             Some(Screen::Note(self))
+        } else {
+            None
+        }
+    }
+}
+
+impl ChordScreen {
+    pub fn with_chord(chord: crate::chords::Chord) -> Self {
+        Self {
+            chord,
+            countdown: 2000,
+        }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        // TODO: Show properly steps above 8, if possible with chords.
+        // TODO: Wrap around based on the selected scale and number of its steps.
+        let mut leds = [false; 8];
+
+        for step in self.chord.iter() {
+            if let Some(led) = leds.get_mut(*step as usize) {
+                *led = true;
+            }
+        }
+
+        leds
+    }
+
+    fn ticked(mut self) -> Option<Screen> {
+        // TODO: It's odd to return it wrapped in an outter type?
+        self.countdown -= 1;
+        if self.countdown > 0 {
+            Some(Screen::Chord(self))
         } else {
             None
         }
