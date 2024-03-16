@@ -18,6 +18,7 @@ pub struct ControlInputSnapshot {
 pub struct Inputs {
     pub pots: Pots,
     pub cvs: Cvs,
+    pub gates: Gates,
     pub buttons: Buttons,
 }
 
@@ -37,6 +38,9 @@ pub struct Cvs {
     pub contour: Cv,
     pub cutoff: Cv,
     pub resonance: Cv,
+}
+
+pub struct Gates {
     pub trigger: CvTrigger,
 }
 
@@ -65,7 +69,8 @@ impl Inputs {
                 contour: Cv::new(),
                 cutoff: Cv::new(),
                 resonance: Cv::new(),
-                // TODO: Move this to its own gates category
+            },
+            gates: Gates {
                 trigger: CvTrigger::new(),
             },
             buttons: Buttons {
@@ -91,7 +96,8 @@ impl Inputs {
         self.cvs.chord.reconcile(snapshot.cvs[3]);
         self.cvs.chord_group.reconcile(snapshot.cvs[4]);
         self.cvs.resonance.reconcile(snapshot.cvs[5]);
-        self.cvs.trigger.reconcile(snapshot.gates[0]);
+
+        self.gates.trigger.reconcile(snapshot.gates[0]);
 
         self.buttons.scale_group.reconcile(snapshot.buttons[0]);
         self.buttons.scale.reconcile(snapshot.buttons[1]);

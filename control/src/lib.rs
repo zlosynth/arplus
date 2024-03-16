@@ -108,6 +108,7 @@ impl Controller {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &self.inputs.cvs;
+        let gates = &self.inputs.gates;
         let parameters = &mut self.parameters;
 
         let mut needs_save = false;
@@ -140,7 +141,7 @@ impl Controller {
             &mut display_request,
             &mut needs_save,
         );
-        reconcile_trigger(&buttons.trigger, &cvs.trigger, &mut parameters.trigger);
+        reconcile_trigger(&buttons.trigger, &gates.trigger, &mut parameters.trigger);
 
         (needs_save, display_request)
     }
