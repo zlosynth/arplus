@@ -14,6 +14,8 @@ pub struct Arpeggiator {
     state: State,
 }
 
+// ALLOW: All the values are constructed via `try_from_index`.
+#[allow(dead_code)]
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum Mode {

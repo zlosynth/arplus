@@ -7,6 +7,8 @@ pub struct Chords {
     size_4: LibraryGroup<3, 4>,
 }
 
+// ALLOW: All the values are constructed via `try_from`.
+#[allow(dead_code)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum GroupId {

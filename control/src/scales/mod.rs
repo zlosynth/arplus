@@ -31,6 +31,8 @@ pub struct Scales {
     // melakarta
 }
 
+// ALLOW: All the variants can be contructed via `try_from`.
+#[allow(dead_code)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum GroupId {
