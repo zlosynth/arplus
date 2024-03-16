@@ -1,5 +1,5 @@
 pub struct Cv {
-    pub value: Option<f32>,
+    value: Option<f32>,
 }
 
 impl Cv {
@@ -9,5 +9,9 @@ impl Cv {
 
     pub fn reconcile(&mut self, value: Option<f32>) {
         self.value = value;
+    }
+
+    pub fn value(&self) -> Option<f32> {
+        self.value
     }
 }
