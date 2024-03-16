@@ -1,4 +1,6 @@
 use crate::arpeggiator::Mode as ArpMode;
+use crate::chords::Chord;
+use crate::scales::GroupId as ScaleGroupId;
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
@@ -11,7 +13,13 @@ pub enum Priority {
 }
 
 pub struct Display {
-    pub prioritized: [Option<Screen>; 5],
+    pub prioritized: [Option<Page>; 5],
+}
+
+#[derive(Debug, defmt::Format)]
+pub struct Page {
+    clock: usize,
+    screen: Screen,
 }
 
 #[derive(Debug, defmt::Format)]
@@ -25,33 +33,6 @@ pub enum Screen {
     Chord(ChordScreen),
 }
 
-// TODO: Improve naming of methods and their parameters
-impl Screen {
-    pub fn arp_mode(mode: ArpMode) -> Self {
-        Self::ArpMode(ArpModeScreen::with_selected(mode))
-    }
-
-    pub fn scale(scale: usize) -> Self {
-        Self::Scale(ScaleScreen::with_selected(scale))
-    }
-
-    pub fn scale_group(scale_group: crate::scales::GroupId) -> Self {
-        Self::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
-    }
-
-    pub fn chord_group(size: usize) -> Screen {
-        Self::ChordGroup(ChordGroupScreen::with_size(size))
-    }
-
-    pub fn note(index: usize) -> Screen {
-        Self::Note(NoteScreen::with_index(index))
-    }
-
-    pub fn chord(chord: crate::chords::Chord) -> Screen {
-        Self::Chord(ChordScreen::with_chord(chord))
-    }
-}
-
 #[derive(Debug, defmt::Format)]
 pub struct StepScreen {
     step: usize,
@@ -60,37 +41,31 @@ pub struct StepScreen {
 #[derive(Debug, defmt::Format)]
 pub struct ArpModeScreen {
     mode: ArpMode,
-    countdown: usize,
 }
 
 #[derive(Debug, defmt::Format)]
 pub struct ScaleScreen {
     scale: usize,
-    countdown: usize,
 }
 
 #[derive(Debug, defmt::Format)]
 pub struct ScaleGroupScreen {
-    scale_group: crate::scales::GroupId,
-    countdown: usize,
+    scale_group: ScaleGroupId,
 }
 
 #[derive(Debug, defmt::Format)]
 pub struct ChordGroupScreen {
     chord_group_size: usize,
-    countdown: usize,
 }
 
 #[derive(Debug, defmt::Format)]
 pub struct NoteScreen {
     index: usize,
-    countdown: usize,
 }
 
 #[derive(Debug, defmt::Format)]
 pub struct ChordScreen {
-    chord: crate::chords::Chord,
-    countdown: usize,
+    chord: Chord,
 }
 
 impl Display {
@@ -101,7 +76,7 @@ impl Display {
     }
 
     pub fn set(&mut self, priority: Priority, screen: Screen) {
-        self.prioritized[priority as usize] = Some(screen);
+        self.prioritized[priority as usize] = Some(Page::with_screen(screen));
     }
 
     pub fn reset(&mut self, priority: Priority) {
@@ -109,18 +84,60 @@ impl Display {
     }
 
     pub fn tick(&mut self) {
-        // TODO: Safety
         for screen in self.prioritized.iter_mut().filter(|p| p.is_some()) {
+            // SAFETY: The iterator already filters for `Some`.
             *screen = screen.take().unwrap().ticked();
         }
     }
 
     pub fn active_screen(&self) -> Option<&Screen> {
-        self.prioritized.iter().find_map(Option::as_ref)
+        self.prioritized
+            .iter()
+            .find_map(Option::as_ref)
+            .map(|p| &p.screen)
+    }
+}
+
+impl Page {
+    fn with_screen(screen: Screen) -> Self {
+        Self { clock: 0, screen }
+    }
+
+    fn ticked(mut self) -> Option<Self> {
+        self.clock += 1;
+        if self.clock > 2000 {
+            None
+        } else {
+            Some(self)
+        }
     }
 }
 
 impl Screen {
+    pub fn arp_mode(arp_mode: ArpMode) -> Self {
+        Screen::ArpMode(ArpModeScreen::with_selected(arp_mode))
+    }
+
+    pub fn scale_group(scale_group: ScaleGroupId) -> Self {
+        Screen::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
+    }
+
+    pub fn scale(scale_index: usize) -> Self {
+        Screen::Scale(ScaleScreen::with_index(scale_index))
+    }
+
+    pub fn chord_group(size: usize) -> Self {
+        Screen::ChordGroup(ChordGroupScreen::with_size(size))
+    }
+
+    pub fn note(note_index: usize) -> Self {
+        Screen::Note(NoteScreen::with_index(note_index))
+    }
+
+    pub fn chord(chord: Chord) -> Self {
+        Screen::Chord(ChordScreen::with_selected(chord))
+    }
+
     pub fn leds(&self) -> [bool; 8] {
         match self {
             Screen::Step(s) => s.leds(),
@@ -130,18 +147,6 @@ impl Screen {
             Screen::ChordGroup(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
-        }
-    }
-
-    pub fn ticked(self) -> Option<Self> {
-        match self {
-            Screen::Step(s) => s.ticked(),
-            Screen::ArpMode(s) => s.ticked(),
-            Screen::Scale(s) => s.ticked(),
-            Screen::ScaleGroup(s) => s.ticked(),
-            Screen::ChordGroup(s) => s.ticked(),
-            Screen::Note(s) => s.ticked(),
-            Screen::Chord(s) => s.ticked(),
         }
     }
 }
@@ -159,19 +164,11 @@ impl StepScreen {
         }
         leds
     }
-
-    fn ticked(self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        Some(Screen::Step(self))
-    }
 }
 
 impl ArpModeScreen {
     pub fn with_selected(mode: ArpMode) -> Self {
-        Self {
-            mode,
-            countdown: 2000,
-        }
+        Self { mode }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -182,24 +179,11 @@ impl ArpModeScreen {
         }
         leds
     }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::ArpMode(self))
-        } else {
-            None
-        }
-    }
 }
 
 impl ScaleScreen {
-    pub fn with_selected(scale: usize) -> Self {
-        Self {
-            scale,
-            countdown: 2000,
-        }
+    pub fn with_index(scale: usize) -> Self {
+        Self { scale }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -210,24 +194,11 @@ impl ScaleScreen {
         }
         leds
     }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::Scale(self))
-        } else {
-            None
-        }
-    }
 }
 
 impl ScaleGroupScreen {
-    pub fn with_selected(scale_group: crate::scales::GroupId) -> Self {
-        Self {
-            scale_group,
-            countdown: 2000,
-        }
+    pub fn with_selected(scale_group: ScaleGroupId) -> Self {
+        Self { scale_group }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -238,24 +209,11 @@ impl ScaleGroupScreen {
         }
         leds
     }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::ScaleGroup(self))
-        } else {
-            None
-        }
-    }
 }
 
 impl ChordGroupScreen {
     pub fn with_size(chord_group_size: usize) -> Self {
-        Self {
-            chord_group_size,
-            countdown: 2000,
-        }
+        Self { chord_group_size }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -266,24 +224,11 @@ impl ChordGroupScreen {
         }
         leds
     }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::ChordGroup(self))
-        } else {
-            None
-        }
-    }
 }
 
 impl NoteScreen {
     pub fn with_index(index: usize) -> Self {
-        Self {
-            index,
-            countdown: 2000,
-        }
+        Self { index }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -294,24 +239,11 @@ impl NoteScreen {
         }
         leds
     }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::Note(self))
-        } else {
-            None
-        }
-    }
 }
 
 impl ChordScreen {
-    pub fn with_chord(chord: crate::chords::Chord) -> Self {
-        Self {
-            chord,
-            countdown: 2000,
-        }
+    pub fn with_selected(chord: Chord) -> Self {
+        Self { chord }
     }
 
     fn leds(&self) -> [bool; 8] {
@@ -326,15 +258,5 @@ impl ChordScreen {
         }
 
         leds
-    }
-
-    fn ticked(mut self) -> Option<Screen> {
-        // TODO: It's odd to return it wrapped in an outter type?
-        self.countdown -= 1;
-        if self.countdown > 0 {
-            Some(Screen::Chord(self))
-        } else {
-            None
-        }
     }
 }

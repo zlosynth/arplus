@@ -12,10 +12,11 @@ pub mod save;
 mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
+use display::Screen;
 
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
-use crate::display::{Display, Priority, Screen, StepScreen};
+use crate::display::{Display, Priority, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, CvTrigger, Pot};
@@ -125,7 +126,6 @@ impl Controller {
         reconcile_cutoff(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
         reconcile_resonance(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
         reconcile_scale(
-            // TODO: Unify tone/note naming
             &pots.tone,
             &cvs.tone,
             &buttons.scale_group,
