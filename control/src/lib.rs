@@ -19,7 +19,7 @@ use crate::chords::Chords;
 use crate::display::{Display, Priority, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
-use crate::inputs::{Button, Cv, CvTrigger, Pot};
+use crate::inputs::{Button, Cv, Gate, Pot};
 use crate::parameters::Parameters;
 use crate::random::RandomGenerator;
 use crate::save::Save;
@@ -154,11 +154,11 @@ impl Controller {
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 self.display.set(
                     Priority::Fallback,
-                    Screen::Step(StepScreen::with_step(note.index as usize)),
+                    Screen::Step(StepScreen::with_step(note.index() as usize)),
                 );
                 let contour = self.parameters.contour.value();
                 let dsp_trigger_attributes = DSPTriggerAttributes {
-                    frequency: note.tone.frequency(),
+                    frequency: note.tone().frequency(),
                     contour,
                 };
                 defmt::info!("DSP trigger attributes={:?}", dsp_trigger_attributes);
@@ -208,8 +208,8 @@ impl Controller {
     }
 }
 
-fn reconcile_trigger(button: &Button, cv: &CvTrigger, parameter: &mut parameters::Trigger) {
-    parameter.reconcile(button.clicked, cv.triggered);
+fn reconcile_trigger(button: &Button, cv: &Gate, parameter: &mut parameters::Trigger) {
+    parameter.reconcile(button.clicked(), cv.triggered());
 }
 
 fn reconcile_chord(
@@ -222,10 +222,10 @@ fn reconcile_chord(
     needs_save: &mut bool,
 ) {
     let (changed_group, changed_chord) = parameter.reconcile_group_and_chord(
-        group_pot.value,
-        group_cv.value,
-        chord_pot.value,
-        chord_cv.value,
+        group_pot.value(),
+        group_cv.value(),
+        chord_pot.value(),
+        chord_cv.value(),
     );
     *needs_save |= changed_group || changed_chord;
     if changed_group {
@@ -239,15 +239,15 @@ fn reconcile_chord(
 }
 
 fn reconcile_resonance(pot: &Pot, cv: &Cv, parameter: &mut parameters::Resonance) {
-    parameter.reconcile(pot.value, cv.value);
+    parameter.reconcile(pot.value(), cv.value());
 }
 
 fn reconcile_cutoff(pot: &Pot, cv: &Cv, parameter: &mut parameters::Cutoff) {
-    parameter.reconcile(pot.value, cv.value);
+    parameter.reconcile(pot.value(), cv.value());
 }
 
 fn reconcile_contour(pot: &Pot, cv: &Cv, parameter: &mut parameters::Contour) {
-    parameter.reconcile(pot.value, cv.value);
+    parameter.reconcile(pot.value(), cv.value());
 }
 
 fn reconcile_scale(
@@ -267,8 +267,8 @@ fn reconcile_scale(
     if group_tapped || scale_tapped {
         let (note_changed, group_changed, scale_changed) = parameter
             .reconcile_note_group_and_scale(
-                tone_pot.value,
-                tone_cv.value,
+                tone_pot.value(),
+                tone_cv.value(),
                 group_tapped,
                 scale_tapped,
             );
@@ -280,7 +280,7 @@ fn reconcile_scale(
             let selected = parameter.selected_scale_index();
             display_request.set(Priority::Active, Screen::scale(selected));
         } else if note_changed {
-            let selected = parameter.selected_note().index;
+            let selected = parameter.selected_note().index();
             display_request.set(Priority::Active, Screen::note(selected as usize));
         }
     } else if group_held {
@@ -310,11 +310,11 @@ fn reconcile_arp_mode(
 }
 
 fn was_button_tapped(button: &Button) -> bool {
-    button.released && button.released_after <= HOLD_TO_QUERY
+    button.released() && button.released_after() <= HOLD_TO_QUERY
 }
 
 fn is_button_held(button: &Button) -> bool {
-    button.held_for > HOLD_TO_QUERY
+    button.held_for() > HOLD_TO_QUERY
 }
 
 impl DisplayRequest {

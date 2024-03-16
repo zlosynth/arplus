@@ -39,7 +39,7 @@ impl<const N: usize> Scale<N> {
         let closest_tonic = self.find_closest_tonic(voct)?;
         let (note_below, note_above) =
             self.find_surrounding_notes_ascending(voct, closest_tonic)?;
-        let center_voct = (note_below.tone.voct() + note_above.tone.voct()) / 2.0;
+        let center_voct = (note_below.tone().voct() + note_above.tone().voct()) / 2.0;
         if voct < center_voct {
             Some(note_below)
         } else {
@@ -69,7 +69,7 @@ impl<const N: usize> Scale<N> {
             let mut remaining_distance = 0;
             for i in 0..remaining_steps {
                 remaining_distance += self.ascending
-                    [((source.index + i as u8) % steps_in_octave as u8) as usize]
+                    [((source.index() + i as u8) % steps_in_octave as u8) as usize]
                     as i16;
             }
             remaining_distance
@@ -77,15 +77,15 @@ impl<const N: usize> Scale<N> {
             let mut remaining_distance = 0;
             for i in 1..=remaining_steps.abs() {
                 remaining_distance -= self.ascending
-                    [(source.index as i16 - i as i16).rem_euclid(steps_in_octave as i16) as usize]
+                    [(source.index() as i16 - i as i16).rem_euclid(steps_in_octave as i16) as usize]
                     as i16;
             }
             remaining_distance
         };
 
         let total_distance = octaves as i16 * 24 + remaining_distance;
-        let tone = QuarterTone::try_from_u8((source.tone.index() as i16 + total_distance) as u8)?;
-        let index = (source.index as i16 + remaining_steps as i16)
+        let tone = QuarterTone::try_from_u8((source.tone().index() as i16 + total_distance) as u8)?;
+        let index = (source.index() as i16 + remaining_steps as i16)
             .rem_euclid(self.ascending.len() as i16) as u8;
 
         Some(ScaleNote::new(tone, index))
