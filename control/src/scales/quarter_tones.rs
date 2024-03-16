@@ -1,4 +1,4 @@
-// TODO: Any of the invariants may be constructed using `try_from_u8`.
+// ALLOW: Any of the invariants may be constructed using `try_from_u8`.
 #[allow(dead_code)]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, defmt::Format)]
