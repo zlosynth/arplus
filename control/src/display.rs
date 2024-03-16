@@ -84,9 +84,14 @@ impl Display {
     }
 
     pub fn tick(&mut self) {
-        for screen in self.prioritized.iter_mut().filter(|p| p.is_some()) {
-            // SAFETY: The iterator already filters for `Some`.
-            *screen = screen.take().unwrap().ticked();
+        for page in self.prioritized.iter_mut().flatten() {
+            page.tick();
+        }
+
+        if let Some(page) = self.prioritized[Priority::Active as usize].as_ref() {
+            if page.clock > 2000 {
+                self.reset(Priority::Active);
+            }
         }
     }
 
@@ -103,13 +108,8 @@ impl Page {
         Self { clock: 0, screen }
     }
 
-    fn ticked(mut self) -> Option<Self> {
-        self.clock += 1;
-        if self.clock > 2000 {
-            None
-        } else {
-            Some(self)
-        }
+    fn tick(&mut self) {
+        self.clock = self.clock.wrapping_add(1);
     }
 }
 
