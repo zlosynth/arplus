@@ -1,11 +1,11 @@
 mod button;
 mod cv;
-mod cv_trigger;
+mod gate;
 mod pot;
 
 pub use button::Button;
 pub use cv::Cv;
-pub use cv_trigger::CvTrigger;
+pub use gate::Gate;
 pub use pot::Pot;
 
 pub struct ControlInputSnapshot {
@@ -41,7 +41,7 @@ pub struct Cvs {
 }
 
 pub struct Gates {
-    pub trigger: CvTrigger,
+    pub trigger: Gate,
 }
 
 pub struct Buttons {
@@ -71,7 +71,7 @@ impl Inputs {
                 resonance: Cv::new(),
             },
             gates: Gates {
-                trigger: CvTrigger::new(),
+                trigger: Gate::new(),
             },
             buttons: Buttons {
                 scale_group: Button::new(),

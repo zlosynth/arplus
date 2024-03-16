@@ -1,9 +1,9 @@
-pub struct CvTrigger {
+pub struct Gate {
     active: bool,
     triggered: bool,
 }
 
-impl CvTrigger {
+impl Gate {
     pub fn new() -> Self {
         Self {
             active: false,
