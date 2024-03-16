@@ -1,7 +1,7 @@
 use crate::chords::{Chords, GroupId};
 
-use super::primitives::discrete::Discrete;
-use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
+use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
+use super::primitives::math;
 
 pub struct Chord {
     library: Chords,
@@ -42,7 +42,7 @@ impl Chord {
         chord_pot: f32,
         chord_cv: Option<f32>,
     ) -> (bool, bool) {
-        let changed_group = self.group.reconcile(linear_sum(group_pot, group_cv));
+        let changed_group = self.group.reconcile(math::linear_sum(group_pot, group_cv));
 
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
@@ -50,7 +50,7 @@ impl Chord {
             self.chord.set_output_values(number_of_chords_in_the_group);
         }
 
-        let changed_chord = self.chord.reconcile(linear_sum(chord_pot, chord_cv));
+        let changed_chord = self.chord.reconcile(math::linear_sum(chord_pot, chord_cv));
 
         (changed_chord, changed_chord)
     }
@@ -83,12 +83,4 @@ impl Chord {
             chord: self.chord.copy_config(),
         }
     }
-}
-
-// TODO: Move it to a lib?
-fn linear_sum(pot: f32, cv: Option<f32>) -> f32 {
-    let offset_cv = cv.unwrap_or(0.0) / 5.0;
-    let sum = pot + offset_cv;
-    let clamped = sum.clamp(0.0, 1.0);
-    clamped
 }

@@ -1,4 +1,5 @@
-use super::primitives::continuous::{self, Continuous};
+use super::primitives::continuous::Continuous;
+use super::primitives::math;
 
 pub struct Contour {
     continuous: Continuous,
@@ -12,7 +13,7 @@ impl Contour {
     }
 
     pub fn reconcile(&mut self, pot: f32, cv: Option<f32>) {
-        self.continuous.reconcile(continuous::linear_sum(pot, cv));
+        self.continuous.reconcile(math::linear_sum(pot, cv));
     }
 
     pub fn value(&self) -> f32 {
