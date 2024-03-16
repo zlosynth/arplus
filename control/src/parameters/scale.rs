@@ -1,6 +1,7 @@
 use crate::scales::{scale_note::ScaleNote, tonic::Tonic, GroupId, Scales};
 
-use super::{Discrete, DiscretePersistentConfig, Toggle, TogglePersistentConfig};
+use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
+use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 
 pub struct Scale {
     library: Scales,

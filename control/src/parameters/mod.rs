@@ -1,28 +1,23 @@
-// TODO: Introduce two submodules. One for building blocks and one for instrument params
 mod arp_mode;
 mod chord;
 mod contour;
 mod cutoff;
+mod primitives;
 mod resonance;
 mod scale;
 mod trigger;
 
-mod continuous;
-mod discrete;
-mod toggle;
-
+use arp_mode::PersistentConfig as ArpModePersistentConfig;
 use chord::PersistentConfig as ChordPersistentConfig;
-use discrete::PersistentConfig as DiscretePersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
-use toggle::PersistentConfig as TogglePersistentConfig;
 
 // TODO: Do not use these directly. Instead, use them as primitives in types dedicated to what they represent.
-pub use continuous::Continuous;
-pub use discrete::Discrete;
-pub use toggle::Toggle;
-pub use trigger::Trigger;
+// pub use continuous::Continuous;
+// pub use discrete::Discrete;
+// pub use toggle::Toggle;
 
-use crate::{chords::Chords, scales::Scales};
+use crate::chords::Chords;
+use crate::scales::Scales;
 
 pub use self::arp_mode::ArpMode;
 pub use self::chord::Chord;
@@ -30,6 +25,7 @@ pub use self::contour::Contour;
 pub use self::cutoff::Cutoff;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
+pub use self::trigger::Trigger;
 
 pub struct Parameters {
     // TODO: Switch this to something VOct specific later.
@@ -46,7 +42,7 @@ pub struct Parameters {
 pub struct PersistentConfig {
     pub chord: ChordPersistentConfig,
     pub scale: ScalePersistentConfig,
-    pub arp_mode: TogglePersistentConfig,
+    pub arp_mode: ArpModePersistentConfig,
 }
 
 impl Parameters {

@@ -1,9 +1,7 @@
 use crate::arpeggiator::Mode;
 
-// TODO: Once this handles more than one inputs (mapped CV), then
-// this will need to define its own persistent config structure.
-use super::toggle::PersistentConfig;
-use super::toggle::Toggle;
+pub use super::primitives::toggle::PersistentConfig;
+use super::primitives::toggle::Toggle;
 
 pub struct ArpMode {
     toggle: Toggle,

@@ -1,6 +1,7 @@
 use crate::chords::{Chords, GroupId};
 
-use super::{discrete::PersistentConfig as DiscretePersistentConfig, Discrete};
+use super::primitives::discrete::Discrete;
+use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
 
 pub struct Chord {
     library: Chords,

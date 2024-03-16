@@ -1,4 +1,4 @@
-use super::Continuous;
+use super::primitives::continuous::Continuous;
 
 pub struct Cutoff {
     continuous: Continuous,
