@@ -202,11 +202,9 @@ mod tests {
     use crate::scales::quarter_tones::QuarterTone;
     use crate::scales::scale::{Step, S, T};
     use crate::scales::tonic::Tonic;
+    use crate::scales::{Scale, Scales};
 
     use super::*;
-
-    const IONIAN: [Step; 7] = [T, T, S, T, T, T, S];
-    const DORIAN: [Step; 7] = [T, S, T, T, T, S, T];
 
     struct TestRandom {
         values: [u8; 3],
@@ -235,11 +233,21 @@ mod tests {
         }
     }
 
+    pub fn ionian() -> Scale {
+        let scales = Scales::new();
+        scales.scale(crate::scales::GroupId::Diatonic, 0).unwrap()
+    }
+
+    pub fn dorian() -> Scale {
+        let scales = Scales::new();
+        scales.scale(crate::scales::GroupId::Diatonic, 1).unwrap()
+    }
+
     #[test]
     fn initialize() {
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::C1, 0),
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             mode: Mode::Up,
@@ -252,7 +260,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Root,
@@ -268,7 +276,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
@@ -285,7 +293,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::UpDownNoRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -304,7 +312,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::UpDownRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -325,7 +333,7 @@ mod tests {
         let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Random,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -344,7 +352,7 @@ mod tests {
         let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Moving,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -366,7 +374,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
@@ -387,7 +395,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -409,7 +417,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -431,7 +439,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
@@ -456,7 +464,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -479,7 +487,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
@@ -508,13 +516,13 @@ mod tests {
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
         };
         let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         arp.apply_configuration(Configuration {
-            scale: Scale::new(&DORIAN).unwrap(),
+            scale: dorian(),
             ..configuration.clone()
         });
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -525,7 +533,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -545,7 +553,7 @@ mod tests {
         let mut r = TestRandom::new();
         let configuration = Configuration {
             tonic: Tonic::C,
-            scale: Scale::new(&IONIAN).unwrap(),
+            scale: ionian(),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),

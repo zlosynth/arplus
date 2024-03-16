@@ -280,7 +280,4 @@ mod tests {
             );
         }
     }
-
-    // TODO: Add fuzzy test making sure that no matter the operation, the
-    // result is always in scale.
 }

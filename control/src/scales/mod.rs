@@ -1,21 +1,15 @@
+// TODO: Refactor Chords and Scales to they have the same structure
+
 use heapless::Vec;
 
-use self::{
-    scale::{Scale as ProjectedScale, Step, S, T},
-    tonic::Tonic,
-};
+use self::scale::{Scale as ProjectedScale, Step, S, T};
+use self::tonic::Tonic;
 
 // TODO: Re-export what's needed, do not pub mod
 pub mod quarter_tones;
 pub mod scale;
 pub mod scale_note;
 pub mod tonic;
-
-// TODO: Store all scales here
-// TODO: Store scales in groups
-// TODO: Handle scale modes here
-// TODO: Impl defmt for each scale?
-// TODO: Refactor Chords and Scales to they have the same structure
 
 pub type Scale = LibraryScale<12>;
 
@@ -68,6 +62,7 @@ impl Scales {
     }
 
     pub fn number_of_scales(&self, group_id: GroupId) -> usize {
+        // TODO: Use constant functions.
         match group_id {
             GroupId::Diatonic => self.diatonic.len(),
             GroupId::Chromatic => self.chromatic.len(),
@@ -87,9 +82,10 @@ impl Scales {
     }
 
     pub fn number_of_steps_in_group(&self, group_id: GroupId) -> usize {
-        // TODO: Get size. Maybe from a trait over the wrapper type?
         match group_id {
-            // TODO: No unwrap or safety note
+            // SAFETY: It is checked during the initialization that libraries
+            // are never empty.
+            // TODO: Use constant functions.
             GroupId::Diatonic => self.diatonic.get(0).unwrap().steps(),
             GroupId::Chromatic => self.chromatic.get(0).unwrap().steps(),
         }
@@ -97,8 +93,7 @@ impl Scales {
 }
 
 impl<const S: usize> LibraryScale<S> {
-    // TODO: This does not have to be pub
-    pub fn new(ascending: &[Step]) -> Result<Self, ()> {
+    fn new(ascending: &[Step]) -> Result<Self, ()> {
         Ok(Self {
             ascending: Vec::from_slice(ascending)?,
         })
@@ -112,12 +107,9 @@ impl<const S: usize> LibraryScale<S> {
     // Optimize it by keeping projected scale in control lib, passing
     // projected scale to arp. And only changing it on real input change.
     pub fn with_tonic(&self, tonic: Tonic) -> ProjectedScale<S> {
-        // TODO: Initialize it unchecked.
         // SAFETY: Size of the slice is already checked against S.
         ProjectedScale::new(tonic, &self.ascending).unwrap()
     }
-
-    // TODO: Get a specific instance with tonic too
 }
 
 trait LibraryScaleTrait {
@@ -144,6 +136,7 @@ impl TryFrom<usize> for GroupId {
 fn initialize_group<const N: usize, const S: usize>(
     scales_slice: &[(&[Step], Option<&[Step]>)],
 ) -> LibraryGroup<N, S> {
+    assert!(N > 0, "LibraryGroup must not be empty");
     assert!(
         S <= Scale::capacity(),
         "LibraryGroup would contain bigger scales than is the maximum Chord capacity"
