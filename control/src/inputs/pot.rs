@@ -1,5 +1,5 @@
 pub struct Pot {
-    pub value: f32,
+    value: f32,
 }
 
 impl Pot {
@@ -9,5 +9,9 @@ impl Pot {
 
     pub fn reconcile(&mut self, value: f32) {
         self.value = value;
+    }
+
+    pub fn value(&self) -> f32 {
+        self.value
     }
 }
