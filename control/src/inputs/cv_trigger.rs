@@ -1,5 +1,5 @@
 pub struct CvTrigger {
-    pub(crate) active: bool,
+    active: bool,
     pub triggered: bool,
 }
 
