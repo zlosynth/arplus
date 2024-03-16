@@ -1,9 +1,9 @@
 pub struct Button {
-    pub pressed: bool,
-    pub clicked: bool,
-    pub released: bool,
-    pub held_for: usize,
-    pub released_after: usize,
+    pressed: bool,
+    clicked: bool,
+    released: bool,
+    held_for: usize,
+    released_after: usize,
 }
 
 impl Button {
@@ -29,5 +29,21 @@ impl Button {
         } else {
             self.held_for = 0;
         }
+    }
+
+    pub fn clicked(&self) -> bool {
+        self.clicked
+    }
+
+    pub fn released(&self) -> bool {
+        self.released
+    }
+
+    pub fn held_for(&self) -> usize {
+        self.held_for
+    }
+
+    pub fn released_after(&self) -> usize {
+        self.released_after
     }
 }
