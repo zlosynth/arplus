@@ -1,4 +1,4 @@
-use arplus_control::save::Save;
+use arplus_control::Save;
 
 use crate::control_input::ControlInputInterface;
 use crate::flash_memory::FlashMemoryInterface;

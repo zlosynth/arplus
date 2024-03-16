@@ -1,3 +1,5 @@
+// TODO: Review
+
 #![no_std]
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
@@ -8,21 +10,21 @@ mod display;
 mod inputs;
 mod parameters;
 mod random;
-pub mod save;
+mod save;
 mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
-use display::Screen;
 
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
+use crate::display::Screen;
 use crate::display::{Display, Priority, StepScreen};
 pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, Gate, Pot};
 use crate::parameters::Parameters;
 use crate::random::RandomGenerator;
-use crate::save::Save;
+pub use crate::save::{Save, WrappedSave};
 use crate::scales::Scales;
 
 const HOLD_TO_QUERY: usize = 400;

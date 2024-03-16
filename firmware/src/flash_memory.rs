@@ -1,6 +1,6 @@
 pub use daisy::flash::Flash;
 
-use arplus_control::save::{Save, WrappedSave};
+use arplus_control::{Save, WrappedSave};
 
 const NUM_SECTORS: usize = 2048;
 

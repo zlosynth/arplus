@@ -12,8 +12,7 @@ mod app {
     use heapless::spsc::{Consumer, Producer, Queue};
     use systick_monotonic::Systick;
 
-    use arplus_control::save::Save;
-    use arplus_control::{ControlInputSnapshot, Controller};
+    use arplus_control::{ControlInputSnapshot, Controller, Save};
     use arplus_dsp::{Attributes as DspAttributes, Dsp, MemoryManager};
     use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
     use arplus_firmware::control_input::ControlInputInterface;
