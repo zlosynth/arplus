@@ -1,6 +1,6 @@
 pub struct CvTrigger {
     active: bool,
-    pub triggered: bool,
+    triggered: bool,
 }
 
 impl CvTrigger {
@@ -14,5 +14,9 @@ impl CvTrigger {
     pub fn reconcile(&mut self, active: bool) {
         self.triggered = !self.active && active;
         self.active = active;
+    }
+
+    pub fn triggered(&self) -> bool {
+        self.triggered
     }
 }
