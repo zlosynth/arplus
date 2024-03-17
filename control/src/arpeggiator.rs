@@ -46,7 +46,7 @@ pub struct Configuration {
 }
 
 impl Arpeggiator {
-    pub fn new_with_configuration(config: Configuration) -> Self {
+    pub fn with_config(config: Configuration) -> Self {
         Self {
             tonic: config.tonic,
             scale: config.scale,
@@ -62,7 +62,7 @@ impl Arpeggiator {
         }
     }
 
-    pub fn apply_configuration(&mut self, config: Configuration) {
+    pub fn apply_config(&mut self, config: Configuration) {
         if self.mode != config.mode {
             self.mode = config.mode;
             match self.mode {
@@ -251,7 +251,7 @@ mod tests {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             mode: Mode::Up,
         };
-        let _arp = Arpeggiator::new_with_configuration(configuration);
+        let _arp = Arpeggiator::with_config(configuration);
     }
 
     #[test]
@@ -264,7 +264,7 @@ mod tests {
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Root,
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration);
+        let mut arp = Arpeggiator::with_config(configuration);
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
@@ -280,7 +280,7 @@ mod tests {
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration);
+        let mut arp = Arpeggiator::with_config(configuration);
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -297,7 +297,7 @@ mod tests {
             mode: Mode::UpDownNoRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -316,7 +316,7 @@ mod tests {
             mode: Mode::UpDownRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -337,7 +337,7 @@ mod tests {
             mode: Mode::Random,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
@@ -356,7 +356,7 @@ mod tests {
             mode: Mode::Moving,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -378,10 +378,10 @@ mod tests {
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1, 3]).unwrap(),
             ..configuration.clone()
         });
@@ -399,11 +399,11 @@ mod tests {
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             ..configuration.clone()
         });
@@ -421,11 +421,11 @@ mod tests {
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             ..configuration.clone()
         });
@@ -443,14 +443,14 @@ mod tests {
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::G1, 4)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::A1, 5)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::G1, 4)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             ..configuration.clone()
         });
@@ -468,11 +468,11 @@ mod tests {
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             ..configuration.clone()
         });
@@ -491,7 +491,7 @@ mod tests {
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -499,7 +499,7 @@ mod tests {
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::A1, 5)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::A1, 5)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::G1, 4)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             ..configuration.clone()
         });
@@ -517,10 +517,10 @@ mod tests {
             tonic: Tonic::C,
             scale: ionian(),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             scale: dorian(),
             ..configuration.clone()
         });
@@ -537,10 +537,10 @@ mod tests {
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             root: ScaleNote::new(QuarterTone::C1, 0),
             ..configuration.clone()
         });
@@ -557,10 +557,10 @@ mod tests {
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
-        let mut arp = Arpeggiator::new_with_configuration(configuration.clone());
+        let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
-        arp.apply_configuration(Configuration {
+        arp.apply_config(Configuration {
             mode: Mode::UpDownNoRepeats,
             ..configuration.clone()
         });

@@ -1,5 +1,3 @@
-// TODO: Review
-
 #![no_std]
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
@@ -15,16 +13,17 @@ mod scales;
 
 use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 
+pub use crate::inputs::ControlInputSnapshot;
+pub use crate::save::{Save, WrappedSave};
+
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
 use crate::display::Screen;
 use crate::display::{Display, Priority, StepScreen};
-pub use crate::inputs::ControlInputSnapshot;
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, Gate, Pot};
 use crate::parameters::Parameters;
 use crate::random::RandomGenerator;
-pub use crate::save::{Save, WrappedSave};
 use crate::scales::Scales;
 
 const HOLD_TO_QUERY: usize = 400;
@@ -35,6 +34,8 @@ pub struct Controller {
     parameters: Parameters,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
+    // TODO: Implement calibration.
+    // TODO: Implement configuration.
     // state: State,
     // queue: Queue,
 }
@@ -82,7 +83,7 @@ impl Controller {
 
         Self {
             display: Display::new(),
-            arp: Arpeggiator::new_with_configuration(build_arp_config(&parameters)),
+            arp: Arpeggiator::with_config(build_arp_config(&parameters)),
             parameters,
             inputs: Inputs::new(),
             random_generator: RandomGenerator::with_seed(seed),
@@ -150,20 +151,18 @@ impl Controller {
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            self.arp
-                .apply_configuration(build_arp_config(&self.parameters));
+            self.arp.apply_config(build_arp_config(&self.parameters));
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
                 self.display.set(
                     Priority::Fallback,
                     Screen::Step(StepScreen::with_step(note.index() as usize)),
                 );
-                let contour = self.parameters.contour.value();
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
-                    contour,
+                    contour: self.parameters.contour.value(),
                 };
-                defmt::info!("DSP trigger attributes={:?}", dsp_trigger_attributes);
+                defmt::debug!("DSP trigger attributes={:?}", dsp_trigger_attributes);
                 Some(dsp_trigger_attributes)
             } else {
                 None
