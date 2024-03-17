@@ -62,9 +62,9 @@ impl Arpeggiator {
         }
     }
 
-    pub fn apply_configuration(&mut self, configuration: Configuration) {
-        if self.mode != configuration.mode {
-            self.mode = configuration.mode;
+    pub fn apply_configuration(&mut self, config: Configuration) {
+        if self.mode != config.mode {
+            self.mode = config.mode;
             match self.mode {
                 Mode::Root => self.state = State::Root,
                 Mode::Up | Mode::UpDownRepeats | Mode::UpDownNoRepeats => {
@@ -77,15 +77,15 @@ impl Arpeggiator {
             }
         }
 
-        if self.chord != configuration.chord {
+        if self.chord != config.chord {
             if let State::Moving(_, schuffled_chord) = &mut self.state {
-                *schuffled_chord = configuration.chord.clone();
+                *schuffled_chord = config.chord.clone();
             }
-            self.chord = configuration.chord;
+            self.chord = config.chord;
         }
 
-        self.scale = configuration.scale;
-        self.root = configuration.root;
+        self.scale = config.scale;
+        self.root = config.root;
     }
 
     pub fn pop(&mut self, random: &mut impl Random) -> Option<ScaleNote> {
@@ -200,7 +200,6 @@ fn two_distinct_random_values(max: usize, random: &mut impl Random) -> (usize, u
 #[cfg(test)]
 mod tests {
     use crate::scales::quarter_tones::QuarterTone;
-    use crate::scales::scale::{Step, S, T};
     use crate::scales::tonic::Tonic;
     use crate::scales::{Scale, Scales};
 
