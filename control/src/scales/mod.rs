@@ -62,10 +62,9 @@ impl Scales {
     }
 
     pub fn number_of_scales(&self, group_id: GroupId) -> usize {
-        // TODO: Use constant functions.
         match group_id {
-            GroupId::Diatonic => self.diatonic.len(),
-            GroupId::Chromatic => self.chromatic.len(),
+            GroupId::Diatonic => self.diatonic.scales_len(),
+            GroupId::Chromatic => self.chromatic.scales_len(),
         }
     }
 
@@ -85,9 +84,8 @@ impl Scales {
         match group_id {
             // SAFETY: It is checked during the initialization that libraries
             // are never empty.
-            // TODO: Use constant functions.
-            GroupId::Diatonic => self.diatonic.get(0).unwrap().steps(),
-            GroupId::Chromatic => self.chromatic.get(0).unwrap().steps(),
+            GroupId::Diatonic => self.diatonic.get(0).unwrap().steps_len(),
+            GroupId::Chromatic => self.chromatic.get(0).unwrap().steps_len(),
         }
     }
 }
@@ -112,12 +110,22 @@ impl<const S: usize> LibraryScale<S> {
     }
 }
 
+trait LibraryGroupTrait {
+    fn scales_len(&self) -> usize;
+}
+
+impl<const N: usize, const S: usize> LibraryGroupTrait for LibraryGroup<N, S> {
+    fn scales_len(&self) -> usize {
+        N
+    }
+}
+
 trait LibraryScaleTrait {
-    fn steps(&self) -> usize;
+    fn steps_len(&self) -> usize;
 }
 
 impl<const S: usize> LibraryScaleTrait for LibraryScale<S> {
-    fn steps(&self) -> usize {
+    fn steps_len(&self) -> usize {
         S
     }
 }
