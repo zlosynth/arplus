@@ -1,5 +1,5 @@
-use crate::scales::scale_note::ScaleNote;
-use crate::scales::tonic::Tonic;
+use crate::scales::ScaleNote;
+use crate::scales::Tonic;
 use crate::scales::{GroupId, Scales};
 
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};

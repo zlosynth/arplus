@@ -1,8 +1,8 @@
 use crate::chords::Chord;
 use crate::random::Random;
-use crate::scales::scale_note::ScaleNote;
-use crate::scales::tonic::Tonic;
 use crate::scales::Scale;
+use crate::scales::ScaleNote;
+use crate::scales::Tonic;
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Arpeggiator {
@@ -199,8 +199,8 @@ fn two_distinct_random_values(max: usize, random: &mut impl Random) -> (usize, u
 
 #[cfg(test)]
 mod tests {
-    use crate::scales::quarter_tones::QuarterTone;
-    use crate::scales::tonic::Tonic;
+    use crate::scales::QuarterTone;
+    use crate::scales::Tonic;
     use crate::scales::{Scale, Scales};
 
     use super::*;

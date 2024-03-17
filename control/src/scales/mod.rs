@@ -1,15 +1,17 @@
 // TODO: Refactor Chords and Scales to they have the same structure
 
+mod quarter_tones;
+mod scale;
+mod scale_note;
+mod tonic;
+
 use heapless::Vec;
 
 use self::scale::{Scale as ProjectedScale, Step, S, T};
-use self::tonic::Tonic;
 
-// TODO: Re-export what's needed, do not pub mod
-pub mod quarter_tones;
-pub mod scale;
-pub mod scale_note;
-pub mod tonic;
+pub use quarter_tones::QuarterTone;
+pub use scale_note::ScaleNote;
+pub use tonic::Tonic;
 
 pub type Scale = LibraryScale<12>;
 
