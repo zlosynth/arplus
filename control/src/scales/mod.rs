@@ -97,7 +97,7 @@ impl<const S: usize> LibraryScale<S> {
         })
     }
 
-    fn capacity() -> usize {
+    const fn capacity() -> usize {
         S
     }
 
