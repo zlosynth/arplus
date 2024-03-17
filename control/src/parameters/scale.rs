@@ -1,8 +1,12 @@
-use crate::scales::{scale_note::ScaleNote, tonic::Tonic, GroupId, Scales};
+use crate::scales::scale_note::ScaleNote;
+use crate::scales::tonic::Tonic;
+use crate::scales::{GroupId, Scales};
 
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
 use super::primitives::math;
 use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
+
+const OCTAVES: usize = 7;
 
 pub struct Scale {
     library: Scales,
@@ -10,8 +14,6 @@ pub struct Scale {
     group: Toggle,
     scale: Toggle,
     tonic: Tonic,
-    // TODO: Tonic
-    // TODO: CV mapping
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -21,25 +23,19 @@ pub struct PersistentConfig {
     scale: TogglePersistentConfig,
 }
 
-// TODO: Should it own scales and handle note fetching as well?
 impl Scale {
     pub fn new(config: PersistentConfig, library: Scales) -> Self {
         let group = Toggle::new(config.group, Scales::GROUPS);
+        let selected_group = group.selected_value().try_into().unwrap();
 
-        // TODO: Share the adjustement code with reconcile group
         let scale = {
-            // TODO: Safety
-            let selected_group = group.selected_value().try_into().unwrap();
-            let number_of_scales_in_the_group = library.number_of_scales(selected_group);
-            Toggle::new(config.scale, number_of_scales_in_the_group)
+            let scales_in_group = library.number_of_scales(selected_group);
+            Toggle::new(config.scale, scales_in_group)
         };
 
         let note = {
-            const OCTAVES: usize = 7;
-            // TODO: Safety
-            let selected_group = group.selected_value().try_into().unwrap();
-            let steps_in_scale = library.number_of_steps_in_group(selected_group);
-            Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1)
+            let steps_in_group = library.number_of_steps_in_group(selected_group);
+            Discrete::new(config.note, OCTAVES * steps_in_group, 0.1)
         };
 
         Self {
@@ -63,14 +59,11 @@ impl Scale {
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
 
-            let number_of_chords_in_the_group = self.library.number_of_scales(selected_group);
-            self.scale.set_output_values(number_of_chords_in_the_group);
+            let scales_in_group = self.library.number_of_scales(selected_group);
+            self.scale.set_output_values(scales_in_group);
 
-            const OCTAVES: usize = 7;
-            let number_of_steps_in_the_group =
-                self.library.number_of_steps_in_group(selected_group);
-            self.note
-                .set_output_values(OCTAVES * number_of_steps_in_the_group);
+            let steps_in_group = self.library.number_of_steps_in_group(selected_group);
+            self.note.set_output_values(OCTAVES * steps_in_group);
         }
 
         let changed_chord = self.scale.reconcile(scale_toggle);
@@ -91,7 +84,7 @@ impl Scale {
     }
 
     pub fn selected_scale(&self) -> crate::scales::Scale {
-        // TODO: Safety
+        // SAFETY: Range of indices is limited in `new` and `reconcile`.
         self.library
             .scale(self.selected_group_id(), self.selected_scale_index())
             .unwrap()
@@ -102,7 +95,7 @@ impl Scale {
     }
 
     pub fn selected_note(&self) -> ScaleNote {
-        // TODO: Safety
+        // SAFETY: Range of indices is limited in `new` and `reconcile`.
         self.selected_scale()
             .with_tonic(self.tonic)
             .get_note_by_index_ascending(self.selected_note_index())
