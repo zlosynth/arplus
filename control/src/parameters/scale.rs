@@ -1,6 +1,6 @@
-use crate::scales::ScaleNote;
-use crate::scales::Tonic;
-use crate::scales::{GroupId, Scales};
+// TODO: Review. Keep Projected scale here. Review callers of methods.
+
+use crate::scales::{GroupId, ProjectedScale, ScaleNote, Scales, Tonic};
 
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
 use super::primitives::math;
@@ -14,6 +14,7 @@ pub struct Scale {
     group: Toggle,
     scale: Toggle,
     tonic: Tonic,
+    scale_cache: Option<ProjectedScale>,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -40,13 +41,16 @@ impl Scale {
             Discrete::new(config.note, OCTAVES * steps_in_group, 0.1)
         };
 
-        Self {
+        let mut s = Self {
             library,
             note,
             group,
             scale,
             tonic: Tonic::C,
-        }
+            scale_cache: None,
+        };
+        s.update_scale_cache();
+        s
     }
 
     pub fn reconcile_note_group_and_scale(
@@ -68,11 +72,15 @@ impl Scale {
             self.note.set_output_values(OCTAVES * steps_in_group);
         }
 
-        let changed_chord = self.scale.reconcile(scale_toggle);
+        let changed_scale = self.scale.reconcile(scale_toggle);
+
+        if changed_group || changed_scale {
+            self.update_scale_cache();
+        }
 
         let changed_note = self.note.reconcile(math::linear_sum(note_pot, note_cv));
 
-        (changed_note, changed_chord, changed_chord)
+        (changed_note, changed_scale, changed_scale)
     }
 
     pub fn selected_group_id(&self) -> GroupId {
@@ -85,21 +93,13 @@ impl Scale {
         self.scale.selected_value()
     }
 
-    pub fn selected_scale(&self) -> crate::scales::Scale {
-        // SAFETY: Range of indices is limited in `new` and `reconcile`.
-        self.library
-            .scale(self.selected_group_id(), self.selected_scale_index())
-            .unwrap()
-    }
-
-    pub fn selected_note_index(&self) -> usize {
-        self.note.selected_value()
+    pub fn selected_scale(&self) -> ProjectedScale {
+        self.scale_cache().clone()
     }
 
     pub fn selected_note(&self) -> ScaleNote {
         // SAFETY: Range of indices is limited in `new` and `reconcile`.
-        self.selected_scale()
-            .with_tonic(self.tonic)
+        self.scale_cache()
             .get_note_by_index_ascending(self.selected_note_index())
             .unwrap()
     }
@@ -114,5 +114,23 @@ impl Scale {
             group: self.group.copy_config(),
             scale: self.scale.copy_config(),
         }
+    }
+
+    fn selected_note_index(&self) -> usize {
+        self.note.selected_value()
+    }
+
+    fn scale_cache(&self) -> &ProjectedScale {
+        // SAFETY: The cache is initialized in `new` and never taken away.
+        self.scale_cache.as_ref().unwrap()
+    }
+
+    fn update_scale_cache(&mut self) {
+        self.scale_cache = Some(
+            self.library
+                .scale(self.selected_group_id(), self.selected_scale_index())
+                .unwrap()
+                .with_tonic(self.tonic),
+        );
     }
 }

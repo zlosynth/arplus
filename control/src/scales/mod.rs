@@ -7,13 +7,15 @@ mod tonic;
 
 use heapless::Vec;
 
-use self::scale::{Scale as ProjectedScale, Step, S, T};
+use self::scale::{Step, S, T};
 
-pub use quarter_tones::QuarterTone;
-pub use scale_note::ScaleNote;
-pub use tonic::Tonic;
+pub use self::quarter_tones::QuarterTone;
+pub use self::scale::Scale as GenericProjectedScale;
+pub use self::scale_note::ScaleNote;
+pub use self::tonic::Tonic;
 
 pub type Scale = LibraryScale<12>;
+pub type ProjectedScale = GenericProjectedScale<12>;
 
 pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
@@ -103,10 +105,8 @@ impl<const S: usize> LibraryScale<S> {
         S
     }
 
-    // TODO: This is probably really suboptimal, cloning it every time.
-    // Optimize it by keeping projected scale in control lib, passing
-    // projected scale to arp. And only changing it on real input change.
-    pub fn with_tonic(&self, tonic: Tonic) -> ProjectedScale<S> {
+    // TODO: Cache the output everywhere
+    pub fn with_tonic(&self, tonic: Tonic) -> ProjectedScale {
         // SAFETY: Size of the slice is already checked against S.
         ProjectedScale::new(tonic, &self.ascending).unwrap()
     }

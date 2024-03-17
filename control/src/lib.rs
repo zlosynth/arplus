@@ -340,7 +340,6 @@ impl DisplayRequest {
 
 fn build_arp_config(parameters: &Parameters) -> ArpeggiatorConfiguration {
     ArpeggiatorConfiguration {
-        tonic: parameters.scale.selected_tonic(),
         root: parameters.scale.selected_note(),
         scale: parameters.scale.selected_scale(),
         chord: parameters.chord.selected_chord(),

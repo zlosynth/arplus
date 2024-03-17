@@ -1,13 +1,11 @@
 use crate::chords::Chord;
 use crate::random::Random;
-use crate::scales::Scale;
+use crate::scales::ProjectedScale;
 use crate::scales::ScaleNote;
-use crate::scales::Tonic;
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Arpeggiator {
-    tonic: Tonic,
-    scale: Scale,
+    scale: ProjectedScale,
     root: ScaleNote,
     chord: Chord,
     mode: Mode,
@@ -38,8 +36,7 @@ pub enum State {
 
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Configuration {
-    pub tonic: Tonic,
-    pub scale: Scale,
+    pub scale: ProjectedScale,
     pub root: ScaleNote,
     pub chord: Chord,
     pub mode: Mode,
@@ -48,7 +45,6 @@ pub struct Configuration {
 impl Arpeggiator {
     pub fn with_config(config: Configuration) -> Self {
         Self {
-            tonic: config.tonic,
             scale: config.scale,
             root: config.root,
             mode: config.mode,
@@ -164,7 +160,6 @@ impl Arpeggiator {
         };
 
         self.scale
-            .with_tonic(self.tonic)
             .get_note_in_interval_ascending(self.root, chord_degree)
     }
 }
@@ -245,8 +240,7 @@ mod tests {
     #[test]
     fn initialize() {
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::C1, 0),
             chord: Chord::from_slice(&[0, 1]).unwrap(),
             mode: Mode::Up,
@@ -258,8 +252,7 @@ mod tests {
     fn root_arp() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Root,
@@ -274,8 +267,7 @@ mod tests {
     fn up_arp() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
@@ -291,8 +283,7 @@ mod tests {
     fn up_down_no_repeat_arp() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::UpDownNoRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -310,8 +301,7 @@ mod tests {
     fn up_down_repeat_arp() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::UpDownRepeats,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -331,8 +321,7 @@ mod tests {
     fn random_arp() {
         let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Random,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -350,8 +339,7 @@ mod tests {
     fn moving_arp() {
         let mut r = TestRandom::new_with_values([0, 2, 1]);
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Moving,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -372,8 +360,7 @@ mod tests {
     fn change_chord_but_keep_size() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
@@ -393,8 +380,7 @@ mod tests {
     fn change_chord_and_reduce_size_with_up() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::Up,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -415,8 +401,7 @@ mod tests {
     fn change_chord_and_reduce_size_with_up_down_no_repeat_when_going_up() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -437,8 +422,7 @@ mod tests {
     fn change_chord_and_reduce_size_with_up_down_no_repeat_when_going_down() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownNoRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
@@ -462,8 +446,7 @@ mod tests {
     fn change_chord_and_reduce_size_with_up_down_repeat_when_going_up() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
@@ -485,8 +468,7 @@ mod tests {
     fn change_chord_and_reduce_size_with_up_down_repeat_when_going_down() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             mode: Mode::UpDownRepeats,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
@@ -514,14 +496,13 @@ mod tests {
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::E1, 2)));
         arp.apply_config(Configuration {
-            scale: dorian(),
+            scale: dorian().with_tonic(Tonic::C),
             ..configuration.clone()
         });
         assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::F1, 3)));
@@ -531,8 +512,7 @@ mod tests {
     fn change_root() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
@@ -551,8 +531,7 @@ mod tests {
     fn change_mode() {
         let mut r = TestRandom::new();
         let configuration = Configuration {
-            tonic: Tonic::C,
-            scale: ionian(),
+            scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
             mode: Mode::Up,
             root: ScaleNote::new(QuarterTone::D1, 1),
