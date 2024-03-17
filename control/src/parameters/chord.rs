@@ -15,17 +15,15 @@ pub struct PersistentConfig {
     chord: DiscretePersistentConfig,
 }
 
-// TODO: Should it own chords and handle their fetching as well?
 impl Chord {
     pub fn new(config: PersistentConfig, library: Chords) -> Self {
         let group = Discrete::new(config.group, Chords::GROUPS, 0.1);
 
-        // TODO: Share the adjustement code with reconcile group
         let chord = {
-            // TODO: Safety
+            // SAFETY: The group attribute is limited by the number of groups.
             let selected_group = group.selected_value().try_into().unwrap();
-            let number_of_chords_in_the_group = library.number_of_chords(selected_group);
-            Discrete::new(config.chord, number_of_chords_in_the_group, 0.1)
+            let chords_in_group = library.number_of_chords(selected_group);
+            Discrete::new(config.chord, chords_in_group, 0.1)
         };
 
         Self {
@@ -46,8 +44,8 @@ impl Chord {
 
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
-            let number_of_chords_in_the_group = self.library.number_of_chords(selected_group);
-            self.chord.set_output_values(number_of_chords_in_the_group);
+            let chords_in_group = self.library.number_of_chords(selected_group);
+            self.chord.set_output_values(chords_in_group);
         }
 
         let changed_chord = self.chord.reconcile(math::linear_sum(chord_pot, chord_cv));

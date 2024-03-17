@@ -26,6 +26,8 @@ pub struct PersistentConfig {
 impl Scale {
     pub fn new(config: PersistentConfig, library: Scales) -> Self {
         let group = Toggle::new(config.group, Scales::GROUPS);
+
+        // SAFETY: The group toggle is limited by the number of groups.
         let selected_group = group.selected_value().try_into().unwrap();
 
         let scale = {
