@@ -67,8 +67,8 @@ impl Scales {
 
     pub fn number_of_scales(&self, group_id: GroupId) -> usize {
         match group_id {
-            GroupId::Diatonic => self.diatonic.scales_len(),
-            GroupId::Chromatic => self.chromatic.scales_len(),
+            GroupId::Diatonic => self.diatonic.capacity(),
+            GroupId::Chromatic => self.chromatic.capacity(),
         }
     }
 
@@ -88,9 +88,19 @@ impl Scales {
         match group_id {
             // SAFETY: It is checked during the initialization that libraries
             // are never empty.
-            GroupId::Diatonic => self.diatonic.get(0).unwrap().steps_len(),
-            GroupId::Chromatic => self.chromatic.get(0).unwrap().steps_len(),
+            GroupId::Diatonic => self.diatonic.steps_capacity(),
+            GroupId::Chromatic => self.chromatic.steps_capacity(),
         }
+    }
+}
+
+trait LibraryGroupTrait {
+    fn steps_capacity(&self) -> usize;
+}
+
+impl<const N: usize, const S: usize> LibraryGroupTrait for LibraryGroup<N, S> {
+    fn steps_capacity(&self) -> usize {
+        S
     }
 }
 
@@ -105,30 +115,9 @@ impl<const S: usize> LibraryScale<S> {
         S
     }
 
-    // TODO: Cache the output everywhere
     pub fn with_tonic(&self, tonic: Tonic) -> ProjectedScale {
         // SAFETY: Size of the slice is already checked against S.
         ProjectedScale::new(tonic, &self.ascending).unwrap()
-    }
-}
-
-trait LibraryGroupTrait {
-    fn scales_len(&self) -> usize;
-}
-
-impl<const N: usize, const S: usize> LibraryGroupTrait for LibraryGroup<N, S> {
-    fn scales_len(&self) -> usize {
-        N
-    }
-}
-
-trait LibraryScaleTrait {
-    fn steps_len(&self) -> usize;
-}
-
-impl<const S: usize> LibraryScaleTrait for LibraryScale<S> {
-    fn steps_len(&self) -> usize {
-        S
     }
 }
 
@@ -151,16 +140,21 @@ fn initialize_group<const N: usize, const S: usize>(
         S <= Scale::capacity(),
         "LibraryGroup would contain bigger scales than is the maximum Chord capacity"
     );
-    assert!(
-        scales_slice.len() == N,
+    assert_eq!(
+        scales_slice.len(),
+        N,
         "LibraryGroup would be over or underutilized"
     );
 
     let mut group = LibraryGroup::new();
 
-    for (ascending_scale_slice, _descending_scale_slice) in scales_slice {
-        let chord = LibraryScale::new(ascending_scale_slice)
-            .expect("Given scale is bigger than LibraryGroup allows");
+    for (ascending_slice, _descending_slice) in scales_slice {
+        assert_eq!(
+            ascending_slice.len(),
+            S,
+            "Given scale is too big or too small"
+        );
+        let chord = LibraryScale::new(ascending_slice).unwrap();
         // SAFETY: The capacity is checked at the beginning of the function.
         group.push(chord).unwrap();
     }

@@ -116,5 +116,4 @@ impl Inputs {
             tone_cv_calibration: self.cvs.tone.copy_config(),
         }
     }
-    // TODO: Save config
 }

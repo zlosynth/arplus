@@ -13,11 +13,6 @@ use arp_mode::PersistentConfig as ArpModePersistentConfig;
 use chord::PersistentConfig as ChordPersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
 
-// TODO: Do not use these directly. Instead, use them as primitives in types dedicated to what they represent.
-// pub use continuous::Continuous;
-// pub use discrete::Discrete;
-// pub use toggle::Toggle;
-
 use crate::chords::Chords;
 use crate::scales::Scales;
 

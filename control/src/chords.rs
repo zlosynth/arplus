@@ -30,10 +30,9 @@ impl Chords {
     }
 
     pub fn number_of_chords(&self, group_id: GroupId) -> usize {
-        // TODO: Use constant functions.
         match group_id {
-            GroupId::Size3 => self.size_3.len(),
-            GroupId::Size4 => self.size_4.len(),
+            GroupId::Size3 => self.size_3.capacity(),
+            GroupId::Size4 => self.size_4.capacity(),
         }
     }
 
@@ -52,11 +51,20 @@ impl Chords {
     pub fn group_size(&self, group_id: GroupId) -> usize {
         // SAFETY: It is checked during the initialization that libraries
         // are never empty.
-        // TODO: Use constant functions.
         match group_id {
-            GroupId::Size3 => self.size_3.get(0).unwrap().len(),
-            GroupId::Size4 => self.size_4.get(0).unwrap().len(),
+            GroupId::Size3 => self.size_3.degrees_capacity(),
+            GroupId::Size4 => self.size_4.degrees_capacity(),
         }
+    }
+}
+
+trait LibraryGroupTrait {
+    fn degrees_capacity(&self) -> usize;
+}
+
+impl<const N: usize, const D: usize> LibraryGroupTrait for LibraryGroup<N, D> {
+    fn degrees_capacity(&self) -> usize {
+        D
     }
 }
 
@@ -71,24 +79,23 @@ impl TryFrom<usize> for GroupId {
     }
 }
 
-// TODO: Implement something similar to LibraryScaleTrait from Scales
-
 fn initialize_group<const N: usize, const D: usize>(chords_slice: &[&[i16]]) -> LibraryGroup<N, D> {
     assert!(N > 0, "LibraryGroup must not be empty");
     assert!(
         D <= Chord::new().capacity(),
         "LibraryGroup would contain bigger chords than is the maximum Chord capacity"
     );
-    assert!(
-        chords_slice.len() == N,
+    assert_eq!(
+        chords_slice.len(),
+        N,
         "LibraryGroup would be over or underutilized"
     );
 
     let mut group = LibraryGroup::new();
 
     for chord_slice in chords_slice {
-        let chord = LibraryChord::from_slice(chord_slice)
-            .expect("Given chord is bigger than LibraryGroup allows");
+        assert_eq!(chord_slice.len(), D, "Given chord is too big or too small");
+        let chord = LibraryChord::from_slice(chord_slice).unwrap();
         // SAFETY: The capacity is checked at the beginning of the function.
         group.push(chord).unwrap();
     }
