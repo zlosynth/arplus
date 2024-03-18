@@ -12,3 +12,7 @@ arplus-dsp = { path = "../dsp" }
 defmt = "0.3"
 heapless = { version = "0.8", features = [ "defmt-03" ] }
 fastrand = { version = "2.0", default_features = false }
+libm = "0.2"
+
+[dev-dependencies]
+approx = "0.4"

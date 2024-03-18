@@ -30,7 +30,6 @@ pub use self::scale::Scale;
 pub use self::trigger::Trigger;
 
 pub struct Parameters {
-    // TODO: Switch this to something VOct specific later.
     pub chord: Chord,
     pub contour: Contour,
     pub cutoff: Cutoff,

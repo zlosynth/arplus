@@ -46,4 +46,8 @@ impl Button {
     pub fn released_after(&self) -> usize {
         self.released_after
     }
+
+    pub fn pressed(&self) -> bool {
+        self.pressed
+    }
 }

@@ -2,12 +2,14 @@ use core::mem;
 
 use crc::{Crc, CRC_16_USB};
 
-use crate::parameters::PersistentConfig;
+use crate::inputs::PersistentConfig as InputsPersistentConfig;
+use crate::parameters::PersistentConfig as ParametersPersistentConfig;
 
 /// Subset of control structures needed for recovery after restart.
 #[derive(Debug, Default, Clone, Copy, PartialEq, defmt::Format)]
 pub struct Save {
-    pub parameters: PersistentConfig,
+    pub parameters: ParametersPersistentConfig,
+    pub inputs: InputsPersistentConfig,
 }
 
 impl Save {

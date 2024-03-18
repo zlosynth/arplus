@@ -1,10 +1,11 @@
 mod button;
+mod calibration;
 mod cv;
 mod gate;
 mod pot;
 
 pub use button::Button;
-pub use cv::Cv;
+pub use cv::{Cv, PersistentConfig as CvPersistentConfig};
 pub use gate::Gate;
 pub use pot::Pot;
 
@@ -51,8 +52,13 @@ pub struct Buttons {
     pub trigger: Button,
 }
 
+#[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
+pub struct PersistentConfig {
+    pub tone_cv_calibration: CvPersistentConfig,
+}
+
 impl Inputs {
-    pub fn new() -> Inputs {
+    pub fn new(config: PersistentConfig) -> Inputs {
         Self {
             pots: Pots {
                 tone: Pot::new(),
@@ -63,7 +69,7 @@ impl Inputs {
                 resonance: Pot::new(),
             },
             cvs: Cvs {
-                tone: Cv::new(),
+                tone: Cv::with_config(config.tone_cv_calibration),
                 chord: Cv::new(),
                 chord_group: Cv::new(),
                 contour: Cv::new(),
@@ -104,4 +110,11 @@ impl Inputs {
         self.buttons.arp.reconcile(snapshot.buttons[2]);
         self.buttons.trigger.reconcile(snapshot.buttons[3]);
     }
+
+    pub fn copy_config(&self) -> PersistentConfig {
+        PersistentConfig {
+            tone_cv_calibration: self.cvs.tone.copy_config(),
+        }
+    }
+    // TODO: Save config
 }

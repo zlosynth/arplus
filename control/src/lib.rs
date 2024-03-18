@@ -2,6 +2,10 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::let_and_return)]
 
+#[cfg(test)]
+#[macro_use]
+extern crate approx;
+
 mod arpeggiator;
 mod chords;
 mod display;
@@ -34,34 +38,19 @@ pub struct Controller {
     parameters: Parameters,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
-    // TODO: Implement calibration.
     // TODO: Implement configuration.
-    // state: State,
-    // queue: Queue,
+    state: State,
 }
 
-// enum State {
-//     Calibrating(StateCalibrating),
-//     Normal,
-// }
+enum State {
+    Calibrating(CalibrationPhase),
+    Normal,
+}
 
-// struct StateCalibrating {
-//     input: usize,
-//     phase: CalibrationPhase,
-// }
-
-// enum CalibrationPhase {
-//     Octave1,
-//     Octave2(f32),
-// }
-
-// struct Queue {
-//     queue: Vec<ControlAction; 8>,
-// }
-
-// enum ControlAction {
-//     Calibrate(usize),
-// }
+enum CalibrationPhase {
+    Octave1,
+    Octave2(f32),
+}
 
 pub struct Result {
     pub save: Option<Save>,
@@ -73,7 +62,16 @@ pub struct ControlOutputState {
 }
 
 struct DisplayRequest {
-    prioritized: [Option<Screen>; 5],
+    calibration_result: ScreenRequest,
+    calibration_phase: ScreenRequest,
+    active_attribute: ScreenRequest,
+    queried_attribute: ScreenRequest,
+}
+
+enum ScreenRequest {
+    Set(Screen),
+    Reset,
+    Keep,
 }
 
 impl Controller {
@@ -85,8 +83,9 @@ impl Controller {
             display: Display::new(),
             arp: Arpeggiator::with_config(build_arp_config(&parameters)),
             parameters,
-            inputs: Inputs::new(),
+            inputs: Inputs::new(save.inputs),
             random_generator: RandomGenerator::with_seed(seed),
+            state: State::Normal,
         }
     }
 
@@ -110,12 +109,21 @@ impl Controller {
     fn reconcile_parameters_with_inputs(&mut self) -> (bool, DisplayRequest) {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
-        let cvs = &self.inputs.cvs;
+        let cvs = &mut self.inputs.cvs;
         let gates = &self.inputs.gates;
         let parameters = &mut self.parameters;
 
         let mut needs_save = false;
         let mut display_request = DisplayRequest::new();
+
+        // TODO: Move to the parent function.
+        reconcile_calibration(
+            &buttons.trigger,
+            &mut self.state,
+            &mut cvs.tone,
+            &mut display_request,
+            &mut needs_save,
+        );
 
         reconcile_chord(
             &pots.chord_group,
@@ -154,6 +162,7 @@ impl Controller {
             self.arp.apply_config(build_arp_config(&self.parameters));
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
+                // TODO: Handle this through display request too
                 self.display.set(
                     Priority::Fallback,
                     Screen::Step(StepScreen::with_step(note.index() as usize)),
@@ -179,20 +188,24 @@ impl Controller {
     }
 
     fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
-        if let Some(active_screen) = display_request.take_active_screen() {
-            self.display.set(Priority::Active, active_screen);
-        };
-
-        if let Some(queried_screen) = display_request.take_queried_screen() {
-            self.display.set(Priority::Queried, queried_screen);
-        } else {
-            self.display.reset(Priority::Queried);
-        };
+        display_request
+            .take_calibration_result()
+            .process(&mut self.display, Priority::Failure);
+        display_request
+            .take_calibration_phase()
+            .process(&mut self.display, Priority::Dialog);
+        display_request
+            .take_active_attribute()
+            .process(&mut self.display, Priority::Active);
+        display_request
+            .take_queried_attribute()
+            .process(&mut self.display, Priority::Queried);
     }
 
     fn generate_save(&mut self) -> Save {
         let save = Save {
             parameters: self.parameters.copy_config(),
+            inputs: self.inputs.copy_config(),
         };
         save
     }
@@ -205,6 +218,59 @@ impl Controller {
             } else {
                 [false; 8]
             },
+        }
+    }
+}
+
+fn reconcile_calibration(
+    trigger_button: &Button,
+    state: &mut State,
+    tone_cv: &mut Cv,
+    display_request: &mut DisplayRequest,
+    needs_save: &mut bool,
+) {
+    match state {
+        State::Normal => {
+            if trigger_button.pressed() && tone_cv.just_plugged() {
+                display_request.set_calibration_phase(Screen::calibration_octave_1());
+                *state = State::Calibrating(CalibrationPhase::Octave1);
+            }
+        }
+        State::Calibrating(CalibrationPhase::Octave1) => {
+            if let Some(value) = tone_cv.value() {
+                if trigger_button.clicked() {
+                    display_request.set_calibration_phase(Screen::calibration_octave_2());
+                    *state = State::Calibrating(CalibrationPhase::Octave2(value));
+                }
+            } else {
+                display_request.set_calibration_result(Screen::calibration_failure());
+                display_request.reset_calibration_phase();
+                *state = State::Normal;
+            }
+        }
+        State::Calibrating(CalibrationPhase::Octave2(octave_1)) => {
+            if let Some(value) = tone_cv.value() {
+                if trigger_button.clicked() {
+                    if let Ok(_) = tone_cv.update_calibration(*octave_1, value) {
+                        defmt::info!(
+                            "Successfully completed calibration, O1={:?} O2={:?}",
+                            *octave_1,
+                            value
+                        );
+                        *needs_save |= true;
+                        display_request.set_calibration_result(Screen::calibration_success());
+                    } else {
+                        defmt::info!("Failed calibration, O1={:?} O2={:?}", *octave_1, value);
+                        display_request.set_calibration_result(Screen::calibration_failure());
+                    }
+                    display_request.reset_calibration_phase();
+                    *state = State::Normal;
+                }
+            } else {
+                display_request.set_calibration_result(Screen::calibration_failure());
+                display_request.reset_calibration_phase();
+                *state = State::Normal;
+            }
         }
     }
 }
@@ -231,10 +297,10 @@ fn reconcile_chord(
     *needs_save |= changed_group || changed_chord;
     if changed_group {
         let size = parameter.selected_group_size();
-        display_request.set(Priority::Active, Screen::chord_group(size));
+        display_request.set_active_attribute(Screen::chord_group(size));
     } else if changed_chord {
         let chord = parameter.selected_chord();
-        display_request.set(Priority::Active, Screen::chord(chord));
+        display_request.set_active_attribute(Screen::chord(chord));
     }
     // TODO: If active above treshold, show it too
 }
@@ -276,20 +342,20 @@ fn reconcile_scale(
         *needs_save |= note_changed || group_changed || scale_changed;
         if group_changed {
             let selected = parameter.selected_group_id();
-            display_request.set(Priority::Active, Screen::scale_group(selected));
+            display_request.set_active_attribute(Screen::scale_group(selected));
         } else if scale_changed {
             let selected = parameter.selected_scale_index();
-            display_request.set(Priority::Active, Screen::scale(selected));
+            display_request.set_active_attribute(Screen::scale(selected));
         } else if note_changed {
             let selected = parameter.selected_note().index();
-            display_request.set(Priority::Active, Screen::note(selected as usize));
+            display_request.set_active_attribute(Screen::note(selected as usize));
         }
     } else if group_held {
         let selected = parameter.selected_group_id();
-        display_request.set(Priority::Queried, Screen::scale_group(selected));
+        display_request.set_queried_attribute(Screen::scale_group(selected));
     } else if scale_held {
         let selected = parameter.selected_scale_index();
-        display_request.set(Priority::Queried, Screen::scale(selected));
+        display_request.set_queried_attribute(Screen::scale(selected));
     }
     // TODO: If tone active above treshold, show it too
 }
@@ -302,11 +368,11 @@ fn reconcile_arp_mode(
 ) {
     if is_button_held(button) {
         let selected = parameter.selected();
-        display_request.set(Priority::Queried, Screen::arp_mode(selected));
+        display_request.set_queried_attribute(Screen::arp_mode(selected));
     } else if was_button_tapped(button) {
         *needs_save |= parameter.reconcile(true);
         let selected = parameter.selected();
-        display_request.set(Priority::Active, Screen::arp_mode(selected));
+        display_request.set_active_attribute(Screen::arp_mode(selected));
     };
 }
 
@@ -318,23 +384,66 @@ fn is_button_held(button: &Button) -> bool {
     button.held_for() > HOLD_TO_QUERY
 }
 
+// TODO: Handle fallback too.
 impl DisplayRequest {
     fn new() -> Self {
         Self {
-            prioritized: [None, None, None, None, None],
+            calibration_result: ScreenRequest::Keep,
+            calibration_phase: ScreenRequest::Keep,
+            active_attribute: ScreenRequest::Keep,
+            queried_attribute: ScreenRequest::Keep,
         }
     }
 
-    fn set(&mut self, priority: Priority, screen: Screen) {
-        self.prioritized[priority as usize] = Some(screen);
+    fn set_calibration_result(&mut self, calibration_result: Screen) {
+        self.calibration_result = ScreenRequest::Set(calibration_result);
     }
 
-    fn take_active_screen(&mut self) -> Option<Screen> {
-        self.prioritized[Priority::Active as usize].take()
+    fn take_calibration_result(&mut self) -> ScreenRequest {
+        self.calibration_result.take()
     }
 
-    fn take_queried_screen(&mut self) -> Option<Screen> {
-        self.prioritized[Priority::Queried as usize].take()
+    fn set_calibration_phase(&mut self, calibration_phase: Screen) {
+        self.calibration_phase = ScreenRequest::Set(calibration_phase);
+    }
+
+    fn reset_calibration_phase(&mut self) {
+        self.calibration_phase = ScreenRequest::Reset;
+    }
+
+    fn take_calibration_phase(&mut self) -> ScreenRequest {
+        self.calibration_phase.take()
+    }
+
+    fn set_active_attribute(&mut self, active_attribute: Screen) {
+        self.active_attribute = ScreenRequest::Set(active_attribute);
+    }
+
+    fn take_active_attribute(&mut self) -> ScreenRequest {
+        self.active_attribute.take()
+    }
+
+    fn set_queried_attribute(&mut self, queried_attribute: Screen) {
+        self.queried_attribute = ScreenRequest::Set(queried_attribute);
+    }
+
+    fn take_queried_attribute(&mut self) -> ScreenRequest {
+        self.queried_attribute.take()
+    }
+}
+
+// TODO: Is this even needed? The request struct is recreated every time.
+impl ScreenRequest {
+    fn take(&mut self) -> Self {
+        core::mem::replace(self, Self::Keep)
+    }
+
+    fn process(self, display: &mut Display, priority: Priority) {
+        match self {
+            ScreenRequest::Set(screen) => display.set(priority, screen),
+            ScreenRequest::Reset => display.reset(priority),
+            ScreenRequest::Keep => (),
+        }
     }
 }
 

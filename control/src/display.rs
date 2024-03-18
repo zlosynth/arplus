@@ -31,6 +31,7 @@ pub enum Screen {
     ChordGroup(ChordGroupScreen),
     Note(NoteScreen),
     Chord(ChordScreen),
+    Calibration(CalibrationScreen),
 }
 
 #[derive(Debug, defmt::Format)]
@@ -68,6 +69,14 @@ pub struct ChordScreen {
     chord: Chord,
 }
 
+#[derive(Debug, defmt::Format)]
+pub enum CalibrationScreen {
+    Octave1,
+    Octave2,
+    Failure,
+    Success,
+}
+
 impl Display {
     pub fn new() -> Self {
         Self {
@@ -76,6 +85,8 @@ impl Display {
     }
 
     pub fn set(&mut self, priority: Priority, screen: Screen) {
+        // TODO: Do not overwrite it if it's already set to the same type.
+        // that way it preserves clock.
         self.prioritized[priority as usize] = Some(Page::with_screen(screen));
     }
 
@@ -86,6 +97,12 @@ impl Display {
     pub fn tick(&mut self) {
         for page in self.prioritized.iter_mut().flatten() {
             page.tick();
+        }
+
+        if let Some(page) = self.prioritized[Priority::Failure as usize].as_ref() {
+            if page.clock > 2000 {
+                self.reset(Priority::Failure);
+            }
         }
 
         if let Some(page) = self.prioritized[Priority::Active as usize].as_ref() {
@@ -138,6 +155,22 @@ impl Screen {
         Screen::Chord(ChordScreen::with_selected(chord))
     }
 
+    pub fn calibration_octave_1() -> Self {
+        Screen::Calibration(CalibrationScreen::Octave1)
+    }
+
+    pub fn calibration_octave_2() -> Self {
+        Screen::Calibration(CalibrationScreen::Octave2)
+    }
+
+    pub fn calibration_success() -> Self {
+        Screen::Calibration(CalibrationScreen::Success)
+    }
+
+    pub fn calibration_failure() -> Self {
+        Screen::Calibration(CalibrationScreen::Failure)
+    }
+
     pub fn leds(&self) -> [bool; 8] {
         match self {
             Screen::Step(s) => s.leds(),
@@ -147,6 +180,7 @@ impl Screen {
             Screen::ChordGroup(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
+            Screen::Calibration(s) => s.leds(),
         }
     }
 }
@@ -258,5 +292,17 @@ impl ChordScreen {
         }
 
         leds
+    }
+}
+
+impl CalibrationScreen {
+    fn leds(&self) -> [bool; 8] {
+        // TODO: Animation
+        match self {
+            CalibrationScreen::Octave1 => [true, true, true, true, false, false, false, false],
+            CalibrationScreen::Octave2 => [false, false, false, false, true, true, true, true],
+            CalibrationScreen::Failure => [false, false, false, false, false, false, false, false],
+            CalibrationScreen::Success => [true, true, true, true, true, true, true, true],
+        }
     }
 }
