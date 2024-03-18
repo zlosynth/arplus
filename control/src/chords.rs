@@ -49,8 +49,6 @@ impl Chords {
     }
 
     pub fn group_size(&self, group_id: GroupId) -> usize {
-        // SAFETY: It is checked during the initialization that libraries
-        // are never empty.
         match group_id {
             GroupId::Size3 => self.size_3.degrees_capacity(),
             GroupId::Size4 => self.size_4.degrees_capacity(),

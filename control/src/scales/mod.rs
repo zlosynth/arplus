@@ -86,8 +86,6 @@ impl Scales {
 
     pub fn number_of_steps_in_group(&self, group_id: GroupId) -> usize {
         match group_id {
-            // SAFETY: It is checked during the initialization that libraries
-            // are never empty.
             GroupId::Diatonic => self.diatonic.steps_capacity(),
             GroupId::Chromatic => self.chromatic.steps_capacity(),
         }
