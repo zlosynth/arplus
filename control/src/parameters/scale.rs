@@ -97,6 +97,10 @@ impl Scale {
         self.scale_cache().clone()
     }
 
+    pub fn selected_scale_size(&self) -> usize {
+        self.scale_cache().steps_in_octave() as usize
+    }
+
     pub fn selected_note(&self) -> ScaleNote {
         // SAFETY: Range of indices is limited in `new` and `reconcile`.
         self.scale_cache()

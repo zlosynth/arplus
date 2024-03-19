@@ -7,6 +7,7 @@ pub struct Chord {
     library: Chords,
     group: Discrete,
     chord: Discrete,
+    scale_size: usize,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -16,7 +17,9 @@ pub struct PersistentConfig {
 }
 
 impl Chord {
-    pub fn new(config: PersistentConfig, library: Chords) -> Self {
+    // NOTE: Passing scale size is awkward, but dynamic sizing of chords is
+    // necessary to allow for an arpeggio with all notes of a scale.
+    pub fn new(config: PersistentConfig, library: Chords, scale_size: usize) -> Self {
         let group = Discrete::new(config.group, Chords::GROUPS, 0.1);
 
         let chord = {
@@ -30,15 +33,17 @@ impl Chord {
             library,
             group,
             chord,
+            scale_size,
         }
     }
 
-    pub fn reconcile_group_and_chord(
+    pub fn reconcile_group_chord_and_scale_size(
         &mut self,
         group_pot: f32,
         group_cv: Option<f32>,
         chord_pot: f32,
         chord_cv: Option<f32>,
+        scale_size: usize,
     ) -> (bool, bool) {
         let changed_group = self.group.reconcile(math::linear_sum(group_pot, group_cv));
 
@@ -49,6 +54,8 @@ impl Chord {
         }
 
         let changed_chord = self.chord.reconcile(math::linear_sum(chord_pot, chord_cv));
+
+        self.scale_size = scale_size;
 
         (changed_chord, changed_chord)
     }
@@ -67,12 +74,17 @@ impl Chord {
         // SAFETY: Parameter values used to get group and chord index
         // are always limited based on the selected chord group.
         self.library
-            .chord(self.selected_group_id(), self.selected_chord_index())
+            .chord(
+                self.selected_group_id(),
+                self.selected_chord_index(),
+                self.scale_size,
+            )
             .unwrap()
     }
 
     pub fn selected_group_size(&self) -> usize {
-        self.library.group_size(self.selected_group_id())
+        self.library
+            .group_size(self.selected_group_id(), self.scale_size)
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

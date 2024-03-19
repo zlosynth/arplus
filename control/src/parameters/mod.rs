@@ -43,13 +43,14 @@ pub struct PersistentConfig {
 
 impl Parameters {
     pub fn new(config: PersistentConfig, chords: Chords, scales: Scales) -> Self {
+        let scale = Scale::new(config.scale, scales);
         Self {
             // TODO: Allow configuration of tonic
-            chord: Chord::new(config.chord, chords),
+            chord: Chord::new(config.chord, chords, scale.selected_scale_size()),
             contour: Contour::new(),
             cutoff: Cutoff::new(),
             resonance: Resonance::new(),
-            scale: Scale::new(config.scale, scales),
+            scale,
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),
         }

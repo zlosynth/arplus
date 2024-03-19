@@ -130,6 +130,7 @@ impl Controller {
             &cvs.chord_group,
             &pots.chord,
             &cvs.chord,
+            parameters.scale.selected_scale_size(),
             &mut parameters.chord,
             &mut display_request,
             &mut needs_save,
@@ -284,15 +285,17 @@ fn reconcile_chord(
     group_cv: &Cv,
     chord_pot: &Pot,
     chord_cv: &Cv,
+    scale_size: usize,
     parameter: &mut parameters::Chord,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
 ) {
-    let (changed_group, changed_chord) = parameter.reconcile_group_and_chord(
+    let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
         group_pot.value(),
         group_cv.value(),
         chord_pot.value(),
         chord_cv.value(),
+        scale_size,
     );
     *needs_save |= changed_group || changed_chord;
     if changed_group {

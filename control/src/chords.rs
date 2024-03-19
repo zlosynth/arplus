@@ -1,6 +1,8 @@
 use heapless::Vec;
 
-pub type Chord = Vec<i16, 8>;
+const MAX_CHORD_SIZE: usize = 13;
+
+pub type Chord = Vec<i16, MAX_CHORD_SIZE>;
 
 pub struct Chords {
     size_1: LibraryGroup<7, 1>,
@@ -26,6 +28,7 @@ pub enum GroupId {
     Size6,
     Size7,
     Size8,
+    SizeFull,
 }
 
 type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
@@ -34,6 +37,7 @@ type LibraryChord<const D: usize> = Vec<i16, D>;
 
 // TODO: Add a special last mode with all LEDs lit up will include all steps
 // of the scale, depending on the size of the scale.
+// There would be 2 chords to select from, all notes, or all skipping one (triad).
 impl Chords {
     pub const GROUPS: usize = 2;
 
@@ -167,10 +171,16 @@ impl Chords {
             GroupId::Size6 => self.size_6.capacity(),
             GroupId::Size7 => self.size_7.capacity(),
             GroupId::Size8 => self.size_8.capacity(),
+            GroupId::SizeFull => 1,
         }
     }
 
-    pub fn chord(&self, group_id: GroupId, chord_index: usize) -> Result<Chord, ()> {
+    pub fn chord(
+        &self,
+        group_id: GroupId,
+        chord_index: usize,
+        scale_size: usize,
+    ) -> Result<Chord, ()> {
         if chord_index >= self.number_of_chords(group_id) {
             return Err(());
         }
@@ -185,10 +195,11 @@ impl Chords {
             GroupId::Size6 => Chord::from_slice(self.size_6.get(chord_index).unwrap()),
             GroupId::Size7 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
             GroupId::Size8 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
+            GroupId::SizeFull => Ok(generate_full_chord(scale_size)),
         }
     }
 
-    pub fn group_size(&self, group_id: GroupId) -> usize {
+    pub fn group_size(&self, group_id: GroupId, scale_size: usize) -> usize {
         match group_id {
             GroupId::Size1 => self.size_1.degrees_capacity(),
             GroupId::Size2 => self.size_2.degrees_capacity(),
@@ -198,8 +209,19 @@ impl Chords {
             GroupId::Size6 => self.size_6.degrees_capacity(),
             GroupId::Size7 => self.size_7.degrees_capacity(),
             GroupId::Size8 => self.size_8.degrees_capacity(),
+            GroupId::SizeFull => scale_size,
         }
     }
+}
+
+fn generate_full_chord(scale_size: usize) -> Chord {
+    assert!(
+        scale_size < MAX_CHORD_SIZE,
+        "Chord capacity is not big enough for given scale size"
+    );
+    const FULL_CHORD: [i16; 13] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    // SAFETY: The size is checked at the beginning of the function.
+    Chord::from_slice(&FULL_CHORD[0..=scale_size]).unwrap()
 }
 
 trait LibraryGroupTrait {
@@ -259,7 +281,7 @@ mod tests {
     #[test]
     fn get_chord() {
         let chords = Chords::new();
-        let chord = chords.chord(GroupId::Size3, 0).unwrap();
+        let chord = chords.chord(GroupId::Size3, 0, 7).unwrap();
         assert_eq!(&chord, &[0, 2, 4]);
     }
 
@@ -267,7 +289,7 @@ mod tests {
     fn try_getting_chord_out_of_range() {
         let chords = Chords::new();
         assert!(chords
-            .chord(GroupId::Size3, chords.number_of_chords(GroupId::Size3))
+            .chord(GroupId::Size3, chords.number_of_chords(GroupId::Size3), 7)
             .is_err());
     }
 }
