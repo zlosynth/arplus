@@ -7,7 +7,7 @@ mod tonic;
 
 use heapless::Vec;
 
-use self::scale::{Step, S, T};
+use self::scale::{Step, Q, S, T};
 
 pub use self::quarter_tones::QuarterTone;
 pub use self::scale::Scale as GenericProjectedScale;
@@ -20,13 +20,16 @@ pub type ProjectedScale = GenericProjectedScale<12>;
 pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
     chromatic: LibraryGroup<1, 12>,
+    maqam: LibraryGroup<8, 7>,
+    // melakarta: (), http://ecmc.rochester.edu/rdm/pdflib/mela.pdf https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to
+    // - TODO: Go over https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to scales mentioned here, listen to them, pick up to 8
+    // - Mayamalavagowla (misirlou)
     // blues: (),
-    // arabic: (),
     // hexatonic: (),
     // tetratonic: (),
     // special heptatonic scales
-    // indian scales
-    // melakarta
+    // javan scale https://www.youtube.com/watch?v=YWfumqpFwaY
+    // chinese https://www.youtube.com/watch?v=WHnrpZaif5w or https://www.youtube.com/watch?v=tc6-qk6RLFw
 }
 
 // ALLOW: All the variants can be contructed via `try_from`.
@@ -36,6 +39,7 @@ pub struct Scales {
 pub enum GroupId {
     Diatonic,
     Chromatic,
+    Maqam,
 }
 
 type LibraryGroup<const N: usize, const S: usize> = Vec<LibraryScale<S>, N>;
@@ -48,7 +52,12 @@ pub struct LibraryScale<const S: usize> {
 impl Scales {
     pub const GROUPS: usize = 2;
 
+    // NOTE: Keep the lists expanded to improve readability.
+    #[rustfmt::skip]
     pub fn new() -> Self {
+        const Q3: Step = 3 * Q;
+        const S3: Step = 3 * S;
+
         let diatonic = initialize_group(&[
             (&[T, T, S, T, T, T, S], None), // Ionian
             (&[T, S, T, T, T, S, T], None), // Dorian
@@ -58,10 +67,31 @@ impl Scales {
             (&[T, S, T, T, S, T, T], None), // Aeolian
             (&[S, T, T, S, T, T, T], None), // Locrian
         ]);
-        let chromatic = initialize_group(&[(&[S, S, S, S, S, S, S, S, S, S, S, S], None)]);
+        let chromatic = initialize_group(&[
+            (&[S, S, S, S, S, S, S, S, S, S, S, S], None)
+        ]);
+        let maqab = initialize_group(&[
+            // Bayati D Ep F G A Bb C D
+            (&[Q3, Q3, T, T, S, T, T], None),
+            // Hijaz D Eb Fs G A Bb C D
+            (&[S, S3, S, T, S, T, T], None),
+            // Kurd D Eb F G A Bb C D
+            (&[S, T, T, T, S, T, T], None),
+            // Nahawand C D Eb F G Ab B C
+            (&[T, S, T, T, S, S3, S], None),
+            // Nawa Athar C D Eb Fs G Ab B C
+            (&[T, S, S3, S, S, S3, S], None),
+            // Rast C D Ep F G A Bp C
+            (&[T, Q3, Q3, T, T, Q3, Q3], None),
+            // Saba D Ep F Gb A Bb C D
+            (&[Q3, Q3, S, S3, S, T, T], None),
+            // Sikah Ep F G A Bp C D Ep
+            (&[Q3, T, T, Q3, Q3, T, Q3], None),
+        ]);
         Self {
             diatonic,
             chromatic,
+            maqam: maqab,
         }
     }
 
@@ -69,6 +99,7 @@ impl Scales {
         match group_id {
             GroupId::Diatonic => self.diatonic.capacity(),
             GroupId::Chromatic => self.chromatic.capacity(),
+            GroupId::Maqam => self.maqam.capacity(),
         }
     }
 
@@ -81,6 +112,7 @@ impl Scales {
             // SAFETY: The index is checked on the entry.
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
             GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
+            GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
         }
     }
 
@@ -88,6 +120,7 @@ impl Scales {
         match group_id {
             GroupId::Diatonic => self.diatonic.steps_capacity(),
             GroupId::Chromatic => self.chromatic.steps_capacity(),
+            GroupId::Maqam => self.maqam.steps_capacity(),
         }
     }
 }
