@@ -37,8 +37,13 @@ impl Scale {
         };
 
         let note = {
-            let steps_in_group = library.number_of_steps_in_group(selected_group);
-            Discrete::new(config.note, OCTAVES * steps_in_group, 0.1)
+            // XXX: It is a little dirty to initialize it explicitly here. Too bad.
+            // SAFETY: Maximum scale index is already limited by selected group.
+            let selected_scale = library
+                .scale(selected_group, scale.selected_value())
+                .unwrap();
+            let steps_in_scale = selected_scale.with_tonic(Tonic::C).steps_in_octave() as usize;
+            Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1)
         };
 
         let mut s = Self {
@@ -67,15 +72,15 @@ impl Scale {
 
             let scales_in_group = self.library.number_of_scales(selected_group);
             self.scale.set_output_values(scales_in_group);
-
-            let steps_in_group = self.library.number_of_steps_in_group(selected_group);
-            self.note.set_output_values(OCTAVES * steps_in_group);
         }
 
         let changed_scale = self.scale.reconcile(scale_toggle);
 
         if changed_group || changed_scale {
             self.update_scale_cache();
+
+            let steps_in_scale = self.scale_cache().steps_in_octave() as usize;
+            self.note.set_output_values(OCTAVES * steps_in_scale);
         }
 
         let changed_note = self.note.reconcile(math::linear_sum(note_pot, note_cv));

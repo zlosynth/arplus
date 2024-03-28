@@ -14,15 +14,14 @@ pub use self::scale::Scale as GenericProjectedScale;
 pub use self::scale_note::ScaleNote;
 pub use self::tonic::Tonic;
 
-pub type Scale = LibraryScale<12>;
-pub type ProjectedScale = GenericProjectedScale<12>;
+pub type Scale = LibraryScale<24>;
+pub type ProjectedScale = GenericProjectedScale<24>;
 
 pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
     maqam: LibraryGroup<8, 7>,
     melakarta: LibraryGroup<8, 7>,
-    chromatic: LibraryGroup<1, 12>,
-    quartertone: LibraryGroup<1, 24>,
+    full: LibraryGroup<2, 24>,
     // blues: (),
     // hexatonic: (),
     // tetratonic: (),
@@ -40,8 +39,7 @@ pub enum GroupId {
     Diatonic = 0,
     Maqam,
     Melakarta,
-    Chromatic,
-    Quartertone,
+    Full,
 }
 
 type LibraryGroup<const N: usize, const S: usize> = Vec<LibraryScale<S>, N>;
@@ -114,19 +112,16 @@ impl Scales {
             // Gamanasrama (53) C Cs E Fs G A B C
             (&[S, S3, T, S, T, T, S], None),
         ]);
-        let chromatic = initialize_group(&[
-            (&[S, S, S, S, S, S, S, S, S, S, S, S], None)
-        ]);
-        let quartertone = initialize_group(&[
+        let full = initialize_group(&[
+            (&[S, S, S, S, S, S, S, S, S, S, S, S], None),
             (&[Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q,
-               Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None)
+               Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None),
         ]);
         Self {
             diatonic,
             maqam,
             melakarta,
-            chromatic,
-            quartertone,
+            full,
         }
     }
 
@@ -135,8 +130,7 @@ impl Scales {
             GroupId::Diatonic => self.diatonic.capacity(),
             GroupId::Maqam => self.maqam.capacity(),
             GroupId::Melakarta => self.melakarta.capacity(),
-            GroupId::Chromatic => self.chromatic.capacity(),
-            GroupId::Quartertone => self.quartertone.capacity(),
+            GroupId::Full => self.full.capacity(),
         }
     }
 
@@ -150,20 +144,7 @@ impl Scales {
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
             GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
             GroupId::Melakarta => Scale::new(&self.melakarta.get(scale_index).unwrap().ascending),
-            GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
-            GroupId::Quartertone => {
-                Scale::new(&self.quartertone.get(scale_index).unwrap().ascending)
-            }
-        }
-    }
-
-    pub fn number_of_steps_in_group(&self, group_id: GroupId) -> usize {
-        match group_id {
-            GroupId::Diatonic => self.diatonic.steps_capacity(),
-            GroupId::Maqam => self.maqam.steps_capacity(),
-            GroupId::Melakarta => self.melakarta.steps_capacity(),
-            GroupId::Chromatic => self.chromatic.steps_capacity(),
-            GroupId::Quartertone => self.quartertone.steps_capacity(),
+            GroupId::Full => Scale::new(&self.full.get(scale_index).unwrap().ascending),
         }
     }
 }
@@ -222,16 +203,21 @@ fn initialize_group<const N: usize, const S: usize>(
 
     let mut group = LibraryGroup::new();
 
+    let mut some_utilize_capacity = false;
+
     for (ascending_slice, _descending_slice) in scales_slice {
-        assert_eq!(
-            ascending_slice.len(),
-            S,
-            "Given scale is too big or too small"
-        );
+        let scale_len = ascending_slice.len();
+        assert!(scale_len <= S, "Given scale is too big or too small");
+        some_utilize_capacity |= scale_len == S;
         let chord = LibraryScale::new(ascending_slice).unwrap();
         // SAFETY: The capacity is checked at the beginning of the function.
         group.push(chord).unwrap();
     }
+
+    assert!(
+        some_utilize_capacity,
+        "None of the scales utilizes LibraryGroup's capacity"
+    );
 
     group
 }
