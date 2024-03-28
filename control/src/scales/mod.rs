@@ -21,6 +21,7 @@ pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
     chromatic: LibraryGroup<1, 12>,
     maqam: LibraryGroup<8, 7>,
+    melakarta: LibraryGroup<8, 7>,
     // melakarta: (), http://ecmc.rochester.edu/rdm/pdflib/mela.pdf https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to
     // - TODO: Go over https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to scales mentioned here, listen to them, pick up to 8
     // - Mayamalavagowla (misirlou)
@@ -30,6 +31,7 @@ pub struct Scales {
     // special heptatonic scales
     // javan scale https://www.youtube.com/watch?v=YWfumqpFwaY
     // chinese https://www.youtube.com/watch?v=WHnrpZaif5w or https://www.youtube.com/watch?v=tc6-qk6RLFw
+    // quartertone
 }
 
 // ALLOW: All the variants can be contructed via `try_from`.
@@ -37,9 +39,10 @@ pub struct Scales {
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum GroupId {
-    Diatonic,
-    Chromatic,
+    Diatonic = 0,
     Maqam,
+    Melakarta,
+    Chromatic,
 }
 
 type LibraryGroup<const N: usize, const S: usize> = Vec<LibraryScale<S>, N>;
@@ -50,13 +53,14 @@ pub struct LibraryScale<const S: usize> {
 }
 
 impl Scales {
-    pub const GROUPS: usize = 2;
+    pub const GROUPS: usize = 4;
 
     // NOTE: Keep the lists expanded to improve readability.
     #[rustfmt::skip]
     pub fn new() -> Self {
         const Q3: Step = 3 * Q;
         const S3: Step = 3 * S;
+        const T2: Step = 2 * T;
 
         let diatonic = initialize_group(&[
             (&[T, T, S, T, T, T, S], None), // Ionian
@@ -70,7 +74,10 @@ impl Scales {
         let chromatic = initialize_group(&[
             (&[S, S, S, S, S, S, S, S, S, S, S, S], None)
         ]);
-        let maqab = initialize_group(&[
+        // Sources:
+        // * <https://www.maqamworld.com/en/maqam/bayati.php>
+        // * <https://en.wikipedia.org/wiki/Arabic_maqam>
+        let maqam = initialize_group(&[
             // Bayati D Ep F G A Bb C D
             (&[Q3, Q3, T, T, S, T, T], None),
             // Hijaz D Eb Fs G A Bb C D
@@ -88,10 +95,34 @@ impl Scales {
             // Sikah Ep F G A Bp C D Ep
             (&[Q3, T, T, Q3, Q3, T, Q3], None),
         ]);
+        // Sources:
+        // * <https://library.depauw.edu/library/musiclib/RagaDatabase/observations.asp>
+        // * <https://musiclegato.com/Tutorial/Carnatic.aspx?ky=C&sty=NATABHAIRAVI&pat=1-3-4-6-8-9-11-13&comb=&tp=1&idx=19&dbid=21>
+        // * <https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to>
+        // * <https://en.wikipedia.org/wiki/Melakarta>
+        let melakarta = initialize_group(&[
+            // Ratnangi (2) C Cs D F G Ab Bb C
+            (&[S, S, S3, T, S, T, T], None),
+            // Rupavati (12) C Cs Ds F G As B C
+            (&[S, T, T, T, S3, S, S], None),
+            // Mayamalavagowla (15) G Ab B C D Eb Fs G
+            (&[S, S3, S, T, S, S3, S], None),
+            // Natabhairavi (20) minor C D Ds F G Gs As C
+            (&[T, S, T, T, S, T, T], None),
+            // Karaharapriya (22) C D Ds F G A As C
+            (&[T, S, T, T, T, S, T], None),
+            // Sangarabharanam (29) major C D E F G A B C
+            (&[T, T, S, T, T, T, S], None),
+            // Jalavarali (39) C Cs D Fs G Gs B C
+            (&[S, S, T2, S, S, S3, S], None),
+            // Gamanasrama (53) C Cs E Fs G A B C
+            (&[S, S3, T, S, T, T, S], None),
+        ]);
         Self {
             diatonic,
             chromatic,
-            maqam: maqab,
+            maqam,
+            melakarta,
         }
     }
 
@@ -100,6 +131,7 @@ impl Scales {
             GroupId::Diatonic => self.diatonic.capacity(),
             GroupId::Chromatic => self.chromatic.capacity(),
             GroupId::Maqam => self.maqam.capacity(),
+            GroupId::Melakarta => self.melakarta.capacity(),
         }
     }
 
@@ -113,6 +145,7 @@ impl Scales {
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
             GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
             GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
+            GroupId::Melakarta => Scale::new(&self.melakarta.get(scale_index).unwrap().ascending),
         }
     }
 
@@ -121,6 +154,7 @@ impl Scales {
             GroupId::Diatonic => self.diatonic.steps_capacity(),
             GroupId::Chromatic => self.chromatic.steps_capacity(),
             GroupId::Maqam => self.maqam.steps_capacity(),
+            GroupId::Melakarta => self.melakarta.steps_capacity(),
         }
     }
 }
