@@ -19,12 +19,10 @@ pub type ProjectedScale = GenericProjectedScale<12>;
 
 pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
-    chromatic: LibraryGroup<1, 12>,
     maqam: LibraryGroup<8, 7>,
     melakarta: LibraryGroup<8, 7>,
-    // melakarta: (), http://ecmc.rochester.edu/rdm/pdflib/mela.pdf https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to
-    // - TODO: Go over https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to scales mentioned here, listen to them, pick up to 8
-    // - Mayamalavagowla (misirlou)
+    chromatic: LibraryGroup<1, 12>,
+    quartertone: LibraryGroup<1, 24>,
     // blues: (),
     // hexatonic: (),
     // tetratonic: (),
@@ -43,6 +41,7 @@ pub enum GroupId {
     Maqam,
     Melakarta,
     Chromatic,
+    Quartertone,
 }
 
 type LibraryGroup<const N: usize, const S: usize> = Vec<LibraryScale<S>, N>;
@@ -53,7 +52,7 @@ pub struct LibraryScale<const S: usize> {
 }
 
 impl Scales {
-    pub const GROUPS: usize = 4;
+    pub const GROUPS: usize = 5;
 
     // NOTE: Keep the lists expanded to improve readability.
     #[rustfmt::skip]
@@ -70,9 +69,6 @@ impl Scales {
             (&[T, T, S, T, T, S, T], None), // Mixolydian
             (&[T, S, T, T, S, T, T], None), // Aeolian
             (&[S, T, T, S, T, T, T], None), // Locrian
-        ]);
-        let chromatic = initialize_group(&[
-            (&[S, S, S, S, S, S, S, S, S, S, S, S], None)
         ]);
         // Sources:
         // * <https://www.maqamworld.com/en/maqam/bayati.php>
@@ -118,20 +114,29 @@ impl Scales {
             // Gamanasrama (53) C Cs E Fs G A B C
             (&[S, S3, T, S, T, T, S], None),
         ]);
+        let chromatic = initialize_group(&[
+            (&[S, S, S, S, S, S, S, S, S, S, S, S], None)
+        ]);
+        let quartertone = initialize_group(&[
+            (&[Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q,
+               Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None)
+        ]);
         Self {
             diatonic,
-            chromatic,
             maqam,
             melakarta,
+            chromatic,
+            quartertone,
         }
     }
 
     pub fn number_of_scales(&self, group_id: GroupId) -> usize {
         match group_id {
             GroupId::Diatonic => self.diatonic.capacity(),
-            GroupId::Chromatic => self.chromatic.capacity(),
             GroupId::Maqam => self.maqam.capacity(),
             GroupId::Melakarta => self.melakarta.capacity(),
+            GroupId::Chromatic => self.chromatic.capacity(),
+            GroupId::Quartertone => self.quartertone.capacity(),
         }
     }
 
@@ -143,18 +148,22 @@ impl Scales {
         match group_id {
             // SAFETY: The index is checked on the entry.
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
-            GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
             GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
             GroupId::Melakarta => Scale::new(&self.melakarta.get(scale_index).unwrap().ascending),
+            GroupId::Chromatic => Scale::new(&self.chromatic.get(scale_index).unwrap().ascending),
+            GroupId::Quartertone => {
+                Scale::new(&self.quartertone.get(scale_index).unwrap().ascending)
+            }
         }
     }
 
     pub fn number_of_steps_in_group(&self, group_id: GroupId) -> usize {
         match group_id {
             GroupId::Diatonic => self.diatonic.steps_capacity(),
-            GroupId::Chromatic => self.chromatic.steps_capacity(),
             GroupId::Maqam => self.maqam.steps_capacity(),
             GroupId::Melakarta => self.melakarta.steps_capacity(),
+            GroupId::Chromatic => self.chromatic.steps_capacity(),
+            GroupId::Quartertone => self.quartertone.steps_capacity(),
         }
     }
 }
