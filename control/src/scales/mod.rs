@@ -21,7 +21,7 @@ pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
     maqam: LibraryGroup<8, 7>,
     melakarta: LibraryGroup<8, 7>,
-    full: LibraryGroup<2, 24>,
+    full: LibraryGroup<3, 24>,
     // blues: (),
     // hexatonic: (),
     // tetratonic: (),
@@ -50,7 +50,7 @@ pub struct LibraryScale<const S: usize> {
 }
 
 impl Scales {
-    pub const GROUPS: usize = 5;
+    pub const GROUPS: usize = 4;
 
     // NOTE: Keep the lists expanded to improve readability.
     #[rustfmt::skip]
@@ -113,6 +113,7 @@ impl Scales {
             (&[S, S3, T, S, T, T, S], None),
         ]);
         let full = initialize_group(&[
+            (&[T, T, T, T, T, T], None),
             (&[S, S, S, S, S, S, S, S, S, S, S, S], None),
             (&[Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q,
                Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None),
