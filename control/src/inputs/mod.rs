@@ -1,3 +1,4 @@
+mod buffer;
 mod button;
 mod calibration;
 mod cv;

@@ -283,8 +283,13 @@ fn reconcile_chord(
     } else if changed_chord {
         let chord = parameter.selected_chord();
         display_request.set_active_attribute(Screen::chord(chord));
+    } else if group_pot.activation_movement() {
+        let size = parameter.selected_group_size();
+        display_request.set_queried_attribute(Screen::chord_group(size));
+    } else if chord_pot.activation_movement() {
+        let chord = parameter.selected_chord();
+        display_request.set_queried_attribute(Screen::chord(chord));
     }
-    // TODO: If active above treshold, show it too
 }
 
 fn reconcile_resonance(pot: &Pot, cv: &Cv, parameter: &mut parameters::Resonance) {
@@ -341,8 +346,10 @@ fn reconcile_scale(
     } else if scale_held {
         let selected = parameter.selected_scale_index();
         display_request.set_queried_attribute(Screen::scale(selected));
+    } else if tone_pot.activation_movement() {
+        let selected = parameter.selected_note().index();
+        display_request.set_queried_attribute(Screen::note(selected as usize));
     }
-    // TODO: If tone active above treshold, show it too
 }
 
 fn reconcile_arp_mode(
