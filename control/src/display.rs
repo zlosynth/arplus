@@ -151,6 +151,10 @@ impl Screen {
         Screen::Note(NoteScreen::with_index(note_index))
     }
 
+    pub fn step(step_index: usize) -> Self {
+        Screen::Step(StepScreen::with_step(step_index))
+    }
+
     pub fn chord(chord: Chord) -> Self {
         Screen::Chord(ChordScreen::with_selected(chord))
     }
@@ -191,11 +195,11 @@ impl StepScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.step) {
-            *led = true;
+        if self.step >= leds.len() {
+            leds[leds.len() - 1] = true;
         }
+        leds[self.step % leds.len()] = true;
         leds
     }
 }
@@ -206,9 +210,8 @@ impl ArpModeScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(2 + self.mode as usize) {
+        if let Some(led) = leds.get_mut(3 + self.mode as usize) {
             *led = true;
         }
         leds
@@ -221,7 +224,6 @@ impl ScaleScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
         if let Some(led) = leds.get_mut(self.scale) {
             *led = true;
@@ -236,9 +238,8 @@ impl ScaleGroupScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.scale_group as usize) {
+        if let Some(led) = leds.get_mut(3 + self.scale_group as usize) {
             *led = true;
         }
         leds
@@ -251,10 +252,13 @@ impl ChordGroupScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.chord_group_size) {
-            *led = true;
+        if self.chord_group_size < leds.len() {
+            leds[self.chord_group_size] = true;
+        } else {
+            for led in leds.iter_mut() {
+                *led = true;
+            }
         }
         leds
     }
@@ -266,11 +270,11 @@ impl NoteScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.index) {
-            *led = true;
+        if self.index >= leds.len() {
+            leds[leds.len() - 1] = true;
         }
+        leds[self.index % leds.len()] = true;
         leds
     }
 }

@@ -1,5 +1,3 @@
-// TODO: Refactor Chords and Scales to they have the same structure
-
 mod quarter_tones;
 mod scale;
 mod scale_note;

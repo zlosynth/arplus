@@ -23,8 +23,8 @@ pub use crate::save::{Save, WrappedSave};
 
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
+use crate::display::Display;
 use crate::display::Screen;
-use crate::display::{Display, StepScreen};
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, Gate, Pot};
 use crate::parameters::Parameters;
@@ -208,9 +208,8 @@ impl Controller {
             self.arp.apply_config(build_arp_config(&self.parameters));
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
-                display_request.set_fallback_attribute(Screen::Step(StepScreen::with_step(
-                    note.index() as usize,
-                )));
+                // TODO: Show index on arp progress, not of the scale note
+                display_request.set_fallback_attribute(Screen::step(note.index() as usize));
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
                     contour: self.parameters.contour.value(),
@@ -340,6 +339,7 @@ fn reconcile_scale(
             let selected = parameter.selected_note().index();
             display_request.set_active_attribute(Screen::note(selected as usize));
         }
+        // TODO: Display tonic if it has changed
     } else if group_held {
         let selected = parameter.selected_group_id();
         display_request.set_queried_attribute(Screen::scale_group(selected));

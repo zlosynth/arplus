@@ -17,8 +17,7 @@ pub struct Arpeggiator {
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum Mode {
-    Root = 0,
-    Up,
+    Up = 0,
     UpDownNoRepeats,
     UpDownRepeats,
     Random,
@@ -27,7 +26,6 @@ pub enum Mode {
 
 #[derive(Clone, Debug, defmt::Format)]
 pub enum State {
-    Root,
     Up(usize),
     Down(usize),
     Random,
@@ -49,7 +47,6 @@ impl Arpeggiator {
             root: config.root,
             mode: config.mode,
             state: match config.mode {
-                Mode::Root => State::Root,
                 Mode::Random => State::Random,
                 Mode::Moving => State::Moving(0, config.chord.clone()),
                 _ => State::Up(0),
@@ -62,7 +59,6 @@ impl Arpeggiator {
         if self.mode != config.mode {
             self.mode = config.mode;
             match self.mode {
-                Mode::Root => self.state = State::Root,
                 Mode::Up | Mode::UpDownRepeats | Mode::UpDownNoRepeats => {
                     if !matches!(self.state, State::Up(_)) {
                         self.state = State::Up(0);
@@ -90,7 +86,6 @@ impl Arpeggiator {
         assert!(!self.chord.is_empty());
 
         let chord_degree = match self.state {
-            State::Root => self.chord[0],
             State::Up(index) => {
                 let last_index = self.chord.len() - 1;
                 if last_index == 0 {
@@ -161,6 +156,7 @@ impl Arpeggiator {
 
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
+        // TODO: Return the chord degree too
     }
 }
 
@@ -246,21 +242,6 @@ mod tests {
             mode: Mode::Up,
         };
         let _arp = Arpeggiator::with_config(configuration);
-    }
-
-    #[test]
-    fn root_arp() {
-        let mut r = TestRandom::new();
-        let configuration = Configuration {
-            scale: ionian().with_tonic(Tonic::C),
-            root: ScaleNote::new(QuarterTone::D1, 1),
-            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Root,
-        };
-        let mut arp = Arpeggiator::with_config(configuration);
-        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
-        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
-        assert_eq!(arp.pop(&mut r), Some(ScaleNote::new(QuarterTone::D1, 1)));
     }
 
     #[test]
