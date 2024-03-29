@@ -9,6 +9,7 @@ extern crate approx;
 mod arpeggiator;
 mod chords;
 mod display;
+mod display_request;
 mod inputs;
 mod parameters;
 mod random;
@@ -23,7 +24,7 @@ pub use crate::save::{Save, WrappedSave};
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
 use crate::display::Screen;
-use crate::display::{Display, Priority, StepScreen};
+use crate::display::{Display, StepScreen};
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, Gate, Pot};
 use crate::parameters::Parameters;
@@ -61,20 +62,6 @@ pub struct ControlOutputState {
     pub leds: [bool; 8],
 }
 
-struct DisplayRequest {
-    calibration_result: ScreenRequest,
-    calibration_phase: ScreenRequest,
-    active_attribute: ScreenRequest,
-    queried_attribute: ScreenRequest,
-    fallback_attribute: ScreenRequest,
-}
-
-enum ScreenRequest {
-    Set(Screen),
-    Reset,
-    Keep,
-}
-
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
         // TODO: Recover them from an input snapshot too.
@@ -92,7 +79,7 @@ impl Controller {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
         let mut needs_save = false;
-        let mut display_request = DisplayRequest::new();
+        let mut display_request = display_request::DisplayRequest::new();
 
         self.inputs.apply_input_snapshot(snapshot);
 
@@ -117,7 +104,7 @@ impl Controller {
 
     fn reconcile_calibration(
         &mut self,
-        display_request: &mut DisplayRequest,
+        display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
         let trigger_button = &self.inputs.buttons.trigger;
@@ -172,7 +159,7 @@ impl Controller {
 
     fn reconcile_parameters_with_inputs(
         &mut self,
-        display_request: &mut DisplayRequest,
+        display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
         let pots = &self.inputs.pots;
@@ -213,7 +200,10 @@ impl Controller {
         reconcile_trigger(&buttons.trigger, &gates.trigger, &mut parameters.trigger);
     }
 
-    fn generate_dsp_attributes(&mut self, display_request: &mut DisplayRequest) -> DSPAttributes {
+    fn generate_dsp_attributes(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+    ) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             self.arp.apply_config(build_arp_config(&self.parameters));
 
@@ -241,22 +231,8 @@ impl Controller {
         }
     }
 
-    fn apply_display_request(&mut self, mut display_request: DisplayRequest) {
-        display_request
-            .take_calibration_result()
-            .process(&mut self.display, Priority::Failure);
-        display_request
-            .take_calibration_phase()
-            .process(&mut self.display, Priority::Dialog);
-        display_request
-            .take_active_attribute()
-            .process(&mut self.display, Priority::Active);
-        display_request
-            .take_queried_attribute()
-            .process(&mut self.display, Priority::Queried);
-        display_request
-            .take_fallback_attribute()
-            .process(&mut self.display, Priority::Fallback);
+    fn apply_display_request(&mut self, mut display_request: display_request::DisplayRequest) {
+        display_request.apply(&mut self.display);
     }
 
     fn generate_save(&mut self) -> Save {
@@ -290,7 +266,7 @@ fn reconcile_chord(
     chord_cv: &Cv,
     scale_size: usize,
     parameter: &mut parameters::Chord,
-    display_request: &mut DisplayRequest,
+    display_request: &mut display_request::DisplayRequest,
     needs_save: &mut bool,
 ) {
     let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
@@ -330,7 +306,7 @@ fn reconcile_scale(
     scale_button: &Button,
     trigger_button: &Button,
     parameter: &mut parameters::Scale,
-    display_request: &mut DisplayRequest,
+    display_request: &mut display_request::DisplayRequest,
     needs_save: &mut bool,
 ) {
     let group_held = is_button_held(group_button);
@@ -372,7 +348,7 @@ fn reconcile_scale(
 fn reconcile_arp_mode(
     button: &Button,
     parameter: &mut parameters::ArpMode,
-    display_request: &mut DisplayRequest,
+    display_request: &mut display_request::DisplayRequest,
     needs_save: &mut bool,
 ) {
     if is_button_held(button) {
@@ -391,77 +367,6 @@ fn was_button_tapped(button: &Button) -> bool {
 
 fn is_button_held(button: &Button) -> bool {
     button.held_for() > HOLD_TO_QUERY
-}
-
-impl DisplayRequest {
-    fn new() -> Self {
-        Self {
-            calibration_result: ScreenRequest::Keep,
-            calibration_phase: ScreenRequest::Keep,
-            active_attribute: ScreenRequest::Keep,
-            queried_attribute: ScreenRequest::Keep,
-            fallback_attribute: ScreenRequest::Keep,
-        }
-    }
-
-    fn set_calibration_result(&mut self, calibration_result: Screen) {
-        self.calibration_result = ScreenRequest::Set(calibration_result);
-    }
-
-    fn take_calibration_result(&mut self) -> ScreenRequest {
-        self.calibration_result.take()
-    }
-
-    fn set_calibration_phase(&mut self, calibration_phase: Screen) {
-        self.calibration_phase = ScreenRequest::Set(calibration_phase);
-    }
-
-    fn reset_calibration_phase(&mut self) {
-        self.calibration_phase = ScreenRequest::Reset;
-    }
-
-    fn take_calibration_phase(&mut self) -> ScreenRequest {
-        self.calibration_phase.take()
-    }
-
-    fn set_active_attribute(&mut self, active_attribute: Screen) {
-        self.active_attribute = ScreenRequest::Set(active_attribute);
-    }
-
-    fn take_active_attribute(&mut self) -> ScreenRequest {
-        self.active_attribute.take()
-    }
-
-    fn set_queried_attribute(&mut self, queried_attribute: Screen) {
-        self.queried_attribute = ScreenRequest::Set(queried_attribute);
-    }
-
-    fn take_queried_attribute(&mut self) -> ScreenRequest {
-        self.queried_attribute.take()
-    }
-
-    fn set_fallback_attribute(&mut self, fallback_attribute: Screen) {
-        self.fallback_attribute = ScreenRequest::Set(fallback_attribute);
-    }
-
-    fn take_fallback_attribute(&mut self) -> ScreenRequest {
-        self.fallback_attribute.take()
-    }
-}
-
-// TODO: Is this even needed? The request struct is recreated every time.
-impl ScreenRequest {
-    fn take(&mut self) -> Self {
-        core::mem::replace(self, Self::Keep)
-    }
-
-    fn process(self, display: &mut Display, priority: Priority) {
-        match self {
-            ScreenRequest::Set(screen) => display.set(priority, screen),
-            ScreenRequest::Reset => display.reset(priority),
-            ScreenRequest::Keep => (),
-        }
-    }
 }
 
 fn build_arp_config(parameters: &Parameters) -> ArpeggiatorConfiguration {
