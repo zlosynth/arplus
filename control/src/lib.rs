@@ -66,6 +66,7 @@ struct DisplayRequest {
     calibration_phase: ScreenRequest,
     active_attribute: ScreenRequest,
     queried_attribute: ScreenRequest,
+    fallback_attribute: ScreenRequest,
 }
 
 enum ScreenRequest {
@@ -98,9 +99,9 @@ impl Controller {
         self.reconcile_calibration(&mut display_request, &mut needs_save);
         self.reconcile_parameters_with_inputs(&mut display_request, &mut needs_save);
 
-        self.apply_display_request(display_request);
+        let dsp_attributes = self.generate_dsp_attributes(&mut display_request);
 
-        let dsp_attributes = self.generate_dsp_attributes();
+        self.apply_display_request(display_request);
 
         let save = if needs_save {
             Some(self.generate_save())
@@ -212,16 +213,14 @@ impl Controller {
         reconcile_trigger(&buttons.trigger, &gates.trigger, &mut parameters.trigger);
     }
 
-    fn generate_dsp_attributes(&mut self) -> DSPAttributes {
+    fn generate_dsp_attributes(&mut self, display_request: &mut DisplayRequest) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             self.arp.apply_config(build_arp_config(&self.parameters));
 
             if let Some(note) = self.arp.pop(&mut self.random_generator) {
-                // TODO: Handle this through display request too
-                self.display.set(
-                    Priority::Fallback,
-                    Screen::Step(StepScreen::with_step(note.index() as usize)),
-                );
+                display_request.set_fallback_attribute(Screen::Step(StepScreen::with_step(
+                    note.index() as usize,
+                )));
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
                     contour: self.parameters.contour.value(),
@@ -255,6 +254,9 @@ impl Controller {
         display_request
             .take_queried_attribute()
             .process(&mut self.display, Priority::Queried);
+        display_request
+            .take_fallback_attribute()
+            .process(&mut self.display, Priority::Fallback);
     }
 
     fn generate_save(&mut self) -> Save {
@@ -391,7 +393,6 @@ fn is_button_held(button: &Button) -> bool {
     button.held_for() > HOLD_TO_QUERY
 }
 
-// TODO: Handle fallback too.
 impl DisplayRequest {
     fn new() -> Self {
         Self {
@@ -399,6 +400,7 @@ impl DisplayRequest {
             calibration_phase: ScreenRequest::Keep,
             active_attribute: ScreenRequest::Keep,
             queried_attribute: ScreenRequest::Keep,
+            fallback_attribute: ScreenRequest::Keep,
         }
     }
 
@@ -436,6 +438,14 @@ impl DisplayRequest {
 
     fn take_queried_attribute(&mut self) -> ScreenRequest {
         self.queried_attribute.take()
+    }
+
+    fn set_fallback_attribute(&mut self, fallback_attribute: Screen) {
+        self.fallback_attribute = ScreenRequest::Set(fallback_attribute);
+    }
+
+    fn take_fallback_attribute(&mut self) -> ScreenRequest {
+        self.fallback_attribute.take()
     }
 }
 

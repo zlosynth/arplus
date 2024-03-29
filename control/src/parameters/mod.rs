@@ -1,5 +1,3 @@
-// TODO: Review
-
 mod arp_mode;
 mod chord;
 mod contour;
@@ -45,7 +43,6 @@ impl Parameters {
     pub fn new(config: PersistentConfig, chords: Chords, scales: Scales) -> Self {
         let scale = Scale::new(config.scale, scales);
         Self {
-            // TODO: Allow configuration of tonic
             chord: Chord::new(config.chord, chords, scale.selected_scale_size()),
             contour: Contour::new(),
             cutoff: Cutoff::new(),
