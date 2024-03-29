@@ -126,7 +126,7 @@ impl Dsp {
             next_string.reset();
         }
 
-        // TODO: Make this static.
+        // TODO: Make this configurable with alt options.
         let ideal_gain = 0.5;
         self.overdrive.gain = 0.3 + ideal_gain * 0.6;
     }

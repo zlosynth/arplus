@@ -90,15 +90,23 @@ impl Controller {
     }
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) -> Result {
+        let mut needs_save = false;
+        let mut display_request = DisplayRequest::new();
+
         self.inputs.apply_input_snapshot(snapshot);
-        let (needs_save, display_request) = self.reconcile_parameters_with_inputs();
+
+        self.reconcile_calibration(&mut display_request, &mut needs_save);
+        self.reconcile_parameters_with_inputs(&mut display_request, &mut needs_save);
+
+        self.apply_display_request(display_request);
+
+        let dsp_attributes = self.generate_dsp_attributes();
+
         let save = if needs_save {
             Some(self.generate_save())
         } else {
             None
         };
-        self.apply_display_request(display_request);
-        let dsp_attributes = self.generate_dsp_attributes();
 
         Result {
             save,
@@ -106,24 +114,71 @@ impl Controller {
         }
     }
 
-    fn reconcile_parameters_with_inputs(&mut self) -> (bool, DisplayRequest) {
+    fn reconcile_calibration(
+        &mut self,
+        display_request: &mut DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let trigger_button = &self.inputs.buttons.trigger;
+        let state = &mut self.state;
+        let tone_cv = &mut self.inputs.cvs.tone;
+
+        match state {
+            State::Normal => {
+                if trigger_button.pressed() && tone_cv.just_plugged() {
+                    display_request.set_calibration_phase(Screen::calibration_octave_1());
+                    *state = State::Calibrating(CalibrationPhase::Octave1);
+                }
+            }
+            State::Calibrating(CalibrationPhase::Octave1) => {
+                if let Some(value) = tone_cv.value() {
+                    if trigger_button.clicked() {
+                        display_request.set_calibration_phase(Screen::calibration_octave_2());
+                        *state = State::Calibrating(CalibrationPhase::Octave2(value));
+                    }
+                } else {
+                    display_request.set_calibration_result(Screen::calibration_failure());
+                    display_request.reset_calibration_phase();
+                    *state = State::Normal;
+                }
+            }
+            State::Calibrating(CalibrationPhase::Octave2(octave_1)) => {
+                if let Some(value) = tone_cv.value() {
+                    if trigger_button.clicked() {
+                        if let Ok(_) = tone_cv.update_calibration(*octave_1, value) {
+                            defmt::info!(
+                                "Successfully completed calibration, O1={:?} O2={:?}",
+                                *octave_1,
+                                value
+                            );
+                            *needs_save |= true;
+                            display_request.set_calibration_result(Screen::calibration_success());
+                        } else {
+                            defmt::info!("Failed calibration, O1={:?} O2={:?}", *octave_1, value);
+                            display_request.set_calibration_result(Screen::calibration_failure());
+                        }
+                        display_request.reset_calibration_phase();
+                        *state = State::Normal;
+                    }
+                } else {
+                    display_request.set_calibration_result(Screen::calibration_failure());
+                    display_request.reset_calibration_phase();
+                    *state = State::Normal;
+                }
+            }
+        };
+    }
+
+    fn reconcile_parameters_with_inputs(
+        &mut self,
+        display_request: &mut DisplayRequest,
+        needs_save: &mut bool,
+    ) {
         let pots = &self.inputs.pots;
         let buttons = &self.inputs.buttons;
         let cvs = &mut self.inputs.cvs;
         let gates = &self.inputs.gates;
         let parameters = &mut self.parameters;
-
-        let mut needs_save = false;
-        let mut display_request = DisplayRequest::new();
-
-        // TODO: Move to the parent function.
-        reconcile_calibration(
-            &buttons.trigger,
-            &mut self.state,
-            &mut cvs.tone,
-            &mut display_request,
-            &mut needs_save,
-        );
 
         reconcile_chord(
             &pots.chord_group,
@@ -132,8 +187,8 @@ impl Controller {
             &cvs.chord,
             parameters.scale.selected_scale_size(),
             &mut parameters.chord,
-            &mut display_request,
-            &mut needs_save,
+            display_request,
+            needs_save,
         );
         reconcile_contour(&pots.contour, &cvs.contour, &mut parameters.contour);
         reconcile_cutoff(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
@@ -144,18 +199,16 @@ impl Controller {
             &buttons.scale_group,
             &buttons.scale,
             &mut parameters.scale,
-            &mut display_request,
-            &mut needs_save,
+            display_request,
+            needs_save,
         );
         reconcile_arp_mode(
             &buttons.arp,
             &mut parameters.arp_mode,
-            &mut display_request,
-            &mut needs_save,
+            display_request,
+            needs_save,
         );
         reconcile_trigger(&buttons.trigger, &gates.trigger, &mut parameters.trigger);
-
-        (needs_save, display_request)
     }
 
     fn generate_dsp_attributes(&mut self) -> DSPAttributes {
@@ -219,59 +272,6 @@ impl Controller {
             } else {
                 [false; 8]
             },
-        }
-    }
-}
-
-fn reconcile_calibration(
-    trigger_button: &Button,
-    state: &mut State,
-    tone_cv: &mut Cv,
-    display_request: &mut DisplayRequest,
-    needs_save: &mut bool,
-) {
-    match state {
-        State::Normal => {
-            if trigger_button.pressed() && tone_cv.just_plugged() {
-                display_request.set_calibration_phase(Screen::calibration_octave_1());
-                *state = State::Calibrating(CalibrationPhase::Octave1);
-            }
-        }
-        State::Calibrating(CalibrationPhase::Octave1) => {
-            if let Some(value) = tone_cv.value() {
-                if trigger_button.clicked() {
-                    display_request.set_calibration_phase(Screen::calibration_octave_2());
-                    *state = State::Calibrating(CalibrationPhase::Octave2(value));
-                }
-            } else {
-                display_request.set_calibration_result(Screen::calibration_failure());
-                display_request.reset_calibration_phase();
-                *state = State::Normal;
-            }
-        }
-        State::Calibrating(CalibrationPhase::Octave2(octave_1)) => {
-            if let Some(value) = tone_cv.value() {
-                if trigger_button.clicked() {
-                    if let Ok(_) = tone_cv.update_calibration(*octave_1, value) {
-                        defmt::info!(
-                            "Successfully completed calibration, O1={:?} O2={:?}",
-                            *octave_1,
-                            value
-                        );
-                        *needs_save |= true;
-                        display_request.set_calibration_result(Screen::calibration_success());
-                    } else {
-                        defmt::info!("Failed calibration, O1={:?} O2={:?}", *octave_1, value);
-                        display_request.set_calibration_result(Screen::calibration_failure());
-                    }
-                    display_request.reset_calibration_phase();
-                    *state = State::Normal;
-                }
-            } else {
-                display_request.set_calibration_result(Screen::calibration_failure());
-                display_request.reset_calibration_phase();
-                *state = State::Normal;
-            }
         }
     }
 }
