@@ -165,7 +165,7 @@ impl Chords {
         }
     }
 
-    pub fn number_of_chords(&self, group_id: GroupId) -> usize {
+    pub fn number_of_chords(&self, group_id: GroupId, scale_size: usize) -> usize {
         match group_id {
             GroupId::Size1 => self.size_1.capacity(),
             GroupId::Size2 => self.size_2.capacity(),
@@ -175,7 +175,7 @@ impl Chords {
             GroupId::Size6 => self.size_6.capacity(),
             GroupId::Size7 => self.size_7.capacity(),
             GroupId::Size8 => self.size_8.capacity(),
-            GroupId::SizeFull => 1,
+            GroupId::SizeFull => scale_size,
         }
     }
 
@@ -185,7 +185,7 @@ impl Chords {
         chord_index: usize,
         scale_size: usize,
     ) -> Result<Chord, ()> {
-        if chord_index >= self.number_of_chords(group_id) {
+        if chord_index >= self.number_of_chords(group_id, scale_size) {
             return Err(());
         }
 
@@ -199,7 +199,7 @@ impl Chords {
             GroupId::Size6 => Chord::from_slice(self.size_6.get(chord_index).unwrap()),
             GroupId::Size7 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
             GroupId::Size8 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
-            GroupId::SizeFull => Ok(generate_full_chord(scale_size)),
+            GroupId::SizeFull => Ok(generate_full_chord(chord_index + 1)),
         }
     }
 
@@ -218,14 +218,16 @@ impl Chords {
     }
 }
 
-fn generate_full_chord(scale_size: usize) -> Chord {
+fn generate_full_chord(size: usize) -> Chord {
     assert!(
-        scale_size < MAX_CHORD_SIZE,
+        size < MAX_CHORD_SIZE,
         "Chord capacity is not big enough for given scale size"
     );
-    const FULL_CHORD: [i16; 13] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const FULL_CHORD: [i16; 25] = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+    ];
     // SAFETY: The size is checked at the beginning of the function.
-    Chord::from_slice(&FULL_CHORD[0..=scale_size]).unwrap()
+    Chord::from_slice(&FULL_CHORD[0..size]).unwrap()
 }
 
 trait LibraryGroupTrait {
@@ -293,7 +295,22 @@ mod tests {
     fn try_getting_chord_out_of_range() {
         let chords = Chords::new();
         assert!(chords
-            .chord(GroupId::Size3, chords.number_of_chords(GroupId::Size3), 7)
+            .chord(
+                GroupId::Size3,
+                chords.number_of_chords(GroupId::Size3, 7),
+                7
+            )
             .is_err());
+    }
+
+    #[test]
+    fn get_full_chord() {
+        let chords = Chords::new();
+
+        let chord = chords.chord(GroupId::SizeFull, 0, 7).unwrap();
+        assert_eq!(&chord, &[0]);
+
+        let chord = chords.chord(GroupId::SizeFull, 6, 7).unwrap();
+        assert_eq!(&chord, &[0, 1, 2, 3, 4, 5, 6]);
     }
 }

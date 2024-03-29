@@ -25,7 +25,7 @@ impl Chord {
         let chord = {
             // SAFETY: The group attribute is limited by the number of groups.
             let selected_group = group.selected_value().try_into().unwrap();
-            let chords_in_group = library.number_of_chords(selected_group);
+            let chords_in_group = library.number_of_chords(selected_group, scale_size);
             Discrete::new(config.chord, chords_in_group, 0.1)
         };
 
@@ -49,7 +49,7 @@ impl Chord {
 
         if changed_group {
             let selected_group = self.group.selected_value().try_into().unwrap();
-            let chords_in_group = self.library.number_of_chords(selected_group);
+            let chords_in_group = self.library.number_of_chords(selected_group, scale_size);
             self.chord.set_output_values(chords_in_group);
         }
 
