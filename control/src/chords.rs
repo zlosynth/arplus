@@ -38,6 +38,10 @@ type LibraryChord<const D: usize> = Vec<i16, D>;
 // TODO: Add a special last mode with all LEDs lit up will include all steps
 // of the scale, depending on the size of the scale.
 // There would be 2 chords to select from, all notes, or all skipping one (triad).
+// TODO: The special one would play 1, 2, 3, 4, ... could be selected if just first
+// X or all of the scale.
+// TODO: It can be implemented by holding the library of all lengths up to 24,
+// then the caller would fetch scale size and depending on that request the right chord.
 impl Chords {
     pub const GROUPS: usize = 2;
 

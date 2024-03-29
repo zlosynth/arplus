@@ -21,6 +21,7 @@ pub struct Scales {
     diatonic: LibraryGroup<7, 7>,
     maqam: LibraryGroup<8, 7>,
     melakarta: LibraryGroup<8, 7>,
+    japanese: LibraryGroup<5, 5>,
     full: LibraryGroup<3, 24>,
     // blues: (),
     // hexatonic: (),
@@ -28,7 +29,6 @@ pub struct Scales {
     // special heptatonic scales
     // javan scale https://www.youtube.com/watch?v=YWfumqpFwaY
     // chinese https://www.youtube.com/watch?v=WHnrpZaif5w or https://www.youtube.com/watch?v=tc6-qk6RLFw
-    // quartertone
 }
 
 // ALLOW: All the variants can be contructed via `try_from`.
@@ -39,6 +39,7 @@ pub enum GroupId {
     Diatonic = 0,
     Maqam,
     Melakarta,
+    Japanese,
     Full,
 }
 
@@ -50,7 +51,7 @@ pub struct LibraryScale<const S: usize> {
 }
 
 impl Scales {
-    pub const GROUPS: usize = 4;
+    pub const GROUPS: usize = 5;
 
     // NOTE: Keep the lists expanded to improve readability.
     #[rustfmt::skip]
@@ -112,6 +113,19 @@ impl Scales {
             // Gamanasrama (53) C Cs E Fs G A B C
             (&[S, S3, T, S, T, T, S], None),
         ]);
+        // Source: <https://www.musicnotes.com/blog/japanese-scales-in-music-theory/>
+        let japanese = initialize_group(&[
+            // Hirajoshi C D Eb G Ab C
+            (&[T, S, T2, S, T2], None),
+            // In C Db F G Ab C
+            (&[S, T2, T, S, T2], None),
+            // Insen C Db F G Bb C
+            (&[S, T2, T, S3, T], None),
+            // Iwato C Db F Gb Bb C
+            (&[S, T2, S, T2, T], None),
+            // Yo C D F G A C
+            (&[T, S3, T, T, S3], None),
+        ]);
         let full = initialize_group(&[
             (&[T, T, T, T, T, T], None),
             (&[S, S, S, S, S, S, S, S, S, S, S, S], None),
@@ -122,6 +136,7 @@ impl Scales {
             diatonic,
             maqam,
             melakarta,
+            japanese,
             full,
         }
     }
@@ -131,6 +146,7 @@ impl Scales {
             GroupId::Diatonic => self.diatonic.capacity(),
             GroupId::Maqam => self.maqam.capacity(),
             GroupId::Melakarta => self.melakarta.capacity(),
+            GroupId::Japanese => self.japanese.capacity(),
             GroupId::Full => self.full.capacity(),
         }
     }
@@ -145,6 +161,7 @@ impl Scales {
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
             GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
             GroupId::Melakarta => Scale::new(&self.melakarta.get(scale_index).unwrap().ascending),
+            GroupId::Japanese => Scale::new(&self.japanese.get(scale_index).unwrap().ascending),
             GroupId::Full => Scale::new(&self.full.get(scale_index).unwrap().ascending),
         }
     }
