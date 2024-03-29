@@ -13,13 +13,14 @@ pub struct Scale {
     note: Discrete,
     group: Toggle,
     scale: Toggle,
-    tonic: Tonic,
+    tonic: Discrete,
     scale_cache: Option<ProjectedScale>,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
 pub struct PersistentConfig {
     note: DiscretePersistentConfig,
+    tonic: DiscretePersistentConfig,
     group: TogglePersistentConfig,
     scale: TogglePersistentConfig,
 }
@@ -51,19 +52,20 @@ impl Scale {
             note,
             group,
             scale,
-            tonic: Tonic::C,
+            tonic: Discrete::new(config.tonic, 12, 0.1),
             scale_cache: None,
         };
         s.update_scale_cache();
         s
     }
 
-    pub fn reconcile_note_group_and_scale(
+    pub fn reconcile_note_tonic_group_and_scale(
         &mut self,
         note_pot: f32,
         note_cv: Option<f32>,
         group_toggle: bool,
         scale_toggle: bool,
+        trigger_held: bool,
     ) -> (bool, bool, bool) {
         let changed_group = self.group.reconcile(group_toggle);
 
@@ -76,7 +78,13 @@ impl Scale {
 
         let changed_scale = self.scale.reconcile(scale_toggle);
 
-        if changed_group || changed_scale {
+        let changed_tonic = if trigger_held {
+            self.tonic.reconcile(note_pot)
+        } else {
+            false
+        };
+
+        if changed_group || changed_scale || changed_tonic {
             self.update_scale_cache();
 
             let steps_in_scale = self.scale_cache().steps_in_octave() as usize;
@@ -114,12 +122,14 @@ impl Scale {
     }
 
     pub fn selected_tonic(&self) -> Tonic {
-        self.tonic
+        // SAFETY: The discrete parameter is limited by the maximum index of tonic.
+        self.tonic.selected_value().try_into().unwrap()
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
             note: self.note.copy_config(),
+            tonic: self.tonic.copy_config(),
             group: self.group.copy_config(),
             scale: self.scale.copy_config(),
         }
@@ -139,7 +149,7 @@ impl Scale {
             self.library
                 .scale(self.selected_group_id(), self.selected_scale_index())
                 .unwrap()
-                .with_tonic(self.tonic),
+                .with_tonic(self.selected_tonic()),
         );
     }
 }

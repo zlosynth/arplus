@@ -198,6 +198,7 @@ impl Controller {
             &cvs.tone,
             &buttons.scale_group,
             &buttons.scale,
+            &buttons.trigger,
             &mut parameters.scale,
             display_request,
             needs_save,
@@ -325,22 +326,25 @@ fn reconcile_scale(
     tone_cv: &Cv,
     group_button: &Button,
     scale_button: &Button,
+    trigger_button: &Button,
     parameter: &mut parameters::Scale,
     display_request: &mut DisplayRequest,
     needs_save: &mut bool,
 ) {
     let group_held = is_button_held(group_button);
     let scale_held = is_button_held(scale_button);
+    let trigger_held = is_button_held(trigger_button);
     let group_tapped = was_button_tapped(group_button);
     let scale_tapped = was_button_tapped(scale_button);
 
     if group_tapped || scale_tapped {
         let (note_changed, group_changed, scale_changed) = parameter
-            .reconcile_note_group_and_scale(
+            .reconcile_note_tonic_group_and_scale(
                 tone_pot.value(),
                 tone_cv.value(),
                 group_tapped,
                 scale_tapped,
+                trigger_held,
             );
         *needs_save |= note_changed || group_changed || scale_changed;
         if group_changed {
