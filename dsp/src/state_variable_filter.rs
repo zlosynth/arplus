@@ -1,6 +1,3 @@
-// TODO: Reconsider once the project is complete.
-#![allow(dead_code)]
-
 use core::f32::consts::PI;
 
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
@@ -82,6 +79,8 @@ impl StateVariableFilter {
     }
 }
 
+// NOTE: Allowing unused variants, so this can be easily used as a library.
+#[allow(dead_code)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
 #[derive(Debug)]
 pub enum Bandform {

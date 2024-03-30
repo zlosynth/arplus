@@ -1,6 +1,3 @@
-// TODO: Reconsider once the project is complete.
-#![allow(dead_code)]
-
 const LOG: [f32; 22] = [
     0.0,
     0.005,

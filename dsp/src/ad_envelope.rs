@@ -1,9 +1,6 @@
 // Thanks to Nigel Redmon for his series about ADSR
 // http://www.earlevel.com/main/category/envelope-generators/
 
-// TODO: Reconsider once the project is complete.
-#![allow(dead_code)]
-
 pub struct Ad {
     sample_rate: f32,
     config: Config,
@@ -78,7 +75,6 @@ impl Ad {
         }
     }
 
-    // TODO: Optimize this by configuring coefficients only once
     pub fn trigger(&mut self, mut config: Config) {
         config.attack_ratio = config.attack_ratio.clamp(0.000000001, 100000.0);
         let attack_rate = (config.attack_time * self.sample_rate) as u32;
@@ -137,6 +133,8 @@ impl Config {
         self
     }
 
+    // NOTE: Allowing dead code, so this can be easily used as a library.
+    #[allow(dead_code)]
     pub fn with_attack_ratio(mut self, attack_ratio: f32) -> Self {
         self.attack_ratio = attack_ratio;
         self
@@ -147,6 +145,8 @@ impl Config {
         self
     }
 
+    // NOTE: Allowing dead code, so this can be easily used as a library.
+    #[allow(dead_code)]
     pub fn with_decay_ratio(mut self, decay_ratio: f32) -> Self {
         self.decay_ratio = decay_ratio;
         self
