@@ -1,16 +1,17 @@
-// TODO: Review. Keep Projected scale here. Review callers of methods.
-
 use crate::scales::{GroupId, ProjectedScale, ScaleNote, Scales, Tonic};
 
+use super::primitives::continuous::Continuous;
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
-use super::primitives::math;
 use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 
 const OCTAVES: usize = 7;
 
 pub struct Scale {
     library: Scales,
-    note: Discrete,
+    pot_note: Discrete,
+    cv_note: Continuous,
+    pot_octave: Discrete,
+    cv_note_control: bool,
     group: Toggle,
     scale: Toggle,
     tonic: Discrete,
@@ -20,6 +21,7 @@ pub struct Scale {
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
 pub struct PersistentConfig {
     note: DiscretePersistentConfig,
+    octave: DiscretePersistentConfig,
     tonic: DiscretePersistentConfig,
     group: TogglePersistentConfig,
     scale: TogglePersistentConfig,
@@ -37,7 +39,7 @@ impl Scale {
             Toggle::new(config.scale, scales_in_group)
         };
 
-        let note = {
+        let pot_note = {
             // XXX: It is a little dirty to initialize it explicitly here. Too bad.
             // SAFETY: Maximum scale index is already limited by selected group.
             let selected_scale = library
@@ -49,7 +51,10 @@ impl Scale {
 
         let mut s = Self {
             library,
-            note,
+            pot_note,
+            cv_note: Continuous::new(),
+            pot_octave: Discrete::new(config.octave, 4, 0.1),
+            cv_note_control: false,
             group,
             scale,
             tonic: Discrete::new(config.tonic, 12, 0.1),
@@ -88,10 +93,23 @@ impl Scale {
             self.update_scale_cache();
 
             let steps_in_scale = self.scale_cache().steps_in_octave() as usize;
-            self.note.set_output_values(OCTAVES * steps_in_scale);
+            self.pot_note.set_output_values(OCTAVES * steps_in_scale);
         }
 
-        let changed_note = self.note.reconcile(math::linear_sum(note_pot, note_cv));
+        // TODO: handle voct
+        // Have pot note and pot octave as two different attributes
+        // Keep updating both
+        // If CV is plugged in, use the octave one
+        let (changed_note, changed_octave) = if let Some(note_cv) = note_cv {
+            self.cv_note_control = true;
+            self.cv_note.reconcile(note_cv);
+            (false, self.pot_octave.reconcile(note_pot))
+        } else {
+            self.cv_note_control = false;
+            (self.pot_note.reconcile(note_pot), false)
+        };
+
+        // TODO: Handle changed octave, to display it
 
         (changed_note, changed_group, changed_scale)
     }
@@ -114,11 +132,20 @@ impl Scale {
         self.scale_cache().steps_in_octave() as usize
     }
 
+    // TODO: Refactor CV vs Pot note handling.
     pub fn selected_note(&self) -> ScaleNote {
-        // SAFETY: Range of indices is limited in `new` and `reconcile`.
-        self.scale_cache()
-            .get_note_by_index_ascending(self.selected_note_index())
-            .unwrap()
+        if self.cv_note_control {
+            let offset = self.pot_octave.selected_value() as f32 - 2.0;
+            let cv = self.cv_note.value();
+            let sum = f32::min(OCTAVES as f32, cv + offset);
+            // SAFETY: Limited by the same octave range as when using note Pot.
+            self.scale_cache().quantize_voct_ascending(sum).unwrap()
+        } else {
+            // SAFETY: Range of indices is limited in `new` and `reconcile`.
+            self.scale_cache()
+                .get_note_by_index_ascending(self.selected_note_index())
+                .unwrap()
+        }
     }
 
     pub fn selected_tonic(&self) -> Tonic {
@@ -128,7 +155,8 @@ impl Scale {
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
-            note: self.note.copy_config(),
+            note: self.pot_note.copy_config(),
+            octave: self.pot_octave.copy_config(),
             tonic: self.tonic.copy_config(),
             group: self.group.copy_config(),
             scale: self.scale.copy_config(),
@@ -136,7 +164,7 @@ impl Scale {
     }
 
     fn selected_note_index(&self) -> usize {
-        self.note.selected_value()
+        self.pot_note.selected_value()
     }
 
     fn scale_cache(&self) -> &ProjectedScale {

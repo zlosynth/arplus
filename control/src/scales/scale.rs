@@ -24,10 +24,6 @@ impl<const N: usize> Scale<N> {
         })
     }
 
-    pub fn capacity() -> usize {
-        N
-    }
-
     // TODO: This will be used for V/OCT input.
     pub fn quantize_voct_ascending(&self, voct: f32) -> Option<ScaleNote> {
         // XXX: This is making the method simpler by sacrificing a part of the
