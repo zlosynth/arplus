@@ -93,7 +93,7 @@ impl Scale {
 
         let changed_note = self.note.reconcile(math::linear_sum(note_pot, note_cv));
 
-        (changed_note, changed_scale, changed_scale)
+        (changed_note, changed_group, changed_scale)
     }
 
     pub fn selected_group_id(&self) -> GroupId {

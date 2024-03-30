@@ -47,7 +47,9 @@ impl Chord {
     ) -> (bool, bool) {
         let changed_group = self.group.reconcile(math::linear_sum(group_pot, group_cv));
 
-        if changed_group {
+        let changed_scale_size = self.scale_size != scale_size;
+
+        if changed_group || changed_scale_size {
             let selected_group = self.group.selected_value().try_into().unwrap();
             let chords_in_group = self.library.number_of_chords(selected_group, scale_size);
             self.chord.set_output_values(chords_in_group);

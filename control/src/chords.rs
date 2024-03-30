@@ -1,6 +1,6 @@
 use heapless::Vec;
 
-const MAX_CHORD_SIZE: usize = 13;
+const MAX_CHORD_SIZE: usize = 25;
 
 pub type Chord = Vec<i16, MAX_CHORD_SIZE>;
 
@@ -36,7 +36,7 @@ type LibraryGroup<const N: usize, const D: usize> = Vec<LibraryChord<D>, N>;
 type LibraryChord<const D: usize> = Vec<i16, D>;
 
 impl Chords {
-    pub const GROUPS: usize = 2;
+    pub const GROUPS: usize = 9;
 
     // NOTE: Keep the lists expanded to improve readability.
     #[rustfmt::skip]

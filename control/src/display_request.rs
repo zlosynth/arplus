@@ -8,6 +8,7 @@ pub struct DisplayRequest {
     pub fallback_attribute: ScreenRequest,
 }
 
+#[derive(defmt::Format)]
 pub enum ScreenRequest {
     Set(Screen),
     Reset,

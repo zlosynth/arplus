@@ -110,6 +110,12 @@ impl Display {
             }
         }
 
+        if let Some(page) = self.prioritized[Priority::Queried as usize].as_ref() {
+            if page.clock > 2000 {
+                self.reset(Priority::Queried);
+            }
+        }
+
         if let Some(page) = self.prioritized[Priority::Active as usize].as_ref() {
             if page.clock > 2000 {
                 self.reset(Priority::Active);

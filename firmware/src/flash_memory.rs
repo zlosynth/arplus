@@ -15,7 +15,8 @@ impl FlashMemoryInterface {
     }
 
     pub fn save(&mut self, save: Save) {
-        defmt::info!("Saving version={:?}: {:?}", self.version, save);
+        defmt::info!("Saving version={:?}", self.version);
+        defmt::debug!("Saving save={:?}", save);
         let data = WrappedSave::new(save, self.version).to_bytes();
         self.flash
             .write(sector_address(self.version as usize % NUM_SECTORS), &data);

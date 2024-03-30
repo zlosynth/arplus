@@ -319,28 +319,36 @@ fn reconcile_scale(
     let group_tapped = was_button_tapped(group_button);
     let scale_tapped = was_button_tapped(scale_button);
 
-    if group_tapped || scale_tapped {
-        let (note_changed, group_changed, scale_changed) = parameter
-            .reconcile_note_tonic_group_and_scale(
-                tone_pot.value(),
-                tone_cv.value(),
-                group_tapped,
-                scale_tapped,
-                trigger_held,
-            );
-        *needs_save |= note_changed || group_changed || scale_changed;
-        if group_changed {
-            let selected = parameter.selected_group_id();
-            display_request.set_active_attribute(Screen::scale_group(selected));
-        } else if scale_changed {
-            let selected = parameter.selected_scale_index();
-            display_request.set_active_attribute(Screen::scale(selected));
-        } else if note_changed {
-            let selected = parameter.selected_note().index();
-            display_request.set_active_attribute(Screen::note(selected as usize));
-        }
-        // TODO: Display tonic if it has changed
-    } else if group_held {
+    let (note_changed, group_changed, scale_changed) = parameter
+        .reconcile_note_tonic_group_and_scale(
+            tone_pot.value(),
+            tone_cv.value(),
+            group_tapped,
+            scale_tapped,
+            trigger_held,
+        );
+    *needs_save |= note_changed || group_changed || scale_changed;
+    if group_changed {
+        let selected = parameter.selected_group_id();
+        display_request.set_active_attribute(Screen::scale_group(selected));
+    } else if scale_changed {
+        let selected = parameter.selected_scale_index();
+        display_request.set_active_attribute(Screen::scale(selected));
+    } else if note_changed {
+        let selected = parameter.selected_note().index();
+        display_request.set_active_attribute(Screen::note(selected as usize));
+    }
+
+    if group_changed || scale_changed {
+        defmt::info!(
+            "Selected scale_group={:?} scale={:?}",
+            parameter.selected_group_id(),
+            parameter.selected_scale_index()
+        );
+    }
+
+    // TODO: Display tonic if it has changed
+    if group_held {
         let selected = parameter.selected_group_id();
         display_request.set_queried_attribute(Screen::scale_group(selected));
     } else if scale_held {
