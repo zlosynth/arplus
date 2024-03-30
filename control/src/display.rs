@@ -32,6 +32,7 @@ pub enum Screen {
     Note(NoteScreen),
     Chord(ChordScreen),
     Calibration(CalibrationScreen),
+    Octave(OctaveScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -68,6 +69,11 @@ pub struct NoteScreen {
 pub struct ChordScreen {
     chord: Chord,
     scale_size: usize,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct OctaveScreen {
+    index: usize,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -170,6 +176,10 @@ impl Screen {
         Screen::Chord(ChordScreen::with_selected(chord, scale_size))
     }
 
+    pub fn octave(index: usize) -> Screen {
+        Screen::Octave(OctaveScreen::with_index(index))
+    }
+
     pub fn calibration_octave_1() -> Self {
         Screen::Calibration(CalibrationScreen::Octave1)
     }
@@ -195,6 +205,7 @@ impl Screen {
             Screen::ChordGroup(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
+            Screen::Octave(s) => s.leds(),
             Screen::Calibration(s) => s.leds(clock),
         }
     }
@@ -306,6 +317,23 @@ impl ChordScreen {
             }
         }
 
+        leds
+    }
+}
+
+impl OctaveScreen {
+    pub fn with_index(index: usize) -> Self {
+        Self { index }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+        if let Some(led) = leds.get_mut(self.index * 2) {
+            *led = true;
+        }
+        if let Some(led) = leds.get_mut(self.index * 2 + 1) {
+            *led = true;
+        }
         leds
     }
 }

@@ -64,7 +64,6 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
-        // TODO: Recover them from an input snapshot too.
         let parameters = Parameters::new(save.parameters, Chords::new(), Scales::new());
 
         Self {
@@ -318,7 +317,7 @@ fn reconcile_scale(
     let group_tapped = was_button_tapped(group_button);
     let scale_tapped = was_button_tapped(scale_button);
 
-    let (note_changed, group_changed, scale_changed) = parameter
+    let (note_changed, octave_changed, group_changed, scale_changed) = parameter
         .reconcile_note_tonic_group_and_scale(
             tone_pot.value(),
             tone_cv.value(),
@@ -326,16 +325,19 @@ fn reconcile_scale(
             scale_tapped,
             trigger_held,
         );
-    *needs_save |= note_changed || group_changed || scale_changed;
+    *needs_save |= note_changed || group_changed || scale_changed || octave_changed;
     if group_changed {
         let selected = parameter.selected_group_id();
         display_request.set_active_attribute(Screen::scale_group(selected));
     } else if scale_changed {
         let selected = parameter.selected_scale_index();
         display_request.set_active_attribute(Screen::scale(selected));
-    } else if note_changed {
+    } else if note_changed && tone_cv.value().is_none() {
         let selected = parameter.selected_note().index();
         display_request.set_active_attribute(Screen::note(selected as usize));
+    } else if octave_changed && tone_cv.value().is_some() {
+        let selected = parameter.selected_octave_index();
+        display_request.set_active_attribute(Screen::octave(selected));
     }
 
     if group_changed || scale_changed {
@@ -347,6 +349,7 @@ fn reconcile_scale(
     }
 
     // TODO: Display tonic if it has changed
+    // TODO: Display octave if it was moved
     if group_held {
         let selected = parameter.selected_group_id();
         display_request.set_queried_attribute(Screen::scale_group(selected));

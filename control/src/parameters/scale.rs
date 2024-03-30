@@ -71,7 +71,7 @@ impl Scale {
         group_toggle: bool,
         scale_toggle: bool,
         trigger_held: bool,
-    ) -> (bool, bool, bool) {
+    ) -> (bool, bool, bool, bool) {
         let changed_group = self.group.reconcile(group_toggle);
 
         if changed_group {
@@ -109,9 +109,7 @@ impl Scale {
             (self.pot_note.reconcile(note_pot), false)
         };
 
-        // TODO: Handle changed octave, to display it
-
-        (changed_note, changed_group, changed_scale)
+        (changed_note, changed_octave, changed_group, changed_scale)
     }
 
     pub fn selected_group_id(&self) -> GroupId {
@@ -179,5 +177,9 @@ impl Scale {
                 .unwrap()
                 .with_tonic(self.selected_tonic()),
         );
+    }
+
+    pub fn selected_octave_index(&self) -> usize {
+        self.selected_octave_index()
     }
 }
