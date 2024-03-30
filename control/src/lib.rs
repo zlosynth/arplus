@@ -207,9 +207,8 @@ impl Controller {
         let trigger_attributes = if self.parameters.trigger.triggered() {
             self.arp.apply_config(build_arp_config(&self.parameters));
 
-            if let Some(note) = self.arp.pop(&mut self.random_generator) {
-                // TODO: Show index on arp progress, not of the scale note
-                display_request.set_fallback_attribute(Screen::step(note.index() as usize));
+            if let Some((note, index)) = self.arp.pop(&mut self.random_generator) {
+                display_request.set_fallback_attribute(Screen::step(index as usize));
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
                     contour: self.parameters.contour.value(),
