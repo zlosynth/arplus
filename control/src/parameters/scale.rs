@@ -180,6 +180,6 @@ impl Scale {
     }
 
     pub fn selected_octave_index(&self) -> usize {
-        self.selected_octave_index()
+        self.pot_octave.selected_value()
     }
 }
