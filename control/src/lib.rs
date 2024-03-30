@@ -245,8 +245,8 @@ impl Controller {
     pub fn tick(&mut self) -> ControlOutputState {
         self.display.tick();
         ControlOutputState {
-            leds: if let Some(active_screen) = self.display.active_screen() {
-                active_screen.leds()
+            leds: if let Some((active_screen, clock)) = self.display.active_screen_and_clock() {
+                active_screen.leds(clock)
             } else {
                 [false; 8]
             },

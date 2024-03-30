@@ -22,7 +22,7 @@ pub struct Page {
     screen: Screen,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub enum Screen {
     Step(StepScreen),
     ArpMode(ArpModeScreen),
@@ -34,43 +34,43 @@ pub enum Screen {
     Calibration(CalibrationScreen),
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct StepScreen {
     step: usize,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct ArpModeScreen {
     mode: ArpMode,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct ScaleScreen {
     scale: usize,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct ScaleGroupScreen {
     scale_group: ScaleGroupId,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct ChordGroupScreen {
     chord_group_size: usize,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct NoteScreen {
     index: usize,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub struct ChordScreen {
     chord: Chord,
     scale_size: usize,
 }
 
-#[derive(Debug, defmt::Format)]
+#[derive(Debug, defmt::Format, PartialEq)]
 pub enum CalibrationScreen {
     Octave1,
     Octave2,
@@ -86,8 +86,12 @@ impl Display {
     }
 
     pub fn set(&mut self, priority: Priority, screen: Screen) {
-        // TODO: Do not overwrite it if it's already set to the same type.
-        // that way it preserves clock.
+        if let Some(page) = self.prioritized[priority as usize].as_ref() {
+            if page.screen == screen {
+                return;
+            }
+        }
+
         self.prioritized[priority as usize] = Some(Page::with_screen(screen));
     }
 
@@ -113,11 +117,11 @@ impl Display {
         }
     }
 
-    pub fn active_screen(&self) -> Option<&Screen> {
+    pub fn active_screen_and_clock(&self) -> Option<(&Screen, usize)> {
         self.prioritized
             .iter()
             .find_map(Option::as_ref)
-            .map(|p| &p.screen)
+            .map(|p| (&p.screen, p.clock))
     }
 }
 
@@ -176,7 +180,7 @@ impl Screen {
         Screen::Calibration(CalibrationScreen::Failure)
     }
 
-    pub fn leds(&self) -> [bool; 8] {
+    pub fn leds(&self, clock: usize) -> [bool; 8] {
         match self {
             Screen::Step(s) => s.leds(),
             Screen::ArpMode(s) => s.leds(),
@@ -185,7 +189,7 @@ impl Screen {
             Screen::ChordGroup(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
-            Screen::Calibration(s) => s.leds(),
+            Screen::Calibration(s) => s.leds(clock),
         }
     }
 }
@@ -301,11 +305,24 @@ impl ChordScreen {
 }
 
 impl CalibrationScreen {
-    fn leds(&self) -> [bool; 8] {
-        // TODO: Animation
+    fn leds(&self, clock: usize) -> [bool; 8] {
         match self {
-            CalibrationScreen::Octave1 => [true, true, true, true, false, false, false, false],
-            CalibrationScreen::Octave2 => [false, false, false, false, true, true, true, true],
+            CalibrationScreen::Octave1 => {
+                let phase = (clock / 400) % 6;
+                if phase == 0 || phase == 2 {
+                    [true, true, true, true, false, false, false, false]
+                } else {
+                    [false, false, false, false, false, false, false, false]
+                }
+            }
+            CalibrationScreen::Octave2 => {
+                let phase = (clock / 400) % 6;
+                if phase == 0 || phase == 2 {
+                    [false, false, false, false, true, true, true, true]
+                } else {
+                    [false, false, false, false, false, false, false, false]
+                }
+            }
             CalibrationScreen::Failure => [false, false, false, false, false, false, false, false],
             CalibrationScreen::Success => [true, true, true, true, true, true, true, true],
         }

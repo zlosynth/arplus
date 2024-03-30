@@ -32,7 +32,7 @@ pub struct Scales {
 // ALLOW: All the variants can be contructed via `try_from`.
 #[allow(dead_code)]
 #[repr(u8)]
-#[derive(Clone, Copy, Debug, defmt::Format)]
+#[derive(Clone, Copy, Debug, defmt::Format, PartialEq)]
 pub enum GroupId {
     Diatonic = 0,
     Maqam,
