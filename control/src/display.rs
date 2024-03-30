@@ -67,6 +67,7 @@ pub struct NoteScreen {
 #[derive(Debug, defmt::Format)]
 pub struct ChordScreen {
     chord: Chord,
+    scale_size: usize,
 }
 
 #[derive(Debug, defmt::Format)]
@@ -155,8 +156,8 @@ impl Screen {
         Screen::Step(StepScreen::with_step(step_index))
     }
 
-    pub fn chord(chord: Chord) -> Self {
-        Screen::Chord(ChordScreen::with_selected(chord))
+    pub fn chord(chord: Chord, scale_size: usize) -> Self {
+        Screen::Chord(ChordScreen::with_selected(chord, scale_size))
     }
 
     pub fn calibration_octave_1() -> Self {
@@ -280,17 +281,17 @@ impl NoteScreen {
 }
 
 impl ChordScreen {
-    pub fn with_selected(chord: Chord) -> Self {
-        Self { chord }
+    pub fn with_selected(chord: Chord, scale_size: usize) -> Self {
+        Self { chord, scale_size }
     }
 
     fn leds(&self) -> [bool; 8] {
-        // TODO: Show properly steps above 8, if possible with chords.
-        // TODO: Wrap around based on the selected scale and number of its steps.
         let mut leds = [false; 8];
 
+        let wrap = usize::min(self.scale_size, leds.len());
+
         for step in self.chord.iter() {
-            if let Some(led) = leds.get_mut(*step as usize) {
+            if let Some(led) = leds.get_mut(*step as usize % wrap) {
                 *led = true;
             }
         }

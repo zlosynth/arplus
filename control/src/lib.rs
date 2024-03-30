@@ -281,13 +281,13 @@ fn reconcile_chord(
         display_request.set_active_attribute(Screen::chord_group(size));
     } else if changed_chord {
         let chord = parameter.selected_chord();
-        display_request.set_active_attribute(Screen::chord(chord));
+        display_request.set_active_attribute(Screen::chord(chord, scale_size));
     } else if group_pot.activation_movement() {
         let size = parameter.selected_group_size();
         display_request.set_queried_attribute(Screen::chord_group(size));
     } else if chord_pot.activation_movement() {
         let chord = parameter.selected_chord();
-        display_request.set_queried_attribute(Screen::chord(chord));
+        display_request.set_queried_attribute(Screen::chord(chord, scale_size));
     }
 }
 
