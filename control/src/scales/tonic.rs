@@ -1,3 +1,5 @@
+// ALLOW: Any of the invariants may be constructed using `try_from`.
+#[allow(dead_code)]
 #[repr(usize)]
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum Tonic {
