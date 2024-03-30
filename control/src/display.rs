@@ -34,6 +34,8 @@ pub enum Screen {
     Calibration(CalibrationScreen),
     Octave(OctaveScreen),
     Tonic(TonicScreen),
+    Configuration(ConfigurationScreen),
+    Gain(GainScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -81,6 +83,14 @@ pub struct OctaveScreen {
 pub struct TonicScreen {
     tonic: Tonic,
 }
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct GainScreen {
+    index: usize,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct ConfigurationScreen;
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum CalibrationScreen {
@@ -182,12 +192,20 @@ impl Screen {
         Screen::Chord(ChordScreen::with_selected(chord, scale_size))
     }
 
-    pub fn octave(index: usize) -> Screen {
+    pub fn octave(index: usize) -> Self {
         Screen::Octave(OctaveScreen::with_index(index))
     }
 
-    pub fn tonic(tonic: Tonic) -> Screen {
+    pub fn tonic(tonic: Tonic) -> Self {
         Screen::Tonic(TonicScreen::with_tonic(tonic))
+    }
+
+    pub fn configuration() -> Self {
+        Screen::Configuration(ConfigurationScreen)
+    }
+
+    pub fn gain(index: usize) -> Screen {
+        Screen::Gain(GainScreen::with_index(index))
     }
 
     pub fn calibration_octave_1() -> Self {
@@ -217,7 +235,9 @@ impl Screen {
             Screen::Chord(s) => s.leds(),
             Screen::Octave(s) => s.leds(),
             Screen::Tonic(s) => s.leds(),
+            Screen::Gain(s) => s.leds(),
             Screen::Calibration(s) => s.leds(clock),
+            Screen::Configuration(s) => s.leds(clock),
         }
     }
 }
@@ -386,6 +406,32 @@ impl TonicScreen {
             Tonic::B => leds[6] = true,
         }
         leds
+    }
+}
+
+impl GainScreen {
+    pub fn with_index(index: usize) -> Self {
+        Self { index }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+        let len = leds.len();
+        for led in leds[0..usize::max(self.index * 2, len)].iter_mut() {
+            *led = true;
+        }
+        leds
+    }
+}
+
+impl ConfigurationScreen {
+    fn leds(&self, clock: usize) -> [bool; 8] {
+        let phase = (clock / 400) % 2;
+        if phase == 0 {
+            [true, false, true, false, true, false, true, false]
+        } else {
+            [false, true, false, true, false, true, false, true]
+        }
     }
 }
 

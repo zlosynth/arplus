@@ -40,6 +40,7 @@ pub struct Attributes {
     pub resonance: f32,
     pub cutoff: f32,
     pub trigger: Option<TriggerAttributes>,
+    pub gain: f32,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
@@ -126,8 +127,6 @@ impl Dsp {
             next_string.reset();
         }
 
-        // TODO: Make this configurable with alt options.
-        let ideal_gain = 0.5;
-        self.overdrive.gain = 0.3 + ideal_gain * 0.6;
+        self.overdrive.gain = attributes.gain;
     }
 }
