@@ -1,6 +1,6 @@
 use crate::arpeggiator::Mode as ArpMode;
 use crate::chords::Chord;
-use crate::scales::GroupId as ScaleGroupId;
+use crate::scales::{GroupId as ScaleGroupId, Tonic};
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
@@ -33,6 +33,7 @@ pub enum Screen {
     Chord(ChordScreen),
     Calibration(CalibrationScreen),
     Octave(OctaveScreen),
+    Tonic(TonicScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -74,6 +75,11 @@ pub struct ChordScreen {
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct OctaveScreen {
     index: usize,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct TonicScreen {
+    tonic: Tonic,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -180,6 +186,10 @@ impl Screen {
         Screen::Octave(OctaveScreen::with_index(index))
     }
 
+    pub fn tonic(tonic: Tonic) -> Screen {
+        Screen::Tonic(TonicScreen::with_tonic(tonic))
+    }
+
     pub fn calibration_octave_1() -> Self {
         Screen::Calibration(CalibrationScreen::Octave1)
     }
@@ -206,6 +216,7 @@ impl Screen {
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
             Screen::Octave(s) => s.leds(),
+            Screen::Tonic(s) => s.leds(),
             Screen::Calibration(s) => s.leds(clock),
         }
     }
@@ -333,6 +344,46 @@ impl OctaveScreen {
         }
         if let Some(led) = leds.get_mut(self.index * 2 + 1) {
             *led = true;
+        }
+        leds
+    }
+}
+
+impl TonicScreen {
+    pub fn with_tonic(tonic: Tonic) -> Self {
+        Self { tonic }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+        match self.tonic {
+            Tonic::C => leds[0] = true,
+            Tonic::CSharp => {
+                leds[0] = true;
+                leds[7] = true;
+            }
+            Tonic::D => leds[1] = true,
+            Tonic::DSharp => {
+                leds[1] = true;
+                leds[7] = true;
+            }
+            Tonic::E => leds[2] = true,
+            Tonic::F => leds[3] = true,
+            Tonic::FSharp => {
+                leds[3] = true;
+                leds[7] = true;
+            }
+            Tonic::G => leds[4] = true,
+            Tonic::GSharp => {
+                leds[4] = true;
+                leds[7] = true;
+            }
+            Tonic::A => leds[5] = true,
+            Tonic::ASharp => {
+                leds[5] = true;
+                leds[7] = true;
+            }
+            Tonic::B => leds[6] = true,
         }
         leds
     }

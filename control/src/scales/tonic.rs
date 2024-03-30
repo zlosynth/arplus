@@ -1,7 +1,7 @@
 // ALLOW: Any of the invariants may be constructed using `try_from`.
 #[allow(dead_code)]
 #[repr(usize)]
-#[derive(Clone, Copy, Debug, defmt::Format)]
+#[derive(Clone, Copy, Debug, defmt::Format, PartialEq)]
 pub enum Tonic {
     C = 0,
     CSharp,

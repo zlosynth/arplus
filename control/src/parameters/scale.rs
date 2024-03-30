@@ -71,7 +71,7 @@ impl Scale {
         group_toggle: bool,
         scale_toggle: bool,
         trigger_held: bool,
-    ) -> (bool, bool, bool, bool) {
+    ) -> (bool, bool, bool, bool, bool) {
         let changed_group = self.group.reconcile(group_toggle);
 
         if changed_group {
@@ -96,10 +96,6 @@ impl Scale {
             self.pot_note.set_output_values(OCTAVES * steps_in_scale);
         }
 
-        // TODO: handle voct
-        // Have pot note and pot octave as two different attributes
-        // Keep updating both
-        // If CV is plugged in, use the octave one
         let (changed_note, changed_octave) = if let Some(note_cv) = note_cv {
             self.cv_note_control = true;
             self.cv_note.reconcile(note_cv);
@@ -109,7 +105,13 @@ impl Scale {
             (self.pot_note.reconcile(note_pot), false)
         };
 
-        (changed_note, changed_octave, changed_group, changed_scale)
+        (
+            changed_note,
+            changed_octave,
+            changed_group,
+            changed_scale,
+            changed_tonic,
+        )
     }
 
     pub fn selected_group_id(&self) -> GroupId {
@@ -130,7 +132,6 @@ impl Scale {
         self.scale_cache().steps_in_octave() as usize
     }
 
-    // TODO: Refactor CV vs Pot note handling.
     pub fn selected_note(&self) -> ScaleNote {
         if self.cv_note_control {
             let offset = self.pot_octave.selected_value() as f32 - 2.0;

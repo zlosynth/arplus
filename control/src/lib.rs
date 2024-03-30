@@ -39,7 +39,7 @@ pub struct Controller {
     parameters: Parameters,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
-    // TODO: Implement configuration.
+    // TODO: Implement configuration of CV mapping.
     state: State,
 }
 
@@ -319,7 +319,7 @@ fn reconcile_scale(
     let group_tapped = was_button_tapped(group_button);
     let scale_tapped = was_button_tapped(scale_button);
 
-    let (note_changed, octave_changed, group_changed, scale_changed) = parameter
+    let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
         .reconcile_note_tonic_group_and_scale(
             tone_pot.value(),
             tone_cv.value(),
@@ -327,7 +327,8 @@ fn reconcile_scale(
             scale_tapped,
             trigger_held,
         );
-    *needs_save |= note_changed || group_changed || scale_changed || octave_changed;
+    *needs_save |=
+        note_changed || group_changed || scale_changed || octave_changed || tonic_changed;
     if group_changed {
         let selected = parameter.selected_group_id();
         display_request.set_active_attribute(Screen::scale_group(selected));
@@ -340,6 +341,9 @@ fn reconcile_scale(
     } else if octave_changed && tone_cv.value().is_some() {
         let selected = parameter.selected_octave_index();
         display_request.set_active_attribute(Screen::octave(selected));
+    } else if tonic_changed {
+        let selected = parameter.selected_tonic();
+        display_request.set_active_attribute(Screen::tonic(selected));
     }
 
     if group_changed || scale_changed {
@@ -350,7 +354,6 @@ fn reconcile_scale(
         );
     }
 
-    // TODO: Display tonic if it has changed
     // TODO: Display octave if it was moved
     if group_held {
         let selected = parameter.selected_group_id();
@@ -358,9 +361,12 @@ fn reconcile_scale(
     } else if scale_held {
         let selected = parameter.selected_scale_index();
         display_request.set_queried_attribute(Screen::scale(selected));
-    } else if tone_pot.activation_movement() {
+    } else if tone_pot.activation_movement() && !trigger_held {
         let selected = parameter.selected_note().index();
         display_request.set_queried_attribute(Screen::note(selected as usize));
+    } else if tone_pot.activation_movement() && trigger_held {
+        let selected = parameter.selected_tonic();
+        display_request.set_queried_attribute(Screen::tonic(selected));
     }
 }
 
