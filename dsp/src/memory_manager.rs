@@ -161,6 +161,6 @@ mod tests {
         static mut MEMORY: [MaybeUninit<u32>; 10] = unsafe { MaybeUninit::uninit().assume_init() };
         let mut memory_manager = MemoryManager::from(unsafe { &mut MEMORY[..] });
 
-        assert!(matches!(memory_manager.allocate(11), Err(_)));
+        assert!(memory_manager.allocate(11).is_err());
     }
 }

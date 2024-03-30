@@ -132,7 +132,7 @@ impl Controller {
             State::Calibrating(CalibrationPhase::Octave2(octave_1)) => {
                 if let Some(value) = tone_cv.value() {
                     if trigger_button.clicked() {
-                        if let Ok(_) = tone_cv.update_calibration(*octave_1, value) {
+                        if tone_cv.update_calibration(*octave_1, value).is_ok() {
                             defmt::info!(
                                 "Successfully completed calibration, O1={:?} O2={:?}",
                                 *octave_1,
@@ -256,6 +256,7 @@ fn reconcile_trigger(button: &Button, cv: &Gate, parameter: &mut parameters::Tri
     parameter.reconcile(button.clicked(), cv.triggered());
 }
 
+#[allow(clippy::too_many_arguments)]
 fn reconcile_chord(
     group_pot: &Pot,
     group_cv: &Cv,
@@ -301,6 +302,7 @@ fn reconcile_contour(pot: &Pot, cv: &Cv, parameter: &mut parameters::Contour) {
     parameter.reconcile(pot.value(), cv.value());
 }
 
+#[allow(clippy::too_many_arguments)]
 fn reconcile_scale(
     tone_pot: &Pot,
     tone_cv: &Cv,

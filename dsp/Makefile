@@ -13,7 +13,6 @@ format:
 
 .PHONY: clippy
 clippy:
-	# TODO: $(CARGO) clippy --all -- -D warnings
 	$(CARGO) clippy --all
 
 .PHONY: test

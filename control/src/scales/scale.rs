@@ -73,16 +73,16 @@ impl<const N: usize> Scale<N> {
             let mut remaining_distance = 0;
             for i in 1..=remaining_steps.abs() {
                 remaining_distance -= self.ascending
-                    [(source.index() as i16 - i as i16).rem_euclid(steps_in_octave as i16) as usize]
+                    [(source.index() as i16 - i).rem_euclid(steps_in_octave as i16) as usize]
                     as i16;
             }
             remaining_distance
         };
 
-        let total_distance = octaves as i16 * 24 + remaining_distance;
+        let total_distance = octaves * 24 + remaining_distance;
         let tone = QuarterTone::try_from_u8((source.tone().index() as i16 + total_distance) as u8)?;
-        let index = (source.index() as i16 + remaining_steps as i16)
-            .rem_euclid(self.ascending.len() as i16) as u8;
+        let index =
+            (source.index() as i16 + remaining_steps).rem_euclid(self.ascending.len() as i16) as u8;
 
         Some(ScaleNote::new(tone, index))
     }
