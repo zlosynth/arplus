@@ -354,16 +354,18 @@ fn reconcile_scale(
         );
     }
 
-    // TODO: Display octave if it was moved
     if group_held {
         let selected = parameter.selected_group_id();
         display_request.set_queried_attribute(Screen::scale_group(selected));
     } else if scale_held {
         let selected = parameter.selected_scale_index();
         display_request.set_queried_attribute(Screen::scale(selected));
-    } else if tone_pot.activation_movement() && !trigger_held {
+    } else if tone_pot.activation_movement() && !trigger_held && tone_cv.value().is_none() {
         let selected = parameter.selected_note().index();
         display_request.set_queried_attribute(Screen::note(selected as usize));
+    } else if tone_pot.activation_movement() && !trigger_held && tone_cv.value().is_some() {
+        let selected = parameter.selected_octave_index();
+        display_request.set_queried_attribute(Screen::octave(selected));
     } else if tone_pot.activation_movement() && trigger_held {
         let selected = parameter.selected_tonic();
         display_request.set_queried_attribute(Screen::tonic(selected));
