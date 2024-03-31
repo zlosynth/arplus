@@ -62,7 +62,6 @@ pub struct ControlOutputState {
     pub leds: [bool; 8],
 }
 
-// TODO: Add support for infinite sustain - max contour would set virtually infinite decay
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
         let parameters = Parameters::new(save.parameters, Chords::new(), Scales::new());
@@ -84,47 +83,7 @@ impl Controller {
         self.inputs.apply_input_snapshot(snapshot);
 
         self.reconcile_calibration(&mut display_request, &mut needs_save);
-        let state = &mut self.state;
-        {
-            // WIP: Move to reconcile configuration method
-            match state {
-                State::Calibrating(_) => (),
-                State::Normal => {
-                    if self.inputs.buttons.scale_group.held_for() > 3000
-                        && self.inputs.buttons.scale.held_for() > 3000
-                        && self.inputs.buttons.arp.held_for() > 3000
-                    {
-                        defmt::info!("Entering configuration");
-                        self.state = State::Configuring;
-                    }
-                }
-                State::Configuring => {
-                    if self.inputs.buttons.scale_group.clicked()
-                        || self.inputs.buttons.scale.clicked()
-                        || self.inputs.buttons.arp.clicked()
-                    {
-                        self.state = State::Normal
-                    } else {
-                        display_request.set_fallback_attribute(Screen::configuration());
-                        if self.inputs.pots.chord_group.activation_movement() {
-                            let changed = self
-                                .parameters
-                                .gain
-                                .reconcile(self.inputs.pots.chord_group.value());
-                            if changed {
-                                display_request.set_active_attribute(Screen::gain(
-                                    self.parameters.gain.selected_index(),
-                                ));
-                                needs_save |= true;
-                            }
-                            display_request.set_queried_attribute(Screen::gain(
-                                self.parameters.gain.selected_index(),
-                            ));
-                        }
-                    }
-                }
-            }
-        }
+        self.reconcile_configuration(&mut display_request, &mut needs_save);
         self.reconcile_parameters_with_inputs(&mut display_request, &mut needs_save);
 
         let dsp_attributes = self.generate_dsp_attributes(&mut display_request);
@@ -196,6 +155,52 @@ impl Controller {
                 }
             }
         };
+    }
+
+    fn reconcile_configuration(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let state = &mut self.state;
+
+        match state {
+            State::Calibrating(_) => (),
+            State::Normal => {
+                if self.inputs.buttons.scale_group.held_for() > 3000
+                    && self.inputs.buttons.scale.held_for() > 3000
+                    && self.inputs.buttons.arp.held_for() > 3000
+                {
+                    defmt::info!("Entering configuration");
+                    self.state = State::Configuring;
+                }
+            }
+            State::Configuring => {
+                if self.inputs.buttons.scale_group.clicked()
+                    || self.inputs.buttons.scale.clicked()
+                    || self.inputs.buttons.arp.clicked()
+                {
+                    self.state = State::Normal
+                } else {
+                    display_request.set_fallback_attribute(Screen::configuration());
+                    if self.inputs.pots.chord_group.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .gain
+                            .reconcile(self.inputs.pots.chord_group.value());
+                        if changed {
+                            display_request.set_active_attribute(Screen::gain(
+                                self.parameters.gain.selected_index(),
+                            ));
+                            *needs_save |= true;
+                        }
+                        display_request.set_queried_attribute(Screen::gain(
+                            self.parameters.gain.selected_index(),
+                        ));
+                    }
+                }
+            }
+        }
     }
 
     fn reconcile_parameters_with_inputs(
