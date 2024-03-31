@@ -1,5 +1,5 @@
 use super::primitives::discrete::Discrete;
-pub use super::primitives::discrete::PersistentConfig;
+use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
 
 const LEVELS: usize = 4;
 const MIN: f32 = 0.2;
@@ -9,15 +9,22 @@ pub struct Gain {
     discrete: Discrete,
 }
 
+#[derive(Clone, Copy, defmt::Format, PartialEq, Debug)]
+pub struct PersistentConfig {
+    discrete: DiscretePersistentConfig,
+}
+
 impl Gain {
     pub fn new(config: PersistentConfig) -> Self {
-        let mut discrete = Discrete::new(config, LEVELS, 0.1);
-        discrete.reconcile(1.0);
-        Self { discrete }
+        Self {
+            discrete: Discrete::new(config.discrete, LEVELS, 0.1),
+        }
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
-        self.discrete.copy_config()
+        PersistentConfig {
+            discrete: self.discrete.copy_config(),
+        }
     }
 
     pub fn reconcile(&mut self, input_level: f32) -> bool {
@@ -31,5 +38,13 @@ impl Gain {
 
     pub fn selected_index(&self) -> usize {
         self.discrete.selected_value()
+    }
+}
+
+impl Default for PersistentConfig {
+    fn default() -> Self {
+        Self {
+            discrete: DiscretePersistentConfig::new(LEVELS - 1),
+        }
     }
 }

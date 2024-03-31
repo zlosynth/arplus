@@ -65,6 +65,12 @@ impl Discrete {
     }
 }
 
+impl PersistentConfig {
+    pub fn new(selected_value: usize) -> Self {
+        Self { selected_value }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

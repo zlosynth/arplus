@@ -24,6 +24,7 @@ pub struct Page {
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum Screen {
+    Failure(FailureScreen),
     Step(StepScreen),
     ArpMode(ArpModeScreen),
     Scale(ScaleScreen),
@@ -91,6 +92,9 @@ pub struct GainScreen {
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct ConfigurationScreen;
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct FailureScreen;
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum CalibrationScreen {
@@ -208,6 +212,10 @@ impl Screen {
         Screen::Gain(GainScreen::with_index(index))
     }
 
+    pub fn failure() -> Self {
+        Screen::Failure(FailureScreen)
+    }
+
     pub fn calibration_octave_1() -> Self {
         Screen::Calibration(CalibrationScreen::Octave1)
     }
@@ -236,6 +244,7 @@ impl Screen {
             Screen::Octave(s) => s.leds(),
             Screen::Tonic(s) => s.leds(),
             Screen::Gain(s) => s.leds(),
+            Screen::Failure(s) => s.leds(clock),
             Screen::Calibration(s) => s.leds(clock),
             Screen::Configuration(s) => s.leds(clock),
         }
@@ -421,6 +430,17 @@ impl GainScreen {
             *led = true;
         }
         leds
+    }
+}
+
+impl FailureScreen {
+    fn leds(&self, clock: usize) -> [bool; 8] {
+        let phase = (clock / 400) % 2;
+        if phase == 0 {
+            [true; 8]
+        } else {
+            [false; 8]
+        }
     }
 }
 

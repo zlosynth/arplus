@@ -1,6 +1,7 @@
 use crate::display::{Display, Priority, Screen};
 
 pub struct DisplayRequest {
+    pub failure: ScreenRequest,
     pub calibration_result: ScreenRequest,
     pub calibration_phase: ScreenRequest,
     pub active_attribute: ScreenRequest,
@@ -18,6 +19,7 @@ pub enum ScreenRequest {
 impl DisplayRequest {
     pub fn new() -> Self {
         Self {
+            failure: ScreenRequest::Keep,
             calibration_result: ScreenRequest::Keep,
             calibration_phase: ScreenRequest::Keep,
             active_attribute: ScreenRequest::Keep,
@@ -27,9 +29,11 @@ impl DisplayRequest {
     }
 
     pub fn apply(&mut self, display: &mut Display) {
+        // TODO: Merge calibration result and failure. Or split them on display level.
         self.calibration_result
             .take()
             .process(display, Priority::Failure);
+        self.failure.take().process(display, Priority::Failure);
         self.calibration_phase
             .take()
             .process(display, Priority::Dialog);
@@ -42,6 +46,10 @@ impl DisplayRequest {
         self.fallback_attribute
             .take()
             .process(display, Priority::Fallback);
+    }
+
+    pub fn set_failure(&mut self, failure: Screen) {
+        self.failure = ScreenRequest::Set(failure);
     }
 
     pub fn set_calibration_result(&mut self, calibration_result: Screen) {

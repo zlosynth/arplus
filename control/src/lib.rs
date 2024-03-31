@@ -27,7 +27,7 @@ use crate::display::Display;
 use crate::display::Screen;
 use crate::inputs::Inputs;
 use crate::inputs::{Button, Cv, Gate, Pot};
-use crate::parameters::Parameters;
+use crate::parameters::{CvMappingSocket, Parameters};
 use crate::random::RandomGenerator;
 use crate::scales::Scales;
 
@@ -183,6 +183,7 @@ impl Controller {
                     self.state = State::Normal
                 } else {
                     display_request.set_fallback_attribute(Screen::configuration());
+
                     if self.inputs.pots.chord_group.activation_movement() {
                         let changed = self
                             .parameters
@@ -198,6 +199,71 @@ impl Controller {
                             self.parameters.gain.selected_index(),
                         ));
                     }
+
+                    // TODO: Implement display
+                    if self.inputs.pots.tone.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .cv_mapping
+                            .reconcile_scale_group_mapping(self.inputs.pots.chord_group.value());
+                        if changed {
+                            // display_request.set_active_attribute(Screen::cv_mapping(
+                            //     self.parameters.cv_mapping.selected_scale_group_index(),
+                            // ));
+                            *needs_save |= true;
+                        }
+                        // display_request.set_queried_attribute(Screen::cv_mapping(
+                        //     self.parameters.gain.selected_scale_group_index(),
+                        // ));
+                    }
+
+                    if self.inputs.pots.resonance.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .cv_mapping
+                            .reconcile_scale_mapping(self.inputs.pots.resonance.value());
+                        if changed {
+                            // display_request.set_active_attribute(Screen::cv_mapping(
+                            //     self.parameters.cv_mapping.selected_scale_group_index(),
+                            // ));
+                            *needs_save |= true;
+                        }
+                        // display_request.set_queried_attribute(Screen::cv_mapping(
+                        //     self.parameters.gain.selected_scale_group_index(),
+                        // ));
+                    }
+
+                    if self.inputs.pots.chord.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .cv_mapping
+                            .reconcile_arp_mapping(self.inputs.pots.chord.value());
+                        if changed {
+                            // display_request.set_active_attribute(Screen::cv_mapping(
+                            //     self.parameters.cv_mapping.selected_scale_group_index(),
+                            // ));
+                            *needs_save |= true;
+                        }
+                        // display_request.set_queried_attribute(Screen::cv_mapping(
+                        //     self.parameters.gain.selected_scale_group_index(),
+                        // ));
+                    }
+
+                    if self.inputs.pots.cutoff.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .cv_mapping
+                            .reconcile_tonic_mapping(self.inputs.pots.cutoff.value());
+                        if changed {
+                            // display_request.set_active_attribute(Screen::cv_mapping(
+                            //     self.parameters.cv_mapping.selected_scale_group_index(),
+                            // ));
+                            *needs_save |= true;
+                        }
+                        // display_request.set_queried_attribute(Screen::cv_mapping(
+                        //     self.parameters.gain.selected_scale_group_index(),
+                        // ));
+                    }
                 }
             }
         }
@@ -208,42 +274,173 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
-        let pots = &self.inputs.pots;
-        let buttons = &self.inputs.buttons;
-        let cvs = &mut self.inputs.cvs;
-        let gates = &self.inputs.gates;
-        let parameters = &mut self.parameters;
+        self.reconcile_chord(display_request, needs_save);
+        self.reconcile_contour();
+        self.reconcile_cutoff();
+        self.reconcile_resonance();
+        self.reconcile_trigger();
+        self.reconcile_scale(display_request, needs_save);
+        self.reconcile_arp_mode(display_request, needs_save);
+    }
 
-        reconcile_chord(
-            &pots.chord_group,
-            &cvs.chord_group,
-            &pots.chord,
-            &cvs.chord,
-            parameters.scale.selected_scale_size(),
-            &mut parameters.chord,
-            display_request,
-            needs_save,
+    fn reconcile_chord(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let group_pot = &self.inputs.pots.chord_group;
+        let group_cv_value = self.chord_group_cv();
+        let chord_pot = &self.inputs.pots.chord;
+        let chord_cv_value = self.chord_cv();
+        let scale_size = self.parameters.scale.selected_scale_size();
+        let parameter = &mut self.parameters.chord;
+
+        let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
+            group_pot.value(),
+            group_cv_value,
+            chord_pot.value(),
+            chord_cv_value,
+            scale_size,
         );
-        reconcile_contour(&pots.contour, &cvs.contour, &mut parameters.contour);
-        reconcile_cutoff(&pots.cutoff, &cvs.cutoff, &mut parameters.cutoff);
-        reconcile_resonance(&pots.resonance, &cvs.resonance, &mut parameters.resonance);
-        reconcile_scale(
-            &pots.tone,
-            &cvs.tone,
-            &buttons.scale_group,
-            &buttons.scale,
-            &buttons.trigger,
-            &mut parameters.scale,
-            display_request,
-            needs_save,
-        );
-        reconcile_arp_mode(
-            &buttons.arp,
-            &mut parameters.arp_mode,
-            display_request,
-            needs_save,
-        );
-        reconcile_trigger(&buttons.trigger, &gates.trigger, &mut parameters.trigger);
+        *needs_save |= changed_group || changed_chord;
+        if changed_group {
+            let size = parameter.selected_group_size();
+            display_request.set_active_attribute(Screen::chord_group(size));
+        } else if changed_chord {
+            let chord = parameter.selected_chord();
+            display_request.set_active_attribute(Screen::chord(chord, scale_size));
+        } else if group_pot.activation_movement() {
+            let size = parameter.selected_group_size();
+            display_request.set_queried_attribute(Screen::chord_group(size));
+        } else if chord_pot.activation_movement() {
+            let chord = parameter.selected_chord();
+            display_request.set_queried_attribute(Screen::chord(chord, scale_size));
+        }
+    }
+
+    fn reconcile_trigger(&mut self) {
+        let button = &self.inputs.buttons.trigger;
+        let cv = &self.inputs.gates.trigger;
+        let parameter = &mut self.parameters.trigger;
+        parameter.reconcile(button.clicked(), cv.triggered());
+    }
+
+    fn reconcile_resonance(&mut self) {
+        let pot = &self.inputs.pots.resonance;
+        let cv_value = self.resonance_cv();
+        let parameter = &mut self.parameters.resonance;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
+    fn reconcile_cutoff(&mut self) {
+        let pot = &self.inputs.pots.cutoff;
+        let cv_value = self.cutoff_cv();
+        let parameter = &mut self.parameters.cutoff;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
+    fn reconcile_contour(&mut self) {
+        let pot = &self.inputs.pots.contour;
+        let cv_value = self.contour_cv();
+        let parameter = &mut self.parameters.contour;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
+    fn reconcile_scale(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        // TODO: Consider CV mapping
+        let tone_pot = &self.inputs.pots.tone;
+        let tone_cv_value = self.tone_cv();
+        let group_button = &self.inputs.buttons.scale_group;
+        let scale_button = &self.inputs.buttons.scale;
+        let trigger_button = &self.inputs.buttons.trigger;
+        let parameter = &mut self.parameters.scale;
+
+        let group_held = is_button_held(group_button);
+        let scale_held = is_button_held(scale_button);
+        let trigger_held = is_button_held(trigger_button);
+        let group_tapped = was_button_tapped(group_button);
+        let scale_tapped = was_button_tapped(scale_button);
+
+        let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
+            .reconcile_note_tonic_group_and_scale(
+                tone_pot.value(),
+                tone_cv_value,
+                group_tapped,
+                scale_tapped,
+                trigger_held,
+            );
+        *needs_save |=
+            note_changed || group_changed || scale_changed || octave_changed || tonic_changed;
+        if group_changed {
+            let selected = parameter.selected_group_id();
+            display_request.set_active_attribute(Screen::scale_group(selected));
+        } else if scale_changed {
+            let selected = parameter.selected_scale_index();
+            display_request.set_active_attribute(Screen::scale(selected));
+        } else if note_changed && tone_cv_value.is_none() {
+            let selected = parameter.selected_note().index();
+            display_request.set_active_attribute(Screen::note(selected as usize));
+        } else if octave_changed && tone_cv_value.is_some() {
+            let selected = parameter.selected_octave_index();
+            display_request.set_active_attribute(Screen::octave(selected));
+        } else if tonic_changed {
+            let selected = parameter.selected_tonic();
+            display_request.set_active_attribute(Screen::tonic(selected));
+        }
+
+        if group_changed || scale_changed {
+            defmt::info!(
+                "Selected scale_group={:?} scale={:?}",
+                parameter.selected_group_id(),
+                parameter.selected_scale_index()
+            );
+        }
+
+        if group_held {
+            let selected = parameter.selected_group_id();
+            display_request.set_queried_attribute(Screen::scale_group(selected));
+        } else if scale_held {
+            let selected = parameter.selected_scale_index();
+            display_request.set_queried_attribute(Screen::scale(selected));
+        } else if tone_pot.activation_movement() && !trigger_held && tone_cv_value.is_none() {
+            let selected = parameter.selected_note().index();
+            display_request.set_queried_attribute(Screen::note(selected as usize));
+        } else if tone_pot.activation_movement() && !trigger_held && tone_cv_value.is_some() {
+            let selected = parameter.selected_octave_index();
+            display_request.set_queried_attribute(Screen::octave(selected));
+        } else if tone_pot.activation_movement() && trigger_held {
+            let selected = parameter.selected_tonic();
+            display_request.set_queried_attribute(Screen::tonic(selected));
+        }
+    }
+
+    fn reconcile_arp_mode(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let button = &self.inputs.buttons.arp;
+        let cv_value = self.arp_cv();
+        let parameter = &mut self.parameters.arp_mode;
+
+        parameter.set_cv_control(self.parameters.cv_mapping.arp_socket().is_some());
+
+        if is_button_held(button) {
+            let selected = parameter.selected();
+            display_request.set_queried_attribute(Screen::arp_mode(selected));
+        } else if was_button_tapped(button) && cv_value.is_none() {
+            *needs_save |= parameter.reconcile_button(true);
+            let selected = parameter.selected();
+            display_request.set_active_attribute(Screen::arp_mode(selected));
+        } else if was_button_tapped(button) && cv_value.is_some() {
+            display_request.set_failure(Screen::failure());
+        } else if let Some(cv_value) = cv_value {
+            parameter.reconcile_cv(cv_value);
+        };
     }
 
     fn generate_dsp_attributes(
@@ -298,142 +495,66 @@ impl Controller {
             },
         }
     }
-}
 
-fn reconcile_trigger(button: &Button, cv: &Gate, parameter: &mut parameters::Trigger) {
-    parameter.reconcile(button.clicked(), cv.triggered());
-}
-
-#[allow(clippy::too_many_arguments)]
-fn reconcile_chord(
-    group_pot: &Pot,
-    group_cv: &Cv,
-    chord_pot: &Pot,
-    chord_cv: &Cv,
-    scale_size: usize,
-    parameter: &mut parameters::Chord,
-    display_request: &mut display_request::DisplayRequest,
-    needs_save: &mut bool,
-) {
-    let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
-        group_pot.value(),
-        group_cv.value(),
-        chord_pot.value(),
-        chord_cv.value(),
-        scale_size,
-    );
-    *needs_save |= changed_group || changed_chord;
-    if changed_group {
-        let size = parameter.selected_group_size();
-        display_request.set_active_attribute(Screen::chord_group(size));
-    } else if changed_chord {
-        let chord = parameter.selected_chord();
-        display_request.set_active_attribute(Screen::chord(chord, scale_size));
-    } else if group_pot.activation_movement() {
-        let size = parameter.selected_group_size();
-        display_request.set_queried_attribute(Screen::chord_group(size));
-    } else if chord_pot.activation_movement() {
-        let chord = parameter.selected_chord();
-        display_request.set_queried_attribute(Screen::chord(chord, scale_size));
-    }
-}
-
-fn reconcile_resonance(pot: &Pot, cv: &Cv, parameter: &mut parameters::Resonance) {
-    parameter.reconcile(pot.value(), cv.value());
-}
-
-fn reconcile_cutoff(pot: &Pot, cv: &Cv, parameter: &mut parameters::Cutoff) {
-    parameter.reconcile(pot.value(), cv.value());
-}
-
-fn reconcile_contour(pot: &Pot, cv: &Cv, parameter: &mut parameters::Contour) {
-    parameter.reconcile(pot.value(), cv.value());
-}
-
-#[allow(clippy::too_many_arguments)]
-fn reconcile_scale(
-    tone_pot: &Pot,
-    tone_cv: &Cv,
-    group_button: &Button,
-    scale_button: &Button,
-    trigger_button: &Button,
-    parameter: &mut parameters::Scale,
-    display_request: &mut display_request::DisplayRequest,
-    needs_save: &mut bool,
-) {
-    let group_held = is_button_held(group_button);
-    let scale_held = is_button_held(scale_button);
-    let trigger_held = is_button_held(trigger_button);
-    let group_tapped = was_button_tapped(group_button);
-    let scale_tapped = was_button_tapped(scale_button);
-
-    let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
-        .reconcile_note_tonic_group_and_scale(
-            tone_pot.value(),
-            tone_cv.value(),
-            group_tapped,
-            scale_tapped,
-            trigger_held,
-        );
-    *needs_save |=
-        note_changed || group_changed || scale_changed || octave_changed || tonic_changed;
-    if group_changed {
-        let selected = parameter.selected_group_id();
-        display_request.set_active_attribute(Screen::scale_group(selected));
-    } else if scale_changed {
-        let selected = parameter.selected_scale_index();
-        display_request.set_active_attribute(Screen::scale(selected));
-    } else if note_changed && tone_cv.value().is_none() {
-        let selected = parameter.selected_note().index();
-        display_request.set_active_attribute(Screen::note(selected as usize));
-    } else if octave_changed && tone_cv.value().is_some() {
-        let selected = parameter.selected_octave_index();
-        display_request.set_active_attribute(Screen::octave(selected));
-    } else if tonic_changed {
-        let selected = parameter.selected_tonic();
-        display_request.set_active_attribute(Screen::tonic(selected));
+    fn tone_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::Tone)
     }
 
-    if group_changed || scale_changed {
-        defmt::info!(
-            "Selected scale_group={:?} scale={:?}",
-            parameter.selected_group_id(),
-            parameter.selected_scale_index()
-        );
+    fn chord_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::Chord)
     }
 
-    if group_held {
-        let selected = parameter.selected_group_id();
-        display_request.set_queried_attribute(Screen::scale_group(selected));
-    } else if scale_held {
-        let selected = parameter.selected_scale_index();
-        display_request.set_queried_attribute(Screen::scale(selected));
-    } else if tone_pot.activation_movement() && !trigger_held && tone_cv.value().is_none() {
-        let selected = parameter.selected_note().index();
-        display_request.set_queried_attribute(Screen::note(selected as usize));
-    } else if tone_pot.activation_movement() && !trigger_held && tone_cv.value().is_some() {
-        let selected = parameter.selected_octave_index();
-        display_request.set_queried_attribute(Screen::octave(selected));
-    } else if tone_pot.activation_movement() && trigger_held {
-        let selected = parameter.selected_tonic();
-        display_request.set_queried_attribute(Screen::tonic(selected));
+    fn resonance_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::Resonance)
     }
-}
 
-fn reconcile_arp_mode(
-    button: &Button,
-    parameter: &mut parameters::ArpMode,
-    display_request: &mut display_request::DisplayRequest,
-    needs_save: &mut bool,
-) {
-    if is_button_held(button) {
-        let selected = parameter.selected();
-        display_request.set_queried_attribute(Screen::arp_mode(selected));
-    } else if was_button_tapped(button) {
-        *needs_save |= parameter.reconcile(true);
-        let selected = parameter.selected();
-        display_request.set_active_attribute(Screen::arp_mode(selected));
-    };
+    fn cutoff_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::Cutoff)
+    }
+
+    fn chord_group_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::ChordGroup)
+    }
+
+    fn contour_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::Contour)
+    }
+
+    fn tonic_cv(&self) -> Option<f32> {
+        self.socket_cv(self.parameters.cv_mapping.tonic_socket())
+    }
+
+    fn scale_group_cv(&self) -> Option<f32> {
+        self.socket_cv(self.parameters.cv_mapping.scale_group_socket())
+    }
+
+    fn scale_cv(&self) -> Option<f32> {
+        self.socket_cv(self.parameters.cv_mapping.scale_socket())
+    }
+
+    fn arp_cv(&self) -> Option<f32> {
+        self.socket_cv(self.parameters.cv_mapping.arp_socket())
+    }
+
+    fn socket_cv_unless_remapped(&self, socket: CvMappingSocket) -> Option<f32> {
+        if self.parameters.cv_mapping.is_socket_remapped(socket) {
+            None
+        } else {
+            self.socket_cv(socket)
+        }
+    }
+
+    fn socket_cv(&self, socket: CvMappingSocket) -> Option<f32> {
+        match socket {
+            CvMappingSocket::None => None,
+            CvMappingSocket::Tone => self.inputs.cvs.tone.value(),
+            CvMappingSocket::Chord => self.inputs.cvs.chord.value(),
+            CvMappingSocket::ChordGroup => self.inputs.cvs.chord_group.value(),
+            CvMappingSocket::Resonance => self.inputs.cvs.resonance.value(),
+            CvMappingSocket::Cutoff => self.inputs.cvs.cutoff.value(),
+            CvMappingSocket::Contour => self.inputs.cvs.contour.value(),
+        }
+    }
 }
 
 fn was_button_tapped(button: &Button) -> bool {

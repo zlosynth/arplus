@@ -2,6 +2,7 @@ mod arp_mode;
 mod chord;
 mod contour;
 mod cutoff;
+mod cv_mapping;
 mod gain;
 mod primitives;
 mod resonance;
@@ -10,6 +11,7 @@ mod trigger;
 
 use arp_mode::PersistentConfig as ArpModePersistentConfig;
 use chord::PersistentConfig as ChordPersistentConfig;
+use cv_mapping::PersistentConfig as CvMappingPersistentConfig;
 use gain::PersistentConfig as GainPersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
 
@@ -20,6 +22,7 @@ pub use self::arp_mode::ArpMode;
 pub use self::chord::Chord;
 pub use self::contour::Contour;
 pub use self::cutoff::Cutoff;
+pub use self::cv_mapping::{CvMapping, Socket as CvMappingSocket};
 pub use self::gain::Gain;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
@@ -34,6 +37,7 @@ pub struct Parameters {
     pub arp_mode: ArpMode,
     pub trigger: Trigger,
     pub gain: Gain,
+    pub cv_mapping: CvMapping,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -42,6 +46,7 @@ pub struct PersistentConfig {
     pub scale: ScalePersistentConfig,
     pub arp_mode: ArpModePersistentConfig,
     pub gain: GainPersistentConfig,
+    pub cv_mapping: CvMappingPersistentConfig,
 }
 
 impl Parameters {
@@ -56,6 +61,7 @@ impl Parameters {
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),
             gain: Gain::new(config.gain),
+            cv_mapping: CvMapping::new(config.cv_mapping),
         }
     }
 
@@ -65,6 +71,7 @@ impl Parameters {
             scale: self.scale.copy_config(),
             arp_mode: self.arp_mode.copy_config(),
             gain: self.gain.copy_config(),
+            cv_mapping: self.cv_mapping.copy_config(),
         }
     }
 }
