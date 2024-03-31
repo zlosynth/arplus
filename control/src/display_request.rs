@@ -29,7 +29,6 @@ impl DisplayRequest {
     }
 
     pub fn apply(&mut self, display: &mut Display) {
-        // TODO: Merge calibration result and failure. Or split them on display level.
         self.calibration_result
             .take()
             .process(display, Priority::Failure);

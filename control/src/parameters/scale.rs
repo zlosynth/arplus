@@ -12,9 +12,15 @@ pub struct Scale {
     cv_note: Continuous,
     pot_octave: Discrete,
     cv_note_control: bool,
-    group: Toggle,
-    scale: Toggle,
-    tonic: Discrete,
+    button_group: Toggle,
+    cv_group: Discrete,
+    cv_controls_group: bool,
+    button_scale: Toggle,
+    cv_scale: Discrete,
+    cv_controls_scale: bool,
+    pot_tonic: Discrete,
+    cv_tonic: Discrete,
+    cv_controls_tonic: bool,
     scale_cache: Option<ProjectedScale>,
 }
 
@@ -22,28 +28,34 @@ pub struct Scale {
 pub struct PersistentConfig {
     note: DiscretePersistentConfig,
     octave: DiscretePersistentConfig,
-    tonic: DiscretePersistentConfig,
-    group: TogglePersistentConfig,
-    scale: TogglePersistentConfig,
+    pot_tonic: DiscretePersistentConfig,
+    cv_tonic: DiscretePersistentConfig,
+    button_group: TogglePersistentConfig,
+    cv_group: DiscretePersistentConfig,
+    button_scale: TogglePersistentConfig,
+    cv_scale: DiscretePersistentConfig,
 }
 
 impl Scale {
     pub fn new(config: PersistentConfig, library: Scales) -> Self {
-        let group = Toggle::new(config.group, Scales::GROUPS);
+        let button_group = Toggle::new(config.button_group, Scales::GROUPS);
+        let cv_group = Discrete::new(config.cv_group, Scales::GROUPS, 0.1);
 
         // SAFETY: The group toggle is limited by the number of groups.
-        let selected_group = group.selected_value().try_into().unwrap();
+        let selected_group = button_group.selected_value().try_into().unwrap();
 
-        let scale = {
+        let (button_scale, cv_scale) = {
             let scales_in_group = library.number_of_scales(selected_group);
-            Toggle::new(config.scale, scales_in_group)
+            let button = Toggle::new(config.button_scale, scales_in_group);
+            let cv = Discrete::new(config.cv_scale, scales_in_group, 0.1);
+            (button, cv)
         };
 
         let pot_note = {
             // XXX: It is a little dirty to initialize it explicitly here. Too bad.
             // SAFETY: Maximum scale index is already limited by selected group.
             let selected_scale = library
-                .scale(selected_group, scale.selected_value())
+                .scale(selected_group, button_scale.selected_value())
                 .unwrap();
             let steps_in_scale = selected_scale.with_tonic(Tonic::C).steps_in_octave() as usize;
             Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1)
@@ -55,15 +67,22 @@ impl Scale {
             cv_note: Continuous::new(),
             pot_octave: Discrete::new(config.octave, 4, 0.1),
             cv_note_control: false,
-            group,
-            scale,
-            tonic: Discrete::new(config.tonic, 12, 0.1),
+            button_group,
+            cv_group,
+            cv_controls_group: false,
+            button_scale,
+            cv_scale,
+            cv_controls_scale: false,
+            pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1),
+            cv_tonic: Discrete::new(config.cv_tonic, 12, 0.1),
+            cv_controls_tonic: false,
             scale_cache: None,
         };
         s.update_scale_cache();
         s
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn reconcile_note_tonic_group_and_scale(
         &mut self,
         note_pot: f32,
@@ -71,25 +90,55 @@ impl Scale {
         group_toggle: bool,
         scale_toggle: bool,
         trigger_held: bool,
+        group_cv: Option<f32>,
+        scale_cv: Option<f32>,
+        tonic_cv: Option<f32>,
     ) -> (bool, bool, bool, bool, bool) {
-        let changed_group = self.group.reconcile(group_toggle);
+        let old_cv_controls_group = self.cv_controls_group;
+        let old_cv_controls_scale = self.cv_controls_scale;
+        let old_cv_controls_tonic = self.cv_controls_tonic;
+
+        self.cv_controls_group = group_cv.is_some();
+        self.cv_controls_scale = scale_cv.is_some();
+        self.cv_controls_tonic = tonic_cv.is_some();
+
+        let switched_cv = old_cv_controls_group != self.cv_controls_group
+            || old_cv_controls_scale != self.cv_controls_scale
+            || old_cv_controls_tonic != self.cv_controls_tonic;
+
+        let changed_group = if let Some(group_cv) = group_cv {
+            self.cv_group.reconcile(group_cv)
+        } else {
+            self.button_group.reconcile(group_toggle)
+        };
 
         if changed_group {
-            let selected_group = self.group.selected_value().try_into().unwrap();
+            let selected_group = if group_cv.is_some() {
+                self.cv_group.selected_value().try_into().unwrap()
+            } else {
+                self.button_group.selected_value().try_into().unwrap()
+            };
 
             let scales_in_group = self.library.number_of_scales(selected_group);
-            self.scale.set_output_values(scales_in_group);
+            self.button_scale.set_output_values(scales_in_group);
+            self.cv_scale.set_output_values(scales_in_group);
         }
 
-        let changed_scale = self.scale.reconcile(scale_toggle);
+        let changed_scale = if let Some(scale_cv) = scale_cv {
+            self.cv_scale.reconcile(scale_cv)
+        } else {
+            self.button_scale.reconcile(scale_toggle)
+        };
 
-        let changed_tonic = if trigger_held {
-            self.tonic.reconcile(note_pot)
+        let changed_tonic = if let Some(tonic_cv) = tonic_cv {
+            self.cv_tonic.reconcile(tonic_cv)
+        } else if trigger_held {
+            self.pot_tonic.reconcile(note_pot)
         } else {
             false
         };
 
-        if changed_group || changed_scale || changed_tonic {
+        if changed_group || changed_scale || changed_tonic || switched_cv {
             self.update_scale_cache();
 
             let steps_in_scale = self.scale_cache().steps_in_octave() as usize;
@@ -117,11 +166,19 @@ impl Scale {
     pub fn selected_group_id(&self) -> GroupId {
         // SAFETY: Parameter values used to get group id are statically limited
         // by the number of groups.
-        self.group.selected_value().try_into().unwrap()
+        if self.cv_controls_group {
+            self.cv_group.selected_value().try_into().unwrap()
+        } else {
+            self.button_group.selected_value().try_into().unwrap()
+        }
     }
 
     pub fn selected_scale_index(&self) -> usize {
-        self.scale.selected_value()
+        if self.cv_controls_scale {
+            self.cv_scale.selected_value()
+        } else {
+            self.button_scale.selected_value()
+        }
     }
 
     pub fn selected_scale(&self) -> ProjectedScale {
@@ -149,16 +206,23 @@ impl Scale {
 
     pub fn selected_tonic(&self) -> Tonic {
         // SAFETY: The discrete parameter is limited by the maximum index of tonic.
-        self.tonic.selected_value().try_into().unwrap()
+        if self.cv_controls_tonic {
+            self.cv_tonic.selected_value().try_into().unwrap()
+        } else {
+            self.pot_tonic.selected_value().try_into().unwrap()
+        }
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
             note: self.pot_note.copy_config(),
             octave: self.pot_octave.copy_config(),
-            tonic: self.tonic.copy_config(),
-            group: self.group.copy_config(),
-            scale: self.scale.copy_config(),
+            pot_tonic: self.pot_tonic.copy_config(),
+            button_group: self.button_group.copy_config(),
+            button_scale: self.button_scale.copy_config(),
+            cv_tonic: self.cv_tonic.copy_config(),
+            cv_group: self.cv_group.copy_config(),
+            cv_scale: self.cv_scale.copy_config(),
         }
     }
 

@@ -43,7 +43,6 @@ impl ArpMode {
         self.cv_control = enable;
     }
 
-    // TODO: Return CV-set or button-set based on the current state
     pub fn selected(&self) -> Mode {
         let selected_value = if self.cv_control {
             self.discrete.selected_value()

@@ -1,5 +1,6 @@
 use crate::arpeggiator::Mode as ArpMode;
 use crate::chords::Chord;
+use crate::parameters::CvMappingSocket;
 use crate::scales::{GroupId as ScaleGroupId, Tonic};
 
 #[repr(u8)]
@@ -37,6 +38,7 @@ pub enum Screen {
     Tonic(TonicScreen),
     Configuration(ConfigurationScreen),
     Gain(GainScreen),
+    CvMapping(CvMappingScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -88,6 +90,11 @@ pub struct TonicScreen {
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct GainScreen {
     index: usize,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct CvMappingScreen {
+    socket: CvMappingSocket,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -212,6 +219,10 @@ impl Screen {
         Screen::Gain(GainScreen::with_index(index))
     }
 
+    pub fn cv_mapping(socket: CvMappingSocket) -> Screen {
+        Screen::CvMapping(CvMappingScreen::with_socket(socket))
+    }
+
     pub fn failure() -> Self {
         Screen::Failure(FailureScreen)
     }
@@ -244,6 +255,7 @@ impl Screen {
             Screen::Octave(s) => s.leds(),
             Screen::Tonic(s) => s.leds(),
             Screen::Gain(s) => s.leds(),
+            Screen::CvMapping(s) => s.leds(),
             Screen::Failure(s) => s.leds(clock),
             Screen::Calibration(s) => s.leds(clock),
             Screen::Configuration(s) => s.leds(clock),
@@ -429,6 +441,27 @@ impl GainScreen {
         for led in leds[0..usize::max(self.index * 2, len)].iter_mut() {
             *led = true;
         }
+        leds
+    }
+}
+
+impl CvMappingScreen {
+    pub fn with_socket(socket: CvMappingSocket) -> Self {
+        Self { socket }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+
+        if self.socket.is_none() {
+            return leds;
+        }
+
+        let index = self.socket as usize - 1;
+        if let Some(led) = leds.get_mut(index) {
+            *led = true;
+        }
+
         leds
     }
 }

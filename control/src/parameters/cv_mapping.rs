@@ -16,8 +16,10 @@ pub struct PersistentConfig {
     tonic: DiscretePersistentConfig,
 }
 
+// ALLOW: `None` is constructed as the default from usize.
+#[allow(dead_code)]
 #[repr(usize)]
-#[derive(Clone, Copy, defmt::Format, PartialEq)]
+#[derive(Clone, Copy, defmt::Format, PartialEq, Debug)]
 pub enum Socket {
     None = 0,
     Tone,
@@ -51,7 +53,6 @@ impl CvMapping {
         self.scale_group.reconcile(input_level)
     }
 
-    // TODO: Return enum instead
     pub fn scale_group_socket(&self) -> Socket {
         // SAFETY: Maximum selected value is limited.
         self.scale_group.selected_value().try_into().unwrap()

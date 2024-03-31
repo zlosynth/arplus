@@ -23,10 +23,8 @@ pub use crate::save::{Save, WrappedSave};
 
 use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration};
 use crate::chords::Chords;
-use crate::display::Display;
-use crate::display::Screen;
-use crate::inputs::Inputs;
-use crate::inputs::{Button, Cv, Gate, Pot};
+use crate::display::{Display, Screen};
+use crate::inputs::{Button, Inputs};
 use crate::parameters::{CvMappingSocket, Parameters};
 use crate::random::RandomGenerator;
 use crate::scales::Scales;
@@ -200,21 +198,20 @@ impl Controller {
                         ));
                     }
 
-                    // TODO: Implement display
                     if self.inputs.pots.tone.activation_movement() {
                         let changed = self
                             .parameters
                             .cv_mapping
                             .reconcile_scale_group_mapping(self.inputs.pots.chord_group.value());
                         if changed {
-                            // display_request.set_active_attribute(Screen::cv_mapping(
-                            //     self.parameters.cv_mapping.selected_scale_group_index(),
-                            // ));
+                            display_request.set_active_attribute(Screen::cv_mapping(
+                                self.parameters.cv_mapping.scale_group_socket(),
+                            ));
                             *needs_save |= true;
                         }
-                        // display_request.set_queried_attribute(Screen::cv_mapping(
-                        //     self.parameters.gain.selected_scale_group_index(),
-                        // ));
+                        display_request.set_queried_attribute(Screen::cv_mapping(
+                            self.parameters.cv_mapping.scale_group_socket(),
+                        ));
                     }
 
                     if self.inputs.pots.resonance.activation_movement() {
@@ -223,14 +220,14 @@ impl Controller {
                             .cv_mapping
                             .reconcile_scale_mapping(self.inputs.pots.resonance.value());
                         if changed {
-                            // display_request.set_active_attribute(Screen::cv_mapping(
-                            //     self.parameters.cv_mapping.selected_scale_group_index(),
-                            // ));
+                            display_request.set_active_attribute(Screen::cv_mapping(
+                                self.parameters.cv_mapping.scale_socket(),
+                            ));
                             *needs_save |= true;
                         }
-                        // display_request.set_queried_attribute(Screen::cv_mapping(
-                        //     self.parameters.gain.selected_scale_group_index(),
-                        // ));
+                        display_request.set_queried_attribute(Screen::cv_mapping(
+                            self.parameters.cv_mapping.scale_socket(),
+                        ));
                     }
 
                     if self.inputs.pots.chord.activation_movement() {
@@ -239,14 +236,14 @@ impl Controller {
                             .cv_mapping
                             .reconcile_arp_mapping(self.inputs.pots.chord.value());
                         if changed {
-                            // display_request.set_active_attribute(Screen::cv_mapping(
-                            //     self.parameters.cv_mapping.selected_scale_group_index(),
-                            // ));
+                            display_request.set_active_attribute(Screen::cv_mapping(
+                                self.parameters.cv_mapping.arp_socket(),
+                            ));
                             *needs_save |= true;
                         }
-                        // display_request.set_queried_attribute(Screen::cv_mapping(
-                        //     self.parameters.gain.selected_scale_group_index(),
-                        // ));
+                        display_request.set_queried_attribute(Screen::cv_mapping(
+                            self.parameters.cv_mapping.arp_socket(),
+                        ));
                     }
 
                     if self.inputs.pots.cutoff.activation_movement() {
@@ -255,14 +252,14 @@ impl Controller {
                             .cv_mapping
                             .reconcile_tonic_mapping(self.inputs.pots.cutoff.value());
                         if changed {
-                            // display_request.set_active_attribute(Screen::cv_mapping(
-                            //     self.parameters.cv_mapping.selected_scale_group_index(),
-                            // ));
+                            display_request.set_active_attribute(Screen::cv_mapping(
+                                self.parameters.cv_mapping.tonic_socket(),
+                            ));
                             *needs_save |= true;
                         }
-                        // display_request.set_queried_attribute(Screen::cv_mapping(
-                        //     self.parameters.gain.selected_scale_group_index(),
-                        // ));
+                        display_request.set_queried_attribute(Screen::cv_mapping(
+                            self.parameters.cv_mapping.tonic_socket(),
+                        ));
                     }
                 }
             }
@@ -351,12 +348,14 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
-        // TODO: Consider CV mapping
         let tone_pot = &self.inputs.pots.tone;
         let tone_cv_value = self.tone_cv();
         let group_button = &self.inputs.buttons.scale_group;
         let scale_button = &self.inputs.buttons.scale;
         let trigger_button = &self.inputs.buttons.trigger;
+        let group_cv = self.scale_group_cv();
+        let scale_cv = self.scale_cv();
+        let tonic_cv = self.tonic_cv();
         let parameter = &mut self.parameters.scale;
 
         let group_held = is_button_held(group_button);
@@ -365,6 +364,10 @@ impl Controller {
         let group_tapped = was_button_tapped(group_button);
         let scale_tapped = was_button_tapped(scale_button);
 
+        if (group_tapped && group_cv.is_some()) || (scale_tapped && scale_cv.is_some()) {
+            display_request.set_failure(Screen::failure());
+        }
+
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
                 tone_pot.value(),
@@ -372,13 +375,17 @@ impl Controller {
                 group_tapped,
                 scale_tapped,
                 trigger_held,
+                group_cv,
+                scale_cv,
+                tonic_cv,
             );
         *needs_save |=
             note_changed || group_changed || scale_changed || octave_changed || tonic_changed;
-        if group_changed {
+
+        if group_changed && group_cv.is_none() {
             let selected = parameter.selected_group_id();
             display_request.set_active_attribute(Screen::scale_group(selected));
-        } else if scale_changed {
+        } else if scale_changed && scale_cv.is_none() {
             let selected = parameter.selected_scale_index();
             display_request.set_active_attribute(Screen::scale(selected));
         } else if note_changed && tone_cv_value.is_none() {
@@ -387,7 +394,7 @@ impl Controller {
         } else if octave_changed && tone_cv_value.is_some() {
             let selected = parameter.selected_octave_index();
             display_request.set_active_attribute(Screen::octave(selected));
-        } else if tonic_changed {
+        } else if tonic_changed && tonic_cv.is_none() {
             let selected = parameter.selected_tonic();
             display_request.set_active_attribute(Screen::tonic(selected));
         }
