@@ -39,7 +39,6 @@ pub struct Controller {
     parameters: Parameters,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
-    // TODO: Implement configuration of CV mapping.
     state: State,
 }
 

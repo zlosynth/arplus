@@ -126,15 +126,21 @@ impl KarplusStrong {
         self.frequency = frequency;
 
         self.contour = ((contour - 0.05) / 0.95).clamp(0.0, 1.0);
-        let contour_time = if self.contour == 0.0 {
-            0.0
+        let (attack, decay) = if self.contour == 0.0 {
+            (0.0, 0.001)
+        } else if self.contour == 1.0 {
+            let attack = taper::log(self.contour) * 5.0;
+            let decay = f32::INFINITY;
+            (attack, decay)
         } else {
-            taper::log(self.contour) * 5.0
+            let attack = taper::log(self.contour) * 5.0;
+            let decay = attack + 0.001;
+            (attack, decay)
         };
         self.noise_envelope.trigger(
             Config::new()
-                .with_attack_time(contour_time)
-                .with_decay_time(0.001 + contour_time),
+                .with_attack_time(attack)
+                .with_decay_time(decay),
         );
     }
 }
