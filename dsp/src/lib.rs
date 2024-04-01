@@ -27,12 +27,18 @@ pub use crate::memory_manager::MemoryManager;
 pub use crate::random::Random;
 
 pub struct Dsp {
-    strings: [KarplusStrong; 8],
+    strings: [String; 8],
     active_string_index: usize,
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
     upsampler: [Upsampler4; 2],
     downsampler: [Downsampler4; 2],
+    stereo_mode: StereoMode,
+}
+
+pub struct String {
+    karplus_strong: KarplusStrong,
+    is_root: bool,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
@@ -41,26 +47,35 @@ pub struct Attributes {
     pub cutoff: f32,
     pub trigger: Option<TriggerAttributes>,
     pub gain: f32,
+    pub stereo_mode: StereoMode,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub struct TriggerAttributes {
     pub frequency: f32,
     pub contour: f32,
+    pub is_root: bool,
+}
+
+#[repr(usize)]
+#[derive(Clone, Copy, Debug, defmt::Format, PartialEq)]
+pub enum StereoMode {
+    RoundRobin,
+    RootLeft,
 }
 
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
             strings: [
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
-                KarplusStrong::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
+                String::new(sample_rate, memory_manager),
             ],
             active_string_index: 0,
             overdrive: Overdrive::new(),
@@ -73,6 +88,7 @@ impl Dsp {
                 Downsampler4::new_4(memory_manager),
                 Downsampler4::new_4(memory_manager),
             ],
+            stereo_mode: StereoMode::default(),
         }
     }
 
@@ -80,12 +96,31 @@ impl Dsp {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
 
-        for string_pair in self.strings.chunks_mut(2) {
-            if let Some(left_string) = string_pair.get_mut(0) {
-                left_string.populate_add(&mut buffer_left, random);
+        match self.stereo_mode {
+            StereoMode::RoundRobin => {
+                for string_pair in self.strings.chunks_mut(2) {
+                    if let Some(left_string) = string_pair.get_mut(0) {
+                        left_string
+                            .karplus_strong
+                            .populate_add(&mut buffer_left, random);
+                    }
+                    if let Some(right_string) = string_pair.get_mut(1) {
+                        right_string
+                            .karplus_strong
+                            .populate_add(&mut buffer_right, random);
+                    }
+                }
             }
-            if let Some(right_string) = string_pair.get_mut(1) {
-                right_string.populate_add(&mut buffer_right, random);
+            StereoMode::RootLeft => {
+                for string in self.strings.iter_mut() {
+                    if string.is_root {
+                        string.karplus_strong.populate_add(&mut buffer_left, random);
+                    } else {
+                        string
+                            .karplus_strong
+                            .populate_add(&mut buffer_right, random);
+                    }
+                }
             }
         }
 
@@ -109,24 +144,48 @@ impl Dsp {
 
     pub fn set_attributes(&mut self, attributes: Attributes) {
         for string in self.strings.iter_mut() {
-            string.set_resonance(attributes.resonance);
-            string.set_cutoff(attributes.cutoff);
+            string.karplus_strong.set_resonance(attributes.resonance);
+            string.karplus_strong.set_cutoff(attributes.cutoff);
         }
 
         if let Some(trigger) = attributes.trigger {
-            self.strings[self.active_string_index].trigger(
-                0.99,
-                trigger.frequency,
-                trigger.contour,
-            );
+            self.strings[self.active_string_index]
+                .karplus_strong
+                .trigger(0.99, trigger.frequency, trigger.contour);
 
             self.active_string_index += 1;
             self.active_string_index %= self.strings.len();
 
             let next_string = &mut self.strings[self.active_string_index];
-            next_string.reset();
+            next_string.karplus_strong.reset();
         }
 
         self.overdrive.gain = attributes.gain;
+    }
+}
+
+impl String {
+    pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
+        Self {
+            karplus_strong: KarplusStrong::new(sample_rate, memory_manager),
+            is_root: false,
+        }
+    }
+}
+
+impl Default for StereoMode {
+    fn default() -> Self {
+        Self::RoundRobin
+    }
+}
+
+impl TryFrom<usize> for StereoMode {
+    type Error = ();
+
+    fn try_from(index: usize) -> Result<Self, Self::Error> {
+        if index >= 2 {
+            return Err(());
+        }
+        Ok(unsafe { core::mem::transmute(index) })
     }
 }

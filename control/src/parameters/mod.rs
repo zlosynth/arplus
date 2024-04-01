@@ -7,6 +7,7 @@ mod gain;
 mod primitives;
 mod resonance;
 mod scale;
+mod stereo_mode;
 mod trigger;
 
 use arp_mode::PersistentConfig as ArpModePersistentConfig;
@@ -14,6 +15,7 @@ use chord::PersistentConfig as ChordPersistentConfig;
 use cv_mapping::PersistentConfig as CvMappingPersistentConfig;
 use gain::PersistentConfig as GainPersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
+use stereo_mode::PersistentConfig as StereoModePersistentConfig;
 
 use crate::chords::Chords;
 use crate::scales::Scales;
@@ -26,6 +28,7 @@ pub use self::cv_mapping::{CvMapping, Socket as CvMappingSocket};
 pub use self::gain::Gain;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
+pub use self::stereo_mode::StereoMode;
 pub use self::trigger::Trigger;
 
 pub struct Parameters {
@@ -38,6 +41,7 @@ pub struct Parameters {
     pub trigger: Trigger,
     pub gain: Gain,
     pub cv_mapping: CvMapping,
+    pub stereo_mode: StereoMode,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -47,6 +51,7 @@ pub struct PersistentConfig {
     pub arp_mode: ArpModePersistentConfig,
     pub gain: GainPersistentConfig,
     pub cv_mapping: CvMappingPersistentConfig,
+    pub stereo_mode: StereoModePersistentConfig,
 }
 
 impl Parameters {
@@ -62,6 +67,7 @@ impl Parameters {
             trigger: Trigger::new(),
             gain: Gain::new(config.gain),
             cv_mapping: CvMapping::new(config.cv_mapping),
+            stereo_mode: StereoMode::new(config.stereo_mode),
         }
     }
 
@@ -72,6 +78,7 @@ impl Parameters {
             arp_mode: self.arp_mode.copy_config(),
             gain: self.gain.copy_config(),
             cv_mapping: self.cv_mapping.copy_config(),
+            stereo_mode: self.stereo_mode.copy_config(),
         }
     }
 }

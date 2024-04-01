@@ -16,7 +16,10 @@ mod random;
 mod save;
 mod scales;
 
-use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
+use arplus_dsp::{
+    Attributes as DSPAttributes, StereoMode as DSPStereoMode,
+    TriggerAttributes as DSPTriggerAttributes,
+};
 
 pub use crate::inputs::ControlInputSnapshot;
 pub use crate::save::{Save, WrappedSave};
@@ -261,6 +264,22 @@ impl Controller {
                             self.parameters.cv_mapping.tonic_socket(),
                         ));
                     }
+
+                    if self.inputs.pots.contour.activation_movement() {
+                        let changed = self
+                            .parameters
+                            .stereo_mode
+                            .reconcile(self.inputs.pots.contour.value());
+                        if changed {
+                            display_request.set_active_attribute(Screen::stereo_mode(
+                                self.parameters.stereo_mode.selected(),
+                            ));
+                            *needs_save |= true;
+                        }
+                        display_request.set_queried_attribute(Screen::stereo_mode(
+                            self.parameters.stereo_mode.selected(),
+                        ));
+                    }
                 }
             }
         }
@@ -462,6 +481,7 @@ impl Controller {
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
                     contour: self.parameters.contour.value(),
+                    is_root: index == 0,
                 };
                 defmt::debug!("DSP trigger attributes={:?}", dsp_trigger_attributes);
                 Some(dsp_trigger_attributes)
@@ -477,6 +497,8 @@ impl Controller {
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
+            // TODO: Fetch it from config
+            stereo_mode: DSPStereoMode::RoundRobin,
         }
     }
 

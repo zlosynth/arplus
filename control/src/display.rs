@@ -1,3 +1,5 @@
+use arplus_dsp::StereoMode as DSPStereoMode;
+
 use crate::arpeggiator::Mode as ArpMode;
 use crate::chords::Chord;
 use crate::parameters::CvMappingSocket;
@@ -39,6 +41,7 @@ pub enum Screen {
     Configuration(ConfigurationScreen),
     Gain(GainScreen),
     CvMapping(CvMappingScreen),
+    StereoMode(StereoModeScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -95,6 +98,11 @@ pub struct GainScreen {
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct CvMappingScreen {
     socket: CvMappingSocket,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct StereoModeScreen {
+    mode: DSPStereoMode,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -223,6 +231,10 @@ impl Screen {
         Screen::CvMapping(CvMappingScreen::with_socket(socket))
     }
 
+    pub fn stereo_mode(mode: DSPStereoMode) -> Screen {
+        Screen::StereoMode(StereoModeScreen::with_mode(mode))
+    }
+
     pub fn failure() -> Self {
         Screen::Failure(FailureScreen)
     }
@@ -256,6 +268,7 @@ impl Screen {
             Screen::Tonic(s) => s.leds(),
             Screen::Gain(s) => s.leds(),
             Screen::CvMapping(s) => s.leds(),
+            Screen::StereoMode(s) => s.leds(),
             Screen::Failure(s) => s.leds(clock),
             Screen::Calibration(s) => s.leds(clock),
             Screen::Configuration(s) => s.leds(clock),
@@ -463,6 +476,19 @@ impl CvMappingScreen {
         }
 
         leds
+    }
+}
+
+impl StereoModeScreen {
+    pub fn with_mode(mode: DSPStereoMode) -> Self {
+        Self { mode }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        match self.mode {
+            DSPStereoMode::RoundRobin => [true, true, true, false, false, true, true, true],
+            DSPStereoMode::RootLeft => [true, true, false, false, true, true, true, true],
+        }
     }
 }
 
