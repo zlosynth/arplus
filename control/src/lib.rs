@@ -16,10 +16,7 @@ mod random;
 mod save;
 mod scales;
 
-use arplus_dsp::{
-    Attributes as DSPAttributes, StereoMode as DSPStereoMode,
-    TriggerAttributes as DSPTriggerAttributes,
-};
+use arplus_dsp::{Attributes as DSPAttributes, TriggerAttributes as DSPTriggerAttributes};
 
 pub use crate::inputs::ControlInputSnapshot;
 pub use crate::save::{Save, WrappedSave};
