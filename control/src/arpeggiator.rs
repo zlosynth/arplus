@@ -10,6 +10,7 @@ pub struct Arpeggiator {
     chord: Chord,
     mode: Mode,
     state: State,
+    voct_cache: f32,
 }
 
 // ALLOW: All the values are constructed via `try_from_index`.
@@ -52,6 +53,7 @@ impl Arpeggiator {
                 _ => State::Up(0),
             },
             chord: config.chord,
+            voct_cache: 0.0,
         }
     }
 
@@ -156,7 +158,14 @@ impl Arpeggiator {
 
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
-            .map(|n| (n, chord_degree))
+            .map(|n| {
+                self.voct_cache = n.tone().voct() - 5.0;
+                (n, chord_degree)
+            })
+    }
+
+    pub fn last_voct_output(&self) -> f32 {
+        self.voct_cache
     }
 }
 

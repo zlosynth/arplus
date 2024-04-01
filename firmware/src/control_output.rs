@@ -1,14 +1,18 @@
 use crate::system::hal::gpio;
 
 use arplus_control::ControlOutputState;
+use stm32h7xx_hal::dac::{Enabled, C1};
+use stm32h7xx_hal::device::DAC;
+use stm32h7xx_hal::traits::DacOut;
 
-#[derive(Debug, defmt::Format)]
 pub struct ControlOutputInterface {
     pins: Pins,
+    dac: C1<DAC, Enabled>,
 }
 
 pub struct Config {
     pub pins: Pins,
+    pub dac: C1<DAC, Enabled>,
 }
 
 #[derive(Debug, defmt::Format)]
@@ -36,7 +40,10 @@ type Led8Pin = gpio::gpiod::PD3<gpio::Output>; // D10
 
 impl ControlOutputInterface {
     pub fn new(config: Config) -> Self {
-        Self { pins: config.pins }
+        Self {
+            pins: config.pins,
+            dac: config.dac,
+        }
     }
 
     pub fn set_state(&mut self, state: &ControlOutputState) {
@@ -48,5 +55,14 @@ impl ControlOutputInterface {
         self.pins.leds.5.set_state(state.leds[5].into());
         self.pins.leds.6.set_state(state.leds[6].into());
         self.pins.leds.7.set_state(state.leds[7].into());
+        self.dac.set_value(f32_cv_to_u16(state.cv));
     }
+}
+
+fn f32_cv_to_u16(value: f32) -> u16 {
+    const MIN: f32 = -5.0;
+    const MAX: f32 = 5.0;
+    let normalized = (value - MIN) / (MAX - MIN);
+    let scaled = normalized * u16::MAX as f32;
+    scaled as u16
 }

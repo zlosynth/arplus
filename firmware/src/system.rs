@@ -53,12 +53,12 @@ impl System {
         let audio_interface = AudioInterface::new(daisy::board_split_audio!(ccdr, pins));
         let flash_memory_interface =
             FlashMemoryInterface::new(daisy::board_split_flash!(ccdr, dp, pins));
+        let mut delay = DelayFromCountDownTimer::new(dp.TIM2.timer(
+            100.Hz(),
+            ccdr.peripheral.TIM2,
+            &ccdr.clocks,
+        ));
         let control_input_interface = {
-            let mut delay = DelayFromCountDownTimer::new(dp.TIM2.timer(
-                100.Hz(),
-                ccdr.peripheral.TIM2,
-                &ccdr.clocks,
-            ));
             let (adc_1, adc_2) = {
                 let (mut adc_1, mut adc_2) = hal::adc::adc12(
                     dp.ADC1,
@@ -109,20 +109,28 @@ impl System {
                 adc_2,
             })
         };
-        let control_output_interface = ControlOutputInterface::new(ControlOutputConfig {
-            pins: ControlOutputPins {
-                leds: (
-                    pins.GPIO.PIN_D7.into_push_pull_output(),
-                    pins.GPIO.PIN_D6.into_push_pull_output(),
-                    pins.GPIO.PIN_D5.into_push_pull_output(),
-                    pins.GPIO.PIN_D4.into_push_pull_output(),
-                    pins.GPIO.PIN_D3.into_push_pull_output(),
-                    pins.GPIO.PIN_D2.into_push_pull_output(),
-                    pins.GPIO.PIN_D1.into_push_pull_output(),
-                    pins.GPIO.PIN_D10.into_push_pull_output(),
-                ),
-            },
-        });
+        let control_output_interface = {
+            let dac = dp
+                .DAC
+                .dac(pins.GPIO.PIN_C10, ccdr.peripheral.DAC12)
+                .calibrate_buffer(&mut delay)
+                .enable();
+            ControlOutputInterface::new(ControlOutputConfig {
+                pins: ControlOutputPins {
+                    leds: (
+                        pins.GPIO.PIN_D7.into_push_pull_output(),
+                        pins.GPIO.PIN_D6.into_push_pull_output(),
+                        pins.GPIO.PIN_D5.into_push_pull_output(),
+                        pins.GPIO.PIN_D4.into_push_pull_output(),
+                        pins.GPIO.PIN_D3.into_push_pull_output(),
+                        pins.GPIO.PIN_D2.into_push_pull_output(),
+                        pins.GPIO.PIN_D1.into_push_pull_output(),
+                        pins.GPIO.PIN_D10.into_push_pull_output(),
+                    ),
+                },
+                dac,
+            })
+        };
 
         Self {
             frequency: system_frequency,

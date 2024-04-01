@@ -58,6 +58,7 @@ pub struct Result {
 
 pub struct ControlOutputState {
     pub leds: [bool; 8],
+    pub cv: f32,
 }
 
 impl Controller {
@@ -518,6 +519,7 @@ impl Controller {
             } else {
                 [false; 8]
             },
+            cv: self.arp.last_voct_output(),
         }
     }
 

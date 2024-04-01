@@ -55,6 +55,8 @@ struct ControlOutputGenerator {
 
 impl ControlOutputGenerator {
     const LEDS: usize = 8;
+    const VOCT_MIN: f32 = -5.0;
+    const VOCT_MAX: f32 = 5.0;
 
     fn new() -> Self {
         Self { index: 0 }
@@ -64,12 +66,15 @@ impl ControlOutputGenerator {
         let mut leds = [false; Self::LEDS];
         leds[self.index] = true;
 
+        let cv_phase = self.index as f32 / Self::LEDS as f32;
+        let cv = Self::VOCT_MIN + cv_phase * (Self::VOCT_MAX - Self::VOCT_MIN);
+
         self.index += 1;
         if self.index >= Self::LEDS {
             self.index -= Self::LEDS;
         }
 
-        ControlOutputState { leds }
+        ControlOutputState { leds, cv }
     }
 }
 

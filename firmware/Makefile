@@ -13,7 +13,7 @@ format:
 
 .PHONY: clippy
 clippy:
-	$(CARGO) clippy --all
+	$(CARGO) clippy --all --tests
 
 .PHONY: update
 update:
