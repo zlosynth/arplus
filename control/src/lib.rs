@@ -497,8 +497,7 @@ impl Controller {
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
-            // TODO: Fetch it from config
-            stereo_mode: DSPStereoMode::RoundRobin,
+            stereo_mode: self.parameters.stereo_mode.selected(),
         }
     }
 
