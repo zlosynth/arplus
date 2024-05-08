@@ -23,8 +23,8 @@ pub struct Pins {
     pub button_4: Button4Pin,
 }
 
-pub type Button1Pin = gpio::gpiob::PB9<gpio::Input>;
-pub type Button2Pin = gpio::gpiob::PB8<gpio::Input>;
+pub type Button1Pin = gpio::gpiob::PB8<gpio::Input>;
+pub type Button2Pin = gpio::gpiob::PB9<gpio::Input>;
 pub type Button3Pin = gpio::gpiob::PB15<gpio::Input>;
 pub type Button4Pin = gpio::gpiob::PB14<gpio::Input>;
 

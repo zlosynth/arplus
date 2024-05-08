@@ -76,8 +76,8 @@ impl System {
             };
             ControlInputInterface::new(ControlInputConfig {
                 buttons_pins: ControlInputButtonsPins {
-                    button_1: pins.GPIO.PIN_B8.into_pull_up_input(),
-                    button_2: pins.GPIO.PIN_B7.into_pull_up_input(),
+                    button_1: pins.GPIO.PIN_B7.into_pull_up_input(),
+                    button_2: pins.GPIO.PIN_B8.into_pull_up_input(),
                     button_3: pins.GPIO.PIN_A9.into_pull_up_input(),
                     button_4: pins.GPIO.PIN_A8.into_pull_up_input(),
                 },
