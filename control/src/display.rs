@@ -340,11 +340,15 @@ impl ChordGroupScreen {
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if self.chord_group_size < leds.len() {
-            leds[self.chord_group_size] = true;
-        } else {
-            for led in leds.iter_mut() {
+        if self.chord_group_size <= leds.len() {
+            for led in leds[..self.chord_group_size].iter_mut() {
                 *led = true;
+            }
+        } else {
+            for (i, led) in leds.iter_mut().enumerate() {
+                if i % 2 == 0 {
+                    *led = true;
+                }
             }
         }
         leds
