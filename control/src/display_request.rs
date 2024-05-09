@@ -4,7 +4,6 @@ pub struct DisplayRequest {
     pub failure: ScreenRequest,
     pub calibration_result: ScreenRequest,
     pub calibration_phase: ScreenRequest,
-    pub active_attribute: ScreenRequest,
     pub queried_attribute: ScreenRequest,
     pub fallback_attribute: ScreenRequest,
 }
@@ -22,7 +21,6 @@ impl DisplayRequest {
             failure: ScreenRequest::Keep,
             calibration_result: ScreenRequest::Keep,
             calibration_phase: ScreenRequest::Keep,
-            active_attribute: ScreenRequest::Keep,
             queried_attribute: ScreenRequest::Keep,
             fallback_attribute: ScreenRequest::Keep,
         }
@@ -36,9 +34,6 @@ impl DisplayRequest {
         self.calibration_phase
             .take()
             .process(display, Priority::Dialog);
-        self.active_attribute
-            .take()
-            .process(display, Priority::Active);
         self.queried_attribute
             .take()
             .process(display, Priority::Queried);
@@ -61,10 +56,6 @@ impl DisplayRequest {
 
     pub fn reset_calibration_phase(&mut self) {
         self.calibration_phase = ScreenRequest::Reset;
-    }
-
-    pub fn set_active_attribute(&mut self, active_attribute: Screen) {
-        self.active_attribute = ScreenRequest::Set(active_attribute);
     }
 
     pub fn set_queried_attribute(&mut self, queried_attribute: Screen) {

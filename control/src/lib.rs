@@ -188,12 +188,7 @@ impl Controller {
                             .parameters
                             .gain
                             .reconcile(self.inputs.pots.chord_group.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::gain(
-                                self.parameters.gain.selected_index(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::gain(
                             self.parameters.gain.selected_index(),
                         ));
@@ -204,12 +199,7 @@ impl Controller {
                             .parameters
                             .cv_mapping
                             .reconcile_scale_group_mapping(self.inputs.pots.chord_group.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::cv_mapping(
-                                self.parameters.cv_mapping.scale_group_socket(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::cv_mapping(
                             self.parameters.cv_mapping.scale_group_socket(),
                         ));
@@ -220,12 +210,7 @@ impl Controller {
                             .parameters
                             .cv_mapping
                             .reconcile_scale_mapping(self.inputs.pots.resonance.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::cv_mapping(
-                                self.parameters.cv_mapping.scale_socket(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::cv_mapping(
                             self.parameters.cv_mapping.scale_socket(),
                         ));
@@ -236,12 +221,7 @@ impl Controller {
                             .parameters
                             .cv_mapping
                             .reconcile_arp_mapping(self.inputs.pots.chord.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::cv_mapping(
-                                self.parameters.cv_mapping.arp_socket(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::cv_mapping(
                             self.parameters.cv_mapping.arp_socket(),
                         ));
@@ -252,12 +232,7 @@ impl Controller {
                             .parameters
                             .cv_mapping
                             .reconcile_tonic_mapping(self.inputs.pots.cutoff.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::cv_mapping(
-                                self.parameters.cv_mapping.tonic_socket(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::cv_mapping(
                             self.parameters.cv_mapping.tonic_socket(),
                         ));
@@ -268,12 +243,7 @@ impl Controller {
                             .parameters
                             .stereo_mode
                             .reconcile(self.inputs.pots.contour.value());
-                        if changed {
-                            display_request.set_active_attribute(Screen::stereo_mode(
-                                self.parameters.stereo_mode.selected(),
-                            ));
-                            *needs_save |= true;
-                        }
+                        *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::stereo_mode(
                             self.parameters.stereo_mode.selected(),
                         ));
@@ -395,19 +365,19 @@ impl Controller {
 
         if group_changed && group_cv.is_none() {
             let selected = parameter.selected_group_id();
-            display_request.set_active_attribute(Screen::scale_group(selected));
+            display_request.set_queried_attribute(Screen::scale_group(selected));
         } else if scale_changed && scale_cv.is_none() {
             let selected = parameter.selected_scale_index();
-            display_request.set_active_attribute(Screen::scale(selected));
+            display_request.set_queried_attribute(Screen::scale(selected));
         } else if note_changed && tone_cv_value.is_none() {
             let selected = parameter.selected_note().index();
-            display_request.set_active_attribute(Screen::note(selected as usize));
+            display_request.set_queried_attribute(Screen::note(selected as usize));
         } else if octave_changed && tone_cv_value.is_some() {
             let selected = parameter.selected_octave_index();
-            display_request.set_active_attribute(Screen::octave(selected));
+            display_request.set_queried_attribute(Screen::octave(selected));
         } else if tonic_changed && tonic_cv.is_none() {
             let selected = parameter.selected_tonic();
-            display_request.set_active_attribute(Screen::tonic(selected));
+            display_request.set_queried_attribute(Screen::tonic(selected));
         }
 
         if group_changed || scale_changed {
@@ -453,7 +423,7 @@ impl Controller {
         } else if was_button_tapped(button) && cv_value.is_none() {
             *needs_save |= parameter.reconcile_button(true);
             let selected = parameter.selected();
-            display_request.set_active_attribute(Screen::arp_mode(selected));
+            display_request.set_queried_attribute(Screen::arp_mode(selected));
         } else if was_button_tapped(button) && cv_value.is_some() {
             display_request.set_failure(Screen::failure());
         } else if let Some(cv_value) = cv_value {
