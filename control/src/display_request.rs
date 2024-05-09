@@ -59,7 +59,13 @@ impl DisplayRequest {
     }
 
     pub fn set_queried_attribute(&mut self, queried_attribute: Screen) {
-        self.queried_attribute = ScreenRequest::Set(queried_attribute);
+        if !matches!(self.queried_attribute, ScreenRequest::Reset) {
+            self.queried_attribute = ScreenRequest::Set(queried_attribute);
+        }
+    }
+
+    pub fn reset_queried_attribute(&mut self) {
+        self.queried_attribute = ScreenRequest::Reset;
     }
 
     pub fn set_fallback_attribute(&mut self, fallback_attribute: Screen) {

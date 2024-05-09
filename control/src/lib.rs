@@ -262,7 +262,7 @@ impl Controller {
         self.reconcile_contour();
         self.reconcile_cutoff();
         self.reconcile_resonance();
-        self.reconcile_trigger();
+        self.reconcile_trigger(display_request);
         self.reconcile_scale(display_request, needs_save);
         self.reconcile_arp_mode(display_request, needs_save);
     }
@@ -296,11 +296,14 @@ impl Controller {
         }
     }
 
-    fn reconcile_trigger(&mut self) {
+    fn reconcile_trigger(&mut self, display_request: &mut display_request::DisplayRequest) {
         let button = &self.inputs.buttons.trigger;
         let cv = &self.inputs.gates.trigger;
         let parameter = &mut self.parameters.trigger;
         parameter.reconcile(button.clicked(), cv.triggered());
+        if button.clicked() {
+            display_request.reset_queried_attribute();
+        }
     }
 
     fn reconcile_resonance(&mut self) {
