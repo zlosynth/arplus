@@ -193,7 +193,7 @@ impl Scale {
         if self.cv_note_control {
             let offset = self.pot_octave.selected_value() as f32 - 2.0;
             let cv = self.cv_note.value();
-            let sum = f32::min(OCTAVES as f32, cv + offset);
+            let sum = (cv + offset).clamp(0.0, OCTAVES as f32);
             // SAFETY: Limited by the same octave range as when using note Pot.
             self.scale_cache().quantize_voct_ascending(sum).unwrap()
         } else {
