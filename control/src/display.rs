@@ -10,8 +10,8 @@ use crate::scales::{GroupId as ScaleGroupId, Tonic};
 pub enum Priority {
     Failure = 0,
     Dialog,
-    Queried,
     Active,
+    Queried,
     Fallback,
 }
 
