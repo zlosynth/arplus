@@ -7,6 +7,7 @@ use heapless::Vec;
 
 use self::scale::{Step, Q, S, T};
 
+#[allow(unused_imports)]
 pub use self::quarter_tones::QuarterTone;
 pub use self::scale::Scale as GenericProjectedScale;
 pub use self::scale_note::ScaleNote;
@@ -21,12 +22,6 @@ pub struct Scales {
     melakarta: LibraryGroup<8, 7>,
     japanese: LibraryGroup<5, 5>,
     full: LibraryGroup<3, 24>,
-    // blues: (),
-    // hexatonic: (),
-    // tetratonic: (),
-    // special heptatonic scales
-    // javan scale https://www.youtube.com/watch?v=YWfumqpFwaY
-    // chinese https://www.youtube.com/watch?v=WHnrpZaif5w or https://www.youtube.com/watch?v=tc6-qk6RLFw
 }
 
 // ALLOW: All the variants can be contructed via `try_from`.
@@ -162,16 +157,6 @@ impl Scales {
             GroupId::Japanese => Scale::new(&self.japanese.get(scale_index).unwrap().ascending),
             GroupId::Full => Scale::new(&self.full.get(scale_index).unwrap().ascending),
         }
-    }
-}
-
-trait LibraryGroupTrait {
-    fn steps_capacity(&self) -> usize;
-}
-
-impl<const N: usize, const S: usize> LibraryGroupTrait for LibraryGroup<N, S> {
-    fn steps_capacity(&self) -> usize {
-        S
     }
 }
 
