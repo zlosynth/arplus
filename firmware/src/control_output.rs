@@ -64,9 +64,11 @@ fn f32_cv_to_u16(value: f32) -> u16 {
     const OUT_MAX: f32 = 5.0;
     // NOTE: The DSP works with 7 octaves, but the module can output only 5.
     // Remove the first and the last octave.
-    let trimmed = (value - 1.0).clamp(0.0, 4.9999);
-    let normalized = (trimmed - OUT_MIN) / (OUT_MAX - OUT_MIN);
-    defmt::info!("val {:?}", normalized);
-    let scaled = normalized * 4096.0;
+    let trimmed = (value - 1.0).clamp(0.0, 5.0);
+    let desired = (trimmed - OUT_MIN) / (OUT_MAX - OUT_MIN);
+    // NOTE: Measuring of DAC showed that it actually starts above 0.0 V,
+    // and does not get all the way to 5.0. This compensates for that.
+    let compensated = desired * (4.0 / (3.94 - 0.009)) - (0.009 / 5.0);
+    let scaled = (compensated * 4096.0).clamp(0.0, 4095.999);
     scaled as u16
 }
