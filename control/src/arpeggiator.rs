@@ -159,7 +159,7 @@ impl Arpeggiator {
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
             .map(|n| {
-                self.voct_cache = n.tone().voct() - 5.0;
+                self.voct_cache = n.tone().voct();
                 (n, chord_degree)
             })
     }
