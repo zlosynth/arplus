@@ -29,7 +29,12 @@ impl<const N: usize> Scale<N> {
         // lowest octave.
         let lowest_tonic = self.lowest_tonic();
         if voct < lowest_tonic.voct() {
-            return None;
+            // return Some(self.lowest_tonic());
+            return Some(ScaleNote::new(
+                QuarterTone::try_from_u8(lowest_tonic.index()).unwrap(),
+                0,
+            ));
+            // return None;
         }
 
         let closest_tonic = self.find_closest_tonic(voct)?;
@@ -163,9 +168,12 @@ mod tests {
     }
 
     #[test]
-    fn quantize_voct_to_scale_note_ascending_below_the_lowest_tonic_returns_none() {
+    fn quantize_voct_to_scale_note_ascending_below_the_lowest_tonic_returns_lowest_tonic() {
         let scale: Scale<7> = Scale::new(Tonic::D, &IONIAN).unwrap();
-        assert!(scale.quantize_voct_ascending(0.0).is_none());
+        assert_eq!(
+            scale.quantize_voct_ascending(0.0),
+            Some(ScaleNote::new(QuarterTone::DMinus1, 0))
+        );
     }
 
     #[test]
