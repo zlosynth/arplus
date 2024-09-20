@@ -25,7 +25,7 @@ impl Chord {
         let chord = {
             // SAFETY: The group attribute is limited by the number of groups.
             let selected_group = group.selected_value().try_into().unwrap();
-            let chords_in_group = library.number_of_chords(selected_group, scale_size);
+            let chords_in_group = library.number_of_chords(selected_group);
             Discrete::new(config.chord, chords_in_group, 0.1)
         };
 
@@ -51,7 +51,7 @@ impl Chord {
 
         if changed_group || changed_scale_size {
             let selected_group = self.group.selected_value().try_into().unwrap();
-            let chords_in_group = self.library.number_of_chords(selected_group, scale_size);
+            let chords_in_group = self.library.number_of_chords(selected_group);
             self.chord.set_output_values(chords_in_group);
         }
 
@@ -76,17 +76,12 @@ impl Chord {
         // SAFETY: Parameter values used to get group and chord index
         // are always limited based on the selected chord group.
         self.library
-            .chord(
-                self.selected_group_id(),
-                self.selected_chord_index(),
-                self.scale_size,
-            )
+            .chord(self.selected_group_id(), self.selected_chord_index())
             .unwrap()
     }
 
     pub fn selected_group_size(&self) -> usize {
-        self.library
-            .group_size(self.selected_group_id(), self.scale_size)
+        self.library.group_size(self.selected_group_id())
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
