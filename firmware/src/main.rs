@@ -243,7 +243,7 @@ mod app {
         priority = 3,
     )]
     fn save_pacing_loop(mut cx: save_pacing_loop::Context) {
-        save_pacing_loop::spawn_after(1.secs()).ok().unwrap();
+        save_pacing_loop::spawn_after(10.secs()).ok().unwrap();
 
         cx.shared.save_cache.lock(|save_cache| {
             if let Some(save) = save_cache.take() {
