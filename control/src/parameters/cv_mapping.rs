@@ -24,7 +24,7 @@ pub enum Socket {
     None = 0,
     Tone,
     Chord,
-    ChordGroup,
+    ChordSize,
     Resonance,
     Cutoff,
     Contour,

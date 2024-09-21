@@ -195,6 +195,7 @@ impl Scale {
             let cv = self.cv_note.value();
             let sum = (cv + offset).clamp(0.0, OCTAVES as f32);
             // SAFETY: Limited by the same octave range as when using note Pot.
+            // TODO FIXME: This sometimes panics.
             self.scale_cache().quantize_voct_ascending(sum).unwrap()
         } else {
             // SAFETY: Range of indices is limited in `new` and `reconcile`.

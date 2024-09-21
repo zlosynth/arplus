@@ -1,10 +1,26 @@
 # TODO
 
-- [ ] Remove the "Full scale" mode, to make the module simpler
+- [X] Remove the "Full scale" mode, to make the module simpler
 - [ ] Add trigger delay, to make sure other CV gets a chance to propagate
 - [ ] Improve cutoff calculation, to keep resonation steady
-- [ ] Implement configuration option where selected root sets tonic as well
-- [ ] Implement click-to-randomize feature, at least with a CV
-- [ ] Improve PCB placement, especially the power placement
+- [X] Improve PCB placement, especially the power placement
 - [ ] Write build manual
 - [ ] Write user manual
+- [X] Allow control of pluck volume.
+- [X] Make the module wider, to fit another column of trim pots and have taller Scale section.
+- [X] Optimize saving, so there is a time collecting before saving.
+- [X] Optimize saving by not persisting changes driven by CV input.
+- [X] Try an alternative output mode similar to Achordion, with out output only for root.
+- [X] See if longer contour makes a difference with silent pluck. If not, have one knob for both. -- I'll keep it.
+- [ ] Implement configuration option where selected root sets tonic as well
+- [ ] Rename chord "group" to "size" in the code.
+- [ ] Review configuration menu and either disable it or commit to have those parameters.
+- [X] Keep separate set of strings for root, dynamic based on chord size.
+- [ ] Adjust to new hardware
+  - [ ] Move size CV to alternative config.
+  - [ ] Implement reset button.
+  - [ ] Implement next ARP modes and the button.
+  - [ ] Implement reset/next CV.
+  - [ ] Implement dedicated tonic CV.
+  - [ ] Implement pluck pot.
+  - [ ] Add an alternative pluck pot CV mapping.

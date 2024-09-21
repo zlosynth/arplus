@@ -183,11 +183,11 @@ impl Controller {
                 } else {
                     display_request.set_fallback_attribute(Screen::configuration());
 
-                    if self.inputs.pots.chord_group.activation_movement() {
+                    if self.inputs.pots.chord_size.activation_movement() {
                         let changed = self
                             .parameters
                             .gain
-                            .reconcile(self.inputs.pots.chord_group.value());
+                            .reconcile(self.inputs.pots.chord_size.value());
                         *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::gain(
                             self.parameters.gain.selected_index(),
@@ -198,7 +198,7 @@ impl Controller {
                         let changed = self
                             .parameters
                             .cv_mapping
-                            .reconcile_scale_group_mapping(self.inputs.pots.chord_group.value());
+                            .reconcile_scale_group_mapping(self.inputs.pots.chord_size.value());
                         *needs_save |= changed;
                         display_request.set_queried_attribute(Screen::cv_mapping(
                             self.parameters.cv_mapping.scale_group_socket(),
@@ -272,27 +272,26 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
-        let group_pot = &self.inputs.pots.chord_group;
-        let group_cv_value = self.chord_group_cv();
+        let size_pot = &self.inputs.pots.chord_size;
+        let size_cv_value = self.chord_size_cv();
         let chord_pot = &self.inputs.pots.chord;
         let chord_cv_value = self.chord_cv();
         let scale_size = self.parameters.scale.selected_scale_size();
         let parameter = &mut self.parameters.chord;
 
         let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
-            group_pot.value(),
-            group_cv_value,
+            size_pot.value(),
+            size_cv_value,
             chord_pot.value(),
             chord_cv_value,
             scale_size,
         );
-        *needs_save |= group_cv_value.is_none()
-            && chord_cv_value.is_none()
-            && (changed_group || changed_chord);
+        *needs_save |=
+            size_cv_value.is_none() && chord_cv_value.is_none() && (changed_group || changed_chord);
 
-        if group_pot.activation_movement() {
+        if size_pot.activation_movement() {
             let size = parameter.selected_group_size();
-            display_request.set_queried_attribute(Screen::chord_group(size));
+            display_request.set_queried_attribute(Screen::chord_size(size));
         } else if chord_pot.activation_movement() {
             let chord = parameter.selected_chord();
             display_request.set_queried_attribute(Screen::chord(chord, scale_size));
@@ -469,6 +468,7 @@ impl Controller {
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
             stereo_mode: self.parameters.stereo_mode.selected(),
+            chord_size: self.parameters.chord.selected_group_size(),
         }
     }
 
@@ -512,8 +512,8 @@ impl Controller {
         self.socket_cv_unless_remapped(CvMappingSocket::Cutoff)
     }
 
-    fn chord_group_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::ChordGroup)
+    fn chord_size_cv(&self) -> Option<f32> {
+        self.socket_cv_unless_remapped(CvMappingSocket::ChordSize)
     }
 
     fn contour_cv(&self) -> Option<f32> {
@@ -549,7 +549,7 @@ impl Controller {
             CvMappingSocket::None => None,
             CvMappingSocket::Tone => self.inputs.cvs.tone.value(),
             CvMappingSocket::Chord => self.inputs.cvs.chord.value(),
-            CvMappingSocket::ChordGroup => self.inputs.cvs.chord_group.value(),
+            CvMappingSocket::ChordSize => self.inputs.cvs.chord_size.value(),
             CvMappingSocket::Resonance => self.inputs.cvs.resonance.value(),
             CvMappingSocket::Cutoff => self.inputs.cvs.cutoff.value(),
             CvMappingSocket::Contour => self.inputs.cvs.contour.value(),

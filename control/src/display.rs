@@ -31,7 +31,7 @@ pub enum Screen {
     ArpMode(ArpModeScreen),
     Scale(ScaleScreen),
     ScaleGroup(ScaleGroupScreen),
-    ChordGroup(ChordGroupScreen),
+    ChordSize(ChordSizeScreen),
     Note(NoteScreen),
     Chord(ChordScreen),
     Calibration(CalibrationScreen),
@@ -64,8 +64,8 @@ pub struct ScaleGroupScreen {
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
-pub struct ChordGroupScreen {
-    chord_group_size: usize,
+pub struct ChordSizeScreen {
+    chord_size: usize,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -188,8 +188,8 @@ impl Screen {
         Screen::Scale(ScaleScreen::with_index(scale_index))
     }
 
-    pub fn chord_group(size: usize) -> Self {
-        Screen::ChordGroup(ChordGroupScreen::with_size(size))
+    pub fn chord_size(size: usize) -> Self {
+        Screen::ChordSize(ChordSizeScreen::with_size(size))
     }
 
     pub fn note(note_index: usize) -> Self {
@@ -254,7 +254,7 @@ impl Screen {
             Screen::ArpMode(s) => s.leds(),
             Screen::Scale(s) => s.leds(),
             Screen::ScaleGroup(s) => s.leds(),
-            Screen::ChordGroup(s) => s.leds(),
+            Screen::ChordSize(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
             Screen::Octave(s) => s.leds(),
@@ -326,15 +326,15 @@ impl ScaleGroupScreen {
     }
 }
 
-impl ChordGroupScreen {
-    pub fn with_size(chord_group_size: usize) -> Self {
-        Self { chord_group_size }
+impl ChordSizeScreen {
+    pub fn with_size(chord_size: usize) -> Self {
+        Self { chord_size }
     }
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if self.chord_group_size <= leds.len() {
-            for led in leds[..self.chord_group_size].iter_mut() {
+        if self.chord_size <= leds.len() {
+            for led in leds[..self.chord_size].iter_mut() {
                 *led = true;
             }
         } else {
