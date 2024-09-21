@@ -286,7 +286,10 @@ impl Controller {
             chord_cv_value,
             scale_size,
         );
-        *needs_save |= changed_group || changed_chord;
+        *needs_save |= group_cv_value.is_none()
+            && chord_cv_value.is_none()
+            && (changed_group || changed_chord);
+
         if group_pot.activation_movement() {
             let size = parameter.selected_group_size();
             display_request.set_queried_attribute(Screen::chord_group(size));
@@ -363,8 +366,11 @@ impl Controller {
                 scale_cv,
                 tonic_cv,
             );
-        *needs_save |=
-            note_changed || group_changed || scale_changed || octave_changed || tonic_changed;
+        *needs_save |= tone_cv_value.is_none()
+            && group_cv.is_none()
+            && scale_cv.is_none()
+            && tonic_cv.is_none()
+            && (note_changed || group_changed || scale_changed || octave_changed || tonic_changed);
 
         if group_changed && group_cv.is_none() {
             let selected = parameter.selected_group_id();
