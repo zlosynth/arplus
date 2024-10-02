@@ -1,0 +1,246 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc} % extended font encoding
+\usepackage{enumerate} % lists
+\renewcommand{\familydefault}{\sfdefault} % sans-serif
+\usepackage{microtype} % better text justification
+\usepackage{graphicx} % allow including pictures
+\usepackage{color} % colors for pictures
+\usepackage{textcomp} % for textminus
+\usepackage{pagecolor} % background color for the first page
+\usepackage{afterpage} % ditto ^^
+\usepackage{tikz} % flow graph
+\usetikzlibrary{dsp,chains}
+\usepackage{parskip} % vertical paragraph spacing
+\usepackage{hyperref} % links
+\usepackage[a4paper, landscape, margin=1.5cm]{geometry} % basic geometry
+\fboxsep=5mm % minibox spacing
+\pagenumbering{gobble} % disable page numbering
+\renewcommand{\thefootnote}{\arabic{footnote}} % use numbers for footnotes
+\renewcommand{\thempfootnote}{\arabic{mpfootnote}} % ditto for minipages
+
+% Style for a simple numbered list
+\newenvironment{packed_enumerate}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+% Style for a roman literal numbered list
+\newenvironment{packed_enumerate_i}{
+\begin{enumerate}[I]
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+
+% Metadata
+\pdfinfo{
+   /Author (Zlosynth Instruments)
+   /Title  (Arplus - User Manual)
+}
+
+\begin{document}
+
+% Front page should be black
+\pagecolor{black}\afterpage{\nopagecolor}
+
+% Front title
+\title{\textcolor{white}{MANUAL}}
+\author{}
+\date{}
+
+% Left column of the front page
+\begin{minipage}{0.4\textwidth}
+\color{white}
+\maketitle
+
+% Overview box
+\noindent\colorbox{white}
+{
+\begin{minipage}{0.85\textwidth}\color{black}
+TODO About Arplus, what it combines and what it provides
+\end{minipage}
+}
+
+\vspace{1cm}
+
+% Specs table
+\begin{minipage}{0.8\textwidth}\color{white}
+\begin{tabular}{@{}rl@{}}
+  Width & 14 HP \\
+  Depth & 28 mm \\
+  Power & +12 V (117 mA), \textminus12 V (8 mA) \\
+  Input impedance & 100 kΩ \\
+  CV inputs & \textminus5 to +5 V, 16-bit, 1 kHz \\
+  CV outout & \textminus5 to +5 V, 16-bit, 1 kHz TODO \\
+  Trigger inputs & 0 to +5 V, 10 ms \\
+  Trigger output & 0 to +5 V, 10 ms TODO \\
+  Audio & 24-bit, 48 kHz
+\end{tabular}
+\end{minipage}
+
+\vspace{1cm}
+
+% Features list
+\begin{minipage}{0.8\textwidth}\color{white}
+\begin{tabular}{@{}l}
+  - TODO: Features in a list \\
+  - TODO
+\end{tabular}
+\end{minipage}
+
+\end{minipage}%
+% Right column
+\begin{minipage}{0.6\textwidth}
+\vspace{8mm}
+
+% Illustration of the panel
+\begin{center}
+  \includegraphics[width=0.55\textwidth]{diagram-panel.pdf}
+\end{center}
+
+\end{minipage}
+
+% Start of the quick start page
+\newpage
+% \color{black}
+
+% Left column
+
+\section{Installation}
+
+Arplus is 14 HP wide. It is powered by a +12V/{\textminus}12V 2\texttimes5
+connector. The red stripe (\textminus12V) has to be connected on the side of the
+board marked with the white line. The module must be mounted in a eurorack case.
+
+\vspace{0.5cm}
+
+TODO: Use pictures and diagrams where possible
+
+TODO:
+aaaaaaaaaaaaaaaa  Tone
+Chord
+Quantization
+Arp
+Sound design, in diagram
+
+Calibration
+Configuration
+
+
+% Start of the signal flow page
+\newpage
+
+\section{Signal flow}
+
+\vspace{5cm}
+
+\vspace{5mm}\begin{center}\includegraphics[width=0.7\textwidth]{diagram-flow.pdf}\vspace{5mm}\end{center}
+
+\newpage
+
+\begin{minipage}[t]{0.45\textwidth}
+
+\section{Root note}
+
+Select the root note of the playing chord. This note is quantized to the
+selected scale. LEDs visualize the degree of the note relative to the scale.
+
+\vspace{1cm}
+
+\begin{center}
+  \includegraphics{diagram-tone.pdf}
+\end{center}
+
+\vspace{1cm}
+
+\section{Chord}
+
+Intervals and assorted chords sorted by size. LEDs display quality of the chord
+or its size, depending on the input. The selected size also dictates the length
+of the arpeggio.
+
+\vspace{1cm}
+
+\begin{center}
+  \includegraphics{diagram-chord.pdf}
+\end{center}
+
+\vspace{1cm}
+
+\end{minipage}%
+\begin{minipage}{0.05\textwidth}
+\phantom{ }
+\end{minipage}%
+% Right column
+\begin{minipage}[t]{0.45\textwidth}
+
+\section{Arpeggio}
+
+Arpeggiator sequencing the playing notes.
+
+\vspace{5mm}
+
+\begin{center}
+  \includegraphics{diagram-arp.pdf}
+\end{center}
+
+\vspace{1cm}
+
+\end{minipage}
+
+\newpage
+
+\section{Quantization}
+
+\begin{center}
+\begin{tabular}{@{}l|l|l|l|l@{}}
+  \textbf{WES (Diatonic)} & \textbf{ARB (Maqam)} & \textbf{IND (Melakarta)} & \textbf{JPN (Japanese)} & \textbf{TSQ (Full)} \\
+  Ionian & Bayati & Ratnagi (2) & Hirajoshi & Tones \\
+  Dorian  & Hijaz & Rupavati (12) & In & Semitones \\
+  Phrygian   & Kurd & Mayamalavagowla (15) & Insen & Quarter tones \\
+  Lydian    & Nahawand & Natabhairavi (20) & Iwato & \\
+  Mixolydian   & Nawa Athar & Karaharapriya (22) & Yo & \\
+  Aeolian  & Rast & Sangarabharanam (29) & & \\
+  Locrian   & Saba & Jalavarali (39) & & \\
+      & Sikah & Gamanasrama (53) & &
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{Arpeggio}
+\newpage
+
+\section{String synthesis}
+\newpage
+
+\section{Tone calibration}
+\newpage
+
+\section{CV re-mapping}
+\newpage
+
+\section{Reset}
+\newpage
+
+\noindent
+\begin{minipage}[t]{0.3\textwidth}
+\setlength{\parskip}{6pt}
+\section{Questions?}
+
+You can find more information about the module on
+\url{https://zlosynth.com/arplus}.
+
+\vspace{3mm}
+
+\begin{center}
+petr@zlosynth.com
+\end{center}
+
+\end{minipage}
+
+\end{document}
