@@ -5141,7 +5141,7 @@
     (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS") (tstamp 678c44fe-088d-4c1e-868b-0ec3e6653f47))
   (gr_circle (center 104.8026 154.66955) (end 104.731889 154.66955)
     (stroke (width 0.3) (type default)) (fill none) (layer "F.SilkS") (tstamp a521be16-6edb-41b0-b819-fcd3d4e7da53))
-  (gr_rect (start 65.81 86.76) (end 69.01 95.185)
+  (gr_rect (start 65.81 87.4575) (end 69.01 95.8825)
     (stroke (width 0.15) (type solid)) (fill solid) (layer "F.SilkS") (tstamp c213e5a7-58e3-4902-b066-98bfdc8f87a7))
   (gr_line (start 54.190077 146.083851) (end 54.070497 146.168886)
     (stroke (width 0.099999) (type solid)) (layer "Dwgs.User") (tstamp 000e8bbd-ef90-469b-958d-456020af870c))
