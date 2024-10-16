@@ -2,7 +2,7 @@ use crate::system::hal::gpio;
 
 use super::debouncer::Debouncer;
 
-const TRIGGERS: usize = 1;
+const TRIGGERS: usize = 2;
 
 #[derive(defmt::Format)]
 pub struct Gates {
@@ -19,14 +19,16 @@ pub struct Trigger {
 #[derive(defmt::Format)]
 pub struct Pins {
     pub gate_1: Trigger1Pin,
+    pub gate_2: Trigger2Pin,
 }
 
 pub type Trigger1Pin = gpio::gpiog::PG13<gpio::Input>;
+pub type Trigger2Pin = gpio::gpiog::PG14<gpio::Input>;
 
 impl Gates {
     pub fn new(pins: Pins) -> Self {
         Self {
-            triggers: [Trigger::new()],
+            triggers: [Trigger::new(), Trigger::new()],
             pins,
         }
     }
@@ -36,7 +38,7 @@ impl Gates {
     }
 
     pub fn values(&self) -> [bool; TRIGGERS] {
-        [self.triggers[0].active]
+        [self.triggers[0].active, self.triggers[1].active]
     }
 }
 

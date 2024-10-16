@@ -11,10 +11,10 @@ pub use gate::Gate;
 pub use pot::Pot;
 
 pub struct ControlInputSnapshot {
-    pub pots: [f32; 6],
-    pub buttons: [bool; 4],
-    pub cvs: [Option<f32>; 6],
-    pub gates: [bool; 1],
+    pub pots: [f32; 7],
+    pub buttons: [bool; 6],
+    pub cvs: [Option<f32>; 5],
+    pub gates: [bool; 2],
 }
 
 pub struct Inputs {
@@ -31,6 +31,7 @@ pub struct Pots {
     pub contour: Pot,
     pub cutoff: Pot,
     pub resonance: Pot,
+    pub pluck: Pot,
 }
 
 pub struct Cvs {
@@ -43,6 +44,7 @@ pub struct Cvs {
 }
 
 pub struct Gates {
+    pub rsnx: Gate,
     pub trigger: Gate,
 }
 
@@ -51,6 +53,8 @@ pub struct Buttons {
     pub scale: Button,
     pub arp: Button,
     pub trigger: Button,
+    pub tonic: Button,
+    pub rsnx: Button,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -68,6 +72,7 @@ impl Inputs {
                 contour: Pot::new(),
                 cutoff: Pot::new(),
                 resonance: Pot::new(),
+                pluck: Pot::new(),
             },
             cvs: Cvs {
                 tone: Cv::with_config(config.tone_cv_calibration),
@@ -78,6 +83,7 @@ impl Inputs {
                 resonance: Cv::new(),
             },
             gates: Gates {
+                rsnx: Gate::new(),
                 trigger: Gate::new(),
             },
             buttons: Buttons {
@@ -85,31 +91,36 @@ impl Inputs {
                 scale: Button::new(),
                 arp: Button::new(),
                 trigger: Button::new(),
+                tonic: Button::new(),
+                rsnx: Button::new(),
             },
         }
     }
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) {
-        self.pots.resonance.reconcile(snapshot.pots[0]);
-        self.pots.tone.reconcile(snapshot.pots[1]);
-        self.pots.contour.reconcile(snapshot.pots[2]);
-        self.pots.chord.reconcile(snapshot.pots[3]);
-        self.pots.chord_size.reconcile(snapshot.pots[4]);
-        self.pots.cutoff.reconcile(snapshot.pots[5]);
+        self.pots.tone.reconcile(snapshot.pots[0]);
+        self.pots.chord.reconcile(snapshot.pots[1]);
+        self.pots.chord_size.reconcile(snapshot.pots[2]);
+        self.pots.resonance.reconcile(snapshot.pots[3]);
+        self.pots.cutoff.reconcile(snapshot.pots[4]);
+        self.pots.contour.reconcile(snapshot.pots[5]);
+        self.pots.pluck.reconcile(snapshot.pots[6]);
 
         self.cvs.tone.reconcile(snapshot.cvs[0]);
         self.cvs.chord.reconcile(snapshot.cvs[1]);
-        self.cvs.chord_size.reconcile(snapshot.cvs[2]);
-        self.cvs.resonance.reconcile(snapshot.cvs[3]);
-        self.cvs.cutoff.reconcile(snapshot.cvs[4]);
-        self.cvs.contour.reconcile(snapshot.cvs[5]);
+        self.cvs.resonance.reconcile(snapshot.cvs[2]);
+        self.cvs.cutoff.reconcile(snapshot.cvs[3]);
+        self.cvs.contour.reconcile(snapshot.cvs[4]);
 
-        self.gates.trigger.reconcile(snapshot.gates[0]);
+        self.gates.rsnx.reconcile(snapshot.gates[0]);
+        self.gates.trigger.reconcile(snapshot.gates[1]);
 
-        self.buttons.trigger.reconcile(snapshot.buttons[0]);
-        self.buttons.scale_group.reconcile(snapshot.buttons[1]);
-        self.buttons.scale.reconcile(snapshot.buttons[2]);
-        self.buttons.arp.reconcile(snapshot.buttons[3]);
+        self.buttons.tonic.reconcile(snapshot.buttons[0]);
+        self.buttons.trigger.reconcile(snapshot.buttons[1]);
+        self.buttons.arp.reconcile(snapshot.buttons[2]);
+        self.buttons.rsnx.reconcile(snapshot.buttons[3]);
+        self.buttons.scale_group.reconcile(snapshot.buttons[4]);
+        self.buttons.scale.reconcile(snapshot.buttons[5]);
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

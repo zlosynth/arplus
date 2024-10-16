@@ -1,8 +1,7 @@
 # TODO
 
 - [X] Remove the "Full scale" mode, to make the module simpler
-- [ ] Add trigger delay, to make sure other CV gets a chance to propagate
-- [ ] Improve cutoff calculation, to keep resonation steady
+- [ ] Add trigger delay, to make sure other CV gets a chance to propagate - test this with BSP first
 - [X] Improve PCB placement, especially the power placement
 - [ ] Write build manual
 - [ ] Write user manual
@@ -12,9 +11,10 @@
 - [X] Optimize saving by not persisting changes driven by CV input.
 - [X] Try an alternative output mode similar to Achordion, with out output only for root.
 - [X] See if longer contour makes a difference with silent pluck. If not, have one knob for both. -- I'll keep it.
-- [ ] Implement configuration option where selected root sets tonic as well
-- [ ] Rename chord "group" to "size" in the code.
+- [X] Rename chord "group" to "size" in the code.
 - [ ] Review configuration menu and either disable it or commit to have those parameters.
+- [ ] Fix clipping on longest contour and high resonance
+- [ ] Fix instability of the filter
 - [X] Keep separate set of strings for root, dynamic based on chord size.
 - [ ] Adjust to new hardware
   - [ ] Move size CV to alternative config.
@@ -24,3 +24,4 @@
   - [ ] Implement dedicated tonic CV.
   - [ ] Implement pluck pot.
   - [ ] Add an alternative pluck pot CV mapping.
+- [ ] Fix a bug where LEDs show size of chord 4, but chords are still of size 3.

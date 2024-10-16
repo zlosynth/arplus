@@ -238,6 +238,10 @@ impl Controller {
                         ));
                     }
 
+                    // TODO: Chord size mapping
+                    // TODO: Pluck mapping
+
+                    // TODO: Disable this and use only root left
                     if self.inputs.pots.contour.activation_movement() {
                         let changed = self
                             .parameters
@@ -335,6 +339,7 @@ impl Controller {
         needs_save: &mut bool,
     ) {
         let tone_pot = &self.inputs.pots.tone;
+        // TODO: Tonic button
         let tone_cv_value = self.tone_cv();
         let group_button = &self.inputs.buttons.scale_group;
         let scale_button = &self.inputs.buttons.scale;
@@ -365,6 +370,7 @@ impl Controller {
                 scale_cv,
                 tonic_cv,
             );
+        // TODO: It is good to save tone even if tonic CV is connected etc. Correct this. Especially critical for CV pot which is accessed through alt button
         *needs_save |= tone_cv_value.is_none()
             && group_cv.is_none()
             && scale_cv.is_none()

@@ -78,27 +78,30 @@ impl System {
                 buttons_pins: ControlInputButtonsPins {
                     button_1: pins.GPIO.PIN_B7.into_pull_up_input(),
                     button_2: pins.GPIO.PIN_B8.into_pull_up_input(),
-                    button_3: pins.GPIO.PIN_A9.into_pull_up_input(),
-                    button_4: pins.GPIO.PIN_A8.into_pull_up_input(),
+                    button_3: pins.GPIO.PIN_A8.into_pull_up_input(),
+                    button_4: pins.GPIO.PIN_A9.into_pull_up_input(),
+                    button_5: pins.GPIO.PIN_D6.into_pull_up_input(),
+                    button_6: pins.GPIO.PIN_D5.into_pull_up_input(),
                 },
                 pots_pins: ControlInputPotsPins {
-                    pot_1: pins.GPIO.PIN_C3.into_analog(),
-                    pot_2: pins.GPIO.PIN_C2.into_analog(),
-                    pot_3: pins.GPIO.PIN_A3.into_analog(),
-                    pot_4: pins.GPIO.PIN_D9.into_analog(),
-                    pot_5: pins.GPIO.PIN_D8.into_analog(),
-                    pot_6: pins.GPIO.PIN_A2.into_analog(),
+                    pot_1: pins.GPIO.PIN_A3.into_analog(),
+                    pot_2: pins.GPIO.PIN_D9.into_analog(),
+                    pot_3: pins.GPIO.PIN_A2.into_analog(),
+                    pot_4: pins.GPIO.PIN_D8.into_analog(),
+                    pot_5: pins.GPIO.PIN_C3.into_analog(),
+                    pot_6: pins.GPIO.PIN_C2.into_analog(),
+                    pot_7: pins.GPIO.PIN_C4.into_analog(),
                 },
                 cvs_pins: ControlInputCvsPins {
-                    cv_1: pins.GPIO.PIN_C4.into_analog(),
-                    cv_2: pins.GPIO.PIN_C5.into_analog(),
-                    cv_3: pins.GPIO.PIN_C9.into_analog(),
+                    cv_1: pins.GPIO.PIN_C9.into_analog(),
+                    cv_2: pins.GPIO.PIN_C8.into_analog(),
+                    cv_3: pins.GPIO.PIN_C5.into_analog(),
                     cv_4: pins.GPIO.PIN_C6.into_analog(),
                     cv_5: pins.GPIO.PIN_C7.into_analog(),
-                    cv_6: pins.GPIO.PIN_C8.into_analog(),
                 },
                 gates_pins: ControlInputGatesPins {
                     gate_1: pins.GPIO.PIN_B10.into_floating_input(),
+                    gate_2: pins.GPIO.PIN_B9.into_floating_input(),
                 },
                 // FIXME: Based on the layout, this should be B5. There is a mismatch between
                 // datasheet https://static1.squarespace.com/static/58d03fdc1b10e3bf442567b8/t/628bc1307a1e2b5bc04af099/1653326133665/ES_Patch_SM_datasheet_v1.0.4.pdf
@@ -116,17 +119,21 @@ impl System {
                 .calibrate_buffer(&mut delay)
                 .enable();
             ControlOutputInterface::new(ControlOutputConfig {
+                // TODO: This will be replaced with shift register
                 pins: ControlOutputPins {
-                    leds: (
-                        pins.GPIO.PIN_D7.into_push_pull_output(),
-                        pins.GPIO.PIN_D6.into_push_pull_output(),
-                        pins.GPIO.PIN_D5.into_push_pull_output(),
-                        pins.GPIO.PIN_D4.into_push_pull_output(),
-                        pins.GPIO.PIN_D3.into_push_pull_output(),
-                        pins.GPIO.PIN_D2.into_push_pull_output(),
-                        pins.GPIO.PIN_D1.into_push_pull_output(),
-                        pins.GPIO.PIN_D10.into_push_pull_output(),
-                    ),
+                    led_ser: pins.GPIO.PIN_D1.into_push_pull_output(),
+                    led_srclk: pins.GPIO.PIN_D2.into_push_pull_output(),
+                    led_rclk: pins.GPIO.PIN_D3.into_push_pull_output(),
+                    //     leds: (
+                    //         pins.GPIO.PIN_D7.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D6.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D5.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D4.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D3.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D2.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D1.into_push_pull_output(),
+                    //         pins.GPIO.PIN_D10.into_push_pull_output(),
+                    //     ),
                 },
                 dac,
             })

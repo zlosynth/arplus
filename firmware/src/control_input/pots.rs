@@ -6,7 +6,7 @@ use crate::system::hal::pac::{ADC1, ADC2};
 
 use super::one_pole_filter::OnePoleFilter;
 
-const POTS: usize = 6;
+const POTS: usize = 7;
 
 #[derive(defmt::Format)]
 pub struct Pots {
@@ -30,14 +30,16 @@ pub struct Pins {
     pub pot_4: Pot4Pin,
     pub pot_5: Pot5Pin,
     pub pot_6: Pot6Pin,
+    pub pot_7: Pot7Pin,
 }
 
-pub type Pot1Pin = gpio::gpioa::PA2<gpio::Analog>;
-pub type Pot2Pin = gpio::gpioa::PA7<gpio::Analog>;
-pub type Pot3Pin = gpio::gpioa::PA0<gpio::Analog>;
-pub type Pot4Pin = gpio::gpioc::PC3<gpio::Analog>;
-pub type Pot5Pin = gpio::gpioc::PC2<gpio::Analog>;
-pub type Pot6Pin = gpio::gpioa::PA1<gpio::Analog>;
+pub type Pot1Pin = gpio::gpioa::PA0<gpio::Analog>;
+pub type Pot2Pin = gpio::gpioc::PC3<gpio::Analog>;
+pub type Pot3Pin = gpio::gpioa::PA1<gpio::Analog>;
+pub type Pot4Pin = gpio::gpioc::PC2<gpio::Analog>;
+pub type Pot5Pin = gpio::gpioa::PA2<gpio::Analog>;
+pub type Pot6Pin = gpio::gpioa::PA7<gpio::Analog>;
+pub type Pot7Pin = gpio::gpioa::PA6<gpio::Analog>;
 
 impl Pots {
     pub fn new(pins: Pins) -> Self {
@@ -46,12 +48,13 @@ impl Pots {
                 // NOTE: To calibrate, set this to (0.0, 1.0), remove clamping
                 // from Pot.set, and run diagnostics. Note the minimum and
                 // maximum of each pot and then use it here.
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
                 Pot::new(0.505, 0.99),
                 Pot::new(0.505, 0.99),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
+                Pot::new(0.505, 0.99),
             ],
             pins,
         }
@@ -78,6 +81,10 @@ impl Pots {
         let sample_6: u32 = block!(adc_1.read_sample()).unwrap_or_default();
         self.pots[4].set(sample_5, adc_2.slope());
         self.pots[5].set(sample_6, adc_1.slope());
+
+        adc_1.start_conversion(&mut self.pins.pot_7);
+        let sample_7: u32 = block!(adc_1.read_sample()).unwrap_or_default();
+        self.pots[6].set(sample_7, adc_1.slope());
     }
 
     pub fn values(&self) -> [f32; POTS] {
@@ -88,6 +95,7 @@ impl Pots {
             self.pots[3].value,
             self.pots[4].value,
             self.pots[5].value,
+            self.pots[6].value,
         ]
     }
 }
