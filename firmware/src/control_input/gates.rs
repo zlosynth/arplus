@@ -35,6 +35,7 @@ impl Gates {
 
     pub fn sample(&mut self) {
         self.triggers[0].set(self.pins.gate_1.is_high());
+        self.triggers[1].set(self.pins.gate_2.is_high());
     }
 
     pub fn values(&self) -> [bool; TRIGGERS] {
