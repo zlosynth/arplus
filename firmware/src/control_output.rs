@@ -37,8 +37,10 @@ impl ControlOutputInterface {
     pub fn set_state(&mut self, state: &ControlOutputState) {
         self.pins.led_rclk.set_low();
         // TODO: Make sure that the timing requirements of the chip are met.
+        // NOTE: Shift register is wired from top to bottom, but the
+        // state expects bottom up.
         for i in 0..8 {
-            self.pins.led_ser.set_state(state.leds[i].into());
+            self.pins.led_ser.set_state(state.leds[7 - i].into());
             self.pins.led_srclk.set_high();
             self.pins.led_srclk.set_low();
         }

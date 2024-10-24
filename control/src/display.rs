@@ -291,7 +291,8 @@ impl ArpModeScreen {
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(3 + self.mode as usize) {
+        let leds_max = leds.len() - 1;
+        if let Some(led) = leds.get_mut(leds_max - self.mode as usize) {
             *led = true;
         }
         leds
@@ -305,7 +306,8 @@ impl ScaleScreen {
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.scale) {
+        let leds_max = leds.len() - 1;
+        if let Some(led) = leds.get_mut(leds_max - self.scale) {
             *led = true;
         }
         leds
@@ -319,7 +321,8 @@ impl ScaleGroupScreen {
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(3 + self.scale_group as usize) {
+        let leds_max = leds.len() - 1;
+        if let Some(led) = leds.get_mut(leds_max - self.scale_group as usize) {
             *led = true;
         }
         leds
