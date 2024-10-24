@@ -4,6 +4,7 @@ mod contour;
 mod cutoff;
 mod cv_mapping;
 mod gain;
+mod pluck;
 mod primitives;
 mod resonance;
 mod scale;
@@ -26,6 +27,7 @@ pub use self::contour::Contour;
 pub use self::cutoff::Cutoff;
 pub use self::cv_mapping::{CvMapping, Socket as CvMappingSocket};
 pub use self::gain::Gain;
+pub use self::pluck::Pluck;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
 pub use self::stereo_mode::StereoMode;
@@ -40,6 +42,7 @@ pub struct Parameters {
     pub arp_mode: ArpMode,
     pub trigger: Trigger,
     pub gain: Gain,
+    pub pluck: Pluck,
     pub cv_mapping: CvMapping,
     pub stereo_mode: StereoMode,
 }
@@ -62,6 +65,7 @@ impl Parameters {
             contour: Contour::new(),
             cutoff: Cutoff::new(),
             resonance: Resonance::new(),
+            pluck: Pluck::new(),
             scale,
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),

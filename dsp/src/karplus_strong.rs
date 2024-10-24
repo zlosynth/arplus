@@ -25,6 +25,7 @@ pub struct KarplusStrong {
     resonance: f32,
     frequency: f32,
     contour: f32,
+    pluck: f32,
     noise_envelope: Ad,
     buffer: RingBuffer,
     filter: StateVariableFilter,
@@ -43,6 +44,7 @@ impl KarplusStrong {
             resonance: 0.0,
             frequency: 0.0,
             contour: 0.0,
+            pluck: 0.0,
             noise_envelope: Ad::new(sample_rate),
             buffer: RingBuffer::new_from_memory_manager(stack_manager, SAMPLES),
             filter,
@@ -67,7 +69,7 @@ impl KarplusStrong {
             } else {
                 random.normal() * 2.0 - 1.0
             };
-            let noise_sample = offset_noise * self.noise_envelope.pop();
+            let noise_sample = offset_noise * self.noise_envelope.pop() * self.pluck;
 
             let delayed_sample = self
                 .buffer
@@ -120,10 +122,11 @@ impl KarplusStrong {
             .set_frequency((cutoff * self.frequency).clamp(200.0, 6_000.0));
     }
 
-    pub fn trigger(&mut self, feedback: f32, frequency: f32, contour: f32) {
+    pub fn trigger(&mut self, feedback: f32, frequency: f32, contour: f32, pluck: f32) {
         self.reset = RESET;
         self.feedback = feedback;
         self.frequency = frequency;
+        self.pluck = pluck;
 
         self.contour = ((contour - 0.05) / 0.95).clamp(0.0, 1.0);
         let (attack, decay) = if self.contour == 0.0 {

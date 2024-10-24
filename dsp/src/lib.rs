@@ -57,6 +57,7 @@ pub struct Attributes {
 pub struct TriggerAttributes {
     pub frequency: f32,
     pub contour: f32,
+    pub pluck: f32,
     pub is_root: bool,
 }
 
@@ -184,7 +185,7 @@ impl Dsp {
             let string = &mut self.strings[string_index];
             string
                 .karplus_strong
-                .trigger(0.99, trigger.frequency, trigger.contour);
+                .trigger(0.99, trigger.frequency, trigger.contour, trigger.pluck);
             string.is_root = trigger.is_root;
 
             let next_string = &mut self.strings[next_string_index];

@@ -274,6 +274,7 @@ impl Controller {
         self.reconcile_contour();
         self.reconcile_cutoff();
         self.reconcile_resonance();
+        self.reconcile_pluck();
         self.reconcile_trigger(display_request);
         self.reconcile_scale(display_request, needs_save);
         self.reconcile_arp_mode(display_request, needs_save);
@@ -331,6 +332,13 @@ impl Controller {
         let pot = &self.inputs.pots.cutoff;
         let cv_value = self.cutoff_cv();
         let parameter = &mut self.parameters.cutoff;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
+    fn reconcile_pluck(&mut self) {
+        let pot = &self.inputs.pots.pluck;
+        let cv_value = self.pluck_cv();
+        let parameter = &mut self.parameters.pluck;
         parameter.reconcile(pot.value(), cv_value);
     }
 
@@ -465,6 +473,7 @@ impl Controller {
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),
                     contour: self.parameters.contour.value(),
+                    pluck: self.parameters.pluck.value(),
                     is_root: index == 0,
                 };
                 defmt::debug!("DSP trigger attributes={:?}", dsp_trigger_attributes);
@@ -526,7 +535,13 @@ impl Controller {
         self.socket_cv_unless_remapped(CvMappingSocket::Cutoff)
     }
 
+    fn pluck_cv(&self) -> Option<f32> {
+        // self.socket_cv(self.parameters.cv_mapping.pluck_socket())
+        None
+    }
+
     fn chord_size_cv(&self) -> Option<f32> {
+        // TODO: Needs to be taken from mapping now
         self.socket_cv_unless_remapped(CvMappingSocket::ChordSize)
     }
 

@@ -37,6 +37,7 @@ pub struct Pots {
 pub struct Cvs {
     pub tone: Cv,
     pub chord: Cv,
+    // TODO: This does not have its CV input anymore
     pub chord_size: Cv,
     pub contour: Cv,
     pub cutoff: Cv,
