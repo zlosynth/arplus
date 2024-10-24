@@ -25,4 +25,4 @@
   - [ ] Implement pluck pot.
   - [ ] Add an alternative pluck pot CV mapping.
 - [ ] Fix a bug where LEDs show size of chord 4, but chords are still of size 3.
-- [ ] Fix a bug where root is silenced.
+- [X] Fix a bug where root is silenced.

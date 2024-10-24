@@ -169,6 +169,7 @@ impl Dsp {
                     self.set_root_strings_len(attributes.chord_size);
                     if trigger.is_root {
                         let string_index = self.root_string_index();
+                        self.bump_root_string_index();
                         let next_string_index = self.root_string_index();
                         (string_index, next_string_index)
                     } else {
