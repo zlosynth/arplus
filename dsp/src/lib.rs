@@ -153,27 +153,38 @@ impl Dsp {
             string.karplus_strong.set_cutoff(attributes.cutoff);
         }
 
-        self.set_root_strings_len(attributes.chord_size);
+        // TODO: Refactor the logic around stereo_mode and is_root
+        self.stereo_mode = attributes.stereo_mode;
 
         if let Some(trigger) = attributes.trigger {
-            let is_root = trigger.is_root;
-
-            let (string_index, next_string_index) = if is_root {
-                let string_index = self.root_string_index();
-                let next_string_index = self.root_string_index();
-                (string_index, next_string_index)
-            } else {
-                let string_index = self.rest_string_index();
-                self.bump_rest_string_index();
-                let next_string_index = self.rest_string_index();
-                (string_index, next_string_index)
+            let (string_index, next_string_index) = match self.stereo_mode {
+                StereoMode::RoundRobin => {
+                    self.set_root_strings_len(0);
+                    let string_index = self.rest_string_index();
+                    self.bump_rest_string_index();
+                    let next_string_index = self.rest_string_index();
+                    (string_index, next_string_index)
+                }
+                StereoMode::RootLeft => {
+                    self.set_root_strings_len(attributes.chord_size);
+                    if trigger.is_root {
+                        let string_index = self.root_string_index();
+                        let next_string_index = self.root_string_index();
+                        (string_index, next_string_index)
+                    } else {
+                        let string_index = self.rest_string_index();
+                        self.bump_rest_string_index();
+                        let next_string_index = self.rest_string_index();
+                        (string_index, next_string_index)
+                    }
+                }
             };
 
             let string = &mut self.strings[string_index];
             string
                 .karplus_strong
                 .trigger(0.99, trigger.frequency, trigger.contour);
-            string.is_root = is_root;
+            string.is_root = trigger.is_root;
 
             let next_string = &mut self.strings[next_string_index];
             next_string.karplus_strong.reset();
@@ -186,6 +197,7 @@ impl Dsp {
         assert_eq!(self.strings.len(), 8);
 
         let new_root_strings_len = match len {
+            0 => 0,     // NOTE: For round robin
             1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
             3..=6 => 3,
             _ => 2,

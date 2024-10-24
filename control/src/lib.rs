@@ -179,7 +179,9 @@ impl Controller {
                     || self.inputs.buttons.scale.clicked()
                     || self.inputs.buttons.arp.clicked()
                 {
-                    self.state = State::Normal
+                    defmt::info!("Exiting configuration");
+                    self.state = State::Normal;
+                    display_request.reset_fallback_attribute();
                 } else {
                     display_request.set_fallback_attribute(Screen::configuration());
 
@@ -251,6 +253,12 @@ impl Controller {
                         display_request.set_queried_attribute(Screen::stereo_mode(
                             self.parameters.stereo_mode.selected(),
                         ));
+                        if changed {
+                            defmt::info!(
+                                "Changed stereo_mode={:?}",
+                                self.parameters.stereo_mode.selected()
+                            )
+                        }
                     }
                 }
             }

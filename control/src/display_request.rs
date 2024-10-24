@@ -71,6 +71,10 @@ impl DisplayRequest {
     pub fn set_fallback_attribute(&mut self, fallback_attribute: Screen) {
         self.fallback_attribute = ScreenRequest::Set(fallback_attribute);
     }
+
+    pub fn reset_fallback_attribute(&mut self) {
+        self.fallback_attribute = ScreenRequest::Reset;
+    }
 }
 
 impl ScreenRequest {
