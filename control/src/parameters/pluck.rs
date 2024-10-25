@@ -14,7 +14,7 @@ impl Pluck {
 
     pub fn reconcile(&mut self, pot: f32, cv: Option<f32>) {
         let linear_sum = math::linear_sum(pot, cv);
-        let offset_sum = (linear_sum + 0.01).clamp(0.0, 1.0);
+        let offset_sum = (linear_sum + 0.05) / (1.0 + 0.05);
         let exp_sum = log(offset_sum);
         self.continuous.reconcile(exp_sum);
     }
