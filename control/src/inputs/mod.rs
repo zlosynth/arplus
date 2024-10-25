@@ -118,8 +118,8 @@ impl Inputs {
 
         self.buttons.tonic.reconcile(snapshot.buttons[0]);
         self.buttons.trigger.reconcile(snapshot.buttons[1]);
-        self.buttons.arp.reconcile(snapshot.buttons[2]);
-        self.buttons.rsnx.reconcile(snapshot.buttons[3]);
+        self.buttons.rsnx.reconcile(snapshot.buttons[2]);
+        self.buttons.arp.reconcile(snapshot.buttons[3]);
         self.buttons.scale_group.reconcile(snapshot.buttons[4]);
         self.buttons.scale.reconcile(snapshot.buttons[5]);
     }
