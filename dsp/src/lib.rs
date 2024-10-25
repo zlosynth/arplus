@@ -35,7 +35,6 @@ pub struct Dsp {
     dc_blocker: [DCBlocker; 2],
     upsampler: [Upsampler4; 2],
     downsampler: [Downsampler4; 2],
-    stereo_mode: StereoMode,
 }
 
 pub struct String {
@@ -49,7 +48,6 @@ pub struct Attributes {
     pub cutoff: f32,
     pub trigger: Option<TriggerAttributes>,
     pub gain: f32,
-    pub stereo_mode: StereoMode,
     pub chord_size: usize,
 }
 
@@ -59,13 +57,6 @@ pub struct TriggerAttributes {
     pub contour: f32,
     pub pluck: f32,
     pub is_root: bool,
-}
-
-#[repr(usize)]
-#[derive(Clone, Copy, Debug, defmt::Format, PartialEq)]
-pub enum StereoMode {
-    RoundRobin,
-    RootLeft,
 }
 
 impl Dsp {
@@ -94,7 +85,6 @@ impl Dsp {
                 Downsampler4::new_4(memory_manager),
                 Downsampler4::new_4(memory_manager),
             ],
-            stereo_mode: StereoMode::default(),
         }
     }
 
@@ -102,31 +92,13 @@ impl Dsp {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
 
-        match self.stereo_mode {
-            StereoMode::RoundRobin => {
-                for string_pair in self.strings.chunks_mut(2) {
-                    if let Some(left_string) = string_pair.get_mut(0) {
-                        left_string
-                            .karplus_strong
-                            .populate_add(&mut buffer_left, random);
-                    }
-                    if let Some(right_string) = string_pair.get_mut(1) {
-                        right_string
-                            .karplus_strong
-                            .populate_add(&mut buffer_right, random);
-                    }
-                }
-            }
-            StereoMode::RootLeft => {
-                for string in self.strings.iter_mut() {
-                    if string.is_root {
-                        string.karplus_strong.populate_add(&mut buffer_left, random);
-                    } else {
-                        string
-                            .karplus_strong
-                            .populate_add(&mut buffer_right, random);
-                    }
-                }
+        for string in self.strings.iter_mut() {
+            if string.is_root {
+                string.karplus_strong.populate_add(&mut buffer_left, random);
+            } else {
+                string
+                    .karplus_strong
+                    .populate_add(&mut buffer_right, random);
             }
         }
 
@@ -154,32 +126,19 @@ impl Dsp {
             string.karplus_strong.set_cutoff(attributes.cutoff);
         }
 
-        // TODO: Refactor the logic around stereo_mode and is_root
-        self.stereo_mode = attributes.stereo_mode;
+        self.set_root_strings_len(attributes.chord_size);
 
         if let Some(trigger) = attributes.trigger {
-            let (string_index, next_string_index) = match self.stereo_mode {
-                StereoMode::RoundRobin => {
-                    self.set_root_strings_len(0);
-                    let string_index = self.rest_string_index();
-                    self.bump_rest_string_index();
-                    let next_string_index = self.rest_string_index();
-                    (string_index, next_string_index)
-                }
-                StereoMode::RootLeft => {
-                    self.set_root_strings_len(attributes.chord_size);
-                    if trigger.is_root {
-                        let string_index = self.root_string_index();
-                        self.bump_root_string_index();
-                        let next_string_index = self.root_string_index();
-                        (string_index, next_string_index)
-                    } else {
-                        let string_index = self.rest_string_index();
-                        self.bump_rest_string_index();
-                        let next_string_index = self.rest_string_index();
-                        (string_index, next_string_index)
-                    }
-                }
+            let (string_index, next_string_index) = if trigger.is_root {
+                let string_index = self.root_string_index();
+                self.bump_root_string_index();
+                let next_string_index = self.root_string_index();
+                (string_index, next_string_index)
+            } else {
+                let string_index = self.rest_string_index();
+                self.bump_rest_string_index();
+                let next_string_index = self.rest_string_index();
+                (string_index, next_string_index)
             };
 
             let string = &mut self.strings[string_index];
@@ -199,7 +158,6 @@ impl Dsp {
         assert_eq!(self.strings.len(), 8);
 
         let new_root_strings_len = match len {
-            0 => 0,     // NOTE: For round robin
             1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
             3..=6 => 3,
             _ => 2,
@@ -247,22 +205,5 @@ impl String {
             karplus_strong: KarplusStrong::new(sample_rate, memory_manager),
             is_root: false,
         }
-    }
-}
-
-impl Default for StereoMode {
-    fn default() -> Self {
-        Self::RootLeft
-    }
-}
-
-impl TryFrom<usize> for StereoMode {
-    type Error = ();
-
-    fn try_from(index: usize) -> Result<Self, Self::Error> {
-        if index >= 2 {
-            return Err(());
-        }
-        Ok(unsafe { core::mem::transmute(index) })
     }
 }

@@ -168,7 +168,6 @@ impl Controller {
             State::Normal => {
                 if self.inputs.buttons.scale_group.held_for() > 3000
                     && self.inputs.buttons.scale.held_for() > 3000
-                    && self.inputs.buttons.arp.held_for() > 3000
                 {
                     defmt::info!("Entering configuration");
                     self.state = State::Configuring;
@@ -178,11 +177,35 @@ impl Controller {
                 if self.inputs.buttons.scale_group.clicked()
                     || self.inputs.buttons.scale.clicked()
                     || self.inputs.buttons.arp.clicked()
+                    || self.inputs.buttons.trigger.clicked()
+                    || self.inputs.buttons.tonic.clicked()
+                    || self.inputs.buttons.rsnx.clicked()
                 {
                     defmt::info!("Exiting configuration");
                     self.state = State::Normal;
                     display_request.reset_fallback_attribute();
                 } else {
+                    // Available pots
+                    // ==============
+                    // Tone
+                    // Chord
+                    // Chord Size
+                    // Resonance
+                    // Cutoff
+                    // Contour
+                    // Pluck
+                    //
+                    //
+                    // Options to configure
+                    // ====================
+                    // Gain
+                    // Tonic mapping
+                    // Arp mapping
+                    // Scale group mapping
+                    // Scale mapping
+                    // Pluck mapping
+                    // Chord size mapping
+
                     display_request.set_fallback_attribute(Screen::configuration());
 
                     if self.inputs.pots.chord_size.activation_movement() {
@@ -242,24 +265,6 @@ impl Controller {
 
                     // TODO: Chord size mapping
                     // TODO: Pluck mapping
-
-                    // TODO: Disable this and use only root left
-                    if self.inputs.pots.contour.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .stereo_mode
-                            .reconcile(self.inputs.pots.contour.value());
-                        *needs_save |= changed;
-                        display_request.set_queried_attribute(Screen::stereo_mode(
-                            self.parameters.stereo_mode.selected(),
-                        ));
-                        if changed {
-                            defmt::info!(
-                                "Changed stereo_mode={:?}",
-                                self.parameters.stereo_mode.selected()
-                            )
-                        }
-                    }
                 }
             }
         }
@@ -490,7 +495,6 @@ impl Controller {
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
-            stereo_mode: self.parameters.stereo_mode.selected(),
             chord_size: self.parameters.chord.selected_group_size(),
         }
     }
