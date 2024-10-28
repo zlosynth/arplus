@@ -13,8 +13,8 @@
 - [X] See if longer contour makes a difference with silent pluck. If not, have one knob for both. -- I'll keep it.
 - [X] Rename chord "group" to "size" in the code.
 - [ ] Review configuration menu and either disable it or commit to have those parameters.
-- [ ] Fix clipping on longest contour and high resonance (is it caused by filter or saturation?)
-- [ ] Fix instability of the filter
+- [X] Fix clipping on longest contour and high resonance (is it caused by filter or saturation?) - caused by saturated CPU
+- [X] Fix instability of the filter
 - [X] Keep separate set of strings for root, dynamic based on chord size.
 - [ ] Adjust to new hardware
   - [X] Move size CV to alternative config.
@@ -26,7 +26,7 @@
   - [X] Add an alternative pluck pot CV mapping.
 - [X] Fix a bug where LEDs show size of chord 4, but chords are still of size 3.
 - [X] Fix a bug where root is silenced.
-- [ ] Fix an issue where changing chord size fast stalls the firmware.
+- [X] Fix an issue where changing chord size fast stalls the firmware.
 - [ ] Degree display on root should show only the notes selected for chord.
 - [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
 - [ ] Refactor the whole codebase.
