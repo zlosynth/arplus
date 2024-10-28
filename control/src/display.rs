@@ -438,7 +438,7 @@ impl GainScreen {
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
         let len = leds.len();
-        for led in leds[0..usize::max(self.index * 2, len)].iter_mut() {
+        for led in leds[0..usize::min((self.index + 1) * 2, len)].iter_mut() {
             *led = true;
         }
         leds
