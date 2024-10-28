@@ -264,6 +264,11 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
+        // NOTE: Things get confusing otherwise.
+        if matches!(self.state, State::Configuring) {
+            return;
+        }
+
         self.reconcile_chord(display_request, needs_save);
         self.reconcile_contour();
         self.reconcile_cutoff();
