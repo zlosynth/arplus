@@ -185,86 +185,75 @@ impl Controller {
                     self.state = State::Normal;
                     display_request.reset_fallback_attribute();
                 } else {
-                    // Available pots
-                    // ==============
-                    // Tone
-                    // Chord
-                    // Chord Size
-                    // Resonance
-                    // Cutoff
-                    // Contour
-                    // Pluck
-                    //
-                    //
-                    // Options to configure
-                    // ====================
-                    // Gain
-                    // Tonic mapping
-                    // Arp mapping
-                    // Scale group mapping
-                    // Scale mapping
-                    // Pluck mapping
-                    // Chord size mapping
+                    // Configuration
+                    // =============
+                    // POT -> ATTRIBUTE
+                    // Tone -> Tonic CV mapping
+                    // Chord -> Gain
+                    // Chord Size -> Chord size CV mapping
+                    // Resonance -> Scale group CV mapping
+                    // Cutoff -> Scale CV mapping
+                    // Contour -> Arp CV mapping
+                    // Pluck -> Pluck CV mapping
 
                     display_request.set_fallback_attribute(Screen::configuration());
 
-                    if self.inputs.pots.chord_size.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .gain
-                            .reconcile(self.inputs.pots.chord_size.value());
-                        *needs_save |= changed;
+                    let cv_mapping = &mut self.parameters.cv_mapping;
+                    let pots = &mut self.inputs.pots;
+
+                    // Tone knob selects tonic CV.
+                    if pots.tone.activation_movement() {
+                        *needs_save |= cv_mapping.reconcile_tonic_mapping(pots.tone.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.tonic_socket()));
+                    }
+
+                    // Chord knob sets gain.
+                    if pots.chord.activation_movement() {
+                        *needs_save |= self.parameters.gain.reconcile(pots.chord.value());
                         display_request.set_queried_attribute(Screen::gain(
                             self.parameters.gain.selected_index(),
                         ));
                     }
 
-                    if self.inputs.pots.tone.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .cv_mapping
-                            .reconcile_scale_group_mapping(self.inputs.pots.chord_size.value());
-                        *needs_save |= changed;
+                    // Chord size knob selects chord size CV.
+                    if pots.chord_size.activation_movement() {
+                        *needs_save |=
+                            cv_mapping.reconcile_chord_size_mapping(pots.chord_size.value());
                         display_request.set_queried_attribute(Screen::cv_mapping(
-                            self.parameters.cv_mapping.scale_group_socket(),
+                            cv_mapping.chord_size_socket(),
                         ));
                     }
 
-                    if self.inputs.pots.resonance.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .cv_mapping
-                            .reconcile_scale_mapping(self.inputs.pots.resonance.value());
-                        *needs_save |= changed;
+                    // Resonance knob selects scale group CV.
+                    if pots.resonance.activation_movement() {
+                        *needs_save |=
+                            cv_mapping.reconcile_scale_group_mapping(pots.resonance.value());
                         display_request.set_queried_attribute(Screen::cv_mapping(
-                            self.parameters.cv_mapping.scale_socket(),
+                            cv_mapping.scale_group_socket(),
                         ));
                     }
 
-                    if self.inputs.pots.chord.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .cv_mapping
-                            .reconcile_arp_mapping(self.inputs.pots.chord.value());
-                        *needs_save |= changed;
-                        display_request.set_queried_attribute(Screen::cv_mapping(
-                            self.parameters.cv_mapping.arp_socket(),
-                        ));
+                    // Cutoff knob selects scale CV.
+                    if pots.cutoff.activation_movement() {
+                        *needs_save |= cv_mapping.reconcile_scale_mapping(pots.cutoff.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.scale_socket()));
                     }
 
-                    if self.inputs.pots.cutoff.activation_movement() {
-                        let changed = self
-                            .parameters
-                            .cv_mapping
-                            .reconcile_tonic_mapping(self.inputs.pots.cutoff.value());
-                        *needs_save |= changed;
-                        display_request.set_queried_attribute(Screen::cv_mapping(
-                            self.parameters.cv_mapping.tonic_socket(),
-                        ));
+                    // Contour knob selects arp CV.
+                    if pots.contour.activation_movement() {
+                        *needs_save |= cv_mapping.reconcile_arp_mapping(pots.contour.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.arp_socket()));
                     }
 
-                    // TODO: Chord size mapping
-                    // TODO: Pluck mapping
+                    // Pluck knob selects pluck CV.
+                    if pots.pluck.activation_movement() {
+                        *needs_save |= cv_mapping.reconcile_pluck_mapping(pots.pluck.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.pluck_socket()));
+                    }
                 }
             }
         }
@@ -540,13 +529,11 @@ impl Controller {
     }
 
     fn pluck_cv(&self) -> Option<f32> {
-        // self.socket_cv(self.parameters.cv_mapping.pluck_socket())
-        None
+        self.socket_cv(self.parameters.cv_mapping.pluck_socket())
     }
 
     fn chord_size_cv(&self) -> Option<f32> {
-        // TODO: Needs to be taken from mapping now
-        self.socket_cv_unless_remapped(CvMappingSocket::ChordSize)
+        self.socket_cv(self.parameters.cv_mapping.chord_size_socket())
     }
 
     fn contour_cv(&self) -> Option<f32> {
@@ -582,7 +569,6 @@ impl Controller {
             CvMappingSocket::None => None,
             CvMappingSocket::Tone => self.inputs.cvs.tone.value(),
             CvMappingSocket::Chord => self.inputs.cvs.chord.value(),
-            CvMappingSocket::ChordSize => self.inputs.cvs.chord_size.value(),
             CvMappingSocket::Resonance => self.inputs.cvs.resonance.value(),
             CvMappingSocket::Cutoff => self.inputs.cvs.cutoff.value(),
             CvMappingSocket::Contour => self.inputs.cvs.contour.value(),

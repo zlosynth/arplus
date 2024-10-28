@@ -2,18 +2,22 @@ use super::primitives::discrete::Discrete;
 use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
 
 pub struct CvMapping {
+    chord_size: Discrete,
     scale_group: Discrete,
     scale: Discrete,
     arp: Discrete,
     tonic: Discrete,
+    pluck: Discrete,
 }
 
 #[derive(Clone, Copy, defmt::Format, PartialEq, Default, Debug)]
 pub struct PersistentConfig {
+    chord_size: DiscretePersistentConfig,
     scale_group: DiscretePersistentConfig,
     scale: DiscretePersistentConfig,
     arp: DiscretePersistentConfig,
     tonic: DiscretePersistentConfig,
+    pluck: DiscretePersistentConfig,
 }
 
 // ALLOW: `None` is constructed as the default from usize.
@@ -24,7 +28,6 @@ pub enum Socket {
     None = 0,
     Tone,
     Chord,
-    ChordSize,
     Resonance,
     Cutoff,
     Contour,
@@ -33,19 +36,23 @@ pub enum Socket {
 impl CvMapping {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
+            chord_size: Discrete::new(config.chord_size, 7, 0.1),
             scale_group: Discrete::new(config.scale_group, 7, 0.1),
             scale: Discrete::new(config.scale, 7, 0.1),
             arp: Discrete::new(config.arp, 7, 0.1),
             tonic: Discrete::new(config.tonic, 7, 0.1),
+            pluck: Discrete::new(config.tonic, 7, 0.1),
         }
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
+            chord_size: self.chord_size.copy_config(),
             scale_group: self.scale_group.copy_config(),
             scale: self.scale.copy_config(),
             arp: self.arp.copy_config(),
             tonic: self.tonic.copy_config(),
+            pluck: self.tonic.copy_config(),
         }
     }
 
@@ -83,6 +90,24 @@ impl CvMapping {
     pub fn tonic_socket(&self) -> Socket {
         // SAFETY: Maximum selected value is limited.
         self.tonic.selected_value().try_into().unwrap()
+    }
+
+    pub fn reconcile_chord_size_mapping(&mut self, input_level: f32) -> bool {
+        self.chord_size.reconcile(input_level)
+    }
+
+    pub fn chord_size_socket(&self) -> Socket {
+        // SAFETY: Maximum selected value is limited.
+        self.chord_size.selected_value().try_into().unwrap()
+    }
+
+    pub fn reconcile_pluck_mapping(&mut self, input_level: f32) -> bool {
+        self.pluck.reconcile(input_level)
+    }
+
+    pub fn pluck_socket(&self) -> Socket {
+        // SAFETY: Maximum selected value is limited.
+        self.pluck.selected_value().try_into().unwrap()
     }
 
     pub fn is_socket_remapped(&self, socket: Socket) -> bool {

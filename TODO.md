@@ -17,13 +17,13 @@
 - [ ] Fix instability of the filter
 - [X] Keep separate set of strings for root, dynamic based on chord size.
 - [ ] Adjust to new hardware
-  - [ ] Move size CV to alternative config.
+  - [X] Move size CV to alternative config.
   - [ ] Implement reset button.
   - [ ] Implement next ARP modes and the button.
   - [ ] Implement reset/next CV.
-  - [ ] Implement dedicated tonic CV.
+  - [X] Implement dedicated tonic CV.
   - [X] Implement pluck pot.
-  - [ ] Add an alternative pluck pot CV mapping.
+  - [X] Add an alternative pluck pot CV mapping.
 - [X] Fix a bug where LEDs show size of chord 4, but chords are still of size 3.
 - [X] Fix a bug where root is silenced.
 - [ ] Fix an issue where changing chord size fast stalls the firmware.
