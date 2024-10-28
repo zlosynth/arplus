@@ -6,6 +6,9 @@ authors = ["Petr Horáček <petr@zlosynth.com>"]
 license = "GPL-3.0-or-later"
 publish = false
 
+[features]
+idle-measuring = []
+
 [lib]
 harness = false
 

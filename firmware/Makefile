@@ -25,7 +25,7 @@ clean:
 
 .PHONY: flash
 flash:
-	$(CARGO) run --release
+	$(CARGO) run --release --features idle-measuring
 
 .PHONY: flash-dfu
 flash-dfu:

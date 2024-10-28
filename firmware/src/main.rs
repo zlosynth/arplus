@@ -64,8 +64,13 @@ mod app {
             save_queue: Queue<Save, 8> = Queue::new(),
         ]
     )]
-    fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(mut cx: init::Context) -> (Shared, Local, init::Monotonics) {
         defmt::info!("Starting the firmware, initializing resources");
+
+        if cfg!(feature = "idle-measuring") {
+            cx.core.DCB.enable_trace();
+            cx.core.DWT.enable_cycle_counter();
+        }
 
         let (dsp_attributes_producer, dsp_attributes_consumer) =
             cx.local.dsp_attributes_queue.split();
@@ -272,5 +277,68 @@ mod app {
         let version_indicator = cx.local.version_indicator;
         let required_sleep = version_indicator.cycle();
         version_indicator_loop::spawn_after(required_sleep).unwrap();
+    }
+
+    #[idle(local = [idling: u32 = 0, start: u32 = 0])]
+    fn idle(cx: idle::Context) -> ! {
+        if cfg!(feature = "idle-measuring") {
+            use core::sync::atomic::{self, Ordering};
+            use daisy::pac::DWT;
+
+            const USECOND: u32 = 480;
+            const TIME_LIMIT: u32 = USECOND * 10_000; // 0.01 second
+
+            defmt::info!("Idle measuring is enabled");
+
+            let idling: &'static mut u32 = cx.local.idling;
+            let start: &'static mut u32 = cx.local.start;
+
+            atomic::compiler_fence(Ordering::Acquire);
+            *start = DWT::cycle_count();
+
+            loop {
+                cortex_m::interrupt::free(|_cs| {
+                    cortex_m::asm::delay(USECOND);
+                    *idling += USECOND;
+                });
+
+                if *idling >= TIME_LIMIT {
+                    let now = DWT::cycle_count();
+                    atomic::compiler_fence(Ordering::Release);
+
+                    let elapsed = calculate_elapsed_dwt_ticks(now, start);
+
+                    #[allow(clippy::cast_precision_loss)]
+                    let idling_relative = *idling as f32 / elapsed as f32;
+                    log_idle_time(idling_relative);
+
+                    atomic::compiler_fence(Ordering::Acquire);
+                    *start = DWT::cycle_count();
+                    *idling = 0;
+                }
+            }
+        } else {
+            loop {
+                cortex_m::asm::nop();
+            }
+        }
+    }
+
+    fn calculate_elapsed_dwt_ticks(now: u32, start: &mut u32) -> u32 {
+        if now >= *start {
+            now - *start
+        } else {
+            now + (u32::MAX - *start)
+        }
+    }
+
+    fn log_idle_time(idling_relative: f32) {
+        const IDLE_LIMIT: f32 = 0.1;
+        let idling_percent = idling_relative * 100.0;
+        if idling_relative < IDLE_LIMIT {
+            defmt::warn!("Idle time={}% is below the limit", idling_percent);
+        } else {
+            defmt::debug!("Idle time={}%", idling_percent);
+        }
     }
 }
