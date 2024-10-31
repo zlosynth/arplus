@@ -6,6 +6,7 @@ mod cv_mapping;
 mod gain;
 mod pluck;
 mod primitives;
+mod reset_next;
 mod resonance;
 mod scale;
 mod trigger;
@@ -26,6 +27,7 @@ pub use self::cutoff::Cutoff;
 pub use self::cv_mapping::{CvMapping, Socket as CvMappingSocket};
 pub use self::gain::Gain;
 pub use self::pluck::Pluck;
+pub use self::reset_next::ResetNext;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
 pub use self::trigger::Trigger;
@@ -38,6 +40,7 @@ pub struct Parameters {
     pub scale: Scale,
     pub arp_mode: ArpMode,
     pub trigger: Trigger,
+    pub reset_next: ResetNext,
     pub gain: Gain,
     pub pluck: Pluck,
     pub cv_mapping: CvMapping,
@@ -64,6 +67,7 @@ impl Parameters {
             scale,
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),
+            reset_next: ResetNext::new(),
             gain: Gain::new(config.gain),
             cv_mapping: CvMapping::new(config.cv_mapping),
         }

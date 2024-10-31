@@ -1,3 +1,11 @@
+// TODO:
+// - [X] rename current modes to _Reset
+// - [ ] keep chord in Random, as a preparation to have them stick
+// - [ ] implement reset command in config
+// - [ ] test it
+// - [ ] add _Next modes
+// - [ ] test them
+// - [ ] Test it with BSP, make sure that instant gate on both trigger and reset is recognized on that next trigger. Consider adding a delay to trigger
 use crate::chords::Chord;
 use crate::random::Random;
 use crate::scales::ProjectedScale;
@@ -18,18 +26,18 @@ pub struct Arpeggiator {
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum Mode {
-    Up = 0,
-    UpDownNoRepeats,
-    UpDownRepeats,
-    Random,
-    Moving,
+    UpWithReset = 0,
+    UpDownNoRepeatsWithReset,
+    UpDownRepeatsWithReset,
+    RandomWithReset,
+    MovingWithReset,
 }
 
 #[derive(Clone, Debug, defmt::Format)]
 pub enum State {
     Up(usize),
     Down(usize),
-    Random,
+    Random(usize, Chord),
     Moving(usize, Chord),
 }
 
@@ -39,6 +47,7 @@ pub struct Configuration {
     pub root: ScaleNote,
     pub chord: Chord,
     pub mode: Mode,
+    pub reset_next: bool,
 }
 
 impl Arpeggiator {
@@ -48,8 +57,8 @@ impl Arpeggiator {
             root: config.root,
             mode: config.mode,
             state: match config.mode {
-                Mode::Random => State::Random,
-                Mode::Moving => State::Moving(0, config.chord.clone()),
+                Mode::RandomWithReset => State::Random(0, config.chord.clone()),
+                Mode::MovingWithReset => State::Moving(0, config.chord.clone()),
                 _ => State::Up(0),
             },
             chord: config.chord,
@@ -61,19 +70,36 @@ impl Arpeggiator {
         if self.mode != config.mode {
             self.mode = config.mode;
             match self.mode {
-                Mode::Up | Mode::UpDownRepeats | Mode::UpDownNoRepeats => {
+                Mode::UpWithReset
+                | Mode::UpDownRepeatsWithReset
+                | Mode::UpDownNoRepeatsWithReset => {
                     if !matches!(self.state, State::Up(_)) {
                         self.state = State::Up(0);
                     }
                 }
-                Mode::Random => self.state = State::Random,
-                Mode::Moving => self.state = State::Moving(0, self.chord.clone()),
+                Mode::RandomWithReset => self.state = State::Random(0, self.chord.clone()),
+                Mode::MovingWithReset => self.state = State::Moving(0, self.chord.clone()),
             }
         }
+
+        if config.reset_next {
+            // TODO: Clean up
+            defmt::info!("Reset / Next triggered");
+            self.state = match config.mode {
+                Mode::RandomWithReset => State::Random(0, config.chord.clone()),
+                Mode::MovingWithReset => State::Moving(0, config.chord.clone()),
+                // TODO: The two WithNext would be handled here
+                _ => State::Up(0),
+            };
+        }
+
+        // TODO: Reset / next
 
         if self.chord != config.chord {
             if let State::Moving(_, schuffled_chord) = &mut self.state {
                 *schuffled_chord = config.chord.clone();
+            } else if let State::Random(_, randomized_chord) = &mut self.state {
+                *randomized_chord = config.chord.clone();
             }
             self.chord = config.chord;
         }
@@ -97,18 +123,18 @@ impl Arpeggiator {
                     self.chord[index]
                 } else if index == last_index {
                     let (new_state, new_index) = match self.mode {
-                        Mode::Up => (State::Up(0), last_index),
-                        Mode::UpDownRepeats => (State::Down(last_index), last_index),
-                        Mode::UpDownNoRepeats => (State::Down(last_index - 1), last_index),
+                        Mode::UpWithReset => (State::Up(0), last_index),
+                        Mode::UpDownRepeatsWithReset => (State::Down(last_index), last_index),
+                        Mode::UpDownNoRepeatsWithReset => (State::Down(last_index - 1), last_index),
                         _ => unreachable!(),
                     };
                     self.state = new_state;
                     self.chord[new_index]
                 } else {
                     let (new_state, new_index) = match self.mode {
-                        Mode::Up => (State::Up(1), 0),
-                        Mode::UpDownRepeats => (State::Down(last_index), last_index),
-                        Mode::UpDownNoRepeats => (State::Down(last_index - 1), last_index),
+                        Mode::UpWithReset => (State::Up(1), 0),
+                        Mode::UpDownRepeatsWithReset => (State::Down(last_index), last_index),
+                        Mode::UpDownNoRepeatsWithReset => (State::Down(last_index - 1), last_index),
                         _ => unreachable!(),
                     };
                     self.state = new_state;
@@ -121,8 +147,10 @@ impl Arpeggiator {
                     self.chord[0]
                 } else if index == 0 {
                     let (new_state, new_index) = match self.mode {
-                        Mode::Up | Mode::UpDownNoRepeats => (State::Up(index + 1), index),
-                        Mode::UpDownRepeats => (State::Up(index), index),
+                        Mode::UpWithReset | Mode::UpDownNoRepeatsWithReset => {
+                            (State::Up(index + 1), index)
+                        }
+                        Mode::UpDownRepeatsWithReset => (State::Up(index), index),
                         _ => unreachable!(),
                     };
                     self.state = new_state;
@@ -133,10 +161,28 @@ impl Arpeggiator {
                     self.chord[new_index]
                 }
             }
-            State::Random => {
+            State::Random(ref mut index, ref mut randomized_chord) => {
                 let last_index = self.chord.len() - 1;
-                let index = random.u8_mod(last_index as u8 + 1) as usize;
-                self.chord[index]
+                if last_index == 0 {
+                    self.chord[last_index]
+                } else if *index >= last_index {
+                    let degree = randomized_chord[last_index];
+                    match self.mode {
+                        Mode::RandomWithReset => {
+                            for d in randomized_chord.iter_mut() {
+                                *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
+                            }
+                        }
+                        // TODO: RandomWithNext would not do anything.
+                        _ => unreachable!(),
+                    }
+                    *index = 0;
+                    degree
+                } else {
+                    let degree = randomized_chord[*index];
+                    *index += 1;
+                    degree
+                }
             }
             State::Moving(ref mut index, ref mut schuffled_chord) => {
                 let last_index = self.chord.len() - 1;
@@ -144,8 +190,15 @@ impl Arpeggiator {
                     self.chord[last_index]
                 } else if *index >= last_index {
                     let degree = schuffled_chord[last_index];
-                    let (random_a, random_b) = two_distinct_random_values(last_index, random);
-                    schuffled_chord.swap(random_a, random_b);
+                    match self.mode {
+                        Mode::MovingWithReset => {
+                            let (random_a, random_b) =
+                                two_distinct_random_values(last_index, random);
+                            schuffled_chord.swap(random_a, random_b);
+                        }
+                        // TODO: MovingWithNext would not do anything.
+                        _ => unreachable!(),
+                    }
                     *index = 0;
                     degree
                 } else {
@@ -170,7 +223,7 @@ impl Arpeggiator {
 }
 
 impl Mode {
-    pub const LAST_MODE: Self = Self::Moving;
+    pub const LAST_MODE: Self = Self::MovingWithReset;
 
     pub fn index(self) -> usize {
         self as usize
@@ -248,7 +301,7 @@ mod tests {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::C1, 0),
             chord: Chord::from_slice(&[0, 1]).unwrap(),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
         };
         let _arp = Arpeggiator::with_config(configuration);
     }
@@ -260,7 +313,7 @@ mod tests {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
         };
         let mut arp = Arpeggiator::with_config(configuration);
         assert_eq!(
@@ -287,7 +340,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::UpDownNoRepeats,
+            mode: Mode::UpDownNoRepeatsWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -323,7 +376,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::UpDownRepeats,
+            mode: Mode::UpDownRepeatsWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -367,7 +420,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Random,
+            mode: Mode::RandomWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -403,7 +456,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Moving,
+            mode: Mode::MovingWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -451,7 +504,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -483,7 +536,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -519,7 +572,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::UpDownNoRepeats,
+            mode: Mode::UpDownNoRepeatsWithReset,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -555,7 +608,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::UpDownNoRepeats,
+            mode: Mode::UpDownNoRepeatsWithReset,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -603,7 +656,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::UpDownRepeats,
+            mode: Mode::UpDownRepeatsWithReset,
             chord: Chord::from_slice(&[0, 1, 2, 3]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -643,7 +696,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             root: ScaleNote::new(QuarterTone::D1, 1),
-            mode: Mode::UpDownRepeats,
+            mode: Mode::UpDownRepeatsWithReset,
             chord: Chord::from_slice(&[0, 1, 2, 3, 4]).unwrap(),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -695,7 +748,7 @@ mod tests {
         let configuration = Configuration {
             root: ScaleNote::new(QuarterTone::D1, 1),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
             scale: ionian().with_tonic(Tonic::C),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -723,7 +776,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -751,7 +804,7 @@ mod tests {
         let configuration = Configuration {
             scale: ionian().with_tonic(Tonic::C),
             chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
-            mode: Mode::Up,
+            mode: Mode::UpWithReset,
             root: ScaleNote::new(QuarterTone::D1, 1),
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
@@ -764,7 +817,7 @@ mod tests {
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(Configuration {
-            mode: Mode::UpDownNoRepeats,
+            mode: Mode::UpDownNoRepeatsWithReset,
             ..configuration.clone()
         });
         assert_eq!(

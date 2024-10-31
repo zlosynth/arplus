@@ -12,7 +12,7 @@
 - [X] Try an alternative output mode similar to Achordion, with out output only for root.
 - [X] See if longer contour makes a difference with silent pluck. If not, have one knob for both. -- I'll keep it.
 - [X] Rename chord "group" to "size" in the code.
-- [ ] Review configuration menu and either disable it or commit to have those parameters.
+- [X] Review configuration menu and either disable it or commit to have those parameters.
 - [X] Fix clipping on longest contour and high resonance (is it caused by filter or saturation?) - caused by saturated CPU
 - [X] Fix instability of the filter
 - [X] Keep separate set of strings for root, dynamic based on chord size.
@@ -30,5 +30,3 @@
 - [ ] Degree display on root should show only the notes selected for chord.
 - [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
 - [ ] Refactor the whole codebase.
-
-Commit 5290a89 sounds so good - when fiddling with contour it starts making modulated static noises. Does not belong to the final product, but it would be interesting to understand what causes it, so it can be replicated.

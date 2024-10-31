@@ -63,11 +63,11 @@ pub struct ControlOutputState {
 
 impl Controller {
     pub fn new(seed: u64, save: Save) -> Self {
-        let parameters = Parameters::new(save.parameters, Chords::new(), Scales::new());
+        let mut parameters = Parameters::new(save.parameters, Chords::new(), Scales::new());
 
         Self {
             display: Display::new(),
-            arp: Arpeggiator::with_config(build_arp_config(&parameters)),
+            arp: Arpeggiator::with_config(build_arp_config(&mut parameters)),
             parameters,
             inputs: Inputs::new(save.inputs),
             random_generator: RandomGenerator::with_seed(seed),
@@ -275,6 +275,7 @@ impl Controller {
         self.reconcile_resonance();
         self.reconcile_pluck();
         self.reconcile_trigger(display_request);
+        self.reconcile_reset_next();
         self.reconcile_scale(display_request, needs_save);
         self.reconcile_arp_mode(display_request, needs_save);
     }
@@ -318,6 +319,15 @@ impl Controller {
         if button.clicked() {
             display_request.reset_queried_attribute();
         }
+    }
+
+    fn reconcile_reset_next(&mut self) {
+        // TODO XXX: This must be preserved until the trigger is received.
+        let button = &self.inputs.buttons.rsnx;
+        let cv = &self.inputs.gates.rsnx;
+        let parameter = &mut self.parameters.reset_next;
+        // TODO: This can only set it high. It is reset when read
+        parameter.reconcile(button.clicked(), cv.triggered());
     }
 
     fn reconcile_resonance(&mut self) {
@@ -465,7 +475,8 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
     ) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            self.arp.apply_config(build_arp_config(&self.parameters));
+            self.arp
+                .apply_config(build_arp_config(&mut self.parameters));
 
             if let Some((note, index)) = self.arp.pop(&mut self.random_generator) {
                 display_request.set_fallback_attribute(Screen::step(index as usize));
@@ -589,11 +600,12 @@ fn is_button_held(button: &Button) -> bool {
     button.held_for() > HOLD_TO_QUERY
 }
 
-fn build_arp_config(parameters: &Parameters) -> ArpeggiatorConfiguration {
+fn build_arp_config(parameters: &mut Parameters) -> ArpeggiatorConfiguration {
     ArpeggiatorConfiguration {
         root: parameters.scale.selected_note(),
         scale: parameters.scale.selected_scale(),
         chord: parameters.chord.selected_chord(),
         mode: parameters.arp_mode.selected(),
+        reset_next: parameters.reset_next.pop(),
     }
 }
