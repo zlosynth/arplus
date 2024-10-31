@@ -15,7 +15,7 @@ impl Overdrive {
     fn process_sample(&self, mut value: f32) -> f32 {
         value *= self.gain;
 
-        if value < 0.0 {
+        if value < -1.0 {
             return -1.0;
         } else if value > 1.0 {
             return 1.0;
