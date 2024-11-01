@@ -18,9 +18,9 @@
 - [X] Keep separate set of strings for root, dynamic based on chord size.
 - [ ] Adjust to new hardware
   - [X] Move size CV to alternative config.
-  - [ ] Implement reset button.
-  - [ ] Implement next ARP modes and the button.
-  - [ ] Implement reset/next CV.
+  - [X] Implement reset button.
+  - [X] Implement next ARP modes and the button.
+  - [X] Implement reset/next CV.
   - [X] Implement dedicated tonic CV.
   - [X] Implement pluck pot.
   - [X] Add an alternative pluck pot CV mapping.

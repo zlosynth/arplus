@@ -3,7 +3,7 @@ use arplus_control::Save;
 use crate::control_input::ControlInputInterface;
 use crate::flash_memory::FlashMemoryInterface;
 
-const RESET_BUTTON: usize = 3;
+const RESET_BUTTON: usize = 0;
 
 pub fn warm_up_control_input(control_input_interface: &mut ControlInputInterface) {
     for _ in 0..100 {
