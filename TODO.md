@@ -30,3 +30,4 @@
 - [ ] Degree display on root should show only the notes selected for chord.
 - [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
 - [ ] Refactor the whole codebase.
+- [ ] Document why is RSNX interesting - polyrhythms, partial fix and random, ...

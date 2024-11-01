@@ -475,8 +475,10 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
     ) -> DSPAttributes {
         let trigger_attributes = if self.parameters.trigger.triggered() {
-            self.arp
-                .apply_config(build_arp_config(&mut self.parameters));
+            self.arp.apply_config(
+                build_arp_config(&mut self.parameters),
+                &mut self.random_generator,
+            );
 
             if let Some((note, index)) = self.arp.pop(&mut self.random_generator) {
                 display_request.set_fallback_attribute(Screen::step(index as usize));

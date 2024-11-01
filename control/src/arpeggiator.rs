@@ -1,10 +1,10 @@
 // TODO:
 // - [X] rename current modes to _Reset
-// - [ ] keep chord in Random, as a preparation to have them stick
-// - [ ] implement reset command in config
-// - [ ] test it
-// - [ ] add _Next modes
-// - [ ] test them
+// - [X] keep chord in Random, as a preparation to have them stick
+// - [X] implement reset command in config
+// - [X] test it
+// - [X] add _Next modes
+// - [X] test them
 // - [ ] Test it with BSP, make sure that instant gate on both trigger and reset is recognized on that next trigger. Consider adding a delay to trigger
 use crate::chords::Chord;
 use crate::random::Random;
@@ -31,6 +31,8 @@ pub enum Mode {
     UpDownRepeatsWithReset,
     RandomWithReset,
     MovingWithReset,
+    RandomWithNext,
+    MovingWithNext,
 }
 
 #[derive(Clone, Debug, defmt::Format)]
@@ -57,8 +59,12 @@ impl Arpeggiator {
             root: config.root,
             mode: config.mode,
             state: match config.mode {
-                Mode::RandomWithReset => State::Random(0, config.chord.clone()),
-                Mode::MovingWithReset => State::Moving(0, config.chord.clone()),
+                Mode::RandomWithReset | Mode::RandomWithNext => {
+                    State::Random(0, config.chord.clone())
+                }
+                Mode::MovingWithReset | Mode::MovingWithNext => {
+                    State::Moving(0, config.chord.clone())
+                }
                 _ => State::Up(0),
             },
             chord: config.chord,
@@ -66,7 +72,7 @@ impl Arpeggiator {
         }
     }
 
-    pub fn apply_config(&mut self, config: Configuration) {
+    pub fn apply_config(&mut self, config: Configuration, random: &mut impl Random) {
         if self.mode != config.mode {
             self.mode = config.mode;
             match self.mode {
@@ -77,23 +83,45 @@ impl Arpeggiator {
                         self.state = State::Up(0);
                     }
                 }
-                Mode::RandomWithReset => self.state = State::Random(0, self.chord.clone()),
-                Mode::MovingWithReset => self.state = State::Moving(0, self.chord.clone()),
+                Mode::RandomWithReset | Mode::RandomWithNext => {
+                    self.state = State::Random(0, self.chord.clone())
+                }
+                Mode::MovingWithReset | Mode::MovingWithNext => {
+                    self.state = State::Moving(0, self.chord.clone())
+                }
             }
         }
 
         if config.reset_next {
             // TODO: Clean up
-            defmt::info!("Reset / Next triggered");
-            self.state = match config.mode {
-                Mode::RandomWithReset => State::Random(0, config.chord.clone()),
-                Mode::MovingWithReset => State::Moving(0, config.chord.clone()),
+            match config.mode {
+                Mode::RandomWithReset => self.state = State::Random(0, config.chord.clone()),
+                Mode::MovingWithReset => self.state = State::Moving(0, config.chord.clone()),
+                Mode::RandomWithNext => {
+                    if let State::Random(ref mut index, ref mut randomized_chord) = self.state {
+                        let last_index = self.chord.len() - 1;
+                        for d in randomized_chord.iter_mut() {
+                            *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
+                        }
+                        *index = 0;
+                    } else {
+                        unreachable!();
+                    }
+                }
+                Mode::MovingWithNext => {
+                    if let State::Moving(ref mut index, ref mut schuffled_chord) = self.state {
+                        let last_index = self.chord.len() - 1;
+                        let (random_a, random_b) = two_distinct_random_values(last_index, random);
+                        schuffled_chord.swap(random_a, random_b);
+                        *index = 0;
+                    } else {
+                        unreachable!();
+                    }
+                }
                 // TODO: The two WithNext would be handled here
-                _ => State::Up(0),
+                _ => self.state = State::Up(0),
             };
         }
-
-        // TODO: Reset / next
 
         if self.chord != config.chord {
             if let State::Moving(_, schuffled_chord) = &mut self.state {
@@ -161,6 +189,8 @@ impl Arpeggiator {
                     self.chord[new_index]
                 }
             }
+            // TODO: Merge this with Moving, use a singe Shuffled mode
+            // TODO: Allow "Next" by registering request for next and applying it here - remove config rest from apply-config
             State::Random(ref mut index, ref mut randomized_chord) => {
                 let last_index = self.chord.len() - 1;
                 if last_index == 0 {
@@ -173,7 +203,7 @@ impl Arpeggiator {
                                 *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
                             }
                         }
-                        // TODO: RandomWithNext would not do anything.
+                        Mode::RandomWithNext => (),
                         _ => unreachable!(),
                     }
                     *index = 0;
@@ -196,7 +226,7 @@ impl Arpeggiator {
                                 two_distinct_random_values(last_index, random);
                             schuffled_chord.swap(random_a, random_b);
                         }
-                        // TODO: MovingWithNext would not do anything.
+                        Mode::MovingWithNext => (),
                         _ => unreachable!(),
                     }
                     *index = 0;
@@ -223,7 +253,7 @@ impl Arpeggiator {
 }
 
 impl Mode {
-    pub const LAST_MODE: Self = Self::MovingWithReset;
+    pub const LAST_MODE: Self = Self::MovingWithNext;
 
     pub fn index(self) -> usize {
         self as usize
