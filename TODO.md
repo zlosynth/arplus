@@ -1,7 +1,7 @@
 # TODO
 
 - [X] Remove the "Full scale" mode, to make the module simpler
-- [ ] Add trigger delay, to make sure other CV gets a chance to propagate - test this with BSP first
+- [X] Add trigger delay, to make sure other CV gets a chance to propagate - test this with BSP first
 - [X] Improve PCB placement, especially the power placement
 - [ ] Write build manual
 - [ ] Write user manual
@@ -16,7 +16,7 @@
 - [X] Fix clipping on longest contour and high resonance (is it caused by filter or saturation?) - caused by saturated CPU
 - [X] Fix instability of the filter
 - [X] Keep separate set of strings for root, dynamic based on chord size.
-- [ ] Adjust to new hardware
+- [X] Adjust to new hardware
   - [X] Move size CV to alternative config.
   - [X] Implement reset button.
   - [X] Implement next ARP modes and the button.
@@ -27,7 +27,7 @@
 - [X] Fix a bug where LEDs show size of chord 4, but chords are still of size 3.
 - [X] Fix a bug where root is silenced.
 - [X] Fix an issue where changing chord size fast stalls the firmware.
-- [ ] Degree display on root should show only the notes selected for chord.
+- [X] Degree display on root should show only the notes selected for chord.
 - [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
 - [ ] Refactor the whole codebase.
 - [ ] Document why is RSNX interesting - polyrhythms, partial fix and random, ...
