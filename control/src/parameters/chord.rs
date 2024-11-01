@@ -59,7 +59,7 @@ impl Chord {
 
         self.scale_size = scale_size;
 
-        (changed_chord, changed_chord)
+        (changed_group, changed_chord)
     }
 
     pub fn selected_group_id(&self) -> GroupId {

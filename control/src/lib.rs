@@ -280,6 +280,7 @@ impl Controller {
         self.reconcile_arp_mode(display_request, needs_save);
     }
 
+    // TODO: Unify names for group and size - just use size.
     fn reconcile_chord(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
@@ -302,10 +303,10 @@ impl Controller {
         *needs_save |=
             size_cv_value.is_none() && chord_cv_value.is_none() && (changed_group || changed_chord);
 
-        if size_pot.activation_movement() {
+        if size_pot.activation_movement() || (size_cv_value.is_none() && changed_group) {
             let size = parameter.selected_group_size();
             display_request.set_queried_attribute(Screen::chord_size(size));
-        } else if chord_pot.activation_movement() {
+        } else if chord_pot.activation_movement() || (chord_cv_value.is_none() && changed_chord) {
             let chord = parameter.selected_chord();
             display_request.set_queried_attribute(Screen::chord(chord, scale_size));
         }
