@@ -34,4 +34,4 @@
 - [X] Show chord (and other attributes) on knob touch.
 - [X] Show queried attributes also when the value is changed, but only if there is no CV connected
 - [ ] Focus during testing on display changes that were not querried by pot movement or trigger.
-- [ ] Display tone if CV is not connected and it changes.
+- [X] Display tone if CV is not connected and it changes.

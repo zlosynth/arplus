@@ -369,7 +369,7 @@ impl Controller {
         let tone_cv_value = self.tone_cv();
         let group_button = &self.inputs.buttons.scale_group;
         let scale_button = &self.inputs.buttons.scale;
-        let trigger_button = &self.inputs.buttons.trigger;
+        let tonic_button = &self.inputs.buttons.tonic;
         let group_cv = self.scale_group_cv();
         let scale_cv = self.scale_cv();
         let tonic_cv = self.tonic_cv();
@@ -377,7 +377,7 @@ impl Controller {
 
         let group_held = is_button_held(group_button);
         let scale_held = is_button_held(scale_button);
-        let trigger_held = is_button_held(trigger_button);
+        let tonic_held = is_button_held(tonic_button);
         let group_tapped = was_button_tapped(group_button);
         let scale_tapped = was_button_tapped(scale_button);
 
@@ -391,56 +391,52 @@ impl Controller {
                 tone_cv_value,
                 group_tapped,
                 scale_tapped,
-                trigger_held,
+                tonic_held,
                 group_cv,
                 scale_cv,
                 tonic_cv,
             );
-        // TODO: It is good to save tone even if tonic CV is connected etc. Correct this. Especially critical for CV pot which is accessed through alt button
-        *needs_save |= tone_cv_value.is_none()
-            && group_cv.is_none()
-            && scale_cv.is_none()
-            && tonic_cv.is_none()
-            && (note_changed || group_changed || scale_changed || octave_changed || tonic_changed);
 
-        if group_changed && group_cv.is_none() {
-            let selected = parameter.selected_group_id();
-            display_request.set_queried_attribute(Screen::scale_group(selected));
-        } else if scale_changed && scale_cv.is_none() {
-            let selected = parameter.selected_scale_index();
-            display_request.set_queried_attribute(Screen::scale(selected));
-        } else if note_changed && tone_cv_value.is_none() {
-            let selected = parameter.selected_note().index();
-            display_request.set_queried_attribute(Screen::note(selected as usize));
-        } else if octave_changed && tone_cv_value.is_some() {
-            let selected = parameter.selected_octave_index();
-            display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tonic_changed && tonic_cv.is_none() {
-            let selected = parameter.selected_tonic();
-            display_request.set_queried_attribute(Screen::tonic(selected));
-        }
+        *needs_save |= (group_cv.is_none() && group_changed)
+            || (scale_cv.is_none() && scale_changed)
+            || (tonic_cv.is_none() && tonic_changed)
+            || octave_changed
+            || (tone_cv_value.is_none()
+                && group_cv.is_none()
+                && scale_cv.is_none()
+                && tonic_cv.is_none()
+                && note_changed);
 
-        if group_changed || scale_changed {
+        if group_changed || scale_changed || tonic_changed {
             defmt::info!(
-                "Selected scale_group={:?} scale={:?}",
+                "Selected scale_group={:?} scale={:?} tonic={:?}",
                 parameter.selected_group_id(),
-                parameter.selected_scale_index()
+                parameter.selected_scale_index(),
+                parameter.selected_tonic(),
             );
         }
 
-        if group_held {
+        if group_held || (group_changed && group_cv.is_none()) {
             let selected = parameter.selected_group_id();
             display_request.set_queried_attribute(Screen::scale_group(selected));
-        } else if scale_held {
+        } else if scale_held || (scale_changed && scale_cv.is_none()) {
             let selected = parameter.selected_scale_index();
             display_request.set_queried_attribute(Screen::scale(selected));
-        } else if tone_pot.activation_movement() && !trigger_held && tone_cv_value.is_none() {
+        } else if !tonic_held
+            && tone_cv_value.is_none()
+            && (tone_pot.activation_movement() || note_changed)
+        {
             let selected = parameter.selected_note().index();
             display_request.set_queried_attribute(Screen::note(selected as usize));
-        } else if tone_pot.activation_movement() && !trigger_held && tone_cv_value.is_some() {
+        } else if !tonic_held
+            && tone_cv_value.is_some()
+            && (tone_pot.activation_movement() || octave_changed)
+        {
             let selected = parameter.selected_octave_index();
             display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tone_pot.activation_movement() && trigger_held {
+        } else if tonic_held
+            && (tone_pot.activation_movement() || (tonic_changed && tonic_cv.is_none()))
+        {
             let selected = parameter.selected_tonic();
             display_request.set_queried_attribute(Screen::tonic(selected));
         }
