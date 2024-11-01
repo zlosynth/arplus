@@ -31,3 +31,5 @@
 - [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
 - [ ] Refactor the whole codebase.
 - [ ] Document why is RSNX interesting - polyrhythms, partial fix and random, ...
+- [X] Show chord (and other attributes) on knob touch.
+- [ ] Show queried attributes also when the value is changed, but only if there is no CV connected

@@ -1,7 +1,7 @@
 use super::buffer::Buffer;
 
 pub struct Pot {
-    buffer: Buffer<32>,
+    buffer: Buffer<64>,
     last_activation_movement: u32,
 }
 
@@ -16,7 +16,7 @@ impl Pot {
     pub fn reconcile(&mut self, value: f32) {
         self.buffer.write(value);
 
-        self.last_activation_movement = if self.traveled_more_than(0.013) {
+        self.last_activation_movement = if self.traveled_more_than(0.007) {
             0
         } else {
             self.last_activation_movement.saturating_add(1)
