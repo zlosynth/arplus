@@ -47,3 +47,7 @@ flash-dfu:
 .PHONY: diagnostics
 diagnostics:
 	make -C firmware diagnostics
+
+.PHONY: manual/user
+manual/user:
+	make -C manual/user

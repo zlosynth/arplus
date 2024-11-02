@@ -124,3 +124,21 @@ make bloat
 
 I extensivelly use <https://github.com/Bouni/kicad-jlcpcb-tools> to deal with
 the matters listed in the title, and to prepare project for manufacture.
+
+## User manual
+
+The user manual is defined in latex under `manual/user`. To build it, first
+install needed pre-requisites. On Fedora it can be done by running the
+following:
+
+```sh
+sudo dnf install inkscape texlive-latex texlive-ec texlive-microtype texlive-pagecolor texlive-parskip texlive-titling texlive-hardwrap texlive-mdwtools
+```
+
+To build the manual:
+
+```sh
+make manual/user
+```
+
+The built PDF is then available in `manual/user/manual.pdf`.

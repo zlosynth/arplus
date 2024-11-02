@@ -35,3 +35,6 @@
 - [X] Show queried attributes also when the value is changed, but only if there is no CV connected
 - [ ] Focus during testing on display changes that were not querried by pot movement or trigger.
 - [X] Display tone if CV is not connected and it changes.
+- [ ] Remove the gain configuration.
+- [ ] Chords spanning multiple octaves are not display correctly on arp.
+- [ ] Implement Quant calibration. First calibrate TONE with external source. Then, holding a different button while pluggin in Quant to Tone. The module would then calibrate itself and blink twice.
