@@ -49,8 +49,7 @@
   - [ ] With unquantized Achordion solo voice
 - [ ] Add frequency on output measurement to the test plan.
 - [ ] Release Achordion with even quantization as the default. With a note that alternative firmware with better accuracy for white keys is available.
-- [ ] Confirm that root and rest have the expected content
-- [ ] Make sure it is possible to play Achordion and Arplus in tune.
+- [X] Confirm that root and rest have the expected content
 - [ ] Handle accurate tuning in v1. In v1.1 focus on synchronization with Achordion:
   - Enahnced Achordion and Arplus calibration, mapping full CV range from 0 to 5 V. Backwards compatible - allow tracking a sequence of Cs, calculate the curve from them
   - Automated sync mode. When enabled, Arplus will configure scale of Achordion

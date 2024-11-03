@@ -89,34 +89,32 @@ impl Dsp {
     }
 
     pub fn process(&mut self, buffer: &mut [(f32, f32); 32], random: &mut impl Random) {
-        let mut buffer_left = [0.0; 32];
-        let mut buffer_right = [0.0; 32];
+        let mut buffer_root = [0.0; 32];
+        let mut buffer_rest = [0.0; 32];
 
         for string in self.strings.iter_mut() {
             if string.is_root {
-                string.karplus_strong.populate_add(&mut buffer_left, random);
+                string.karplus_strong.populate_add(&mut buffer_root, random);
             } else {
-                string
-                    .karplus_strong
-                    .populate_add(&mut buffer_right, random);
+                string.karplus_strong.populate_add(&mut buffer_rest, random);
             }
         }
 
-        self.dc_blocker[0].process(&mut buffer_left);
-        self.dc_blocker[1].process(&mut buffer_right);
+        self.dc_blocker[0].process(&mut buffer_root);
+        self.dc_blocker[1].process(&mut buffer_rest);
 
-        let mut buffer_left_os = [0.0; 32 * 4];
-        self.upsampler[0].process(&buffer_left, &mut buffer_left_os);
-        self.overdrive.process(&mut buffer_left_os);
-        self.downsampler[0].process(&buffer_left_os, &mut buffer_left[..]);
+        let mut buffer_root_os = [0.0; 32 * 4];
+        self.upsampler[0].process(&buffer_root, &mut buffer_root_os);
+        self.overdrive.process(&mut buffer_root_os);
+        self.downsampler[0].process(&buffer_root_os, &mut buffer_root[..]);
 
-        let mut buffer_right_os = [0.0; 32 * 4];
-        self.upsampler[1].process(&buffer_right, &mut buffer_right_os);
-        self.overdrive.process(&mut buffer_right_os);
-        self.downsampler[1].process(&buffer_right_os, &mut buffer_right[..]);
+        let mut buffer_rest_os = [0.0; 32 * 4];
+        self.upsampler[1].process(&buffer_rest, &mut buffer_rest_os);
+        self.overdrive.process(&mut buffer_rest_os);
+        self.downsampler[1].process(&buffer_rest_os, &mut buffer_rest[..]);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
-            *x = (buffer_left[i], buffer_right[i]);
+            *x = (buffer_rest[i], buffer_root[i]);
         })
     }
 
