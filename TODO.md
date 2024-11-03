@@ -28,15 +28,16 @@
 - [X] Fix a bug where root is silenced.
 - [X] Fix an issue where changing chord size fast stalls the firmware.
 - [X] Degree display on root should show only the notes selected for chord.
-- [ ] Narrow down the amount of features - drop round robin, reduce number of chords.
+- [X] Narrow down the amount of features - drop round robin.
+- [ ] Narrow down the amount of features - reduce number of chords.
 - [ ] Refactor the whole codebase.
 - [ ] Document why is RSNX interesting - polyrhythms, partial fix and random, ...
 - [X] Show chord (and other attributes) on knob touch.
 - [X] Show queried attributes also when the value is changed, but only if there is no CV connected
 - [ ] Focus during testing on display changes that were not querried by pot movement or trigger.
 - [X] Display tone if CV is not connected and it changes.
-- [ ] Remove the gain configuration.
-- [ ] Chords spanning multiple octaves are not display correctly on arp.
+- [X] Remove the gain configuration.
+- [X] Chords spanning multiple octaves are not display correctly on arp.
 - [X] Implement Quant calibration. First calibrate TONE with external source. Then, holding a different button while pluggin in Quant to Tone. The module would then start forcing O1, then read, then O2, then read. Useful when arplus is not the only source of 1voct (while tone quant is for when it is not the only target of 1voct).
 - [X] Test that the output is properly tuned. Also test Achordion and compare them.
   - [X] Check their frequency on A. Arplus 425 Hz, Achordion 437 Hz.
