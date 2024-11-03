@@ -4,12 +4,14 @@ use crc::{Crc, CRC_16_USB};
 
 use crate::inputs::PersistentConfig as InputsPersistentConfig;
 use crate::parameters::PersistentConfig as ParametersPersistentConfig;
+use crate::quantized_output::PersistentConfig as QuantizedOutputConfig;
 
 /// Subset of control structures needed for recovery after restart.
 #[derive(Debug, Default, Clone, Copy, PartialEq, defmt::Format)]
 pub struct Save {
     pub parameters: ParametersPersistentConfig,
     pub inputs: InputsPersistentConfig,
+    pub quantized_output: QuantizedOutputConfig,
 }
 
 impl Save {

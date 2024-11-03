@@ -32,7 +32,7 @@ pub enum Screen {
     ChordSize(ChordSizeScreen),
     Note(NoteScreen),
     Chord(ChordScreen),
-    Calibration(CalibrationScreen),
+    ToneCalibration(ToneCalibrationScreen),
     Octave(OctaveScreen),
     Tonic(TonicScreen),
     Configuration(ConfigurationScreen),
@@ -103,7 +103,7 @@ pub struct ConfigurationScreen;
 pub struct FailureScreen;
 
 #[derive(Debug, defmt::Format, PartialEq)]
-pub enum CalibrationScreen {
+pub enum ToneCalibrationScreen {
     Octave1,
     Octave2,
     Failure,
@@ -220,20 +220,20 @@ impl Screen {
         Screen::Failure(FailureScreen)
     }
 
-    pub fn calibration_octave_1() -> Self {
-        Screen::Calibration(CalibrationScreen::Octave1)
+    pub fn tone_calibration_octave_1() -> Self {
+        Screen::ToneCalibration(ToneCalibrationScreen::Octave1)
     }
 
-    pub fn calibration_octave_2() -> Self {
-        Screen::Calibration(CalibrationScreen::Octave2)
+    pub fn tone_calibration_octave_2() -> Self {
+        Screen::ToneCalibration(ToneCalibrationScreen::Octave2)
     }
 
     pub fn calibration_success() -> Self {
-        Screen::Calibration(CalibrationScreen::Success)
+        Screen::ToneCalibration(ToneCalibrationScreen::Success)
     }
 
     pub fn calibration_failure() -> Self {
-        Screen::Calibration(CalibrationScreen::Failure)
+        Screen::ToneCalibration(ToneCalibrationScreen::Failure)
     }
 
     pub fn leds(&self, clock: usize) -> [bool; 8] {
@@ -250,7 +250,7 @@ impl Screen {
             Screen::Gain(s) => s.leds(),
             Screen::CvMapping(s) => s.leds(),
             Screen::Failure(s) => s.leds(clock),
-            Screen::Calibration(s) => s.leds(clock),
+            Screen::ToneCalibration(s) => s.leds(clock),
             Screen::Configuration(s) => s.leds(clock),
         }
     }
@@ -488,10 +488,10 @@ impl ConfigurationScreen {
     }
 }
 
-impl CalibrationScreen {
+impl ToneCalibrationScreen {
     fn leds(&self, clock: usize) -> [bool; 8] {
         match self {
-            CalibrationScreen::Octave1 => {
+            ToneCalibrationScreen::Octave1 => {
                 let phase = (clock / 400) % 6;
                 if phase == 0 || phase == 2 {
                     [true, true, true, true, false, false, false, false]
@@ -499,7 +499,7 @@ impl CalibrationScreen {
                     [false, false, false, false, false, false, false, false]
                 }
             }
-            CalibrationScreen::Octave2 => {
+            ToneCalibrationScreen::Octave2 => {
                 let phase = (clock / 400) % 6;
                 if phase == 0 || phase == 2 {
                     [false, false, false, false, true, true, true, true]
@@ -507,8 +507,10 @@ impl CalibrationScreen {
                     [false, false, false, false, false, false, false, false]
                 }
             }
-            CalibrationScreen::Failure => [false, false, false, false, false, false, false, false],
-            CalibrationScreen::Success => [true, true, true, true, true, true, true, true],
+            ToneCalibrationScreen::Failure => {
+                [false, false, false, false, false, false, false, false]
+            }
+            ToneCalibrationScreen::Success => [true, true, true, true, true, true, true, true],
         }
     }
 }

@@ -37,4 +37,10 @@
 - [X] Display tone if CV is not connected and it changes.
 - [ ] Remove the gain configuration.
 - [ ] Chords spanning multiple octaves are not display correctly on arp.
-- [ ] Implement Quant calibration. First calibrate TONE with external source. Then, holding a different button while pluggin in Quant to Tone. The module would then calibrate itself and blink twice.
+- [X] Implement Quant calibration. First calibrate TONE with external source. Then, holding a different button while pluggin in Quant to Tone. The module would then start forcing O1, then read, then O2, then read. Useful when arplus is not the only source of 1voct (while tone quant is for when it is not the only target of 1voct).
+- [ ] Test that calibration of output works
+  - [ ] implement forced voct from handy on button hold
+  - [ ] measure voltage from handy
+  - [ ] calibrate output
+  - [ ] measure that it outputs exactly the same on octaves
+- [ ] Test that the output is properly tuned.

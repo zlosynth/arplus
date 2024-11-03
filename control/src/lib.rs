@@ -7,11 +7,13 @@
 extern crate approx;
 
 mod arpeggiator;
+mod calibration;
 mod chords;
 mod display;
 mod display_request;
 mod inputs;
 mod parameters;
+mod quantized_output;
 mod random;
 mod save;
 mod scales;
@@ -26,6 +28,7 @@ use crate::chords::Chords;
 use crate::display::{Display, Screen};
 use crate::inputs::{Button, Inputs};
 use crate::parameters::{CvMappingSocket, Parameters};
+use crate::quantized_output::QuantizedOutput;
 use crate::random::RandomGenerator;
 use crate::scales::Scales;
 
@@ -34,6 +37,7 @@ const HOLD_TO_QUERY: usize = 400;
 pub struct Controller {
     display: Display,
     inputs: Inputs,
+    quantized_output: QuantizedOutput,
     parameters: Parameters,
     arp: Arpeggiator,
     random_generator: RandomGenerator,
@@ -41,7 +45,8 @@ pub struct Controller {
 }
 
 enum State {
-    Calibrating(CalibrationPhase),
+    CalibratingTone(CalibrationPhase),
+    CalibratingQuant(CalibrationPhase),
     Configuring,
     Normal,
 }
@@ -70,6 +75,7 @@ impl Controller {
             arp: Arpeggiator::with_config(build_arp_config(&mut parameters)),
             parameters,
             inputs: Inputs::new(save.inputs),
+            quantized_output: QuantizedOutput::with_config(save.quantized_output),
             random_generator: RandomGenerator::with_seed(seed),
             state: State::Normal,
         }
@@ -81,7 +87,8 @@ impl Controller {
 
         self.inputs.apply_input_snapshot(snapshot);
 
-        self.reconcile_calibration(&mut display_request, &mut needs_save);
+        self.reconcile_tone_calibration(&mut display_request, &mut needs_save);
+        self.reconcile_quant_calibration(&mut display_request, &mut needs_save);
         self.reconcile_configuration(&mut display_request, &mut needs_save);
         self.reconcile_parameters_with_inputs(&mut display_request, &mut needs_save);
 
@@ -101,27 +108,38 @@ impl Controller {
         }
     }
 
-    fn reconcile_calibration(
+    // TODO: Implement output calibration
+    // - [X] Rename all Calibration stuff to ToneCalibration
+    // - [X] Use RSNX button for ToneCalibration
+    // - [ ] Add calibration attributes to the Quan output abstraction
+    // - [ ] Enter quan calibration and exit right away
+    // - [ ] Confirm that quant is connected to TONE with a probe sequence
+    // - [ ] Read two octaves
+    // - [ ] Add animation to all steps
+
+    fn reconcile_tone_calibration(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
-        let trigger_button = &self.inputs.buttons.trigger;
+        let button = &self.inputs.buttons.rsnx;
         let state = &mut self.state;
         let tone_cv = &mut self.inputs.cvs.tone;
 
         match state {
             State::Normal | State::Configuring => {
-                if trigger_button.pressed() && tone_cv.just_plugged() {
-                    display_request.set_calibration_phase(Screen::calibration_octave_1());
-                    *state = State::Calibrating(CalibrationPhase::Octave1);
+                if button.pressed() && tone_cv.just_plugged() {
+                    display_request.set_tone_calibration_phase(Screen::tone_calibration_octave_1());
+                    *state = State::CalibratingTone(CalibrationPhase::Octave1);
                 }
             }
-            State::Calibrating(CalibrationPhase::Octave1) => {
+            State::CalibratingQuant(_) => (),
+            State::CalibratingTone(CalibrationPhase::Octave1) => {
                 if let Some(value) = tone_cv.value() {
-                    if trigger_button.clicked() {
-                        display_request.set_calibration_phase(Screen::calibration_octave_2());
-                        *state = State::Calibrating(CalibrationPhase::Octave2(value));
+                    if button.clicked() {
+                        display_request
+                            .set_tone_calibration_phase(Screen::tone_calibration_octave_2());
+                        *state = State::CalibratingTone(CalibrationPhase::Octave2(value));
                     }
                 } else {
                     display_request.set_calibration_result(Screen::calibration_failure());
@@ -129,19 +147,23 @@ impl Controller {
                     *state = State::Normal;
                 }
             }
-            State::Calibrating(CalibrationPhase::Octave2(octave_1)) => {
+            State::CalibratingTone(CalibrationPhase::Octave2(octave_1)) => {
                 if let Some(value) = tone_cv.value() {
-                    if trigger_button.clicked() {
+                    if button.clicked() {
                         if tone_cv.update_calibration(*octave_1, value).is_ok() {
                             defmt::info!(
-                                "Successfully completed calibration, O1={:?} O2={:?}",
+                                "Successfully completed tone calibration, O1={:?} O2={:?}",
                                 *octave_1,
                                 value
                             );
                             *needs_save |= true;
                             display_request.set_calibration_result(Screen::calibration_success());
                         } else {
-                            defmt::info!("Failed calibration, O1={:?} O2={:?}", *octave_1, value);
+                            defmt::info!(
+                                "Failed tone calibration, O1={:?} O2={:?}",
+                                *octave_1,
+                                value
+                            );
                             display_request.set_calibration_result(Screen::calibration_failure());
                         }
                         display_request.reset_calibration_phase();
@@ -156,6 +178,66 @@ impl Controller {
         };
     }
 
+    fn reconcile_quant_calibration(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let button = &self.inputs.buttons.arp;
+        let state = &mut self.state;
+        let tone_cv = &mut self.inputs.cvs.tone;
+
+        match state {
+            State::Normal | State::Configuring => {
+                if button.pressed() && tone_cv.just_plugged() {
+                    *state = State::CalibratingQuant(CalibrationPhase::Octave1);
+                    self.quantized_output.force_octave_1();
+                }
+            }
+            State::CalibratingTone(_) => (),
+            State::CalibratingQuant(CalibrationPhase::Octave1) => {
+                // NOTE: Start calibrating on release, so the CV is already stabilized.
+                if button.pressed() {
+                    return;
+                }
+
+                if let Some(value) = tone_cv.value() {
+                    *state = State::CalibratingQuant(CalibrationPhase::Octave2(value));
+                    self.quantized_output.force_octave_2();
+                } else {
+                    display_request.set_calibration_result(Screen::calibration_failure());
+                    *state = State::Normal;
+                }
+            }
+            State::CalibratingQuant(CalibrationPhase::Octave2(octave_1)) => {
+                if let Some(value) = tone_cv.value() {
+                    self.quantized_output.remove_force();
+                    if self
+                        .quantized_output
+                        .update_calibration(*octave_1, value)
+                        .is_ok()
+                    {
+                        defmt::info!(
+                            "Successfully completed quant calibration, O1={:?} O2={:?}",
+                            *octave_1,
+                            value
+                        );
+                        *needs_save |= true;
+                        display_request.set_calibration_result(Screen::calibration_success());
+                    } else {
+                        defmt::info!(
+                            "Failed quant calibration, O1={:?} O2={:?}",
+                            *octave_1,
+                            value
+                        );
+                        display_request.set_calibration_result(Screen::calibration_failure());
+                    }
+                    *state = State::Normal;
+                }
+            }
+        };
+    }
+
     fn reconcile_configuration(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
@@ -164,7 +246,8 @@ impl Controller {
         let state = &mut self.state;
 
         match state {
-            State::Calibrating(_) => (),
+            State::CalibratingTone(_) => (),
+            State::CalibratingQuant(_) => (),
             State::Normal => {
                 if self.inputs.buttons.scale_group.held_for() > 3000
                     && self.inputs.buttons.scale.held_for() > 3000
@@ -511,19 +594,22 @@ impl Controller {
         let save = Save {
             parameters: self.parameters.copy_config(),
             inputs: self.inputs.copy_config(),
+            quantized_output: self.quantized_output.copy_config(),
         };
         save
     }
 
     pub fn tick(&mut self) -> ControlOutputState {
         self.display.tick();
+        // TODO: Find a better place for this. Probably under reconcile methods.
+        self.quantized_output.reconcile(self.arp.last_voct_output());
         ControlOutputState {
             leds: if let Some((active_screen, clock)) = self.display.active_screen_and_clock() {
                 active_screen.leds(clock)
             } else {
                 [false; 8]
             },
-            cv: self.arp.last_voct_output(),
+            cv: self.quantized_output.value(),
         }
     }
 

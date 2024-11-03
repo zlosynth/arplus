@@ -1,8 +1,8 @@
 use crate::calibration::Calibration;
 
-pub struct Cv {
-    just_plugged: bool,
-    value: Option<f32>,
+pub struct QuantizedOutput {
+    value: f32,
+    forced_value: Option<f32>,
     calibration: Option<Calibration>,
 }
 
@@ -11,19 +11,19 @@ pub struct PersistentConfig {
     pub calibration: Calibration,
 }
 
-impl Cv {
+impl QuantizedOutput {
     pub fn new() -> Self {
         Self {
-            just_plugged: false,
-            value: None,
+            value: 0.0,
+            forced_value: None,
             calibration: None,
         }
     }
 
     pub fn with_config(config: PersistentConfig) -> Self {
         Self {
-            just_plugged: false,
-            value: None,
+            value: 0.0,
+            forced_value: None,
             calibration: Some(config.calibration),
         }
     }
@@ -34,27 +34,33 @@ impl Cv {
         Ok(())
     }
 
-    pub fn reconcile(&mut self, value: Option<f32>) {
-        self.just_plugged = self.value.is_none() && value.is_some();
-
+    pub fn reconcile(&mut self, value: f32) {
         self.value = if let Some(calibration) = self.calibration {
-            value.map(|x| calibration.apply(x))
+            calibration.apply(value)
         } else {
             value
         };
     }
 
-    pub fn value(&self) -> Option<f32> {
-        self.value
-    }
-
-    pub fn just_plugged(&self) -> bool {
-        self.just_plugged
+    pub fn value(&self) -> f32 {
+        self.forced_value.unwrap_or(self.value)
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
             calibration: self.calibration.unwrap(),
         }
+    }
+
+    pub fn force_octave_1(&mut self) {
+        self.forced_value = Some(2.0);
+    }
+
+    pub fn force_octave_2(&mut self) {
+        self.forced_value = Some(3.0);
+    }
+
+    pub fn remove_force(&mut self) {
+        self.forced_value = None;
     }
 }

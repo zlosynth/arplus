@@ -50,7 +50,7 @@ impl DisplayRequest {
         self.calibration_result = ScreenRequest::Set(calibration_result);
     }
 
-    pub fn set_calibration_phase(&mut self, calibration_phase: Screen) {
+    pub fn set_tone_calibration_phase(&mut self, calibration_phase: Screen) {
         self.calibration_phase = ScreenRequest::Set(calibration_phase);
     }
 

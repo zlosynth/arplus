@@ -1,6 +1,5 @@
 mod buffer;
 mod button;
-mod calibration;
 mod cv;
 mod gate;
 mod pot;
