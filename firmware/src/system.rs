@@ -119,21 +119,10 @@ impl System {
                 .calibrate_buffer(&mut delay)
                 .enable();
             ControlOutputInterface::new(ControlOutputConfig {
-                // TODO: This will be replaced with shift register
                 pins: ControlOutputPins {
                     led_ser: pins.GPIO.PIN_D1.into_push_pull_output(),
                     led_srclk: pins.GPIO.PIN_D2.into_push_pull_output(),
                     led_rclk: pins.GPIO.PIN_D3.into_push_pull_output(),
-                    //     leds: (
-                    //         pins.GPIO.PIN_D7.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D6.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D5.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D4.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D3.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D2.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D1.into_push_pull_output(),
-                    //         pins.GPIO.PIN_D10.into_push_pull_output(),
-                    //     ),
                 },
                 dac,
             })
