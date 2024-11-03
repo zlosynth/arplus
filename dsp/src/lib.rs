@@ -105,7 +105,6 @@ impl Dsp {
         self.dc_blocker[0].process(&mut buffer_left);
         self.dc_blocker[1].process(&mut buffer_right);
 
-        // NOTE: Without overdrive
         let mut buffer_left_os = [0.0; 32 * 4];
         self.upsampler[0].process(&buffer_left, &mut buffer_left_os);
         self.overdrive.process(&mut buffer_left_os);

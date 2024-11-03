@@ -71,9 +71,11 @@ impl KarplusStrong {
             };
             let noise_sample = offset_noise * self.noise_envelope.pop() * self.pluck;
 
-            let delayed_sample = self
-                .buffer
-                .peek_interpolated(self.sample_rate / self.frequency);
+            // NOTE: Not exactly sure why, but the output is a little flat. This
+            // is compensating for it, to keep A on 440 Hz.
+            const FREQUENCY_SHIFT_COMPENSATION: f32 = 0.975;
+            let relative_index = (self.sample_rate / self.frequency) * FREQUENCY_SHIFT_COMPENSATION;
+            let delayed_sample = self.buffer.peek_interpolated(relative_index);
             let mixed_sample = noise_sample + delayed_sample * self.feedback;
 
             let q = 0.5 + self.resonance / 2.0;

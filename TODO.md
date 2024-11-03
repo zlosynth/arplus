@@ -38,9 +38,25 @@
 - [ ] Remove the gain configuration.
 - [ ] Chords spanning multiple octaves are not display correctly on arp.
 - [X] Implement Quant calibration. First calibrate TONE with external source. Then, holding a different button while pluggin in Quant to Tone. The module would then start forcing O1, then read, then O2, then read. Useful when arplus is not the only source of 1voct (while tone quant is for when it is not the only target of 1voct).
-- [ ] Test that calibration of output works
-  - [ ] implement forced voct from handy on button hold
-  - [ ] measure voltage from handy
-  - [ ] calibrate output
-  - [ ] measure that it outputs exactly the same on octaves
-- [ ] Test that the output is properly tuned.
+- [X] Test that the output is properly tuned. Also test Achordion and compare them.
+  - [X] Check their frequency on A. Arplus 425 Hz, Achordion 437 Hz.
+  - [X] Run Arplus diagnostics to see if the issue is in firmware or DSP code. It is the firmware.
+  - [X] Make it accurate. Change clock or SR?
+  - [X] Now Arplus diagnostics and Achordino are on 440. But plucks from Arplus are still 428...
+- [ ] Add known issues to the manual - Achordino may have issues tracking.
+  - [ ] With quantized Achordion (try the build with equal quantization)
+  - [ ] With unquantized Achordion solo voice
+- [ ] Add frequency on output measurement to the test plan.
+- [ ] Release Achordion with even quantization as the default. With a note that alternative firmware with better accuracy for white keys is available.
+- [ ] Confirm that root and rest have the expected content
+- [ ] Make sure it is possible to play Achordion and Arplus in tune.
+- [ ] Handle accurate tuning in v1. In v1.1 focus on synchronization with Achordion:
+  - Enahnced Achordion and Arplus calibration, mapping full CV range from 0 to 5 V. Backwards compatible - allow tracking a sequence of Cs, calculate the curve from them
+  - Automated sync mode. When enabled, Arplus will configure scale of Achordion
+  - Configuration option to send last root to quant output
+  - Use bootloader on Achordion, to provide more space for firmware
+  - Reuse scale libraries of Arplus on Achordion, if used together, Achordion can
+    run in controlled mode.
+  - When Arplus is configured that way, Achordion connected through Quant would detect that
+    it is controlled by Arplus and enter controlled mode - scale would be following
+    Arplus.
