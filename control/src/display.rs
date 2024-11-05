@@ -379,14 +379,12 @@ impl OctaveScreen {
     }
 
     fn leds(&self) -> [bool; 8] {
-        let mut leds = [false; 8];
-        if let Some(led) = leds.get_mut(self.index * 2) {
-            *led = true;
+        match self.index {
+            0 => [true, true, true, false, false, false, false, false],
+            1 => [false, false, false, true, true, false, false, false],
+            2 => [false, false, false, false, false, true, true, true],
+            _ => [true; 8],
         }
-        if let Some(led) = leds.get_mut(self.index * 2 + 1) {
-            *led = true;
-        }
-        leds
     }
 }
 

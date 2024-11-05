@@ -65,7 +65,7 @@ impl Scale {
             library,
             pot_note,
             cv_note: Continuous::new(),
-            pot_octave: Discrete::new(config.octave, 4, 0.1),
+            pot_octave: Discrete::new(config.octave, 3, 0.1),
             cv_note_control: false,
             button_group,
             cv_group,
@@ -194,7 +194,7 @@ impl Scale {
 
     pub fn selected_note(&self) -> ScaleNote {
         if self.cv_note_control {
-            let offset = self.pot_octave.selected_value() as f32 - 2.0;
+            let offset = self.pot_octave.selected_value() as f32;
             let cv = self.cv_note.value();
             let sum = (cv + offset).clamp(0.0, OCTAVES as f32);
             // SAFETY: Limited by the same octave range as when using note Pot.
