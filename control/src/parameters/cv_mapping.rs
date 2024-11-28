@@ -115,6 +115,8 @@ impl CvMapping {
             || self.scale_socket() == socket
             || self.arp_socket() == socket
             || self.tonic_socket() == socket
+            || self.chord_size_socket() == socket
+            || self.pluck_socket() == socket
     }
 }
 
