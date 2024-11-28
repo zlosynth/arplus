@@ -19,7 +19,7 @@ pub struct PersistentConfig {
 impl Gain {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
-            discrete: Discrete::new(config.discrete, LEVELS, 0.1),
+            discrete: Discrete::new(config.discrete, LEVELS, 0.1, 1.0),
         }
     }
 

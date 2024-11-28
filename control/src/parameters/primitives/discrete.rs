@@ -4,6 +4,7 @@ pub struct Discrete {
     values: usize,
     selected_value: usize,
     relative_margin: f32,
+    max_input: f32,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -12,13 +13,19 @@ pub struct PersistentConfig {
 }
 
 impl Discrete {
-    pub fn new(config: PersistentConfig, output_values: usize, relative_margin: f32) -> Self {
+    pub fn new(
+        config: PersistentConfig,
+        output_values: usize,
+        relative_margin: f32,
+        max_input: f32,
+    ) -> Self {
         Self {
             block_width: 1.0 / output_values as f32,
             margin: relative_margin / output_values as f32,
             values: output_values,
             selected_value: config.selected_value,
             relative_margin,
+            max_input,
         }
     }
 
@@ -34,6 +41,8 @@ impl Discrete {
     }
 
     pub fn reconcile(&mut self, input_level: f32) -> bool {
+        let input_level = (input_level / self.max_input).clamp(0.0, 0.999999);
+
         let current_output_value_f32 = self.selected_value as f32;
 
         let mut lower_bound = self.block_width * current_output_value_f32;

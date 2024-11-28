@@ -40,7 +40,7 @@ pub struct PersistentConfig {
 impl Scale {
     pub fn new(config: PersistentConfig, library: Scales) -> Self {
         let button_group = Toggle::new(config.button_group, Scales::GROUPS);
-        let cv_group = Discrete::new(config.cv_group, Scales::GROUPS, 0.1);
+        let cv_group = Discrete::new(config.cv_group, Scales::GROUPS, 0.1, 5.0);
 
         // SAFETY: The group toggle is limited by the number of groups.
         let selected_group = button_group.selected_value().try_into().unwrap();
@@ -48,7 +48,7 @@ impl Scale {
         let (button_scale, cv_scale) = {
             let scales_in_group = library.number_of_scales(selected_group);
             let button = Toggle::new(config.button_scale, scales_in_group);
-            let cv = Discrete::new(config.cv_scale, scales_in_group, 0.1);
+            let cv = Discrete::new(config.cv_scale, scales_in_group, 0.1, 5.0);
             (button, cv)
         };
 
@@ -59,14 +59,14 @@ impl Scale {
                 .scale(selected_group, button_scale.selected_value())
                 .unwrap();
             let steps_in_scale = selected_scale.with_tonic(Tonic::C).steps_in_octave() as usize;
-            Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1)
+            Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1, 1.0)
         };
 
         let mut s = Self {
             library,
             pot_note,
             cv_note: Continuous::new(),
-            pot_octave: Discrete::new(config.octave, 2, 0.1),
+            pot_octave: Discrete::new(config.octave, 2, 0.1, 1.0),
             cv_note_control: false,
             button_group,
             cv_group,
@@ -74,8 +74,8 @@ impl Scale {
             button_scale,
             cv_scale,
             cv_controls_scale: false,
-            pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1),
-            cv_tonic: Discrete::new(config.cv_tonic, 12, 0.1),
+            pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1, 1.0),
+            cv_tonic: Discrete::new(config.cv_tonic, 12, 0.1, 5.0),
             cv_controls_tonic: false,
             scale_cache: None,
         };

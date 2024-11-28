@@ -36,12 +36,12 @@ pub enum Socket {
 impl CvMapping {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
-            chord_size: Discrete::new(config.chord_size, 7, 0.1),
-            scale_group: Discrete::new(config.scale_group, 7, 0.1),
-            scale: Discrete::new(config.scale, 7, 0.1),
-            arp: Discrete::new(config.arp, 7, 0.1),
-            tonic: Discrete::new(config.tonic, 7, 0.1),
-            pluck: Discrete::new(config.tonic, 7, 0.1),
+            chord_size: Discrete::new(config.chord_size, 7, 0.1, 1.0),
+            scale_group: Discrete::new(config.scale_group, 7, 0.1, 1.0),
+            scale: Discrete::new(config.scale, 7, 0.1, 1.0),
+            arp: Discrete::new(config.arp, 7, 0.1, 1.0),
+            tonic: Discrete::new(config.tonic, 7, 0.1, 1.0),
+            pluck: Discrete::new(config.tonic, 7, 0.1, 1.0),
         }
     }
 

@@ -19,7 +19,7 @@ impl ArpMode {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
             toggle: Toggle::new(config.toggle, Mode::LAST_MODE as usize + 1),
-            discrete: Discrete::new(config.discrete, Mode::LAST_MODE as usize + 1, 0.1),
+            discrete: Discrete::new(config.discrete, Mode::LAST_MODE as usize + 1, 0.1, 5.0),
             cv_control: false,
         }
     }

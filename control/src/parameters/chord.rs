@@ -20,13 +20,13 @@ impl Chord {
     // NOTE: Passing scale size is awkward, but dynamic sizing of chords is
     // necessary to allow for an arpeggio with all notes of a scale.
     pub fn new(config: PersistentConfig, library: Chords, scale_size: usize) -> Self {
-        let group = Discrete::new(config.group, Chords::GROUPS, 0.1);
+        let group = Discrete::new(config.group, Chords::GROUPS, 0.1, 1.0);
 
         let chord = {
             // SAFETY: The group attribute is limited by the number of groups.
             let selected_group = group.selected_value().try_into().unwrap();
             let chords_in_group = library.number_of_chords(selected_group);
-            Discrete::new(config.chord, chords_in_group, 0.1)
+            Discrete::new(config.chord, chords_in_group, 0.1, 1.0)
         };
 
         Self {
