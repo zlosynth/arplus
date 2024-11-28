@@ -4,7 +4,8 @@ use super::primitives::continuous::Continuous;
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
 use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 
-const OCTAVES: usize = 7;
+const OCTAVES: usize = 6;
+const BOTTOM_OCTAVE_OFFSET: usize = 1;
 
 pub struct Scale {
     library: Scales,
@@ -65,7 +66,7 @@ impl Scale {
             library,
             pot_note,
             cv_note: Continuous::new(),
-            pot_octave: Discrete::new(config.octave, 3, 0.1),
+            pot_octave: Discrete::new(config.octave, 2, 0.1),
             cv_note_control: false,
             button_group,
             cv_group,
@@ -196,7 +197,7 @@ impl Scale {
         if self.cv_note_control {
             let offset = self.pot_octave.selected_value() as f32;
             let cv = self.cv_note.value();
-            let sum = (cv + offset).clamp(0.0, OCTAVES as f32);
+            let sum = (cv + offset).clamp(0.0, OCTAVES as f32) + BOTTOM_OCTAVE_OFFSET as f32;
             // SAFETY: Limited by the same octave range as when using note Pot.
             // TODO FIXME: This sometimes panics.
             self.scale_cache().quantize_voct_ascending(sum).unwrap()
@@ -231,7 +232,7 @@ impl Scale {
     }
 
     fn selected_note_index(&self) -> usize {
-        self.pot_note.selected_value()
+        self.pot_note.selected_value() + BOTTOM_OCTAVE_OFFSET * self.selected_scale_size()
     }
 
     fn scale_cache(&self) -> &ProjectedScale {

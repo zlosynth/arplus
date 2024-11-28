@@ -380,9 +380,8 @@ impl OctaveScreen {
 
     fn leds(&self) -> [bool; 8] {
         match self.index {
-            0 => [true, true, true, false, false, false, false, false],
-            1 => [false, false, false, true, true, false, false, false],
-            2 => [false, false, false, false, false, true, true, true],
+            0 => [true, true, true, true, false, false, false, false],
+            1 => [false, false, false, false, true, true, true, true],
             _ => [true; 8],
         }
     }
