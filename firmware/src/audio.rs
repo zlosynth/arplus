@@ -1,7 +1,11 @@
 use daisy::audio::{self, Interface};
 
-pub const SAMPLE_RATE: u32 = audio::FS.to_Hz();
 pub const BLOCK_LENGTH: usize = audio::BLOCK_LENGTH;
+// pub const SAMPLE_RATE: u32 = audio::FS.to_Hz();
+// NOTE: The SAMPLE_RATE needs to be adjusted. Probably because the clock on
+// STM32 is unable to exactly match the speed. With this value, it is perfectly
+// in tune on A4.
+pub const SAMPLE_RATE: u32 = 47_793;
 
 pub struct AudioInterface {
     interface: Option<Interface>,
