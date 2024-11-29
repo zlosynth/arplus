@@ -91,6 +91,7 @@ mod tests {
         const INITIAL_VALUE: usize = 0;
         const OUTPUT_VALUES: usize = 2;
         const MARGIN: f32 = 0.1;
+        const INPUT_RANGE: f32 = 1.0;
 
         let mut d = Discrete::new(
             PersistentConfig {
@@ -98,6 +99,7 @@ mod tests {
             },
             OUTPUT_VALUES,
             MARGIN,
+            INPUT_RANGE,
         );
 
         let mut travel_right = 0;
