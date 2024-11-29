@@ -52,7 +52,7 @@ impl CvMapping {
             scale: self.scale.copy_config(),
             arp: self.arp.copy_config(),
             tonic: self.tonic.copy_config(),
-            pluck: self.tonic.copy_config(),
+            pluck: self.pluck.copy_config(),
         }
     }
 
