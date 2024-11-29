@@ -12,14 +12,6 @@ pub struct PersistentConfig {
 }
 
 impl QuantizedOutput {
-    pub fn new() -> Self {
-        Self {
-            value: 0.0,
-            forced_value: None,
-            calibration: None,
-        }
-    }
-
     pub fn with_config(config: PersistentConfig) -> Self {
         Self {
             value: 0.0,
