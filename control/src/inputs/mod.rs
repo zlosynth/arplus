@@ -36,8 +36,6 @@ pub struct Pots {
 pub struct Cvs {
     pub tone: Cv,
     pub chord: Cv,
-    // TODO: This does not have its CV input anymore
-    pub chord_size: Cv,
     pub contour: Cv,
     pub cutoff: Cv,
     pub resonance: Cv,
@@ -77,7 +75,6 @@ impl Inputs {
             cvs: Cvs {
                 tone: Cv::with_config(config.tone_cv_calibration),
                 chord: Cv::new(),
-                chord_size: Cv::new(),
                 contour: Cv::new(),
                 cutoff: Cv::new(),
                 resonance: Cv::new(),
