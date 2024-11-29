@@ -13,6 +13,7 @@
 \usetikzlibrary{dsp,chains}
 \usepackage{parskip} % vertical paragraph spacing
 \usepackage{hyperref} % links
+\usepackage{tcolorbox} % boxes around text
 \usepackage[a4paper, landscape, margin=1.5cm]{geometry} % basic geometry
 \fboxsep=5mm % minibox spacing
 \pagenumbering{gobble} % disable page numbering
@@ -124,60 +125,488 @@ board marked with the white line. The module must be mounted in a eurorack case.
 \vspace{2.5cm}
 
 \vspace{5mm}\begin{center}\includegraphics[width=0.7\textwidth]{diagram-flow.pdf}\vspace{5mm}\end{center}
-
 \newpage
 
-\begin{minipage}[t]{0.45\textwidth}
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
 
 \section{Root note}
 
-Select the root note of the playing chord. This note is quantized to the
-selected scale. LEDs visualize the degree of the note relative to the scale.
+Select the root note of the playing chord. This sets the pitch of the lowest
+playing tone in the arpeggio.
 
-\vspace{1cm}
+\vspace{2cm}
 
-\begin{center}
-  \includegraphics{diagram-tone.pdf}
-\end{center}
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Using potentiometer
+]
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-tone-pot.pdf}
+  \end{center}
+  \vspace{1.0cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Legend
+  ]
+    \begin{center}
+      \includegraphics{diagram-tone-pot-led.pdf}
+    \end{center}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Example
+  ]
+    \begin{center}
+      \includegraphics{diagram-tone-pot-led-example.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}
 
-\vspace{1cm}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Using CV
+]
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-tone-cv.pdf}
+  \end{center}
+  \vspace{1.0cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Legend
+  ]
+    \begin{center}
+      \includegraphics{diagram-tone-cv-led.pdf}
+    \end{center}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Example
+  ]
+    \begin{center}
+      \includegraphics{diagram-tone-cv-led-example.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+\newpage
+
+
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
 
 \section{Chord}
 
-Intervals and assorted chords sorted by size. LEDs display quality of the chord
-or its size, depending on the input. The selected size also dictates the length
-of the arpeggio.
+Select from an assorted list chords grouped by size.
 
-TODO Add a picture here explaining which goes to which output?
+\vspace{2cm}
 
-\vspace{1cm}
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Setting chord size
+]
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-chord-size.pdf}
+  \end{center}
+  \vspace{0.5cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Legend
+  ]
+    \begin{center}
+      \includegraphics{diagram-chord-size-led.pdf}
+    \end{center}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Example
+  ]
+    \begin{center}
+      \includegraphics{diagram-chord-size-led-example.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}
 
-\begin{center}
-  \includegraphics{diagram-chord.pdf}
-\end{center}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
 
-\vspace{1cm}
 
-\end{minipage}%
-\begin{minipage}{0.05\textwidth}
-\phantom{ }
-\end{minipage}%
-% Right column
-\begin{minipage}[t]{0.45\textwidth}
+  \begin{tcolorbox}[
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    sharp corners,
+    title=Selecting chord
+  ]
+    \vspace{0.5cm}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.375\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using potentiometer
+    ]
+      \begin{center}
+        \includegraphics{diagram-chord-pot.pdf}
+      \end{center}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.575\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \begin{center}
+        \includegraphics{diagram-chord-cv.pdf}
+      \end{center}
+    \end{tcolorbox}
+    \vspace{0.5cm}
+
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.375\textwidth,
+      colframe=black,
+      colback=white,
+      colbacktitle=white,
+      coltitle=black,
+      sharp corners,
+      nobeforeafter,
+      title=Legend
+    ]
+      \begin{center}
+        \includegraphics{diagram-chord-led.pdf}
+      \end{center}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.575\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      colbacktitle=white,
+      coltitle=black,
+      sharp corners,
+      nobeforeafter,
+      title=Example
+    ]
+      \begin{center}
+        \includegraphics{diagram-chord-led-example.pdf}
+      \end{center}
+    \end{tcolorbox}
+  \end{tcolorbox}
+
+\end{tcolorbox}
+
+\newpage
+\noindent\begin{tcolorbox}[
+  width=0.675\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
 
 \section{Arpeggio}
 
-Arpeggiator sequencing the playing notes.
+In arpeggio, notes of the selected chord are triggered individually. The
+selected type defines how should be the notes ordered. Some types can be RESET
+to their initial position. Other types are repeating the same sequence until
+NEXT is triggered.
 
-\vspace{5mm}
+\begin{tcolorbox}[
+  standard jigsaw,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+  \vspace{0.5cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.48\textwidth,
+    colframe=black,
+    colback=white,
+    sharp corners,
+    nobeforeafter,
+    title=Progression
+  ]
+    \vspace{0.5cm}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.48\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using button
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-progression-click.pdf}
+      \end{center}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.48\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-progression-cv.pdf}
+      \end{center}
+    \end{tcolorbox}
+    \vspace{0.5cm}
 
-\begin{center}
-  \includegraphics{diagram-arp.pdf}
-\end{center}
+    \begin{tcolorbox}[
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      colbacktitle=white,
+      coltitle=black,
+      sharp corners,
+      nobeforeafter,
+      title=Types
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-progression-explanation.pdf}
+      \end{center}
+    \end{tcolorbox}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.48\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    sharp corners,
+    nobeforeafter,
+    title=Reset / Next bar
+  ]
+    \vspace{0.5cm}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.48\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using button
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-rsnx-click.pdf}
+      \end{center}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.48\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-rsnx-cv.pdf}
+      \end{center}
+    \end{tcolorbox}
+    \vspace{0.5cm}
 
-\vspace{1cm}
+    \begin{tcolorbox}[
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      colbacktitle=white,
+      coltitle=black,
+      sharp corners,
+      nobeforeafter,
+      title=Types
+    ]
+      \begin{center}
+        \includegraphics{diagram-arp-rsnx-explanation.pdf}
+      \end{center}
+    \end{tcolorbox}
+  \end{tcolorbox}
+\end{tcolorbox}
 
-\end{minipage}
+
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.305\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Selecting type
+]
+  \vspace{0.5cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    boxsep=0pt,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colframe=white,
+    colback=white,
+    nobeforeafter,
+    sharp corners
+  ]
+    \begin{center}
+      \includegraphics{diagram-arp-select.pdf}
+    \end{center}
+    \vspace{4mm}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Query selected
+  ]
+    \begin{center}
+      \includegraphics{diagram-arp-query.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}
+\vspace{3cm}
+
+
+
+\end{tcolorbox}
+
 
 \newpage
 
@@ -221,15 +650,14 @@ left and right. Root note in one output, the rest in the other.
 \newpage
 
 \noindent
-\begin{minipage}[t]{0.6\textwidth}
+\begin{minipage}[t]{0.48\textwidth}
 \setlength{\parskip}{6pt}
 \section{Calibration}
 
-Calibrate the TONE input to improve its 1V/oct tracking of your specific CV
-source.
+Calibrate the TONE input.
 
 \begin{packed_enumerate}
-  \item While holding the TRIGGER button, connect a jack to the TONE CV input.
+  \item While holding the RESET/NEXT button, connect a jack to the TONE CV input.
   \item The bottom 4 LEDs will light up.
   \item Play note C on the CV source and press the TRIGGER button.
   \item The top 4 LEDs will light up.
@@ -237,47 +665,98 @@ source.
   \item Successful calibration is confirmed by double blink of all LEDs TODO.
 \end{packed_enumerate}
 
-\section{CV re-mapping}
+Calibrate the QUANT. ouput.
 
-CV inputs can be reconfigured to control any of the module attributes.
-
-First enter the configuration menu by holding the GROUP and SCALE buttons for
-a couple of seconds. When the menu is opened, the LEDs will blink in an
-alternating pattern.
-
-Once in the configuration menu, turn knobs to select which CV configures
-which of the attributes.
-
-TABLE of POT -> ATTRIBUTE.
-
-Picture explaining the LEDs next to the table.
-
-\section{Reset}
-
-Calibration, CV mapping and all attributes are persisted between restarts
-of the module. To reset their values, hold the TONIC button while powering on
-the module.
-
+\begin{packed_enumerate}
+  \item (optional) Complete TONE input calibration.
+  \item While holding the ARP select button, connect a cable between the QUANT.
+    output and TONE input, then let go of the button.
+\end{packed_enumerate}
 
 \vspace{0.5cm}
 
 \end{minipage}%
-\begin{minipage}{0.05\textwidth}
+\begin{minipage}{0.04\textwidth}
 \phantom{ }
 \end{minipage}%
 % Right column
-\begin{minipage}[t]{0.3\textwidth}
+\begin{minipage}[t]{0.48\textwidth}
 \setlength{\parskip}{6pt}
+
+\section{CV re-mapping}
+
+CV inputs can be reconfigured to control any of the module attributes.
+
+To change the default mapping, first enter the configuration menu by holding the
+GROUP and SCALE buttons for a couple (TODO) of seconds. When the menu is opened,
+the LEDs will blink in an alternating pattern.
+
+Once in the configuration menu, turn knobs to select CV source for otherwise
+CV-less (TODO) attributes:
+
+TODO XXX Fix mapping diagram - no LEDs mean unmapped.
+
+\noindent\begin{tcolorbox}[
+  standard jigsaw,
+  width=.49\textwidth,
+  colframe=black,
+  colback=white,
+  colbacktitle=white,
+  coltitle=black,
+  sharp corners,
+  nobeforeafter,
+  title=Attribute configuration
+]
+  \begin{tabular}{@{}rl@{}}
+    \textbf{Knob} & \textbf{Attribute} \\
+    TONE & Tonic \\
+    CHORD SIZE & Chord size \\
+    RESONANCE & Scale group \\
+    CUTOFF & Scale \\
+    CONTOUR & Arp \\
+    PLUCK & Pluck
+  \end{tabular}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=.49\textwidth,
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  colbacktitle=white,
+  coltitle=black,
+  sharp corners,
+  nobeforeafter,
+  title=Legend
+]
+  \begin{center}
+    \includegraphics{diagram-mapping-led.pdf}
+  \end{center}
+\end{tcolorbox}
+
+For example, turning CUTOFF pot to the max will make it so the CONT. CV input
+will control scale attribute instead.
+
+TODO Click XX to  save the configuration.
+
+\section{Reset}
+
+Calibration, CV mapping and all other attributes are persisted between restarts
+of the module. To reset their values, hold the TONIC button while powering
+the module on.
+
 \section{Questions?}
 
 You can find more information about the module on
 \url{https://zlosynth.com/arplus}.
+
+TODO: If you want custom chords or scales, text me.
 
 \vspace{3mm}
 
 \begin{center}
 petr@zlosynth.com
 \end{center}
+
 \end{minipage}
 
 \end{document}

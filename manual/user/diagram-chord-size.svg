@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="14.319442mm"
+   height="10.938396mm"
+   viewBox="0 0 14.319442 10.938396"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="diagram-chord-size.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.1893651"
+     inkscape:cx="136.62752"
+     inkscape:cy="-25.643934"
+     inkscape:window-width="1916"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="49"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-59.158014,-166.04657)">
+    <g
+       id="g63-7"
+       transform="translate(-645.63633,-53.68623)"
+       style="display:inline;stroke-width:0.2;stroke-dasharray:none">
+      <ellipse
+         cx="-641.63531"
+         cy="389.36786"
+         id="id_s_Small-0-5-7-2-0-49-1-8"
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.200009;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(-0.65827968,-0.75277345,0.7436701,-0.66854677,0,0)"
+         rx="2.8406663"
+         ry="2.8464367" />
+      <path
+         d="m 711.7381,223.0414 -1.59107,1.78913"
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path2908-1-4-3-43-8-8-5-2-60" />
+    </g>
+    <g
+       inkscape:label="Hershey Text"
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       id="g448-5-0"
+       transform="translate(-392.71525,-26.84869)">
+      <g
+         transform="translate(456.308,203.787)"
+         id="g447-1-6"
+         style="stroke-width:0.2;stroke-dasharray:none">
+        <path
+           d="m 78.8,107 53.2,-44 51,-25.2 63,-12.6 72,-3.1 79,31.5 53,47.4 19,63 -3,56 -34,57 -73,47 -129,57 -72,47 -38,51 -3,63 25,66 72,44 70,10 66,-7 50,-25 47,-35"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="scale(0.00282222,-0.00282222)"
+           id="path444-0-4" />
+        <path
+           d="M 132,18.9 V 652"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,1.53811,0)"
+           id="path445-3-3" />
+        <path
+           d="M 101,649 H 479 L 78.8,28.4 H 491"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,2.29446,0)"
+           id="path446-7-7" />
+        <path
+           d="M 466,31.5 H 132 V 356 H 410 132 v 287 h 322"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,3.87773,0)"
+           id="path447-8-5" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       x="60.038902"
+       y="173.36101"
+       id="text23-2"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="60.038902"
+         y="173.36101"
+         id="tspan24-8">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       x="72.507317"
+       y="173.27565"
+       id="text23-2-4"><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="72.507317"
+         y="173.27565"
+         id="tspan24-8-7">8</tspan></text>
+  </g>
+</svg>
