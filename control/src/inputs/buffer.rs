@@ -4,8 +4,7 @@
 ///
 /// This is not optimized for large buffers, but should be ok for smoothening
 /// and travel distance measuring on input control voltage to up to 32 samples.
-#[derive(Debug)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[derive(Debug, defmt::Format)]
 pub struct Buffer<const N: usize> {
     buffer: [f32; N],
     pointer: usize,

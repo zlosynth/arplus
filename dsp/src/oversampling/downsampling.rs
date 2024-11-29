@@ -22,7 +22,6 @@ impl<const N: usize> fmt::Debug for Downsampler<N> {
     }
 }
 
-#[cfg(feature = "defmt")]
 impl<const N: usize> defmt::Format for Downsampler<N> {
     fn format(&self, f: defmt::Formatter) {
         defmt::write!(f, "Downsampler({=usize})", self.factor);

@@ -64,15 +64,13 @@ impl fmt::Debug for MemoryManager {
     }
 }
 
-#[cfg(feature = "defmt")]
 impl defmt::Format for MemoryManager {
     fn format(&self, fmt: defmt::Formatter) {
         defmt::write!(fmt, "MemoryManager(pointer: {})", self.pointer);
     }
 }
 
-#[derive(Debug)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[derive(Debug, defmt::Format)]
 pub enum Error {
     NotEnoughMemory,
 }

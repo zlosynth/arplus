@@ -5,8 +5,7 @@
 // XXX: Assuming 48 kHz sample rate.
 const POLE: f32 = 0.995;
 
-#[derive(Default, Debug)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+#[derive(Default, Debug, defmt::Format)]
 pub struct DCBlocker {
     x_m1: f32,
     y_m1: f32,

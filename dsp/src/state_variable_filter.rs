@@ -1,7 +1,6 @@
 use core::f32::consts::PI;
 
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
-#[derive(Debug)]
+#[derive(Debug, defmt::Format)]
 pub struct StateVariableFilter {
     sample_rate: u32,
     bandform: Bandform,
@@ -81,8 +80,7 @@ impl StateVariableFilter {
 
 // NOTE: Allowing unused variants, so this can be easily used as a library.
 #[allow(dead_code)]
-#[cfg_attr(feature = "defmt", derive(defmt::Format))]
-#[derive(Debug)]
+#[derive(Debug, defmt::Format)]
 pub enum Bandform {
     LowPass,
     HighPass,
