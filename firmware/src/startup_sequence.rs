@@ -15,13 +15,16 @@ pub fn retrieve_save(
     control_input_interface: &mut ControlInputInterface,
     flash_memory_interface: &mut FlashMemoryInterface,
 ) -> Save {
+    // XXX: This must be called even if not used, so the storage gets
+    // initialized with the latest used version.
+    let latest_save = flash_memory_interface.load();
     if is_reset_requested(control_input_interface) {
         defmt::info!("Reset was initiated");
         let save = Save::default();
         flash_memory_interface.save(save);
         save
     } else {
-        flash_memory_interface.load()
+        latest_save
     }
 }
 
