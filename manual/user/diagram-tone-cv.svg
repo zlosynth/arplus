@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="82.165054mm"
-   height="30.303329mm"
-   viewBox="0 0 82.165056 30.30333"
+   width="83.113327mm"
+   height="25.372297mm"
+   viewBox="0 0 83.113329 25.372298"
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
@@ -25,7 +25,7 @@
      inkscape:document-units="mm"
      inkscape:zoom="2.7901516"
      inkscape:cx="153.21748"
-     inkscape:cy="108.59625"
+     inkscape:cy="98.560954"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -36,8 +36,8 @@
     <inkscape:page
        x="0"
        y="0"
-       width="82.165062"
-       height="30.303329"
+       width="83.113327"
+       height="25.372299"
        id="page1"
        margin="0"
        bleed="0" />
@@ -55,7 +55,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-103.42105,-132.44913)">
+     transform="translate(-103.42105,-135.1043)">
     <g
        id="g33-63-5-5-1-6-9-4"
        transform="translate(-20.47587,28.847481)"
@@ -113,7 +113,7 @@
          y="151.35149">+</tspan></text>
     <g
        id="g49-4-8-9-7-7"
-       transform="translate(31.992847,109.41038)"
+       transform="translate(32.25743,106.5)"
        style="display:inline">
       <path
          d="m 125.52011,51.901007 v -1.76925 h -0.61327 1.23698"
@@ -134,7 +134,7 @@
     </g>
     <g
        id="g19598-1-0"
-       transform="rotate(-28.125116,125.93113,2.5184779)"
+       transform="rotate(-28.125116,120.25388,0.53513362)"
        style="display:inline;stroke-width:0.2;stroke-dasharray:none">
       <g
          id="g7"
@@ -155,13 +155,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;line-height:1.25;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
-       x="134.36543"
-       y="157.04579"
+       x="134.63002"
+       y="154.13533"
        id="text5-6-6-7-5"><tspan
          id="tspan5-7-8-0-7"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
-         x="134.36543"
-         y="157.04579"
+         x="134.63002"
+         y="154.13533"
          sodipodi:role="line">~C<tspan
    style="font-size:65%;baseline-shift:sub"
    id="tspan5">0</tspan> to ~C<tspan
@@ -170,14 +170,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;line-height:1.25;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
-       x="166.38876"
-       y="157.04579"
+       x="166.65335"
+       y="154.13533"
        id="text5-6-6-7-5-3"><tspan
          sodipodi:role="line"
          id="tspan5-7-8-0-7-6"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
-         x="166.38876"
-         y="157.04579">~C<tspan
+         x="166.65335"
+         y="154.13533">~C<tspan
    style="font-size:65%;baseline-shift:sub"
    id="tspan5-4">1</tspan> to ~C<tspan
    style="font-size:65%;baseline-shift:sub"
@@ -185,13 +185,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;line-height:1.25;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
-       x="160.12708"
-       y="136.08577"
+       x="160.39166"
+       y="137.93788"
        id="text5-6-6-3-2"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="160.12708"
-         y="136.08577"
+         x="160.39166"
+         y="137.93788"
          id="tspan8">range</tspan></text>
     <g
        id="g11"
