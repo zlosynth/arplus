@@ -92,7 +92,7 @@ mod app {
             &mut flash_memory_interface,
         );
         let seed = u64::from_be_bytes(unsafe {
-            core::mem::transmute([
+            core::mem::transmute::<[[u8; 2]; 4], [u8; 8]>([
                 random_generator.u16().unwrap().to_be_bytes(),
                 random_generator.u16().unwrap().to_be_bytes(),
                 random_generator.u16().unwrap().to_be_bytes(),

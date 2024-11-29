@@ -219,7 +219,7 @@ impl TryFrom<usize> for GroupId {
         if index >= Chords::GROUPS {
             return Err(());
         }
-        Ok(unsafe { core::mem::transmute(index as u8) })
+        Ok(unsafe { core::mem::transmute::<u8, Self>(index as u8) })
     }
 }
 

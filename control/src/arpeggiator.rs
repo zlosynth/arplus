@@ -261,7 +261,7 @@ impl Mode {
 
     pub fn try_from_index(index: usize) -> Option<Self> {
         if index <= Self::LAST_MODE.index() {
-            Some(unsafe { core::mem::transmute(index as u8) })
+            Some(unsafe { core::mem::transmute::<u8, Self>(index as u8) })
         } else {
             None
         }

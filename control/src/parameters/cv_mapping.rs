@@ -137,6 +137,6 @@ impl TryFrom<usize> for Socket {
         if index >= 7 {
             return Err(());
         }
-        Ok(unsafe { core::mem::transmute(index) })
+        Ok(unsafe { core::mem::transmute::<usize, Self>(index) })
     }
 }

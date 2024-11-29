@@ -30,7 +30,7 @@ impl TryFrom<usize> for Tonic {
 
     fn try_from(index: usize) -> Result<Self, Self::Error> {
         if index <= Self::LAST_TONIC.index() as usize {
-            Ok(unsafe { core::mem::transmute(index) })
+            Ok(unsafe { core::mem::transmute::<usize, Self>(index) })
         } else {
             Err(())
         }

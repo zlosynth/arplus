@@ -503,7 +503,7 @@ impl QuarterTone {
 
     pub fn try_from_u8(index: u8) -> Option<QuarterTone> {
         if index <= Self::HIGHEST_NOTE.index() {
-            Some(unsafe { core::mem::transmute(index) })
+            Some(unsafe { core::mem::transmute::<u8, Self>(index) })
         } else {
             None
         }
