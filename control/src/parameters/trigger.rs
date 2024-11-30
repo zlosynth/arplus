@@ -11,7 +11,7 @@ impl Trigger {
         }
     }
 
-    pub fn triggered(&self) -> bool {
+    pub fn triggered_n1(&self) -> bool {
         self.triggered_n1
     }
 
