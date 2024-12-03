@@ -4,3 +4,6 @@
 *.aux
 *.out
 .auctex-auto
+pdf
+pdf-images
+clean

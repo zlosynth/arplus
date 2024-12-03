@@ -25,14 +25,13 @@ DIAGRAMS = \
 	diagram-arp-rsnx-cv.pdf \
 	diagram-arp-rsnx-explanation.pdf
 
-.PHONY: pdf
-pdf: clean pdf-images
+pdf: pdf-images manual.tex
 	pdflatex manual.tex
 	pdflatex manual.tex
+	touch $@
 
-.PHONY: pdf-images
 pdf-images: $(DIAGRAMS)
-	# inkscape -D schema.svg -o schema.pdf --export-latex
+	touch $@
 
 diagram-%.pdf: diagram-%.svg
 	inkscape --export-text-to-path -D $< -o $@ --export-latex
