@@ -471,6 +471,7 @@ impl Controller {
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
                 tone_pot.value(),
+                tone_pot.activation_movement(),
                 tone_cv_value,
                 group_tapped,
                 scale_tapped,
@@ -517,9 +518,7 @@ impl Controller {
         {
             let selected = parameter.selected_octave_index();
             display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tonic_held
-            && (tone_pot.activation_movement() || (tonic_changed && tonic_cv.is_none()))
-        {
+        } else if tonic_held {
             let selected = parameter.selected_tonic();
             display_request.set_queried_attribute(Screen::tonic(selected));
         }
