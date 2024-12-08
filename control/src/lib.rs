@@ -386,6 +386,7 @@ impl Controller {
         *needs_save |=
             size_cv_value.is_none() && chord_cv_value.is_none() && (changed_group || changed_chord);
 
+        // TODO FIXME: Changing size using CV trigers chord display
         if size_pot.activation_movement() || (size_cv_value.is_none() && changed_group) {
             let size = parameter.selected_group_size();
             display_request.set_queried_attribute(Screen::chord_size(size));
@@ -535,7 +536,7 @@ impl Controller {
 
         parameter.set_cv_control(self.parameters.cv_mapping.arp_socket().is_some());
 
-        if is_button_held(button) {
+        if is_button_held(button) || was_button_tapped(button) && cv_value.is_some() {
             let selected = parameter.selected();
             display_request.set_queried_attribute(Screen::arp_mode(selected));
         } else if was_button_tapped(button) && cv_value.is_none() {
