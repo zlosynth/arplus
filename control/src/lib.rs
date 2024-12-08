@@ -534,7 +534,7 @@ impl Controller {
         let cv_value = self.arp_cv();
         let parameter = &mut self.parameters.arp_mode;
 
-        parameter.set_cv_control(self.parameters.cv_mapping.arp_socket().is_some());
+        parameter.set_cv_control(cv_value.is_some());
 
         if is_button_held(button) || was_button_tapped(button) && cv_value.is_some() {
             let selected = parameter.selected();
