@@ -121,10 +121,6 @@ impl CvMapping {
 }
 
 impl Socket {
-    pub fn is_some(&self) -> bool {
-        !self.is_none()
-    }
-
     pub fn is_none(&self) -> bool {
         matches!(self, Self::None)
     }
