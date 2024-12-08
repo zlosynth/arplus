@@ -257,12 +257,7 @@ impl Controller {
                 }
             }
             State::Configuring => {
-                if self.inputs.buttons.scale_group.clicked()
-                    || self.inputs.buttons.scale.clicked()
-                    || self.inputs.buttons.arp.clicked()
-                    || self.inputs.buttons.trigger.clicked()
-                    || self.inputs.buttons.tonic.clicked()
-                    || self.inputs.buttons.rsnx.clicked()
+                if self.inputs.buttons.scale_group.clicked() || self.inputs.buttons.scale.clicked()
                 {
                     defmt::info!("Exiting configuration");
                     self.state = State::Normal;
