@@ -10,6 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
+CUTOFF_INIT = 2.0
+CUTOFF_MIN = 1.5
+CUTOFF_MAX = 11.5
+Q_INIT = 0.7
+Q_MIN = 0.5
+Q_MAX = 1.0
 
 def generate_sine(frequency, length, sample_rate):
     time = np.linspace(0, length, int(length * sample_rate))
@@ -60,17 +66,15 @@ def add_slider(fig, name, init, valmin, valmax):
 
 def cmd_sliders():
     SAMPLE_RATE = 48000
-    INIT_FREQUENCY = 3.0
-    INIT_CUTOFF = 1.2
-    INIT_Q = 1.0
+    INIT_FREQUENCY = 1.0
 
     fig, ax = plt.subplots()
 
     fig.subplots_adjust(left=0.25)
 
     frequency_slider = add_slider(fig, "Freq", INIT_FREQUENCY, 0.1, 40.0)
-    cutoff_slider = add_slider(fig, "Filter", INIT_CUTOFF, 0.0, 2.0)
-    q_slider = add_slider(fig, "Q", INIT_Q, 0.0, 2.0)
+    cutoff_slider = add_slider(fig, "Filter", CUTOFF_INIT, CUTOFF_MIN, CUTOFF_MAX)
+    q_slider = add_slider(fig, "Q", Q_INIT, Q_MIN, Q_MAX)
 
     def update(_):
         ax.cla()
@@ -85,6 +89,15 @@ def cmd_sliders():
         (line,) = ax.plot(np.zeros(int(SAMPLE_RATE * time)))
         filtered = low_pass_filter(input, cutoff_slider.val * frequency_slider.val, q_slider.val, SAMPLE_RATE)
         line.set_ydata(filtered)
+
+        input_zero_crossings = np.where(np.diff(np.sign(input)))[0]
+        filtered_zero_crossings = np.where(np.diff(np.sign(filtered)))[0]
+        fifth_input_zero_crossing_in_seconds = input_zero_crossings[4] / SAMPLE_RATE;
+        fifth_filtered_zero_crossing_in_seconds = filtered_zero_crossings[4] / SAMPLE_RATE;
+        delay_in_seconds = fifth_filtered_zero_crossing_in_seconds - fifth_input_zero_crossing_in_seconds;
+        interval = 1.0 / frequency_slider.val;
+        relative_delay = delay_in_seconds / interval;
+        print("Delay", relative_delay)
 
         fig.canvas.draw_idle()
 
@@ -105,5 +118,5 @@ if __name__ == "__main__":
     subparsers.add_parser("sliders", help="Adjust parameters and see the delay")
     args = parser.parse_args()
 
-    if args.subparser == "response":
+    if args.subparser == "sliders":
         cmd_sliders()
