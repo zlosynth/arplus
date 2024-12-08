@@ -465,10 +465,6 @@ impl Controller {
         let group_tapped = was_button_tapped(group_button);
         let scale_tapped = was_button_tapped(scale_button);
 
-        if (group_tapped && group_cv.is_some()) || (scale_tapped && scale_cv.is_some()) {
-            display_request.set_failure(Screen::failure());
-        }
-
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
                 tone_pot.value(),
@@ -501,15 +497,16 @@ impl Controller {
             );
         }
 
-        if group_held || (group_changed && group_cv.is_none()) {
+        if group_held || group_tapped || (group_changed && group_cv.is_none()) {
             let selected = parameter.selected_group_id();
             display_request.set_queried_attribute(Screen::scale_group(selected));
-        } else if scale_held || (scale_changed && scale_cv.is_none()) {
+        } else if scale_held || scale_tapped || (scale_changed && scale_cv.is_none()) {
             let selected = parameter.selected_scale_index();
             display_request.set_queried_attribute(Screen::scale(selected));
         } else if !tonic_held
             && tone_cv_value.is_none()
-            && (tone_pot.activation_movement() || note_changed)
+            && (tone_pot.activation_movement()
+                || (note_changed && !group_changed && !scale_changed))
         {
             let selected = parameter.selected_note().index();
             display_request.set_queried_attribute(Screen::note(selected as usize));
