@@ -37,6 +37,7 @@ impl StateVariableFilter {
         self
     }
 
+    // TODO: Fix this asymetry. SVF is limiting Q but not F.
     pub fn set_q_factor(&mut self, q_factor: f32) -> &mut Self {
         self.q_factor = f32::max(q_factor, 0.5);
         self.q = 1.0 / self.q_factor;

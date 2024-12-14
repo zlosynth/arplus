@@ -87,7 +87,11 @@ impl KarplusStrong {
             let compressed_q = q - self.envelope_follower.level().min(ENV_MAX) * ENV_COEF;
             self.filter.set_q_factor(compressed_q);
 
+            // TODO: The sound without any filter is very nice too.
+            // Can I open the filter better? Perhaps after introducing
+            // oversampling.
             let filtered_sample = self.filter.tick(mixed_sample);
+            // let filtered_sample = mixed_sample;
 
             self.envelope_follower.process(filtered_sample);
 
