@@ -23,15 +23,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.7354877"
-     inkscape:cx="8.3550003"
-     inkscape:cy="180.35277"
+     inkscape:zoom="1.2271751"
+     inkscape:cx="-69.672209"
+     inkscape:cy="294.17155"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
      inkscape:window-y="49"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g64-5"
      showgrid="false" />
   <defs
      id="defs1" />
@@ -1876,20 +1876,23 @@
     </g>
     <g
        id="g63-5"
-       transform="translate(-620.64064,-108.74276)"
+       transform="rotate(90,455.98778,-141.99629)"
        style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-dasharray:none">
-      <ellipse
-         cx="-641.63531"
-         cy="389.36786"
-         id="id_s_Small-0-5-7-2-0-49-1-4"
-         style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.200009;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="matrix(-0.65827968,-0.75277345,0.7436701,-0.66854677,0,0)"
-         rx="2.8406663"
-         ry="2.8464367" />
-      <path
-         d="m 711.7381,223.0414 -1.59107,1.78913"
-         style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path2908-1-4-3-43-8-8-5-2-3" />
+      <g
+         id="g1">
+        <ellipse
+           cx="-641.63531"
+           cy="389.36786"
+           id="id_s_Small-0-5-7-2-0-49-1-4"
+           style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.200009;stroke-miterlimit:4;stroke-dasharray:none"
+           transform="matrix(-0.65827968,-0.75277345,0.7436701,-0.66854677,0,0)"
+           rx="2.8406663"
+           ry="2.8464367" />
+        <path
+           d="m 711.7381,223.0414 -1.59107,1.78913"
+           style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+           id="path2908-1-4-3-43-8-8-5-2-3" />
+      </g>
     </g>
     <g
        inkscape:label="Hershey Text"
@@ -2660,7 +2663,7 @@
        transform="rotate(90)" />
     <g
        id="g19598-6"
-       transform="rotate(-28.125116,-12.706518,132.83354)"
+       transform="rotate(-6.7306291,-325.21284,160.86931)"
        style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-dasharray:none">
       <circle
          cx="103.03783"
@@ -2676,7 +2679,7 @@
     </g>
     <g
        id="g19598-9-4"
-       transform="rotate(-28.125116,-2.4177477,91.758656)"
+       transform="rotate(-133.12512,83.040081,120.70656)"
        style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-dasharray:none">
       <circle
          cx="103.03783"
@@ -2708,7 +2711,7 @@
     </g>
     <g
        id="g19598-8-2"
-       transform="rotate(-28.125116,159.69754,132.40899)"
+       transform="rotate(31.816422,35.209256,193.34893)"
        style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-dasharray:none">
       <circle
          cx="103.03783"
@@ -2743,18 +2746,22 @@
        id="g64-5"
        transform="translate(-570.17044,-142.82173)"
        style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-dasharray:none">
-      <ellipse
-         cx="-707.26495"
-         cy="290.715"
-         id="id_s_Small-0-5-7-2-0-49-1-6-5"
-         style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.200009;stroke-miterlimit:4;stroke-dasharray:none"
-         transform="matrix(-0.65827968,-0.75277345,0.7436701,-0.66854677,0,0)"
-         rx="2.8406663"
-         ry="2.8464367" />
-      <path
-         d="m 681.5756,338.39973 -1.59107,1.78913"
-         style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path2908-1-4-3-43-8-8-5-2-4-8" />
+      <g
+         id="g2"
+         transform="rotate(-78.864994,681.77422,338.05371)">
+        <ellipse
+           cx="750.49591"
+           cy="116.02846"
+           id="id_s_Small-0-5-7-2-0-49-1-6-5"
+           style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.200009;stroke-miterlimit:4;stroke-dasharray:none"
+           transform="matrix(0.95316489,0.30245115,-0.28934397,0.95722519,0,0)"
+           rx="2.8406663"
+           ry="2.8464367" />
+        <path
+           d="m 681.5756,338.39973 -1.59107,1.78913"
+           style="display:inline;fill:#000000;stroke:#ffffff;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+           id="path2908-1-4-3-43-8-8-5-2-4-8" />
+      </g>
     </g>
     <g
        id="g66-71"
