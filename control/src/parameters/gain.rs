@@ -46,7 +46,7 @@ impl Gain {
 impl Default for PersistentConfig {
     fn default() -> Self {
         Self {
-            discrete: DiscretePersistentConfig::new(LEVELS - 1),
+            discrete: DiscretePersistentConfig::new(0),
         }
     }
 }
