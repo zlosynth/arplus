@@ -18,6 +18,7 @@ mod math;
 mod memory_manager;
 mod overdrive;
 mod oversampling;
+mod phase_delay;
 mod random;
 mod ring_buffer;
 mod state_variable_filter;

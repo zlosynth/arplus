@@ -1,6 +1,7 @@
 use crate::ad_envelope::{Ad, Config};
 use crate::envelope_follower::EnvelopeFollower;
 use crate::memory_manager::MemoryManager;
+use crate::phase_delay;
 use crate::ring_buffer::RingBuffer;
 use crate::state_variable_filter::{Bandform, StateVariableFilter};
 use crate::taper;
@@ -10,7 +11,7 @@ use crate::Random;
 // of down to 11.7 Hz.
 const SAMPLES: usize = 4096;
 
-// Magical numbers producing the result I like the most.
+// Magic numbers producing the result I like the most.
 const ATTACK: f32 = 0.02;
 const DECAY: f32 = 0.14;
 const TRESHOLD: f32 = 0.5;
@@ -26,6 +27,8 @@ pub struct KarplusStrong {
     frequency: f32,
     contour: f32,
     pluck: f32,
+    phase_delay: f32,
+    cutoff: f32,
     noise_envelope: Ad,
     buffer: RingBuffer,
     filter: StateVariableFilter,
@@ -50,6 +53,8 @@ impl KarplusStrong {
             filter,
             envelope_follower: EnvelopeFollower::new(ATTACK, DECAY, TRESHOLD, sample_rate),
             reset: RESET,
+            phase_delay: 0.0,
+            cutoff: 0.0,
         }
     }
 
@@ -71,11 +76,11 @@ impl KarplusStrong {
             };
             let noise_sample = offset_noise * self.noise_envelope.pop() * self.pluck;
 
-            // NOTE: Not exactly sure why, but the output is a little flat. This
-            // is compensating for it, to keep A on 440 Hz.
-            const FREQUENCY_SHIFT_COMPENSATION: f32 = 0.975;
-            let relative_index = (self.sample_rate / self.frequency) * FREQUENCY_SHIFT_COMPENSATION;
+            let interval_in_samples = self.sample_rate / self.frequency;
+            let phase_delay_in_samples = (self.sample_rate / self.frequency) * self.phase_delay;
+            let relative_index = interval_in_samples - phase_delay_in_samples;
             let delayed_sample = self.buffer.peek_interpolated(relative_index);
+
             let mixed_sample = noise_sample + delayed_sample * self.feedback;
 
             let q = 0.5 + self.resonance / 2.0;
@@ -119,9 +124,9 @@ impl KarplusStrong {
 
         // Cutoff range is balanced so it produces audible difference with all
         // pitches.
-        let cutoff = 1.5 + cutoff * 10.0;
+        self.cutoff = 1.5 + cutoff * 10.0;
         self.filter
-            .set_frequency((cutoff * self.frequency).clamp(200.0, 6_000.0));
+            .set_frequency((self.cutoff * self.frequency).clamp(20.0, 6_000.0));
     }
 
     pub fn trigger(&mut self, feedback: f32, frequency: f32, contour: f32, pluck: f32) {
@@ -129,6 +134,11 @@ impl KarplusStrong {
         self.feedback = feedback;
         self.frequency = frequency;
         self.pluck = pluck;
+        self.phase_delay = {
+            let c = self.cutoff;
+            let q = self.filter.q_factor();
+            phase_delay::phase_delay(c, q)
+        };
 
         self.contour = ((contour - 0.05) / 0.95).clamp(0.0, 1.0);
         let (attack, decay) = if self.contour == 0.0 {

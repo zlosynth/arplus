@@ -8,6 +8,7 @@ pub struct StateVariableFilter {
     q: f32,
     delay_1: f32,
     delay_2: f32,
+    q_factor: f32,
 }
 
 impl StateVariableFilter {
@@ -19,6 +20,7 @@ impl StateVariableFilter {
             q: 0.0,
             delay_1: 0.0,
             delay_2: 0.0,
+            q_factor: 0.0,
         };
         filter.set_q_factor(0.7);
         filter.set_frequency(0.0);
@@ -36,8 +38,13 @@ impl StateVariableFilter {
     }
 
     pub fn set_q_factor(&mut self, q_factor: f32) -> &mut Self {
-        self.q = 1.0 / f32::max(q_factor, 0.5);
+        self.q_factor = f32::max(q_factor, 0.5);
+        self.q = 1.0 / self.q_factor;
         self
+    }
+
+    pub fn q_factor(&self) -> f32 {
+        self.q_factor
     }
 
     // https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
