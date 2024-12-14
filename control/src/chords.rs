@@ -38,6 +38,8 @@ impl Chords {
     pub const GROUPS: usize = 8;
 
     // NOTE: Keep the lists expanded to improve readability.
+    // TODO: Make sure all are ascending
+    // TODO: Make it so incrasing size keeps all the intervals from the previous size. Or at least on sizes 3+
     #[rustfmt::skip]
     pub fn new() -> Self {
         let size_1 = initialize_group(&[
