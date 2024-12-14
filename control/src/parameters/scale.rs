@@ -87,6 +87,7 @@ impl Scale {
     pub fn reconcile_note_tonic_group_and_scale(
         &mut self,
         note_pot: f32,
+        note_pot_moved: bool,
         note_cv: Option<f32>,
         group_toggle: bool,
         scale_toggle: bool,
@@ -135,7 +136,7 @@ impl Scale {
 
         let changed_tonic = if let Some(tonic_cv) = tonic_cv {
             self.cv_tonic.reconcile(tonic_cv)
-        } else if trigger_held {
+        } else if trigger_held && note_pot_moved {
             // TODO: It is already prepared for TONIC contrl here. Only now I have to combine it with CV
             self.pot_tonic.reconcile(note_pot)
         } else {
