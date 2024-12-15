@@ -150,7 +150,7 @@ def set_relative_delay(config):
     return config
 
 
-def cmd_delay_generate():
+def cmd_generate():
     C = 100
     Q = 100
 
@@ -181,7 +181,7 @@ def cmd_delay_generate():
     print("Done")
 
 
-def cmd_delay_generate_lookup():
+def cmd_lookup():
     C = 32
     Q = 32
 
@@ -216,7 +216,7 @@ if __name__ == "__main__":
 
     if args.subparser == "sliders":
         cmd_sliders()
-    elif args.subparser == "delay_generate":
+    elif args.subparser == "generate":
         cmd_generate()
-    elif args.subparser == "delay_lookup":
+    elif args.subparser == "lookup":
         cmd_lookup()
