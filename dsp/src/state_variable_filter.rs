@@ -8,6 +8,7 @@ pub struct StateVariableFilter {
     q: f32,
     delay_1: f32,
     delay_2: f32,
+    frequency: f32,
     q_factor: f32,
 }
 
@@ -20,6 +21,7 @@ impl StateVariableFilter {
             q: 0.0,
             delay_1: 0.0,
             delay_2: 0.0,
+            frequency: 0.0,
             q_factor: 0.0,
         };
         filter.set_q_factor(0.7);
@@ -33,8 +35,13 @@ impl StateVariableFilter {
     }
 
     pub fn set_frequency(&mut self, frequency: f32) -> &mut Self {
-        self.f = 2.0 * libm::sinf((PI * frequency) / self.sample_rate as f32);
+        self.frequency = frequency;
+        self.f = 2.0 * libm::sinf((PI * self.frequency) / self.sample_rate as f32);
         self
+    }
+
+    pub fn frequency(&self) -> f32 {
+        self.frequency
     }
 
     // TODO: Fix this asymetry. SVF is limiting Q but not F.

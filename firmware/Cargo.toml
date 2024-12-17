@@ -28,13 +28,13 @@ systick-monotonic = "1"
 defmt = "0.3"
 defmt-rtt = "0.4"
 panic-probe = { version = "0.3", features = ["print-defmt"] }
-stm32h7xx-hal = { version = "0.14", features = [
+stm32h7xx-hal = { version = "0.16", features = [
   "stm32h750v",
   "rt",
   "revision_v",
   "defmt",
 ] }
-daisy = { version = "0.8.0", features = ["patch_sm"] }
+daisy = { version = "0.10.0", features = ["patch_sm", "sampling_rate_96khz"] }
 fugit = "0.3"
 nb = "1"
 heapless = "0.7"

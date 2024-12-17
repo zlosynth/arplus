@@ -28,7 +28,6 @@ pub struct KarplusStrong {
     contour: f32,
     pluck: f32,
     phase_delay: f32,
-    cutoff: f32,
     noise_envelope: Ad,
     buffer: RingBuffer,
     filter: StateVariableFilter,
@@ -54,7 +53,6 @@ impl KarplusStrong {
             envelope_follower: EnvelopeFollower::new(ATTACK, DECAY, TRESHOLD, sample_rate),
             reset: RESET,
             phase_delay: 0.0,
-            cutoff: 0.0,
         }
     }
 
@@ -87,11 +85,7 @@ impl KarplusStrong {
             let compressed_q = q - self.envelope_follower.level().min(ENV_MAX) * ENV_COEF;
             self.filter.set_q_factor(compressed_q);
 
-            // TODO: The sound without any filter is very nice too.
-            // Can I open the filter better? Perhaps after introducing
-            // oversampling.
             let filtered_sample = self.filter.tick(mixed_sample);
-            // let filtered_sample = mixed_sample;
 
             self.envelope_follower.process(filtered_sample);
 
@@ -123,14 +117,27 @@ impl KarplusStrong {
     }
 
     pub fn set_cutoff(&mut self, cutoff: f32) {
-        // TODO: Play with this so the filter can be pushed up, while it feels
-        // that it does anything in all tone positions.
+        // NOTE: During initialization, the frequency is set to 0.0. If that
+        // happens, the function should return early, to prevent division
+        // by zero.
+        if !self.frequency.is_normal() {
+            return;
+        }
 
-        // Cutoff range is balanced so it produces audible difference with all
-        // pitches.
-        self.cutoff = 1.5 + cutoff * 10.0;
+        // TODO: See if this can be changed for improved resonance tuning.
+        // In the current state, the multiple of the cutoff is moving
+        // depending on the fundamental frequency. That means that a cutoff
+        // that is harmonic for one tone will not be for another.
+        // However, the alternative of having fixed multiple would suffer
+        // in high fundamental frequencies, where most of the cutoff would
+        // not be usable due to filter stability.
+        const MAX_CUTOFF: f32 = 12_000.0;
+        let delta = MAX_CUTOFF - self.frequency;
+        // TODO: Lowest octave does not work properly
+        // TODO: Optimize the equation
+        let cutoff = 1.5 + (taper::log(cutoff) * delta) / self.frequency;
         self.filter
-            .set_frequency((self.cutoff * self.frequency).clamp(20.0, 6_000.0));
+            .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));
     }
 
     pub fn trigger(&mut self, feedback: f32, frequency: f32, contour: f32, pluck: f32) {
@@ -139,7 +146,7 @@ impl KarplusStrong {
         self.frequency = frequency;
         self.pluck = pluck;
         self.phase_delay = {
-            let c = self.cutoff;
+            let c = self.filter.frequency() / self.frequency;
             let q = self.filter.q_factor();
             phase_delay::phase_delay(c, q)
         };

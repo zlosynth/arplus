@@ -4,6 +4,8 @@
 //! depends on the cutoff frequency and the Q factor. This module assists
 //! in calculating that delay.
 
+// TODO: Use log scale for cutoff - it changes faster in low values.
+
 /// Calculate phase delay.
 ///
 /// The output is relative to the input signal frequency. For example, if the input

@@ -4,7 +4,6 @@
 use dc_blocker::DCBlocker;
 use karplus_strong::KarplusStrong;
 use overdrive::Overdrive;
-use oversampling::{Downsampler4, Upsampler4};
 
 #[cfg(test)]
 #[macro_use]
@@ -17,7 +16,6 @@ mod karplus_strong;
 mod math;
 mod memory_manager;
 mod overdrive;
-mod oversampling;
 mod phase_delay;
 mod random;
 mod ring_buffer;
@@ -34,8 +32,6 @@ pub struct Dsp {
     active_rest_string_index: usize,
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
-    upsampler: [Upsampler4; 2],
-    downsampler: [Downsampler4; 2],
 }
 
 pub struct String {
@@ -78,14 +74,6 @@ impl Dsp {
             active_rest_string_index: 0,
             overdrive: Overdrive::new(),
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
-            upsampler: [
-                Upsampler4::new_4(memory_manager),
-                Upsampler4::new_4(memory_manager),
-            ],
-            downsampler: [
-                Downsampler4::new_4(memory_manager),
-                Downsampler4::new_4(memory_manager),
-            ],
         }
     }
 
@@ -104,15 +92,11 @@ impl Dsp {
         self.dc_blocker[0].process(&mut buffer_root);
         self.dc_blocker[1].process(&mut buffer_rest);
 
-        let mut buffer_root_os = [0.0; 32 * 4];
-        self.upsampler[0].process(&buffer_root, &mut buffer_root_os);
-        self.overdrive.process(&mut buffer_root_os);
-        self.downsampler[0].process(&buffer_root_os, &mut buffer_root[..]);
-
-        let mut buffer_rest_os = [0.0; 32 * 4];
-        self.upsampler[1].process(&buffer_rest, &mut buffer_rest_os);
-        self.overdrive.process(&mut buffer_rest_os);
-        self.downsampler[1].process(&buffer_rest_os, &mut buffer_rest[..]);
+        // TODO: I probably should bring back oversampling.
+        // but maybe LPF with 12 kHz on 2x oversampled signal is enough?
+        // TODO: It is filtered and oversampled. so just apply FIR to 0.5, and then apply overdrive
+        self.overdrive.process(&mut buffer_root);
+        self.overdrive.process(&mut buffer_rest);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
             *x = (buffer_rest[i], buffer_root[i]);
@@ -144,6 +128,8 @@ impl Dsp {
             string
                 .karplus_strong
                 .trigger(0.99, trigger.frequency, trigger.contour, trigger.pluck);
+            // TODO: Set cutoff again? To make sure it gets in sync with the
+            // new frequency before DSP starts doing anything.
             string.is_root = trigger.is_root;
 
             let next_string = &mut self.strings[next_string_index];
