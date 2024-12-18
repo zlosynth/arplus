@@ -12,7 +12,7 @@ pub struct Chords {
     size_5: LibraryGroup<16, 5>,
     size_6: LibraryGroup<8, 6>,
     size_7: LibraryGroup<8, 7>,
-    size_8: LibraryGroup<8, 8>,
+    size_8: LibraryGroup<9, 8>,
 }
 
 // ALLOW: All the values are constructed via `try_from`.
@@ -146,6 +146,7 @@ impl Chords {
             &[0, 1, 3, 5, 7, 7 + 1, 7 + 3, 7 + 5],
             &[0, 2, 3, 6, 7, 7 + 2, 7 + 3, 7 + 6],
             &[0, 1, 3, 6, 7, 7 + 1, 7 + 3, 7 + 6],
+            &[0, 1, 2, 3, 4, 5, 6, 7],
         ]);
         Self {
             size_1,
