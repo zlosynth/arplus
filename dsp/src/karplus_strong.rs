@@ -7,9 +7,9 @@ use crate::state_variable_filter::{Bandform, StateVariableFilter};
 use crate::taper;
 use crate::Random;
 
-// With the sample rate of 48 kHz, this buffer size should allow frequencies
+// With the sample rate of 96 kHz, this buffer size should allow frequencies
 // of down to 11.7 Hz.
-const SAMPLES: usize = 4096;
+const SAMPLES: usize = 8192;
 
 // Magic numbers producing the result I like the most.
 const ATTACK: f32 = 0.02;
