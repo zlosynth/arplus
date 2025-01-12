@@ -151,7 +151,13 @@ impl KarplusStrong {
             phase_delay::phase_delay(c, q)
         };
 
-        self.contour = ((contour - 0.05) / 0.95).clamp(0.0, 1.0);
+        // NOTE: This never reaches infinity. While infinite sustain sounds
+        // awesome, there is no control to silence all strings on the module,
+        // so it would be confusing to leave this feature in the default
+        // firmware.
+        // TODO: Feature gate this and publish an alternative firmware with
+        // infinite decay.
+        self.contour = ((contour - 0.05) / 0.96).clamp(0.0, 1.0);
         let (attack, decay) = if self.contour == 0.0 {
             (0.0, 0.001)
         } else if self.contour == 1.0 {
