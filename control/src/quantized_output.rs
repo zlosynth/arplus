@@ -27,11 +27,12 @@ impl QuantizedOutput {
     }
 
     pub fn reconcile(&mut self, value: f32) {
-        self.value = if let Some(calibration) = self.calibration {
+        let value = if let Some(calibration) = self.calibration {
             calibration.apply(value)
         } else {
             value
         };
+        self.value = (value - 2.0).clamp(0.0, 5.0);
     }
 
     pub fn value(&self) -> f32 {
