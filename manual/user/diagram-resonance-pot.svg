@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="12.682805mm"
+   height="17.572153mm"
+   viewBox="0 0 12.682805 17.572152"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="diagram-resonance-pot.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.3787302"
+     inkscape:cx="-34.68237"
+     inkscape:cy="26.905111"
+     inkscape:window-width="1916"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="49"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-89.359023,-159.96114)">
+    <g
+       inkscape:label="Hershey Text"
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       id="g421-4"
+       transform="translate(-384.80583,-14.65937)">
+      <g
+         transform="translate(475.887,192.146)"
+         id="g420-9"
+         style="stroke-width:0.2;stroke-dasharray:none">
+        <path
+           d="M 129,18.9 V 649 h 211 l 51,-16 56,-28 41,-63 v -54 l -9,-60 -38,-53 -47,-29 -76,-18 H 132 312 L 495,18.9"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="scale(0.00282222,-0.00282222)"
+           id="path415-9" />
+        <path
+           d="M 466,31.5 H 132 V 356 H 410 132 v 287 h 322"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,1.63689,0)"
+           id="path416-4" />
+        <path
+           d="m 78.8,107 53.2,-44 51,-25.2 63,-12.6 72,-3.1 79,31.5 53,47.4 19,63 -3,56 -34,57 -73,47 -129,57 -72,47 -38,51 -3,63 25,66 72,44 70,10 66,-7 50,-25 47,-35"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,3.15806,0)"
+           id="path417-5" />
+        <path
+           d="m 334,22.1 82,12.5 82,53.6 56,84.8 29,111 v 103 l -16,85 -31,70 -51,66 -69,41 -70,13 -59,-10 -67,-25 -62,-54 -48,-91 -15.5,-72 -3.1,-108 12.6,-82 31,-75 45,-59.9 50,-41 54,-18.9 50,-3.1"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,4.69617,0)"
+           id="path418-9" />
+        <path
+           d="M 126,22.1 V 649 h 22 L 523,22.1 V 652"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,6.60682,0)"
+           id="path419-3" />
+        <path
+           d="M 97.6,72.4 V 22.1 H 148 V 72.4 H 97.6"
+           style="stroke-width:70.8662;stroke-dasharray:none"
+           transform="matrix(0.00282222,0,0,-0.00282222,8.45537,0)"
+           id="path420-5" />
+      </g>
+    </g>
+    <g
+       id="g19598-0"
+       transform="rotate(-28.125116,126.54937,136.54629)"
+       style="display:inline;stroke-width:0.2;stroke-dasharray:none">
+      <circle
+         cx="103.03783"
+         cy="136.52522"
+         r="6.2400002"
+         id="id_s_Small-0-5-5-4-4"
+         style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="rotate(7.122032)" />
+      <path
+         d="m 85.107228,147.25096 0.06407,-5.2405"
+         style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path2908-1-4-3-4-8-8" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="18.977673mm"
+   height="27.691853mm"
+   viewBox="0 0 18.977673 27.691853"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="diagram-quantized.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="4"
+     inkscape:cx="-22.125"
+     inkscape:cy="60"
+     inkscape:window-width="1916"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="49"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g11" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-103.61979,-149.87543)">
+    <ellipse
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.427056;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path1457-41-6-7-9-3"
+       cx="113.09727"
+       cy="164.10046"
+       inkscape:export-filename="/home/phoracek/code/zlosynth/private/kaseta/text.png"
+       inkscape:export-xdpi="899.97046"
+       inkscape:export-ydpi="899.97046"
+       rx="4.4860001"
+       ry="4.4864721" />
+    <g
+       inkscape:label="Hershey Text"
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       id="g494-7"
+       transform="translate(-356.60353,-61.566019)">
+      <g
+         transform="translate(465.306,232.761)"
+         id="g493-9"
+         style="stroke-width:0.2;stroke-dasharray:none">
+        <path
+           d="m 331,15.8 69,15.7 72,37.8 60,62.7 35,88 13,76 v 88 l -13,92 -25,63 -57,69 -72,41 -67,16 -69,-13 -66,-28 -57,-57 -34,-60 -22.4,-94 -9.4,-73 6.3,-69 22.5,-82 34,-69 44,-47.6 54,-34.6 53,-15.7 29,-3.2 28,-56.7 41,-41 44,-25.2 57,-16 50,-3 47,10"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="scale(0.00264583,-0.00264583)"
+           id="path488-7" />
+        <path
+           d="M 135,655 V 217 l 10,-56 28,-60 38,-41.1 57,-31.5 53,-12.6 66,9.4 67,34.7 47,57.1 22,50 6,69 v 416"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="matrix(0.00264583,0,0,-0.00264583,1.78329,0)"
+           id="path489-4" />
+        <path
+           d="M 41,15.8 277,662 416,255 H 132 416 L 501,15.8"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="matrix(0.00264583,0,0,-0.00264583,3.53483,0)"
+           id="path490-9" />
+        <path
+           d="M 126,22.1 V 649 h 22 L 523,22.1 V 652"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="matrix(0.00264583,0,0,-0.00264583,4.98474,0)"
+           id="path491-1" />
+        <path
+           d="M 274,22.1 V 649 H 56.7 495"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="matrix(0.00264583,0,0,-0.00264583,6.71776,0)"
+           id="path492-7" />
+        <path
+           d="M 97.6,72.4 V 22.1 H 148 V 72.4 H 97.6"
+           style="stroke-width:75.5906;stroke-dasharray:none"
+           transform="matrix(0.00264583,0,0,-0.00264583,8.16768,0)"
+           id="path493-0" />
+      </g>
+    </g>
+    <g
+       id="g66-2"
+       style="display:inline"
+       transform="translate(-600.59967,-59.304934)">
+      <circle
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path1457-2-1-5-2"
+         cx="713.69916"
+         cy="223.36014"
+         r="2.998173"
+         inkscape:export-filename="/home/phoracek/code/zlosynth/private/kaseta/text.png"
+         inkscape:export-xdpi="899.97046"
+         inkscape:export-ydpi="899.97046" />
+      <circle
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="path1457-2-1-5-9-1"
+         cx="713.69916"
+         cy="223.36014"
+         r="1.819446"
+         inkscape:export-filename="/home/phoracek/code/zlosynth/private/kaseta/text.png"
+         inkscape:export-xdpi="899.97046"
+         inkscape:export-ydpi="899.97046" />
+    </g>
+    <g
+       id="g11"
+       transform="translate(-301.81615,-44.806234)">
+      <text
+         xml:space="preserve"
+         style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+         x="414.89984"
+         y="194.81775"
+         id="text5-6-2-1"><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="414.89984"
+           y="194.81775"
+           id="tspan9-7" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;line-height:1.25;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
+         x="414.88431"
+         y="197.59209"
+         id="text5-6-6-3-2-4"><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="414.88431"
+           y="197.59209"
+           id="tspan10">1V/oct</tspan><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="414.88431"
+           y="202.44278"
+           id="tspan7">0 to 5 V</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.88056px;line-height:1.25;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
+         x="405.43594"
+         y="221.54192"
+         id="text5-6-6-7-5"><tspan
+           id="tspan5-7-8-0-7"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';stroke-width:0.264583"
+           x="405.43594"
+           y="221.54192"
+           sodipodi:role="line">~C<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan5">1</tspan> to ~C<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan11">6</tspan></tspan></text>
+    </g>
+  </g>
+</svg>

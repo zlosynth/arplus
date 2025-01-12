@@ -626,42 +626,470 @@ NEXT is triggered.
 
 \newpage
 
-\section{Quantization}
+\section{Scale}
+
+Select one of the 31 available scales.
+
+\vspace{0.7cm}
+
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Selecting group
+]
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    boxsep=0pt,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colframe=white,
+    colback=white,
+    nobeforeafter,
+    sharp corners
+  ]
+    \begin{center}
+      \includegraphics{diagram-group-select.pdf}
+    \end{center}
+    \vspace{1.3cm}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Query selected
+  ]
+    \begin{center}
+      \includegraphics{diagram-group-query.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Selecting scale
+]
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    boxsep=0pt,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colframe=white,
+    colback=white,
+    nobeforeafter,
+    sharp corners
+  ]
+    \begin{center}
+      \includegraphics{diagram-scale-select.pdf}
+    \end{center}
+    \vspace{0.7cm}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Query selected
+  ]
+    \begin{center}
+      \includegraphics{diagram-scale-query.pdf}
+    \end{center}
+  \end{tcolorbox}
+\end{tcolorbox}
+
+\vspace{0.5cm}
 
 \begin{center}
-\begin{tabular}{@{}l|l|l|l|l@{}}
-  \textbf{WES (Diatonic)} & \textbf{ARB (Maqam)} & \textbf{IND (Melakarta)} & \textbf{JPN (Japanese)} & \textbf{TSQ (Full)} \\
-  Ionian & Bayati & Ratnagi (2) & Hirajoshi & Tones \\
-  Dorian  & Hijaz & Rupavati (12) & In & Semitones \\
-  Phrygian   & Kurd & Mayamalavagowla (15) & Insen & Quarter tones \\
-  Lydian    & Nahawand & Natabhairavi (20) & Iwato & \\
-  Mixolydian   & Nawa Athar & Karaharapriya (22) & Yo & \\
-  Aeolian  & Rast & Sangarabharanam (29) & & \\
-  Locrian   & Saba & Jalavarali (39) & & \\
-      & Sikah & Gamanasrama (53) & &
-\end{tabular}
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  width=0.7\textwidth,
+  title=Groups and their scales
+]
+  \vspace{0.4cm}
+  \begin{center}
+    \begin{tabular}{@{}l|l|l|l|l@{}}
+      \textbf{WES (Diatonic)} & \textbf{ARB (Maqam)} & \textbf{IND (Melakarta)} & \textbf{JPN (Japanese)} & \textbf{TSQ (Full)} \\
+      Ionian & Bayati & Ratnagi (2) & Hirajoshi & Tones \\
+      Dorian  & Hijaz & Rupavati (12) & In & Semitones \\
+      Phrygian   & Kurd & Mayamalavagowla (15) & Insen & Quarter tones \\
+      Lydian    & Nahawand & Natabhairavi (20) & Iwato & \\
+      Mixolydian   & Nawa Athar & Karaharapriya (22) & Yo & \\
+      Aeolian  & Rast & Sangarabharanam (29) & & \\
+      Locrian   & Saba & Jalavarali (39) & & \\
+          & Sikah & Gamanasrama (53) & &
+    \end{tabular}
+  \end{center}
+  \vspace{0.4cm}
+\end{tcolorbox}
 \end{center}
-
-Tonic, quantized output, on trigger, dialing the scale, few words about each
-group, click vs hold.
 
 \newpage
 
+
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+
+\vspace{2.5cm}
+
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Selecting scale tonic
+]
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-tonic.pdf}
+  \end{center}
+  \vspace{0.5cm}
+  \noindent\begin{tcolorbox}[
+    standard jigsaw,
+    width=.375\textwidth,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Legend
+  ]
+    \begin{center}
+      \includegraphics{diagram-tonic-led.pdf}
+    \end{center}
+  \end{tcolorbox}\hfill
+  \begin{tcolorbox}[
+    width=.575\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    nobeforeafter,
+    title=Example
+  ]
+    \begin{center}
+      \includegraphics{diagram-tonic-led-example.pdf}
+    \end{center}
+  \end{tcolorbox}
+
+  \begin{center}
+  \begin{tcolorbox}[
+    width=0.3\textwidth,
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    title=Query selected
+  ]
+    \begin{center}
+      \includegraphics{diagram-tonic-query.pdf}
+    \end{center}
+  \end{tcolorbox}
+  \end{center}
+\end{tcolorbox}
+
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+
+\begin{tcolorbox}[
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Quantized output
+]
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-quantized.pdf}
+  \end{center}
+  \vspace{0.5cm}
+\end{tcolorbox}
+
+\vspace{2.5cm}
+
+\end{tcolorbox}
+
+\newpage
+
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  boxsep=0pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=white,
+  sharp corners
+]
+
 \section{String synthesis}
 
-Diagram of karplus strong.
+TODO explanation
 
-Noise, filter, loopback. Noise and filter as pictures of noise over time
-and frequence response with resonance.
+\vspace{2.4cm}
 
-More diagrams of noise explaining contour and pluck (width and height)
-and another for filter reson and cutoff.
+\end{tcolorbox}\hfill
 
-Picture
+\noindent\begin{tcolorbox}[
+  width=0.63\textwidth,
+  nobeforeafter,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Signal flow
+]
 
-CV plus parameters explained. Contour explained on picture. Resonance and
-cutoff on picture, with the peak height controlled by res, cutoff moving it
-left and right. Root note in one output, the rest in the other.
+  \vspace{0.5cm}
+  \begin{center}
+    \hspace{0.2cm}
+    \includegraphics{diagram-karplus-strong.pdf}
+  \end{center}
+  \vspace{0.5cm}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.33\textwidth,
+  nobeforeafter,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Audio outputs
+]
+
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-audio-output.pdf}
+  \end{center}
+  \vspace{0.5cm}
+
+\end{tcolorbox}
+
+\newpage
+
+\noindent\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Controlling noise burst
+]
+  \vspace{0.5cm}
+  \begin{tcolorbox}[
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    title=Contour
+  ]
+    \begin{center}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.315\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using pot.
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-contour-pot.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.635\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-contour-cv.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}
+    \end{center}
+  \end{tcolorbox}
+  \begin{tcolorbox}[
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    title=Pluck
+  ]
+    \vspace{0.3cm}
+    \begin{center}
+      \includegraphics{diagram-pluck-pot.pdf}
+    \end{center}
+    \vspace{0.3cm}
+  \end{tcolorbox}
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-karplus-strong-noise-explained.pdf}
+  \end{center}
+  \vspace{0.5cm}
+\end{tcolorbox}\hfill
+\begin{tcolorbox}[
+  width=0.48\textwidth,
+  nobeforeafter,
+  standard jigsaw,
+  colframe=black,
+  colback=white,
+  sharp corners,
+  title=Controlling filter
+]
+  \vspace{0.5cm}
+  \begin{tcolorbox}[
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    title=Cutoff
+  ]
+    \begin{center}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.285\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using pot.
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-cutoff-pot.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.665\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-cutoff-cv.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}
+    \end{center}
+  \end{tcolorbox}
+  \begin{tcolorbox}[
+    standard jigsaw,
+    colframe=black,
+    colback=white,
+    colbacktitle=white,
+    coltitle=black,
+    sharp corners,
+    title=Resonance
+  ]
+    \begin{center}
+    \noindent\begin{tcolorbox}[
+      standard jigsaw,
+      width=.285\textwidth,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using pot.
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-resonance-pot.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}\hfill
+    \begin{tcolorbox}[
+      width=.665\textwidth,
+      standard jigsaw,
+      colframe=black,
+      colback=white,
+      sharp corners,
+      nobeforeafter,
+      title=Using CV
+    ]
+      \vspace{0.3cm}
+      \begin{center}
+        \includegraphics{diagram-resonance-cv.pdf}
+      \end{center}
+      \vspace{0.3cm}
+    \end{tcolorbox}
+    \end{center}
+  \end{tcolorbox}
+  \vspace{0.5cm}
+  \begin{center}
+    \includegraphics{diagram-karplus-strong-filter-explained.pdf}
+  \end{center}
+  \vspace{0.5cm}
+
+\end{tcolorbox}
 
 \newpage
 
@@ -673,44 +1101,36 @@ left and right. Root note in one output, the rest in the other.
 Calibrate the TONE input.
 
 \begin{packed_enumerate}
-  \item While holding the RESET/NEXT button, connect a jack to the TONE CV input.
-  \item The bottom 4 LEDs will light up.
-  \item Play note C on the CV source and press the TRIGGER button.
-  \item The top 4 LEDs will light up.
-  \item Play C one octave higher and press the TRIGGER button again.
-  \item Successful calibration is confirmed by double blink of all LEDs TODO.
+  \item While holding the RESET button, connect a jack to the TONE CV input.
+  \item Play note C on the CV source and press the RESET button.
+  \item Play C one octave higher and press the RESET button again.
+  \item Successful calibration is confirmed by all LEDs litting up.
 \end{packed_enumerate}
 
 Calibrate the QUANT. ouput.
 
 \begin{packed_enumerate}
   \item (optional) Complete TONE input calibration.
-  \item While holding the ARP select button, connect a cable between the QUANT.
-    output and TONE input, then let go of the button.
+  \item While holding the \symbolArp (ARP) button, connect a cable between the
+    QUANT. output and TONE input, then let go of the button.
 \end{packed_enumerate}
-
-\vspace{0.5cm}
-
-\end{minipage}%
-\begin{minipage}{0.04\textwidth}
-\phantom{ }
-\end{minipage}%
-% Right column
-\begin{minipage}[t]{0.48\textwidth}
-\setlength{\parskip}{6pt}
 
 \section{CV re-mapping}
 
-CV inputs can be reconfigured to control any of the module attributes.
+% To change the default CV mapping, first enter the configuration menu by holding
+% the GROUP and SCALE buttons for 3 seconds. When the menu is opened, the LEDs
+% will blink in an alternating pattern. Once in the configuration menu, turn knobs
+% to change the mapping:
 
-To change the default mapping, first enter the configuration menu by holding the
-GROUP and SCALE buttons for 3 seconds. When the menu is opened,
-the LEDs will blink in an alternating pattern.
+Change the CV mapping.
 
-Once in the configuration menu, turn knobs to select CV source for otherwise
-CV-less (TODO) attributes:
+\begin{packed_enumerate}
+  \item Hold GROUP and SCALE buttons for 3 seconds.
+  \item Turn potentiometer A to assign CV input C to attribute B.
+  \item Click GROUP or SCALE button to exit the menu.
+\end{packed_enumerate}
 
-TODO XXX Fix mapping diagram - no LEDs mean unmapped.
+\vspace{0.5cm}
 
 \noindent\begin{tcolorbox}[
   standard jigsaw,
@@ -721,10 +1141,10 @@ TODO XXX Fix mapping diagram - no LEDs mean unmapped.
   coltitle=black,
   sharp corners,
   nobeforeafter,
-  title=Attribute configuration
+  title=Attribute selection
 ]
   \begin{tabular}{@{}rl@{}}
-    \textbf{Knob} & \textbf{Attribute} \\
+    \textbf{Pot. (A)} & \textbf{Attribute (B)} \\
     TONE & Tonic \\
     CHORD SIZE & Chord size \\
     RESONANCE & Scale group \\
@@ -742,17 +1162,26 @@ TODO XXX Fix mapping diagram - no LEDs mean unmapped.
   coltitle=black,
   sharp corners,
   nobeforeafter,
-  title=Legend
+  title=CV selection
 ]
   \begin{center}
+    \hspace{0.4cm}\textbf{CV input (C)}
+    \vspace{0.1cm}
+
     \includegraphics{diagram-mapping-led.pdf}
   \end{center}
 \end{tcolorbox}
 
-For example, turning CUTOFF pot to the max will make it so the CONT. CV input
-will control scale attribute instead.
+\vspace{0.5cm}
 
-To exit the menu, click GROUP or SCALE button.
+\end{minipage}%
+\begin{minipage}{0.04\textwidth}
+\phantom{ }
+\end{minipage}%
+% Right column
+\begin{minipage}[t]{0.48\textwidth}
+\setlength{\parskip}{6pt}
+
 
 \section{Reset}
 
@@ -763,9 +1192,8 @@ the module on.
 \section{Questions?}
 
 You can find more information about the module on
-\url{https://zlosynth.com/arplus}.
-
-TODO: If you want custom chords or scales, text me.
+\url{https://zlosynth.com/arplus}. If you would like to have custom chords or
+scales in your module, feel free to reach out.
 
 \vspace{3mm}
 

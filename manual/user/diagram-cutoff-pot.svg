@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="12.682805mm"
+   height="17.576523mm"
+   viewBox="0 0 12.682805 17.576523"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="diagram-cutoff-pot.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.7901516"
+     inkscape:cx="-28.851479"
+     inkscape:cy="-17.203366"
+     inkscape:window-width="1916"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="49"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g12"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-74.250174,-149.66457)">
+    <g
+       id="g12"
+       transform="translate(-303.22451,-56.235343)">
+      <g
+         inkscape:label="Hershey Text"
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="g427-2"
+         transform="translate(-96.7781,24.661025)">
+        <g
+           transform="translate(475.623,198.76)"
+           id="g426-53"
+           style="stroke-width:0.2;stroke-dasharray:none">
+          <path
+             d="m 520,97.6 -66,-50.4 -89,-31.4 -88,12.6 -82,44 -63,75.6 -31,79 -9.6,119 9.6,111 41,91 63,69 72,35 82,6 73,-15 50,-32 16,-19"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="scale(0.00282222,-0.00282222)"
+             id="path421-4" />
+          <path
+             d="M 135,655 V 217 l 10,-56 28,-60 38,-41.1 57,-31.5 53,-12.6 66,9.4 67,34.7 47,57.1 22,50 6,69 v 416"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="matrix(0.00282222,0,0,-0.00282222,1.66229,0)"
+             id="path422-9" />
+          <path
+             d="M 274,22.1 V 649 H 56.7 495"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="matrix(0.00282222,0,0,-0.00282222,3.5306,0)"
+             id="path423-02" />
+          <path
+             d="m 334,22.1 82,12.5 82,53.6 56,84.8 29,111 v 103 l -16,85 -31,70 -51,66 -69,41 -70,13 -59,-10 -67,-25 -62,-54 -48,-91 -15.5,-72 -3.1,-108 12.6,-82 31,-75 45,-59.9 50,-41 54,-18.9 50,-3.1"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="matrix(0.00282222,0,0,-0.00282222,5.07717,0)"
+             id="path424-0" />
+          <path
+             d="M 132,18.9 V 346 H 413 132 v 297 h 322"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="matrix(0.00282222,0,0,-0.00282222,6.98782,0)"
+             id="path425-1" />
+          <path
+             d="M 132,18.9 V 346 H 413 132 v 297 h 322"
+             style="stroke-width:70.8662;stroke-dasharray:none"
+             transform="matrix(0.00282222,0,0,-0.00282222,8.40175,0)"
+             id="path426-9" />
+        </g>
+      </g>
+      <g
+         id="g19598-8"
+         transform="rotate(-28.125116,362.30574,-415.59295)"
+         style="display:inline;stroke-width:0.2;stroke-dasharray:none">
+        <circle
+           cx="103.03783"
+           cy="136.52522"
+           r="6.2400002"
+           id="id_s_Small-0-5-5-4-1"
+           style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+           transform="rotate(7.122032)" />
+        <path
+           d="m 85.107228,147.25096 0.06407,-5.2405"
+           style="fill:none;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-dasharray:none"
+           id="path2908-1-4-3-4-8-68" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="22.89295mm"
-   height="32.815704mm"
-   viewBox="0 0 22.892951 32.815704"
+   width="15.076046mm"
+   height="32.54137mm"
+   viewBox="0 0 15.076046 32.54137"
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
-   sodipodi:docname="diagram-mapping-led.svg"
+   sodipodi:docname="diagram-tonic-led-example.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2.3787302"
-     inkscape:cx="10.299613"
-     inkscape:cy="60.5365"
+     inkscape:zoom="3.3640324"
+     inkscape:cx="-17.389844"
+     inkscape:cy="57.966148"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -40,7 +40,7 @@
      id="layer1"
      transform="translate(-96.957167,-153.2343)">
     <circle
-       style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
+       style="display:inline;fill:#000000;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
        id="path1450-8-5-4-76"
        cx="154.8343"
        cy="-98.557167"
@@ -82,7 +82,7 @@
        r="1.5"
        transform="rotate(90)" />
     <circle
-       style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
+       style="display:inline;fill:#000000;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
        id="path1450-8-5-4-9-1"
        cx="179.98402"
        cy="-98.557167"
@@ -98,57 +98,13 @@
     <text
        xml:space="preserve"
        style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="107.52739"
-       y="185.43893"
-       id="text23-0-6-2-5-8-6"><tspan
+       x="108.95399"
+       y="170.38275"
+       id="text23-0-6-2-5-8"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="107.52739"
-         y="185.43893"
-         id="tspan25-0-9-8-0-1">TONE</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="109.04662"
-       y="181.27641"
-       id="text23-0-6-2-5-8-6-2"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="109.04662"
-         y="181.27641"
-         id="tspan25-0-9-8-0-1-2">CHORD</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="109.05051"
-       y="177.11389"
-       id="text23-0-6-2-5-8-6-29"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="109.05051"
-         y="177.11389"
-         id="tspan25-0-9-8-0-1-0">RESON.</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="109.87707"
-       y="172.95137"
-       id="text23-0-6-2-5-8-6-8"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="109.87707"
-         y="172.95137"
-         id="tspan25-0-9-8-0-1-04">CUTOFF</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="108.15798"
-       y="168.78885"
-       id="text23-0-6-2-5-8-6-9"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="108.15798"
-         y="168.78885"
-         id="tspan25-0-9-8-0-1-6">CONT.</tspan></text>
+         x="108.95399"
+         y="170.38275"
+         id="tspan25-0-9-8-0">D#</tspan></text>
   </g>
 </svg>
