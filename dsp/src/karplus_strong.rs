@@ -98,7 +98,7 @@ impl KarplusStrong {
                 1.0 - (reset_phase + sample_phase / RESET as f32)
             };
 
-            *x += (mixed_sample - noise_sample) * 0.5 * reset_fade;
+            *x += filtered_sample * 0.5 * reset_fade;
         }
 
         if self.reset == RESET - 1 {
