@@ -99,7 +99,7 @@ impl Dsp {
         self.overdrive.process(&mut buffer_rest);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
-            *x = (buffer_rest[i], buffer_root[i]);
+            *x = (buffer_root[i], buffer_rest[i]);
         })
     }
 
