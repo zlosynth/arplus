@@ -186,7 +186,7 @@ impl Chords {
             GroupId::Size5 => Chord::from_slice(self.size_5.get(chord_index).unwrap()),
             GroupId::Size6 => Chord::from_slice(self.size_6.get(chord_index).unwrap()),
             GroupId::Size7 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
-            GroupId::Size8 => Chord::from_slice(self.size_7.get(chord_index).unwrap()),
+            GroupId::Size8 => Chord::from_slice(self.size_8.get(chord_index).unwrap()),
         }
     }
 
