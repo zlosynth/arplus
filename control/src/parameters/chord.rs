@@ -69,7 +69,10 @@ impl Chord {
     }
 
     pub fn selected_chord_index(&self) -> usize {
-        self.chord.selected_value()
+        // self.chord.selected_value()
+        let c = self.chord.selected_value();
+        defmt::info!("{:?}", c + 1);
+        c
     }
 
     pub fn selected_chord(&self) -> crate::chords::Chord {

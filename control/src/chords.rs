@@ -5,13 +5,13 @@ const MAX_CHORD_SIZE: usize = 25;
 pub type Chord = Vec<i16, MAX_CHORD_SIZE>;
 
 pub struct Chords {
-    size_1: LibraryGroup<7, 1>,
-    size_2: LibraryGroup<6, 2>,
-    size_3: LibraryGroup<18, 3>,
+    size_1: LibraryGroup<8, 1>,
+    size_2: LibraryGroup<8, 2>,
+    size_3: LibraryGroup<19, 3>,
     size_4: LibraryGroup<18, 4>,
-    size_5: LibraryGroup<16, 5>,
-    size_6: LibraryGroup<8, 6>,
-    size_7: LibraryGroup<8, 7>,
+    size_5: LibraryGroup<18, 5>,
+    size_6: LibraryGroup<9, 6>,
+    size_7: LibraryGroup<7, 7>,
     size_8: LibraryGroup<9, 8>,
 }
 
@@ -39,6 +39,8 @@ impl Chords {
 
     // NOTE: Keep the lists expanded to improve readability.
     // TODO: Make it so incrasing size keeps all the intervals from the previous size. Or at least on sizes 3+
+    // TODO: Order everything by consonance. Start with stacked triads, then add 1sus, then add 2sus, etc
+    // NOTE: Increasing size / fullness. Ending with resolution.
     #[rustfmt::skip]
     pub fn new() -> Self {
         let size_1 = initialize_group(&[
@@ -49,14 +51,17 @@ impl Chords {
             &[4],
             &[5],
             &[6],
+            &[7],
         ]);
         let size_2 = initialize_group(&[
+            &[0, 0],
             &[0, 1],
             &[0, 2],
             &[0, 3],
             &[0, 4],
             &[0, 5],
             &[0, 6],
+            &[0, 7],
         ]);
         let size_3 = initialize_group(&[
             &[0, 2, 4],
@@ -68,26 +73,27 @@ impl Chords {
             &[0, 3, 4],
             &[0, 3, 5],
             &[0, 3, 6],
-            &[0, 4, 7 + 2],
-            &[0, 5, 7 + 2],
-            &[0, 6, 7 + 2],
             &[0, 4, 7 + 1],
-            &[0, 5, 7 + 1],
-            &[0, 6, 7 + 1],
+            &[0, 4, 7 + 2],
             &[0, 4, 7 + 3],
+            &[0, 5, 7 + 1],
+            &[0, 5, 7 + 2],
             &[0, 5, 7 + 3],
+            &[0, 6, 7 + 1],
+            &[0, 6, 7 + 2],
             &[0, 6, 7 + 3],
+            &[0, 4, 7],
         ]);
         let size_4 = initialize_group(&[
+            &[0, 2, 4, 7],
             &[0, 2, 5, 7],
             &[0, 2, 6, 7],
-            &[0, 2, 7, 8],
             &[0, 3, 5, 7],
             &[0, 3, 6, 7],
             &[0, 3, 7, 8],
+            &[0, 1, 4, 7],
             &[0, 1, 5, 7],
             &[0, 1, 6, 7],
-            &[0, 1, 7, 8],
             &[0, 2, 4, 5],
             &[0, 2, 4, 6],
             &[0, 2, 4, 8],
@@ -96,40 +102,44 @@ impl Chords {
             &[0, 3, 4, 8],
             &[0, 1, 4, 5],
             &[0, 1, 4, 6],
-            &[0, 1, 4, 8],
+            &[0, 4, 6, 7],
         ]);
         let size_5 = initialize_group(&[
             &[0, 2, 4, 5, 7],
-            &[0, 1, 4, 5, 7],
             &[0, 2, 4, 6, 7],
+            &[0, 2, 4, 7, 8],
+            &[0, 3, 4, 5, 7],
+            &[0, 3, 4, 6, 7],
+            &[0, 3, 4, 7, 8],
+            &[0, 1, 4, 5, 7],
             &[0, 1, 4, 6, 7],
-            &[0, 2, 3, 5, 7],
-            &[0, 1, 3, 5, 7],
-            &[0, 2, 3, 6, 7],
-            &[0, 1, 3, 6, 7],
-            &[0, 4, 7, 7 + 2, 7 + 5],
-            &[0, 4, 7, 7 + 1, 7 + 5],
-            &[0, 4, 7, 7 + 2, 7 + 6],
-            &[0, 4, 7, 7 + 1, 7 + 6],
-            &[0, 3, 7, 7 + 2, 7 + 5],
-            &[0, 3, 7, 7 + 1, 7 + 5],
-            &[0, 3, 7, 7 + 2, 7 + 6],
-            &[0, 3, 7, 7 + 1, 7 + 6],
+            &[0, 1, 4, 8, 9],
+            &[0, 2, 4, 6, 8],
+            &[0, 3, 4, 5, 8],
+            &[0, 3, 4, 6, 9],
+            &[0, 2, 4, 5, 6],
+            &[0, 3, 4, 5, 6],
+            &[0, 4, 5, 6, 8],
+            &[0, 1, 4, 5, 6],
+            &[0, 2, 3, 5, 6],
+            &[0, 4, 6, 8, 9],
         ]);
+        // NOTE: Do not use more than 5 notes in a chord, it then all sounds the same, do 4 and 5
+        // NOTE: Last note's movement makes recognizable differences, use it - repeating one existing note
         let size_6 = initialize_group(&[
-            &[0, 2, 4, 5, 7, 7 + 2],
-            &[0, 1, 4, 5, 7, 7 + 1],
-            &[0, 2, 4, 6, 7, 7 + 2],
-            &[0, 1, 4, 6, 7, 7 + 1],
-            &[0, 2, 3, 5, 7, 7 + 2],
-            &[0, 1, 3, 5, 7, 7 + 1],
-            &[0, 2, 3, 6, 7, 7 + 2],
-            &[0, 1, 3, 6, 7, 7 + 1],
+            &[0, 2, 4, 5, 7, 9],
+            &[0, 2, 4, 6, 7, 9],
+            &[0, 2, 4, 7, 8, 11],
+            &[0, 3, 4, 5, 7, 11],
+            &[0, 3, 4, 6, 7, 10],
+            &[0, 2, 4, 6, 8, 9],
+            &[0, 1, 4, 5, 7, 8],
+            &[0, 3, 4, 5, 8, 10],
+            &[0, 4, 5, 6, 8, 11],
         ]);
         let size_7 = initialize_group(&[
             &[0, 2, 4, 5, 7, 7 + 2, 7 + 4],
             &[0, 1, 4, 5, 7, 7 + 1, 7 + 4],
-            &[0, 2, 4, 6, 7, 7 + 2, 7 + 4],
             &[0, 1, 4, 6, 7, 7 + 1, 7 + 4],
             &[0, 2, 3, 5, 7, 7 + 2, 7 + 3],
             &[0, 1, 3, 5, 7, 7 + 1, 7 + 3],
