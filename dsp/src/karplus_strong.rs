@@ -40,7 +40,7 @@ impl KarplusStrong {
         let mut filter = StateVariableFilter::new(sample_rate as u32);
         filter.set_bandform(Bandform::LowPass);
         filter.set_q_factor(0.7);
-        Self {
+        let mut s = Self {
             sample_rate,
             feedback: 0.0,
             resonance: 0.0,
@@ -53,7 +53,10 @@ impl KarplusStrong {
             envelope_follower: EnvelopeFollower::new(ATTACK, DECAY, TRESHOLD, sample_rate),
             reset: RESET,
             phase_delay: 0.0,
-        }
+        };
+        // TODO FIXME: Without this, the first trigger on the string is mute.
+        s.trigger(0.0, 10.0, 0.0, 0.0);
+        s
     }
 
     pub fn populate_add(&mut self, buffer: &mut [f32], random: &mut impl Random) {
