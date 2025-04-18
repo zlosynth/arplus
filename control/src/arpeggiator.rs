@@ -1,11 +1,3 @@
-// TODO:
-// - [X] rename current modes to _Reset
-// - [X] keep chord in Random, as a preparation to have them stick
-// - [X] implement reset command in config
-// - [X] test it
-// - [X] add _Next modes
-// - [X] test them
-// - [ ] Test it with BSP, make sure that instant gate on both trigger and reset is recognized on that next trigger. Consider adding a delay to trigger
 use crate::chords::Chord;
 use crate::random::Random;
 use crate::scales::ProjectedScale;
@@ -118,7 +110,6 @@ impl Arpeggiator {
                         unreachable!();
                     }
                 }
-                // TODO: The two WithNext would be handled here
                 _ => self.state = State::Up(0),
             };
         }

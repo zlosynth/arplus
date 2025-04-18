@@ -438,7 +438,6 @@ impl Controller {
         needs_save: &mut bool,
     ) {
         let tone_pot = &self.inputs.pots.tone;
-        // TODO: Tonic button
         let tone_cv_value = self.tone_cv();
         let group_button = &self.inputs.buttons.group;
         let scale_button = &self.inputs.buttons.scale;

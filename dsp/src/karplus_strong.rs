@@ -54,7 +54,7 @@ impl KarplusStrong {
             reset: RESET,
             phase_delay: 0.0,
         };
-        // TODO FIXME: Without this, the first trigger on the string is mute.
+        // XXX: Without this silent trigger, the first trigger on the string is mute.
         s.trigger(0.0, 10.0, 0.0, 0.0);
         s
     }
@@ -137,7 +137,6 @@ impl KarplusStrong {
         const MAX_CUTOFF: f32 = 12_000.0;
         let delta = MAX_CUTOFF - self.frequency;
         // TODO: Lowest octave does not work properly
-        // TODO: Optimize the equation
         let cutoff = 1.5 + (taper::log(cutoff) * delta) / self.frequency;
         self.filter
             .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));

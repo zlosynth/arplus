@@ -96,11 +96,8 @@ impl Scale {
         scale_cv: Option<f32>,
         tonic_cv: Option<f32>,
     ) -> (bool, bool, bool, bool, bool) {
-        // TODO: Handle configuration of tonic with BUTTON + TONE
-
         let old_cv_controls_group = self.cv_controls_group;
         let old_cv_controls_scale = self.cv_controls_scale;
-        // TODO: This would go away, I think
         let old_cv_controls_tonic = self.cv_controls_tonic;
 
         self.cv_controls_group = group_cv.is_some();
@@ -137,7 +134,7 @@ impl Scale {
         let changed_tonic = if let Some(tonic_cv) = tonic_cv {
             self.cv_tonic.reconcile(tonic_cv)
         } else if trigger_held && note_pot_moved {
-            // TODO: It is already prepared for TONIC contrl here. Only now I have to combine it with CV
+            // TODO: Warn the user that CV is remapped
             self.pot_tonic.reconcile(note_pot)
         } else {
             false

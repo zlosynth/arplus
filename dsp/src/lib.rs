@@ -128,8 +128,6 @@ impl Dsp {
             string
                 .karplus_strong
                 .trigger(0.99, trigger.frequency, trigger.contour, trigger.pluck);
-            // TODO: Set cutoff again? To make sure it gets in sync with the
-            // new frequency before DSP starts doing anything.
             string.is_root = trigger.is_root;
 
             let next_string = &mut self.strings[next_string_index];

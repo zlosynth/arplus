@@ -38,8 +38,6 @@ impl Chords {
     pub const GROUPS: usize = 8;
 
     // NOTE: Keep the lists expanded to improve readability.
-    // TODO: Make it so incrasing size keeps all the intervals from the previous size. Or at least on sizes 3+
-    // TODO: Order everything by consonance. Start with stacked triads, then add 1sus, then add 2sus, etc
     // NOTE: Increasing size / fullness. Ending with resolution.
     #[rustfmt::skip]
     pub fn new() -> Self {
