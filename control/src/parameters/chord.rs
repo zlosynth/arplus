@@ -37,7 +37,7 @@ impl Chord {
         }
     }
 
-    pub fn reconcile_group_chord_and_scale_size(
+    pub fn reconcile_size_chord_and_scale_size(
         &mut self,
         group_pot: f32,
         group_cv: Option<f32>,
@@ -80,7 +80,7 @@ impl Chord {
             .unwrap()
     }
 
-    pub fn selected_group_size(&self) -> usize {
+    pub fn selected_size(&self) -> usize {
         self.library.group_size(self.selected_group_id())
     }
 

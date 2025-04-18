@@ -2,8 +2,8 @@ use super::primitives::discrete::Discrete;
 use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
 
 pub struct CvMapping {
-    chord_size: Discrete,
-    scale_group: Discrete,
+    size: Discrete,
+    group: Discrete,
     scale: Discrete,
     arp: Discrete,
     tonic: Discrete,
@@ -12,8 +12,8 @@ pub struct CvMapping {
 
 #[derive(Clone, Copy, defmt::Format, PartialEq, Default, Debug)]
 pub struct PersistentConfig {
-    chord_size: DiscretePersistentConfig,
-    scale_group: DiscretePersistentConfig,
+    size: DiscretePersistentConfig,
+    group: DiscretePersistentConfig,
     scale: DiscretePersistentConfig,
     arp: DiscretePersistentConfig,
     tonic: DiscretePersistentConfig,
@@ -36,8 +36,8 @@ pub enum Socket {
 impl CvMapping {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
-            chord_size: Discrete::new(config.chord_size, 6, 0.1, 1.0),
-            scale_group: Discrete::new(config.scale_group, 6, 0.1, 1.0),
+            size: Discrete::new(config.size, 6, 0.1, 1.0),
+            group: Discrete::new(config.group, 6, 0.1, 1.0),
             scale: Discrete::new(config.scale, 6, 0.1, 1.0),
             arp: Discrete::new(config.arp, 6, 0.1, 1.0),
             tonic: Discrete::new(config.tonic, 6, 0.1, 1.0),
@@ -47,8 +47,8 @@ impl CvMapping {
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
-            chord_size: self.chord_size.copy_config(),
-            scale_group: self.scale_group.copy_config(),
+            size: self.size.copy_config(),
+            group: self.group.copy_config(),
             scale: self.scale.copy_config(),
             arp: self.arp.copy_config(),
             tonic: self.tonic.copy_config(),
@@ -56,13 +56,13 @@ impl CvMapping {
         }
     }
 
-    pub fn reconcile_scale_group_mapping(&mut self, input_level: f32) -> bool {
-        self.scale_group.reconcile(input_level)
+    pub fn reconcile_group_mapping(&mut self, input_level: f32) -> bool {
+        self.group.reconcile(input_level)
     }
 
-    pub fn scale_group_socket(&self) -> Socket {
+    pub fn group_socket(&self) -> Socket {
         // SAFETY: Maximum selected value is limited.
-        self.scale_group.selected_value().try_into().unwrap()
+        self.group.selected_value().try_into().unwrap()
     }
 
     pub fn reconcile_scale_mapping(&mut self, input_level: f32) -> bool {
@@ -92,13 +92,13 @@ impl CvMapping {
         self.tonic.selected_value().try_into().unwrap()
     }
 
-    pub fn reconcile_chord_size_mapping(&mut self, input_level: f32) -> bool {
-        self.chord_size.reconcile(input_level)
+    pub fn reconcile_size_mapping(&mut self, input_level: f32) -> bool {
+        self.size.reconcile(input_level)
     }
 
-    pub fn chord_size_socket(&self) -> Socket {
+    pub fn size_socket(&self) -> Socket {
         // SAFETY: Maximum selected value is limited.
-        self.chord_size.selected_value().try_into().unwrap()
+        self.size.selected_value().try_into().unwrap()
     }
 
     pub fn reconcile_pluck_mapping(&mut self, input_level: f32) -> bool {
@@ -111,11 +111,11 @@ impl CvMapping {
     }
 
     pub fn is_socket_remapped(&self, socket: Socket) -> bool {
-        self.scale_group_socket() == socket
+        self.group_socket() == socket
             || self.scale_socket() == socket
             || self.arp_socket() == socket
             || self.tonic_socket() == socket
-            || self.chord_size_socket() == socket
+            || self.size_socket() == socket
             || self.pluck_socket() == socket
     }
 }

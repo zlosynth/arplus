@@ -47,7 +47,7 @@ pub struct Gates {
 }
 
 pub struct Buttons {
-    pub scale_group: Button,
+    pub group: Button,
     pub scale: Button,
     pub arp: Button,
     pub trigger: Button,
@@ -84,7 +84,7 @@ impl Inputs {
                 trigger: Gate::new(),
             },
             buttons: Buttons {
-                scale_group: Button::new(),
+                group: Button::new(),
                 scale: Button::new(),
                 arp: Button::new(),
                 trigger: Button::new(),
@@ -116,7 +116,7 @@ impl Inputs {
         self.buttons.trigger.reconcile(snapshot.buttons[1]);
         self.buttons.rsnx.reconcile(snapshot.buttons[2]);
         self.buttons.arp.reconcile(snapshot.buttons[3]);
-        self.buttons.scale_group.reconcile(snapshot.buttons[4]);
+        self.buttons.group.reconcile(snapshot.buttons[4]);
         self.buttons.scale.reconcile(snapshot.buttons[5]);
     }
 

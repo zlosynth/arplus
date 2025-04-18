@@ -249,7 +249,7 @@ impl Controller {
             State::CalibratingTone(_) => (),
             State::CalibratingQuant(_) => (),
             State::Normal => {
-                if self.inputs.buttons.scale_group.held_for() > 3000
+                if self.inputs.buttons.group.held_for() > 3000
                     && self.inputs.buttons.scale.held_for() > 3000
                 {
                     defmt::info!("Entering configuration");
@@ -257,8 +257,7 @@ impl Controller {
                 }
             }
             State::Configuring => {
-                if self.inputs.buttons.scale_group.clicked() || self.inputs.buttons.scale.clicked()
-                {
+                if self.inputs.buttons.group.clicked() || self.inputs.buttons.scale.clicked() {
                     defmt::info!("Exiting configuration");
                     self.state = State::Normal;
                     display_request.reset_fallback_attribute();
@@ -269,7 +268,7 @@ impl Controller {
                     // Tone -> Tonic CV mapping
                     // Chord -> Gain
                     // Chord Size -> Chord size CV mapping
-                    // Resonance -> Scale group CV mapping
+                    // Resonance -> Group CV mapping
                     // Cutoff -> Scale CV mapping
                     // Contour -> Arp CV mapping
                     // Pluck -> Pluck CV mapping
@@ -296,20 +295,16 @@ impl Controller {
 
                     // Chord size knob selects chord size CV.
                     if pots.chord_size.activation_movement() {
-                        *needs_save |=
-                            cv_mapping.reconcile_chord_size_mapping(pots.chord_size.value());
-                        display_request.set_queried_attribute(Screen::cv_mapping(
-                            cv_mapping.chord_size_socket(),
-                        ));
+                        *needs_save |= cv_mapping.reconcile_size_mapping(pots.chord_size.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.size_socket()));
                     }
 
-                    // Resonance knob selects scale group CV.
+                    // Resonance knob selects group CV.
                     if pots.resonance.activation_movement() {
-                        *needs_save |=
-                            cv_mapping.reconcile_scale_group_mapping(pots.resonance.value());
-                        display_request.set_queried_attribute(Screen::cv_mapping(
-                            cv_mapping.scale_group_socket(),
-                        ));
+                        *needs_save |= cv_mapping.reconcile_group_mapping(pots.resonance.value());
+                        display_request
+                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.group_socket()));
                     }
 
                     // Cutoff knob selects scale CV.
@@ -358,7 +353,6 @@ impl Controller {
         self.reconcile_arp_mode(display_request, needs_save);
     }
 
-    // TODO: Unify names for group and size - just use size.
     fn reconcile_chord(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
@@ -371,7 +365,7 @@ impl Controller {
         let scale_size = self.parameters.scale.selected_scale_size();
         let parameter = &mut self.parameters.chord;
 
-        let (changed_group, changed_chord) = parameter.reconcile_group_chord_and_scale_size(
+        let (changed_size, changed_chord) = parameter.reconcile_size_chord_and_scale_size(
             size_pot.value(),
             size_cv_value,
             chord_pot.value(),
@@ -379,12 +373,12 @@ impl Controller {
             scale_size,
         );
         *needs_save |=
-            size_cv_value.is_none() && chord_cv_value.is_none() && (changed_group || changed_chord);
+            size_cv_value.is_none() && chord_cv_value.is_none() && (changed_size || changed_chord);
 
         // TODO FIXME: Changing size using CV trigers chord display
-        if size_pot.activation_movement() || (size_cv_value.is_none() && changed_group) {
-            let size = parameter.selected_group_size();
-            display_request.set_queried_attribute(Screen::chord_size(size));
+        if size_pot.activation_movement() || (size_cv_value.is_none() && changed_size) {
+            let size = parameter.selected_size();
+            display_request.set_queried_attribute(Screen::size(size));
         } else if chord_pot.activation_movement() || (chord_cv_value.is_none() && changed_chord) {
             let chord = parameter.selected_chord();
             display_request.set_queried_attribute(Screen::chord(chord, scale_size));
@@ -446,10 +440,10 @@ impl Controller {
         let tone_pot = &self.inputs.pots.tone;
         // TODO: Tonic button
         let tone_cv_value = self.tone_cv();
-        let group_button = &self.inputs.buttons.scale_group;
+        let group_button = &self.inputs.buttons.group;
         let scale_button = &self.inputs.buttons.scale;
         let tonic_button = &self.inputs.buttons.tonic;
-        let group_cv = self.scale_group_cv();
+        let group_cv = self.group_cv();
         let scale_cv = self.scale_cv();
         let tonic_cv = self.tonic_cv();
         let parameter = &mut self.parameters.scale;
@@ -485,7 +479,7 @@ impl Controller {
 
         if group_changed || scale_changed || tonic_changed {
             defmt::info!(
-                "Selected scale_group={:?} scale={:?} tonic={:?}",
+                "Selected group={:?} scale={:?} tonic={:?}",
                 parameter.selected_group_id(),
                 parameter.selected_scale_index(),
                 parameter.selected_tonic(),
@@ -494,7 +488,7 @@ impl Controller {
 
         if group_held || group_tapped || (group_changed && group_cv.is_none()) {
             let selected = parameter.selected_group_id();
-            display_request.set_queried_attribute(Screen::scale_group(selected));
+            display_request.set_queried_attribute(Screen::group(selected));
         } else if scale_held || scale_tapped || (scale_changed && scale_cv.is_none()) {
             let selected = parameter.selected_scale_index();
             display_request.set_queried_attribute(Screen::scale(selected));
@@ -574,7 +568,7 @@ impl Controller {
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
-            chord_size: self.parameters.chord.selected_group_size(),
+            chord_size: self.parameters.chord.selected_size(),
         }
     }
 
@@ -626,7 +620,7 @@ impl Controller {
     }
 
     fn chord_size_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.chord_size_socket())
+        self.socket_cv(self.parameters.cv_mapping.size_socket())
     }
 
     fn contour_cv(&self) -> Option<f32> {
@@ -637,8 +631,8 @@ impl Controller {
         self.socket_cv(self.parameters.cv_mapping.tonic_socket())
     }
 
-    fn scale_group_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.scale_group_socket())
+    fn group_cv(&self) -> Option<f32> {
+        self.socket_cv(self.parameters.cv_mapping.group_socket())
     }
 
     fn scale_cv(&self) -> Option<f32> {

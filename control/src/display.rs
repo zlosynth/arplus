@@ -1,7 +1,7 @@
 use crate::arpeggiator::Mode as ArpMode;
 use crate::chords::Chord;
 use crate::parameters::CvMappingSocket;
-use crate::scales::{GroupId as ScaleGroupId, Tonic};
+use crate::scales::{GroupId, Tonic};
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
@@ -28,8 +28,8 @@ pub enum Screen {
     Step(StepScreen),
     ArpMode(ArpModeScreen),
     Scale(ScaleScreen),
-    ScaleGroup(ScaleGroupScreen),
-    ChordSize(ChordSizeScreen),
+    Group(GroupScreen),
+    Size(SizeScreen),
     Note(NoteScreen),
     Chord(ChordScreen),
     ToneCalibration(ToneCalibrationScreen),
@@ -56,13 +56,13 @@ pub struct ScaleScreen {
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
-pub struct ScaleGroupScreen {
-    scale_group: ScaleGroupId,
+pub struct GroupScreen {
+    group: GroupId,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
-pub struct ChordSizeScreen {
-    chord_size: usize,
+pub struct SizeScreen {
+    size: usize,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -172,16 +172,16 @@ impl Screen {
         Screen::ArpMode(ArpModeScreen::with_selected(arp_mode))
     }
 
-    pub fn scale_group(scale_group: ScaleGroupId) -> Self {
-        Screen::ScaleGroup(ScaleGroupScreen::with_selected(scale_group))
+    pub fn group(group: GroupId) -> Self {
+        Screen::Group(GroupScreen::with_selected(group))
     }
 
     pub fn scale(scale_index: usize) -> Self {
         Screen::Scale(ScaleScreen::with_index(scale_index))
     }
 
-    pub fn chord_size(size: usize) -> Self {
-        Screen::ChordSize(ChordSizeScreen::with_size(size))
+    pub fn size(size: usize) -> Self {
+        Screen::Size(SizeScreen::with_size(size))
     }
 
     pub fn note(note_index: usize) -> Self {
@@ -241,8 +241,8 @@ impl Screen {
             Screen::Step(s) => s.leds(),
             Screen::ArpMode(s) => s.leds(),
             Screen::Scale(s) => s.leds(),
-            Screen::ScaleGroup(s) => s.leds(),
-            Screen::ChordSize(s) => s.leds(),
+            Screen::Group(s) => s.leds(),
+            Screen::Size(s) => s.leds(),
             Screen::Note(s) => s.leds(),
             Screen::Chord(s) => s.leds(),
             Screen::Octave(s) => s.leds(),
@@ -301,30 +301,30 @@ impl ScaleScreen {
     }
 }
 
-impl ScaleGroupScreen {
-    pub fn with_selected(scale_group: ScaleGroupId) -> Self {
-        Self { scale_group }
+impl GroupScreen {
+    pub fn with_selected(group: GroupId) -> Self {
+        Self { group }
     }
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
         let leds_max = leds.len() - 1;
-        if let Some(led) = leds.get_mut(leds_max - self.scale_group as usize) {
+        if let Some(led) = leds.get_mut(leds_max - self.group as usize) {
             *led = true;
         }
         leds
     }
 }
 
-impl ChordSizeScreen {
-    pub fn with_size(chord_size: usize) -> Self {
-        Self { chord_size }
+impl SizeScreen {
+    pub fn with_size(size: usize) -> Self {
+        Self { size }
     }
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        if self.chord_size <= leds.len() {
-            for led in leds[..self.chord_size].iter_mut() {
+        if self.size <= leds.len() {
+            for led in leds[..self.size].iter_mut() {
                 *led = true;
             }
         } else {
