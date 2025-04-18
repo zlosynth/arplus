@@ -19,6 +19,7 @@ mod overdrive;
 mod phase_delay;
 mod random;
 mod ring_buffer;
+mod sigmoid_lookup;
 mod state_variable_filter;
 mod taper;
 
