@@ -85,7 +85,6 @@ impl Arpeggiator {
         }
 
         if config.reset_next {
-            // TODO: Clean up
             match config.mode {
                 Mode::RandomWithReset => self.state = State::Random(0, config.chord.clone()),
                 Mode::MovingWithReset => self.state = State::Moving(0, config.chord.clone()),

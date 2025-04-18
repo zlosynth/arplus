@@ -1,6 +1,7 @@
 # TODO
 
 - [ ] Implement CV calibration on all CVs. So it can be used with tonic remapped
+- [ ] Make sure there are no panics / unwraps
 - [ ] Write build manual
 - [ ] Write user manual
 - [ ] Narrow down the amount of features - reduce number of chords.

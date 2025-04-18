@@ -29,12 +29,10 @@ impl<const N: usize> Scale<N> {
         // lowest octave.
         let lowest_tonic = self.lowest_tonic();
         if voct < lowest_tonic.voct() {
-            // return Some(self.lowest_tonic());
             return Some(ScaleNote::new(
                 QuarterTone::try_from_u8(lowest_tonic.index()).unwrap(),
                 0,
             ));
-            // return None;
         }
 
         let closest_tonic = self.find_closest_tonic(voct)?;

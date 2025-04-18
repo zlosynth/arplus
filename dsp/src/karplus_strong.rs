@@ -134,6 +134,8 @@ impl KarplusStrong {
         // However, the alternative of having fixed multiple would suffer
         // in high fundamental frequencies, where most of the cutoff would
         // not be usable due to filter stability.
+        // Feature gate an alternative firmware that would not scale the
+        // cutoff range by the selected tone. Instead it would clamp it.
         const MAX_CUTOFF: f32 = 12_000.0;
         let delta = MAX_CUTOFF - self.frequency;
         // TODO: Lowest octave does not work properly
