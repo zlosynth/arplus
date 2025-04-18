@@ -35,13 +35,21 @@ impl ControlOutputInterface {
     }
 
     pub fn set_state(&mut self, state: &ControlOutputState) {
+        // NOTE: Delay added to meet the timing requirements of SN54HC595.
+        const USECOND: u32 = 480_000_000 / 1000;
+        // NOTE: Minimal pulse time for RCLK is guaranteed from both sides.
         self.pins.led_rclk.set_low();
-        // TODO: Make sure that the timing requirements of the chip are met.
-        // NOTE: Shift register is wired from top to bottom, but the
-        // state expects bottom up.
         for i in 0..8 {
+            // NOTE: Shift register is wired from top to bottom, but the
+            // state expects bottom up.
             self.pins.led_ser.set_state(state.leds[7 - i].into());
+            // NOTE: Minimal setup time of SER before SRCLK is 125 ns.
+            cortex_m::asm::delay(USECOND);
+
             self.pins.led_srclk.set_high();
+            // NOTE: Minimal pulse duration for SRCLK is 100 ns.
+            // NOTE: Minimal setup time for SRCLK up before RCLK up is 94 ns.
+            cortex_m::asm::delay(USECOND);
             self.pins.led_srclk.set_low();
         }
         self.pins.led_rclk.set_high();
