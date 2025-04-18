@@ -25,15 +25,18 @@ impl Overdrive {
 
         let position = (value + 1.0) / 2.0;
 
-        // TODO: Move to its own interpolation helper function.
-        let array_position = position * (SIGMOID.len() - 1) as f32;
-        let index_a = array_position as usize;
-        let index_b = (array_position as usize + 1).min(SIGMOID.len() - 1);
-        let remainder = libm::modff(array_position).0;
-
-        let value_a = SIGMOID[index_a];
-        let delta_to_b = SIGMOID[index_b] - SIGMOID[index_a];
-
-        value_a + delta_to_b * remainder
+        interpolate_sigmoid(position)
     }
+}
+
+fn interpolate_sigmoid(position: f32) -> f32 {
+    let array_position = position * (SIGMOID.len() - 1) as f32;
+    let index_a = array_position as usize;
+    let index_b = (array_position as usize + 1).min(SIGMOID.len() - 1);
+    let remainder = libm::modff(array_position).0;
+
+    let value_a = SIGMOID[index_a];
+    let delta_to_b = SIGMOID[index_b] - SIGMOID[index_a];
+
+    value_a + delta_to_b * remainder
 }
