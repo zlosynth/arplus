@@ -31,8 +31,7 @@ pub enum Mode {
 pub enum State {
     Up(usize),
     Down(usize),
-    Random(usize, Chord),
-    Moving(usize, Chord),
+    Shuffled(usize, Chord),
 }
 
 #[derive(Clone, Debug, defmt::Format)]
@@ -51,13 +50,13 @@ impl Arpeggiator {
             root: config.root,
             mode: config.mode,
             state: match config.mode {
-                Mode::RandomWithReset | Mode::RandomWithNext => {
-                    State::Random(0, config.chord.clone())
-                }
-                Mode::MovingWithReset | Mode::MovingWithNext => {
-                    State::Moving(0, config.chord.clone())
-                }
-                _ => State::Up(0),
+                Mode::UpWithReset
+                | Mode::UpDownNoRepeatsWithReset
+                | Mode::UpDownRepeatsWithReset => State::Up(0),
+                Mode::RandomWithReset
+                | Mode::RandomWithNext
+                | Mode::MovingWithReset
+                | Mode::MovingWithNext => State::Shuffled(0, config.chord.clone()),
             },
             chord: config.chord,
             voct_cache: 0.0,
@@ -75,21 +74,23 @@ impl Arpeggiator {
                         self.state = State::Up(0);
                     }
                 }
-                Mode::RandomWithReset | Mode::RandomWithNext => {
-                    self.state = State::Random(0, self.chord.clone())
-                }
-                Mode::MovingWithReset | Mode::MovingWithNext => {
-                    self.state = State::Moving(0, self.chord.clone())
-                }
+                Mode::RandomWithReset
+                | Mode::RandomWithNext
+                | Mode::MovingWithReset
+                | Mode::MovingWithNext => self.state = State::Shuffled(0, self.chord.clone()),
             }
         }
 
         if config.reset_next {
             match config.mode {
-                Mode::RandomWithReset => self.state = State::Random(0, config.chord.clone()),
-                Mode::MovingWithReset => self.state = State::Moving(0, config.chord.clone()),
+                Mode::UpWithReset
+                | Mode::UpDownNoRepeatsWithReset
+                | Mode::UpDownRepeatsWithReset => self.state = State::Up(0),
+                Mode::RandomWithReset | Mode::MovingWithReset => {
+                    self.state = State::Shuffled(0, config.chord.clone())
+                }
                 Mode::RandomWithNext => {
-                    if let State::Random(ref mut index, ref mut randomized_chord) = self.state {
+                    if let State::Shuffled(ref mut index, ref mut randomized_chord) = self.state {
                         let last_index = self.chord.len() - 1;
                         for d in randomized_chord.iter_mut() {
                             *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
@@ -100,7 +101,7 @@ impl Arpeggiator {
                     }
                 }
                 Mode::MovingWithNext => {
-                    if let State::Moving(ref mut index, ref mut schuffled_chord) = self.state {
+                    if let State::Shuffled(ref mut index, ref mut schuffled_chord) = self.state {
                         let last_index = self.chord.len() - 1;
                         let (random_a, random_b) = two_distinct_random_values(last_index, random);
                         schuffled_chord.swap(random_a, random_b);
@@ -109,15 +110,12 @@ impl Arpeggiator {
                         unreachable!();
                     }
                 }
-                _ => self.state = State::Up(0),
             };
         }
 
         if self.chord != config.chord {
-            if let State::Moving(_, schuffled_chord) = &mut self.state {
+            if let State::Shuffled(_, schuffled_chord) = &mut self.state {
                 *schuffled_chord = config.chord.clone();
-            } else if let State::Random(_, randomized_chord) = &mut self.state {
-                *randomized_chord = config.chord.clone();
             }
             self.chord = config.chord;
         }
@@ -179,44 +177,24 @@ impl Arpeggiator {
                     self.chord[new_index]
                 }
             }
-            // TODO: Merge this with Moving, use a singe Shuffled mode
-            // TODO: Allow "Next" by registering request for next and applying it here - remove config rest from apply-config
-            State::Random(ref mut index, ref mut randomized_chord) => {
-                let last_index = self.chord.len() - 1;
-                if last_index == 0 {
-                    self.chord[last_index]
-                } else if *index >= last_index {
-                    let degree = randomized_chord[last_index];
-                    match self.mode {
-                        Mode::RandomWithReset => {
-                            for d in randomized_chord.iter_mut() {
-                                *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
-                            }
-                        }
-                        Mode::RandomWithNext => (),
-                        _ => unreachable!(),
-                    }
-                    *index = 0;
-                    degree
-                } else {
-                    let degree = randomized_chord[*index];
-                    *index += 1;
-                    degree
-                }
-            }
-            State::Moving(ref mut index, ref mut schuffled_chord) => {
+            State::Shuffled(ref mut index, ref mut schuffled_chord) => {
                 let last_index = self.chord.len() - 1;
                 if last_index == 0 {
                     self.chord[last_index]
                 } else if *index >= last_index {
                     let degree = schuffled_chord[last_index];
                     match self.mode {
+                        Mode::RandomWithReset => {
+                            for d in schuffled_chord.iter_mut() {
+                                *d = self.chord[random.u8_mod(last_index as u8 + 1) as usize];
+                            }
+                        }
                         Mode::MovingWithReset => {
                             let (random_a, random_b) =
                                 two_distinct_random_values(last_index, random);
                             schuffled_chord.swap(random_a, random_b);
                         }
-                        Mode::MovingWithNext => (),
+                        Mode::MovingWithNext | Mode::RandomWithNext => (),
                         _ => unreachable!(),
                     }
                     *index = 0;
