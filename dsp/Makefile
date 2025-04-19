@@ -1,4 +1,4 @@
-CARGO = cargo
+CARGO = cargo +1.86.0
 
 .PHONY: all
 all: format clippy test

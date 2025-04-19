@@ -4,17 +4,14 @@
 
 Follow [Rust's installation guide](https://www.rust-lang.org/tools/install).
 
-Install tooling of the embedded Rust target for Cortex-M7F:
+Additionally, install the dependencies to build and test the project. Rust
+version is pinned to prevent issues where after upgrade the binary gets bigger
+or slower:
 
-```sh
-rustup target add thumbv7em-none-eabihf
-```
-
-Furthermore, the embedded part of the project uses [flip
-link](https://github.com/knurling-rs/flip-link):
-
-```sh
-cargo install flip-link
+``` sh
+rustup toolchain install 1.86.0-x86_64-unknown-linux-gnu
+rustup target add thumbv7em-none-eabihf --toolchain 1.86.0
+cargo +1.86.0 install cargo-binutils flip-link
 ```
 
 ## Formatting, linting, unit tests
@@ -52,7 +49,7 @@ started](https://probe.rs/docs/getting-started/probe-setup/) to learn how.
 Then install Rust dependencies of probe-rs:
 
 ```sh
-cargo install probe-rs --features cli
+cargo +1.86.0 install probe-rs --features cli
 ```
 
 To flash the project, call this make target:
@@ -78,8 +75,8 @@ On Fedora, this can be done by calling:
 
 ```sh
 sudo dnf install dfu-util
-cargo install cargo-binutils
-rustup component add llvm-tools-preview
+cargo +1.86.0 install cargo-binutils
+rustup +1.86.0 component add llvm-tools-preview
 ```
 
 Click the RESET button while holding the BOOT button of the Daisy Patch SM to
@@ -108,9 +105,8 @@ the firmware size stays slim and no bloat gets in.
 Install needed tooling:
 
 ```sh
-cargo install cargo-bloat
-cargo install cargo-binutils
-rustup component add llvm-tools-preview
+cargo +1.86.0 install cargo-bloat cargo-binutils
+rustup +1.86.0 component add llvm-tools-preview
 ```
 
 Run the following command often to make sure no unnecessary heavy dependencies
