@@ -252,6 +252,8 @@ mod app {
 
         cx.shared.save_cache.lock(|save_cache| {
             if let Some(save) = save_cache.take() {
+                // NOTE: Lazy evalutation to avoid expensive logging
+                #[allow(clippy::unnecessary_lazy_evaluations)]
                 save_coroutine::spawn(save)
                     .unwrap_or_else(|_| defmt::warn!("Failed issuing store request"));
             }
