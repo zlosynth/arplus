@@ -23,3 +23,4 @@
   - When Arplus is configured that way, Achordion connected through Quant would detect that
     it is controlled by Arplus and enter controlled mode - scale would be following
     Arplus.
+- [ ] Pin to a specific rust release
