@@ -51,3 +51,7 @@ diagnostics:
 .PHONY: manual/user
 manual/user:
 	make -C manual/user
+
+.PHONY: manual/build
+manual/build:
+	make -C manual/build

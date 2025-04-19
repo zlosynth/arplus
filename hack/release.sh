@@ -17,8 +17,9 @@ mkdir release
 pushd firmware && cargo objcopy --release -- -O binary ../release/arplus-firmware-${version}.bin && popd
 pushd firmware && cargo objcopy --release --features stable-cutoff-ratio -- -O binary ../release/arplus-firmware-${version}-feature-stable-cutoff-ratio.bin && popd
 
-make manual/user
+make manual/user manual/build
 cp manual/user/manual.pdf release/arplus-user-manual.pdf
+cp manual/build/manual.pdf release/arplus-build-manual.pdf
 
 export CHANGES=$(awk "/## ${version}/{flag=1;next}/## */{flag=0}flag" CHANGELOG.md | awk 'NF')
 export BINARY=arplus-firmware-${version}.bin

@@ -2,8 +2,6 @@
 
 - [ ] Implement CV calibration on all CVs. So it can be used with tonic remapped
 - [ ] Make sure there are no panics / unwraps
-- [ ] Write build manual
-- [ ] Write user manual
 - [ ] Narrow down the amount of features - reduce number of chords.
 - [ ] Refactor the whole codebase.
 - [ ] Document why is RSNX interesting - polyrhythms, partial fix and random, ...
