@@ -17,3 +17,5 @@ mkdir release
 export CHANGES=$(awk "/## ${version}/{flag=1;next}/## */{flag=0}flag" CHANGELOG.md | awk 'NF')
 
 envsubst < hack/release.tmpl.md > release/notes.md
+
+# TODO: Build the main and alternative (feature gated) firmware

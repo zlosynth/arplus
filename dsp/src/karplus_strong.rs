@@ -127,19 +127,33 @@ impl KarplusStrong {
             return;
         }
 
-        // TODO: See if this can be changed for improved resonance tuning.
-        // In the current state, the multiple of the cutoff is moving
+        // NOTE: In the default state, the multiple of the cutoff is moving
         // depending on the fundamental frequency. That means that a cutoff
         // that is harmonic for one tone will not be for another.
         // However, the alternative of having fixed multiple would suffer
         // in high fundamental frequencies, where most of the cutoff would
         // not be usable due to filter stability.
-        // Feature gate an alternative firmware that would not scale the
-        // cutoff range by the selected tone. Instead it would clamp it.
-        const MAX_CUTOFF: f32 = 12_000.0;
-        let delta = MAX_CUTOFF - self.frequency;
-        // TODO: Lowest octave does not work properly
-        let cutoff = 1.5 + (taper::log(cutoff) * delta) / self.frequency;
+        // The default behavior is to scale the cutoff knob based on the
+        // available frequency "headroom". Stable cutoff ratio can be enabled
+        // using the `stable_cutoff_ratio` feature.
+        const MIN_CUTOFF: f32 = 15.0;
+        let cutoff = {
+            #[cfg(not(feature = "stable-cutoff-ratio"))]
+            {
+                const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
+                let delta = MAX_CUTOFF_FREQUENCY - self.frequency;
+                // TODO: Lowest octave does not work properly
+                MIN_CUTOFF + (taper::log(cutoff) * delta) / self.frequency
+            }
+            #[cfg(feature = "stable-cutoff-ratio")]
+            {
+                // TODO: Tweak this, so it's not too low to make all sounds dull,
+                // but also not too high to be mostly ineffectual on mid/high tones.
+                const MAX_CUTOFF: f32 = 10.0;
+                MIN_CUTOFF + (MAX_CUTOFF - MIN_CUTOFF) * cutoff
+            }
+        };
+
         self.filter
             .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));
     }
