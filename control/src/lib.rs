@@ -108,15 +108,6 @@ impl Controller {
         }
     }
 
-    // TODO: Implement output calibration
-    // - [X] Rename all Calibration stuff to ToneCalibration
-    // - [X] Use RSNX button for ToneCalibration
-    // - [ ] Add calibration attributes to the Quan output abstraction
-    // - [ ] Enter quan calibration and exit right away
-    // - [ ] Confirm that quant is connected to TONE with a probe sequence
-    // - [ ] Read two octaves
-    // - [ ] Add animation to all steps
-
     fn reconcile_tone_calibration(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
@@ -396,11 +387,9 @@ impl Controller {
     }
 
     fn reconcile_reset_next(&mut self) {
-        // TODO XXX: This must be preserved until the trigger is received.
         let button = &self.inputs.buttons.rsnx;
         let cv = &self.inputs.gates.rsnx;
         let parameter = &mut self.parameters.reset_next;
-        // TODO: This can only set it high. It is reset when read
         parameter.reconcile(button.clicked(), cv.triggered());
     }
 
@@ -586,7 +575,6 @@ impl Controller {
 
     pub fn tick(&mut self) -> ControlOutputState {
         self.display.tick();
-        // TODO: Find a better place for this. Probably under reconcile methods.
         self.quantized_output.reconcile(self.arp.last_voct_output());
         ControlOutputState {
             leds: if let Some((active_screen, clock)) = self.display.active_screen_and_clock() {
