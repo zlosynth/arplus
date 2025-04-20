@@ -24,6 +24,8 @@ impl AudioInterface {
     ///
     /// Audio processing can be spawned only once. It panics otherwise.
     pub fn spawn(&mut self) {
+        // PANIC: Documented panic. Should work fine. If this fails, it's very
+        // bad and the module would not function anyway.
         self.interface = Some(self.interface.take().unwrap().spawn().unwrap());
     }
 
@@ -36,8 +38,14 @@ impl AudioInterface {
     pub fn update_buffer(&mut self, callback: impl FnMut(&mut [(f32, f32); BLOCK_LENGTH])) {
         self.interface
             .as_mut()
+            // PANIC: This won't panic unless this method is called before
+            // spawn. That would be a serious bug impossible to recover from
+            // so this is ok to keep.
             .unwrap()
             .handle_interrupt_dma1_str1(callback)
+            // PANIC: This would fail if timing is bad, or if the method is
+            // not used correctly. Both are unlikely, and if they happened,
+            // they are a serious bug that should not be ignored.
             .unwrap();
     }
 }

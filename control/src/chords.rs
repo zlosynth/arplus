@@ -39,6 +39,7 @@ impl Chords {
 
     // NOTE: Keep the lists expanded to improve readability.
     // NOTE: Increasing size / fullness. Ending with resolution.
+    // NOTE: Do not use more than 5 notes in a chord, it then all sounds the same, do 4 and 5.
     #[rustfmt::skip]
     pub fn new() -> Self {
         let size_1 = initialize_group(&[
@@ -122,8 +123,6 @@ impl Chords {
             &[0, 2, 3, 5, 6],
             &[0, 4, 6, 8, 9],
         ]);
-        // NOTE: Do not use more than 5 notes in a chord, it then all sounds the same, do 4 and 5
-        // NOTE: Last note's movement makes recognizable differences, use it - repeating one existing note
         let size_6 = initialize_group(&[
             &[0, 2, 4, 5, 7, 9],
             &[0, 2, 4, 6, 7, 9],
@@ -186,7 +185,8 @@ impl Chords {
         }
 
         match group_id {
-            // SAFETY: Correct capacity is checked during the initialization.
+            // PANIC: Correct capacity is checked during the initialization.
+            // So if this would fail, it would be easily caught during testing.
             GroupId::Size1 => Chord::from_slice(self.size_1.get(chord_index).unwrap()),
             GroupId::Size2 => Chord::from_slice(self.size_2.get(chord_index).unwrap()),
             GroupId::Size3 => Chord::from_slice(self.size_3.get(chord_index).unwrap()),
@@ -234,6 +234,8 @@ impl TryFrom<usize> for GroupId {
 }
 
 fn initialize_group<const N: usize, const D: usize>(chords_slice: &[&[i16]]) -> LibraryGroup<N, D> {
+    // PANIC: This function is called during module initialization. So if there
+    // would be an issue, it would be caught easily during testing.
     assert!(N > 0, "LibraryGroup must not be empty");
     assert!(
         D <= Chord::new().capacity(),

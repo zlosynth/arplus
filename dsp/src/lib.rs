@@ -139,6 +139,9 @@ impl Dsp {
     }
 
     fn set_root_strings_len(&mut self, len: usize) {
+        // PANIC: This would fail right after boot if there was a mismatch in
+        // constants. This is safe, only to make sure that this function is
+        // adjusted if the number of strings changes.
         assert_eq!(self.strings.len(), 8);
 
         let new_root_strings_len = match len {

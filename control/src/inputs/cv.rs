@@ -53,8 +53,15 @@ impl Cv {
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
+        // PANIC: This should never panic, since this function is only called
+        // on tone CV, which is always initialized using `with_config`.
+        // However, that could be easily missed in the code, initializing with
+        // `new` inestead. So this fails gracefully, only logging.
         PersistentConfig {
-            calibration: self.calibration.unwrap(),
+            calibration: self.calibration.unwrap_or_else(|| {
+                defmt::error!("Attempted to read non-existent calibration");
+                Calibration::default()
+            }),
         }
     }
 }

@@ -49,8 +49,14 @@ impl ArpMode {
         } else {
             self.toggle.selected_value()
         };
-        // SAFETY: Parameter values used to get arp index are statically limited
-        // by the maximum number of modes.
-        Mode::try_from_index(selected_value).unwrap()
+        // PANIC: Parameter values used to get arp index are statically limited
+        // by the maximum number of modes. However, this maximum is defined by
+        // a manually set constant on `Mode`. This is error-prone - variant can
+        // be removed without updating the constant. Because of that, this
+        // gracefully returns a fall-back value and logs and error on failure.
+        Mode::try_from_index(selected_value).unwrap_or_else(|| {
+            defmt::error!("Attempted to create Mode from invalid index");
+            Mode::default()
+        })
     }
 }

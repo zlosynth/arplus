@@ -27,6 +27,12 @@ pub enum Mode {
     MovingWithNext,
 }
 
+impl Default for Mode {
+    fn default() -> Self {
+        Self::UpWithReset
+    }
+}
+
 #[derive(Clone, Debug, defmt::Format)]
 pub enum State {
     Up(usize),
@@ -127,6 +133,9 @@ impl Arpeggiator {
     pub fn pop(&mut self, random: &mut impl Random) -> Option<(ScaleNote, i16)> {
         // XXX: Empty chords don't make sense. This check simplifies the rest
         // of the method.
+        // PANIC: The chord is set from the chord bank which has no empty
+        // chords, which is asserted in the bank's initialization in
+        // control/src/chords.rs. This will never panic.
         assert!(!self.chord.is_empty());
 
         let chord_degree = match self.state {

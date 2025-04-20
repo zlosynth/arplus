@@ -1,4 +1,4 @@
-use crate::scales::{GroupId, ProjectedScale, ScaleNote, Scales, Tonic};
+use crate::scales::{GroupId, ProjectedScale, QuarterTone, ScaleNote, Scales, Tonic};
 
 use super::primitives::continuous::Continuous;
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
@@ -42,7 +42,10 @@ impl Scale {
         let button_group = Toggle::new(config.button_group, Scales::GROUPS);
         let cv_group = Discrete::new(config.cv_group, Scales::GROUPS, 0.1, 5.0);
 
-        // SAFETY: The group toggle is limited by the number of groups.
+        // PANIC: The limit of scale groups is static. The only danger is that
+        // it changes between versions without a bump to the save token.
+        // However, it is unlikely that that would happen and so this is safe
+        // to risk.
         let selected_group = button_group.selected_value().try_into().unwrap();
 
         let (button_scale, cv_scale) = {
@@ -54,10 +57,18 @@ impl Scale {
 
         let pot_note = {
             // XXX: It is a little dirty to initialize it explicitly here. Too bad.
-            // SAFETY: Maximum scale index is already limited by selected group.
+            // PANIC: The scale discrete parameter changes its maximum value based
+            // on the selected group. The value is also recovered from the previous
+            // save. None of that is particularly safe, so treat any issues
+            // gracefully by logging an error and returning the first scale of the
+            // group.
             let selected_scale = library
                 .scale(selected_group, button_scale.selected_value())
-                .unwrap();
+                .unwrap_or_else(|_| {
+                    defmt::error!("Invalid scale index for the given group");
+                    // PANIC: Scale groups are never empty, this is safe.
+                    library.scale(selected_group, 0).unwrap()
+                });
             let steps_in_scale = selected_scale.with_tonic(Tonic::C).steps_in_octave() as usize;
             Discrete::new(config.note, OCTAVES * steps_in_scale, 0.1, 1.0)
         };
@@ -116,8 +127,12 @@ impl Scale {
 
         if changed_group {
             let selected_group = if group_cv.is_some() {
+                // PANIC: This is called only after the value was just
+                // reconciled. Because of that, it will be always in sync
+                // and is therefore guaranteed to succeed casting.
                 self.cv_group.selected_value().try_into().unwrap()
             } else {
+                // PANIC: Ditto.
                 self.button_group.selected_value().try_into().unwrap()
             };
             let scales_in_group = self.library.number_of_scales(selected_group);
@@ -166,11 +181,14 @@ impl Scale {
     }
 
     pub fn selected_group_id(&self) -> GroupId {
-        // SAFETY: Parameter values used to get group id are statically limited
-        // by the number of groups.
         if self.cv_controls_group {
+            // PANIC: The limit of scale groups is static. The only danger is that
+            // it changes between versions without a bump to the save token.
+            // However, it is unlikely that that would happen and so this is safe
+            // to risk.
             self.cv_group.selected_value().try_into().unwrap()
         } else {
+            // PANIC: Ditto.
             self.button_group.selected_value().try_into().unwrap()
         }
     }
@@ -196,22 +214,38 @@ impl Scale {
             let offset = self.pot_octave.selected_value() as f32;
             let cv = self.cv_note.value();
             let sum = (cv + offset).clamp(0.0, OCTAVES as f32) + BOTTOM_OCTAVE_OFFSET as f32;
-            // SAFETY: Limited by the same octave range as when using note Pot.
-            // TODO FIXME: This sometimes panics.
-            self.scale_cache().quantize_voct_ascending(sum).unwrap()
+            // PANIC: This may fail if the closest tonic is the last note of
+            // the quarter note range. Or if there is a bug somewhere in the
+            // note calculation. This has failed once in the past and I don't
+            // trust myself here. Hence failing gracefully with a log and the
+            // lowest (inaudible) note.
+            self.scale_cache()
+                .quantize_voct_ascending(sum)
+                .unwrap_or_else(|| {
+                    defmt::error!("Failed to find the note");
+                    ScaleNote::new(QuarterTone::CMinus1, 0)
+                })
         } else {
-            // SAFETY: Range of indices is limited in `new` and `reconcile`.
+            // PANIC: This may fail if the selected tone is at the end of the
+            // range and the request interval would go over the edge. This
+            // should never happen with the current input configuration, but
+            // in case some glitch (bug) happens, this is failing gracefully.
             self.scale_cache()
                 .get_note_by_index_ascending(self.selected_note_index())
-                .unwrap()
+                .unwrap_or_else(|| {
+                    defmt::error!("Failed to find the note");
+                    ScaleNote::new(QuarterTone::CMinus1, 0)
+                })
         }
     }
 
     pub fn selected_tonic(&self) -> Tonic {
-        // SAFETY: The discrete parameter is limited by the maximum index of tonic.
         if self.cv_controls_tonic {
+            // PANIC: Number of tonics to select from is static and unikely
+            // to change. This is safe enough.
             self.cv_tonic.selected_value().try_into().unwrap()
         } else {
+            // PANIC: Ditto.
             self.pot_tonic.selected_value().try_into().unwrap()
         }
     }
@@ -234,7 +268,8 @@ impl Scale {
     }
 
     fn scale_cache(&self) -> &ProjectedScale {
-        // SAFETY: The cache is initialized in `new` and never taken away.
+        // PANIC: The cache is initialized in `new` and never taken away.
+        // This is safe.
         self.scale_cache.as_ref().unwrap()
     }
 

@@ -41,6 +41,7 @@ impl System {
     pub fn init(mut cp: CorePeripherals, dp: DevicePeripherals) -> Self {
         enable_cache(&mut cp);
 
+        // PANIC: This is safe, since it's only called once.
         let board = daisy::Board::take().unwrap();
         let ccdr = daisy::board_freeze_clocks!(board, dp);
         let pins = daisy::board_split_gpios!(board, ccdr, dp);

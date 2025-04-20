@@ -92,6 +92,9 @@ mod app {
             &mut flash_memory_interface,
         );
         let seed = u64::from_be_bytes(unsafe {
+            // PANIC: This may fail in case the HAL fails to generate a random
+            // number. In which case, it is ok to fail early here. So far that
+            // never happened to me.
             core::mem::transmute::<[[u8; 2]; 4], [u8; 8]>([
                 random_generator.u16().unwrap().to_be_bytes(),
                 random_generator.u16().unwrap().to_be_bytes(),

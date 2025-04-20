@@ -61,7 +61,8 @@ impl CvMapping {
     }
 
     pub fn group_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.group.selected_value().try_into().unwrap()
     }
 
@@ -70,7 +71,8 @@ impl CvMapping {
     }
 
     pub fn scale_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.scale.selected_value().try_into().unwrap()
     }
 
@@ -79,7 +81,8 @@ impl CvMapping {
     }
 
     pub fn arp_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.arp.selected_value().try_into().unwrap()
     }
 
@@ -88,7 +91,8 @@ impl CvMapping {
     }
 
     pub fn tonic_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.tonic.selected_value().try_into().unwrap()
     }
 
@@ -97,7 +101,8 @@ impl CvMapping {
     }
 
     pub fn size_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.size.selected_value().try_into().unwrap()
     }
 
@@ -106,7 +111,8 @@ impl CvMapping {
     }
 
     pub fn pluck_socket(&self) -> Socket {
-        // SAFETY: Maximum selected value is limited.
+        // PANIC: Maximum selected value is limited. The limit is static
+        // a based on the number of CV inputs. This is safe enough to risk.
         self.pluck.selected_value().try_into().unwrap()
     }
 

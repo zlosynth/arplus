@@ -3,7 +3,7 @@ use crate::calibration::Calibration;
 pub struct QuantizedOutput {
     value: f32,
     forced_value: Option<f32>,
-    calibration: Option<Calibration>,
+    calibration: Calibration,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -16,23 +16,18 @@ impl QuantizedOutput {
         Self {
             value: 0.0,
             forced_value: None,
-            calibration: Some(config.calibration),
+            calibration: config.calibration,
         }
     }
 
     pub fn update_calibration(&mut self, octave_1: f32, octave_2: f32) -> Result<(), ()> {
-        let new_calibration = Calibration::try_new(octave_1, octave_2)?;
-        self.calibration = Some(new_calibration);
+        self.calibration = Calibration::try_new(octave_1, octave_2)?;
         Ok(())
     }
 
-    pub fn reconcile(&mut self, value: f32) {
-        let value = if let Some(calibration) = self.calibration {
-            calibration.apply(value)
-        } else {
-            value
-        };
-        self.value = (value - 2.0).clamp(0.0, 5.0);
+    pub fn reconcile(&mut self, input_value: f32) {
+        let calibrated_value = self.calibration.apply(input_value);
+        self.value = (calibrated_value - 2.0).clamp(0.0, 5.0);
     }
 
     pub fn value(&self) -> f32 {
@@ -41,7 +36,7 @@ impl QuantizedOutput {
 
     pub fn copy_config(&self) -> PersistentConfig {
         PersistentConfig {
-            calibration: self.calibration.unwrap(),
+            calibration: self.calibration,
         }
     }
 

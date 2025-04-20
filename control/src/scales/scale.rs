@@ -25,11 +25,12 @@ impl<const N: usize> Scale<N> {
     }
 
     pub fn quantize_voct_ascending(&self, voct: f32) -> Option<ScaleNote> {
-        // XXX: This is making the method simpler by sacrificing a part of the
-        // lowest octave.
         let lowest_tonic = self.lowest_tonic();
         if voct < lowest_tonic.voct() {
             return Some(ScaleNote::new(
+                // PANIC: This is guaranteed to work. Lowest tonic always gives
+                // the lowest note. That note will always be in range for
+                // `try_from_u8` to succeed.
                 QuarterTone::try_from_u8(lowest_tonic.index()).unwrap(),
                 0,
             ));

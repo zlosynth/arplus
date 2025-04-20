@@ -150,7 +150,9 @@ impl Scales {
         }
 
         match group_id {
-            // SAFETY: The index is checked on the entry.
+            // PANIC: The index is checked above against the actual capacity of
+            // the vector. And initialization of Scales makes sure that the
+            // capacity is fully utilized. This is safe.
             GroupId::Diatonic => Scale::new(&self.diatonic.get(scale_index).unwrap().ascending),
             GroupId::Maqam => Scale::new(&self.maqam.get(scale_index).unwrap().ascending),
             GroupId::Melakarta => Scale::new(&self.melakarta.get(scale_index).unwrap().ascending),
@@ -172,7 +174,12 @@ impl<const S: usize> LibraryScale<S> {
     }
 
     pub fn with_tonic(&self, tonic: Tonic) -> ProjectedScale {
-        // SAFETY: Size of the slice is already checked against S.
+        // PANIC: This would fail only if the passed slice would
+        // not fit into the vector of the projected scale. Projected
+        // scale always has capacity of 24 notes. Therefore it
+        // will never be too short - the project works with quarter
+        // notes, and there can be only 24 of those per octave.
+        // This is safe.
         ProjectedScale::new(tonic, &self.ascending).unwrap()
     }
 }
@@ -191,6 +198,10 @@ impl TryFrom<usize> for GroupId {
 fn initialize_group<const N: usize, const S: usize>(
     scales_slice: &[(&[Step], Option<&[Step]>)],
 ) -> LibraryGroup<N, S> {
+    // PANIC: All asserts here are acceptable, since they work against
+    // hardcoded values, and if they failed it would be during the boot
+    // of the module and easy to catch during testing.
+
     assert!(N > 0, "LibraryGroup must not be empty");
     assert!(
         S <= Scale::capacity(),
@@ -210,8 +221,11 @@ fn initialize_group<const N: usize, const S: usize>(
         let scale_len = ascending_slice.len();
         assert!(scale_len <= S, "Given scale is too big or too small");
         some_utilize_capacity |= scale_len == S;
+        // PANIC: Slice is limited by S, which is checked against the scale
+        // capacity at the beginning of the function. This is safe.
         let chord = LibraryScale::new(ascending_slice).unwrap();
-        // SAFETY: The capacity is checked at the beginning of the function.
+        // PANIC: The capacity is checked at the beginning of the function.
+        // This is safe.
         group.push(chord).unwrap();
     }
 

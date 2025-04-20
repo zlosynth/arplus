@@ -24,6 +24,8 @@ impl<const N: usize> Buffer<N> {
     /// fails otherwise.
     #[must_use]
     pub fn new() -> Self {
+        // PANIC: Buffers are initialized on boot, and their length is
+        // hardcoded. Any bug in buffer size would be caught during testing.
         assert!(is_power_of_2(N));
         let mask = N - 1;
         Self {
