@@ -1,5 +1,6 @@
 // TODO: Consider removing this altogether if not used in the
 // final version.
+// TODO(v1): Disable the gain configuration menu until it is documented.
 use super::primitives::discrete::Discrete;
 use super::primitives::discrete::PersistentConfig as DiscretePersistentConfig;
 

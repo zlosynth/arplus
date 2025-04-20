@@ -366,7 +366,7 @@ impl Controller {
         *needs_save |=
             size_cv_value.is_none() && chord_cv_value.is_none() && (changed_size || changed_chord);
 
-        // TODO FIXME: Changing size using CV trigers chord display
+        // TODO(v1) FIXME: Changing size using CV trigers chord display
         if size_pot.activation_movement() || (size_cv_value.is_none() && changed_size) {
             let size = parameter.selected_size();
             display_request.set_queried_attribute(Screen::size(size));

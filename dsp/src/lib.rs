@@ -93,9 +93,9 @@ impl Dsp {
         self.dc_blocker[0].process(&mut buffer_root);
         self.dc_blocker[1].process(&mut buffer_rest);
 
-        // TODO: I probably should bring back oversampling.
+        // TODO(v1): I probably should bring back oversampling.
         // but maybe LPF with 12 kHz on 2x oversampled signal is enough?
-        // TODO: It is filtered and oversampled. so just apply FIR to 0.5, and then apply overdrive
+        // TODO(v1): It is filtered and oversampled. so just apply FIR to 0.5, and then apply overdrive
         self.overdrive.process(&mut buffer_root);
         self.overdrive.process(&mut buffer_rest);
 
