@@ -136,18 +136,19 @@ impl KarplusStrong {
         // The default behavior is to scale the cutoff knob based on the
         // available frequency "headroom". Stable cutoff ratio can be enabled
         // using the `stable_cutoff_ratio` feature.
-        const MIN_CUTOFF: f32 = 15.0;
         let cutoff = {
             #[cfg(not(feature = "stable-cutoff-ratio"))]
             {
+                const MIN_CUTOFF_FREQUENCY: f32 = 15.0;
                 const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
                 let delta = MAX_CUTOFF_FREQUENCY - self.frequency;
-                MIN_CUTOFF + (taper::log(cutoff) * delta) / self.frequency
+                MIN_CUTOFF_FREQUENCY + (taper::log(cutoff) * delta) / self.frequency
             }
             #[cfg(feature = "stable-cutoff-ratio")]
             {
                 // TODO(v1): Tweak this, so it's not too low to make all sounds dull,
                 // but also not too high to be mostly ineffectual on mid/high tones.
+                const MIN_CUTOFF: f32 = 1.5;
                 const MAX_CUTOFF: f32 = 10.0;
                 MIN_CUTOFF + (MAX_CUTOFF - MIN_CUTOFF) * cutoff
             }
