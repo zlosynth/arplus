@@ -36,7 +36,7 @@ impl ControlOutputInterface {
 
     pub fn set_state(&mut self, state: &ControlOutputState) {
         // NOTE: Delay added to meet the timing requirements of SN54HC595.
-        const USECOND: u32 = 480_000_000 / 1000;
+        const USECOND: u32 = 480_000_000 / 1_000_000;
         // NOTE: Minimal pulse time for RCLK is guaranteed from both sides.
         self.pins.led_rclk.set_low();
         for i in 0..8 {
