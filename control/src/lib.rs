@@ -276,13 +276,14 @@ impl Controller {
                             .set_queried_attribute(Screen::cv_mapping(cv_mapping.tonic_socket()));
                     }
 
-                    // Chord knob sets gain.
-                    if pots.chord.activation_movement() {
-                        *needs_save |= self.parameters.gain.reconcile(pots.chord.value());
-                        display_request.set_queried_attribute(Screen::gain(
-                            self.parameters.gain.selected_index(),
-                        ));
-                    }
+                    // TODO: Document this, test it, then re-enable it.
+                    // // Chord knob sets gain.
+                    // if pots.chord.activation_movement() {
+                    //     *needs_save |= self.parameters.gain.reconcile(pots.chord.value());
+                    //     display_request.set_queried_attribute(Screen::gain(
+                    //         self.parameters.gain.selected_index(),
+                    //     ));
+                    // }
 
                     // Chord size knob selects chord size CV.
                     if pots.chord_size.activation_movement() {
@@ -366,7 +367,7 @@ impl Controller {
         *needs_save |=
             size_cv_value.is_none() && chord_cv_value.is_none() && (changed_size || changed_chord);
 
-        // TODO(v1) FIXME: Changing size using CV trigers chord display
+        // TODO FIXME: Changing size using CV trigers chord display
         if size_pot.activation_movement() || (size_cv_value.is_none() && changed_size) {
             let size = parameter.selected_size();
             display_request.set_queried_attribute(Screen::size(size));
