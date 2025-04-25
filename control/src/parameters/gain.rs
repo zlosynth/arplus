@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 // TODO: Consider removing this altogether if not used in the
 // final version. Or re-enable it together with proper testing
 // and documentation.

@@ -36,6 +36,8 @@ pub enum Screen {
     Octave(OctaveScreen),
     Tonic(TonicScreen),
     Configuration(ConfigurationScreen),
+    // TODO: Decide what to do with gain.
+    #[allow(dead_code)]
     Gain(GainScreen),
     CvMapping(CvMappingScreen),
 }
@@ -208,6 +210,8 @@ impl Screen {
         Screen::Configuration(ConfigurationScreen)
     }
 
+    // TODO: Decide what to do with gain.
+    #[allow(dead_code)]
     pub fn gain(index: usize) -> Screen {
         Screen::Gain(GainScreen::with_index(index))
     }
@@ -428,6 +432,8 @@ impl TonicScreen {
 }
 
 impl GainScreen {
+    // TODO: Decide what to do with gain.
+    #[allow(dead_code)]
     pub fn with_index(index: usize) -> Self {
         Self { index }
     }

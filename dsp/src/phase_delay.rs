@@ -12,34 +12,26 @@ use super::phase_delay_lookup::*;
 /// signal is 440 Hz, and this function returns 0.05, the absolute delay in
 /// seconds is then `(1 / 440) * 0.05`.
 pub fn phase_delay(cutoff: f32, q: f32) -> f32 {
-    if cutoff >= TABLE_1_C_MIN
-        && cutoff <= TABLE_1_C_MAX
-        && q >= TABLE_1_Q_MIN
-        && q <= TABLE_1_Q_MAX
+    if (TABLE_1_C_MIN..=TABLE_1_C_MAX).contains(&cutoff)
+        && (TABLE_1_Q_MIN..=TABLE_1_Q_MAX).contains(&q)
     {
         let x = (cutoff - TABLE_1_C_MIN) / (TABLE_1_C_MAX - TABLE_1_C_MIN);
         let y = (q - TABLE_1_Q_MIN) / (TABLE_1_Q_MAX - TABLE_1_Q_MIN);
         interpolate(TABLE_1, x, y)
-    } else if cutoff >= TABLE_2_C_MIN
-        && cutoff <= TABLE_2_C_MAX
-        && q >= TABLE_2_Q_MIN
-        && q <= TABLE_2_Q_MAX
+    } else if (TABLE_2_C_MIN..=TABLE_2_C_MAX).contains(&cutoff)
+        && (TABLE_2_Q_MIN..=TABLE_2_Q_MAX).contains(&q)
     {
         let x = (cutoff - TABLE_2_C_MIN) / (TABLE_2_C_MAX - TABLE_2_C_MIN);
         let y = (q - TABLE_2_Q_MIN) / (TABLE_2_Q_MAX - TABLE_2_Q_MIN);
         interpolate(TABLE_2, x, y)
-    } else if cutoff >= TABLE_3_C_MIN
-        && cutoff <= TABLE_3_C_MAX
-        && q >= TABLE_3_Q_MIN
-        && q <= TABLE_3_Q_MAX
+    } else if (TABLE_3_C_MIN..=TABLE_3_C_MAX).contains(&cutoff)
+        && (TABLE_3_Q_MIN..=TABLE_3_Q_MAX).contains(&q)
     {
         let x = (cutoff - TABLE_3_C_MIN) / (TABLE_3_C_MAX - TABLE_3_C_MIN);
         let y = (q - TABLE_3_Q_MIN) / (TABLE_3_Q_MAX - TABLE_3_Q_MIN);
         interpolate(TABLE_3, x, y)
-    } else if cutoff >= TABLE_4_C_MIN
-        && cutoff <= TABLE_4_C_MAX
-        && q >= TABLE_4_Q_MIN
-        && q <= TABLE_4_Q_MAX
+    } else if (TABLE_4_C_MIN..=TABLE_4_C_MAX).contains(&cutoff)
+        && (TABLE_4_Q_MIN..=TABLE_4_Q_MAX).contains(&q)
     {
         let x = (cutoff - TABLE_4_C_MIN) / (TABLE_4_C_MAX - TABLE_4_C_MIN);
         let y = (q - TABLE_4_Q_MIN) / (TABLE_4_Q_MAX - TABLE_4_Q_MIN);
