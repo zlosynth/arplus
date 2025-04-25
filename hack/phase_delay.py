@@ -9,6 +9,7 @@ import argparse
 import math
 import sys
 import concurrent.futures
+from functools import partial
 from csv import DictWriter
 
 import numpy as np
@@ -22,7 +23,7 @@ DELAY_DATASET = "delay_dataset.csv"
 SAMPLE_RATE = 48_000
 CUTOFF_INIT = 2.0
 CUTOFF_MIN = 1.5
-CUTOFF_MAX = 11.5
+CUTOFF_MAX = 150.0
 Q_INIT = 0.7
 Q_MIN = 0.5
 Q_MAX = 1.0
@@ -127,13 +128,11 @@ def cmd_sliders():
     plt.show()
 
 
-def set_relative_delay(config):
-    FREQUENCY = 50.0
+def set_relative_delay(config, frequency=50):
+    time = 3 / frequency
 
-    time = 3 / FREQUENCY
-
-    input = generate_sine(FREQUENCY, time, SAMPLE_RATE)
-    filtered = low_pass_filter(input, config["c"] * FREQUENCY, config["q"], SAMPLE_RATE)
+    input = generate_sine(frequency, time, SAMPLE_RATE)
+    filtered = low_pass_filter(input, config["c"] * frequency, config["q"], SAMPLE_RATE)
 
     input_zero_crossings = np.where(np.diff(np.sign(input)))[0]
     filtered_zero_crossings = np.where(np.diff(np.sign(filtered)))[0]
@@ -144,14 +143,14 @@ def set_relative_delay(config):
     delay_in_seconds = (
         fifth_filtered_zero_crossing_in_seconds - fifth_input_zero_crossing_in_seconds
     )
-    interval = 1.0 / FREQUENCY
+    interval = 1.0 / frequency
     config["d"] = delay_in_seconds / interval
 
     return config
 
 
 def cmd_generate():
-    C = 100
+    C = 1000
     Q = 100
 
     input_configs = []
@@ -182,20 +181,78 @@ def cmd_generate():
 
 
 def cmd_lookup():
-    C = 32
-    Q = 32
+    print("// ./hack/phase_delay.py lookup > dsp/src/phase_delay_lookup.rs && rustfmt dsp/src/phase_delay_lookup.rs")
+    generate_lookup_table(
+        index=1,
+        table_c=64,
+        table_c_min=1.3,
+        table_c_max=10.0,
+        table_q=8,
+        table_q_min=0.5,
+        table_q_max=1.0,
+    )
+    generate_lookup_table(
+        index=2,
+        table_c=32,
+        table_c_min=10.0,
+        table_c_max=30.0,
+        table_q=8,
+        table_q_min=0.5,
+        table_q_max=1.0,
+    )
+    generate_lookup_table(
+        index=3,
+        table_c=32,
+        table_c_min=30.0,
+        table_c_max=100.0,
+        table_q=8,
+        table_q_min=0.5,
+        table_q_max=1.0,
+    )
+    generate_lookup_table(
+        index=4,
+        table_c=16,
+        table_c_min=100.0,
+        table_c_max=700.0,
+        table_q=8,
+        table_q_min=0.5,
+        table_q_max=1.0,
+    )
 
-    input_configs = []
-    for q in np.linspace(Q_MIN, Q_MAX, Q):
+    
+def generate_lookup_table(index, table_c, table_c_min, table_c_max, table_q, table_q_min, table_q_max):
+    print("pub const TABLE_{}_C: usize = {};".format(index, table_c))
+    print("pub const TABLE_{}_C_MIN: f32 = {};".format(index, table_c_min))
+    print("pub const TABLE_{}_C_MAX: f32 = {};".format(index, table_c_max))
+    print("pub const TABLE_{}_Q: usize = {};".format(index, table_q))
+    print("pub const TABLE_{}_Q_MIN: f32 = {};".format(index, table_q_min))
+    print("pub const TABLE_{}_Q_MAX: f32 = {};".format(index, table_q_max))
+    print("pub static TABLE_{}: [[f32; TABLE_{}_C]; TABLE_{}_Q] = [".format(index, index, index))
+
+    for q in np.linspace(table_q_min, table_q_max, table_q):
         print("[", end="")
-        for c in np.linspace(CUTOFF_MIN, CUTOFF_MAX, C):
+
+        input_configs = []
+        for c in np.linspace(table_c_min, table_c_max, table_c):
             config = {
                 "c": c,
                 "q": q,
             }
-            set_relative_delay(config)
-            print(config["d"], end=", ")
+            input_configs.append(config)
+
+        # NOTE: Parallelization is done on cutoff since it is expected to be typically
+        # the longest list
+        configs = []
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            # NOTE: Set a lower frequency to get better resolution on zero crossing
+            for config in executor.map(partial(set_relative_delay, frequency=0.1), input_configs):
+                configs.append(config)
+
+        for c in configs:
+            print(c["d"], end=", ")
+
         print("],")
+    print("];")
 
 
 if __name__ == "__main__":

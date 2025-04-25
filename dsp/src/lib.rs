@@ -17,6 +17,7 @@ mod math;
 mod memory_manager;
 mod overdrive;
 mod phase_delay;
+mod phase_delay_lookup;
 mod random;
 mod ring_buffer;
 mod sigmoid_lookup;
