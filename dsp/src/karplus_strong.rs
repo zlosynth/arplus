@@ -142,7 +142,6 @@ impl KarplusStrong {
             {
                 const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
                 let delta = MAX_CUTOFF_FREQUENCY - self.frequency;
-                // TODO(v1): Lowest octave does not work properly
                 MIN_CUTOFF + (taper::log(cutoff) * delta) / self.frequency
             }
             #[cfg(feature = "stable-cutoff-ratio")]
