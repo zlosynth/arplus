@@ -364,8 +364,8 @@ impl Controller {
             chord_cv_value,
             scale_size,
         );
-        *needs_save |=
-            size_cv_value.is_none() && chord_cv_value.is_none() && (changed_size || changed_chord);
+        *needs_save |= (size_cv_value.is_none() && changed_size)
+            || (size_cv_value.is_none() && chord_cv_value.is_none() && changed_chord);
 
         // TODO FIXME: Changing size using CV trigers chord display
         if size_pot.activation_movement() || (size_cv_value.is_none() && changed_size) {
