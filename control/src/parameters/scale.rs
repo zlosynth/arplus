@@ -5,6 +5,7 @@ use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersiste
 use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 
 const OCTAVES: usize = 6;
+// Offset from C-1 at 0 V.
 const BOTTOM_OCTAVE_OFFSET: usize = 1;
 
 pub struct Scale {
@@ -211,8 +212,13 @@ impl Scale {
 
     pub fn selected_note(&self) -> ScaleNote {
         if self.cv_note_control {
+            // NOTE: Despite the CV input goes from -5 to +5, this function
+            // choses to only care for the 5 V above 0. I think it makes it
+            // easier to understand how the mapping works, and the only thing
+            // that this causes is that either the top-most or bottom-most
+            // octave is inaccessible through CV.
             let offset = self.pot_octave.selected_value() as f32;
-            let cv = self.cv_note.value();
+            let cv = self.cv_note.value().clamp(0.0, 5.0);
             let sum = (cv + offset).clamp(0.0, OCTAVES as f32) + BOTTOM_OCTAVE_OFFSET as f32;
             // PANIC: This may fail if the closest tonic is the last note of
             // the quarter note range. Or if there is a bug somewhere in the
