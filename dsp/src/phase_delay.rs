@@ -12,7 +12,12 @@ use super::phase_delay_lookup::*;
 /// signal is 440 Hz, and this function returns 0.05, the absolute delay in
 /// seconds is then `(1 / 440) * 0.05`.
 pub fn phase_delay(cutoff: f32, q: f32) -> f32 {
-    if (TABLE_1_C_MIN..=TABLE_1_C_MAX).contains(&cutoff)
+    if cutoff < TABLE_1_C_MIN {
+        defmt::warn!("Phase delay under range for cutoff={:?}", cutoff);
+        let x = 0.0;
+        let y = (q - TABLE_1_Q_MIN) / (TABLE_1_Q_MAX - TABLE_1_Q_MIN);
+        interpolate(TABLE_4, x, y)
+    } else if (TABLE_1_C_MIN..=TABLE_1_C_MAX).contains(&cutoff)
         && (TABLE_1_Q_MIN..=TABLE_1_Q_MAX).contains(&q)
     {
         let x = (cutoff - TABLE_1_C_MIN) / (TABLE_1_C_MAX - TABLE_1_C_MIN);
@@ -37,7 +42,7 @@ pub fn phase_delay(cutoff: f32, q: f32) -> f32 {
         let y = (q - TABLE_4_Q_MIN) / (TABLE_4_Q_MAX - TABLE_4_Q_MIN);
         interpolate(TABLE_4, x, y)
     } else {
-        defmt::warn!("Phase delay out of range for cutoff={:?}", cutoff);
+        defmt::warn!("Phase delay above range for cutoff={:?}", cutoff);
         let x = 1.0;
         let y = (q - TABLE_4_Q_MIN) / (TABLE_4_Q_MAX - TABLE_4_Q_MIN);
         interpolate(TABLE_4, x, y)

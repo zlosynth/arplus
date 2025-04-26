@@ -129,9 +129,13 @@ impl Dsp {
             };
 
             let string = &mut self.strings[string_index];
-            string
-                .karplus_strong
-                .trigger(0.99, trigger.frequency, trigger.contour, trigger.pluck);
+            string.karplus_strong.trigger(
+                0.99,
+                trigger.frequency,
+                trigger.contour,
+                trigger.pluck,
+                attributes.cutoff,
+            );
             string.is_root = trigger.is_root;
 
             let next_string = &mut self.strings[next_string_index];

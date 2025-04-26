@@ -55,7 +55,7 @@ impl KarplusStrong {
             phase_delay: 0.0,
         };
         // XXX: Without this silent trigger, the first trigger on the string is mute.
-        s.trigger(0.0, 10.0, 0.0, 0.0);
+        s.trigger(0.0, 10.0, 0.0, 0.0, 0.0);
         s
     }
 
@@ -148,11 +148,25 @@ impl KarplusStrong {
             .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));
     }
 
-    pub fn trigger(&mut self, feedback: f32, frequency: f32, contour: f32, pluck: f32) {
+    pub fn trigger(
+        &mut self,
+        feedback: f32,
+        frequency: f32,
+        contour: f32,
+        pluck: f32,
+        cutoff: f32,
+    ) {
         self.reset = RESET;
         self.feedback = feedback;
-        self.frequency = frequency;
         self.pluck = pluck;
+
+        self.frequency = frequency;
+        // XXX: The filter cutoff frequency is calculated based on the note
+        // frequency and cutoff knob. This needs to be recalculated on trigger
+        // to reflect the new note frequency, so the filter value later read
+        // to calculate the phase delay is correct.
+        self.set_cutoff(cutoff);
+
         self.phase_delay = {
             let c = self.filter.frequency() / self.frequency;
             let q = self.filter.q_factor();
