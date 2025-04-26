@@ -8,7 +8,6 @@ publish = false
 
 [features]
 idle-measuring = []
-stable-cutoff-ratio = ["arplus-dsp/stable-cutoff-ratio"]
 
 [lib]
 harness = false

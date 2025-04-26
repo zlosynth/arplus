@@ -127,32 +127,22 @@ impl KarplusStrong {
             return;
         }
 
-        // NOTE: In the default state, the multiple of the cutoff is moving
-        // depending on the fundamental frequency. That means that a cutoff
-        // that is harmonic for one tone will not be for another.
+        // NOTE: Cutoff ratio is moving depending on the fundamental frequency.
+        // That means that a cutoff that is harmonic for one tone will not be
+        // for another.
         // However, the alternative of having fixed multiple would suffer
         // in high fundamental frequencies, where most of the cutoff would
         // not be usable due to filter stability.
-        // The default behavior is to scale the cutoff knob based on the
-        // available frequency "headroom". Stable cutoff ratio can be enabled
-        // using the `stable_cutoff_ratio` feature.
-        let cutoff = {
-            #[cfg(not(feature = "stable-cutoff-ratio"))]
-            {
-                const MIN_CUTOFF_FREQUENCY: f32 = 15.0;
-                const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
-                let delta = MAX_CUTOFF_FREQUENCY - self.frequency;
-                MIN_CUTOFF_FREQUENCY + (taper::log(cutoff) * delta) / self.frequency
-            }
-            #[cfg(feature = "stable-cutoff-ratio")]
-            {
-                // TODO(v1): Tweak this, so it's not too low to make all sounds dull,
-                // but also not too high to be mostly ineffectual on mid/high tones.
-                const MIN_CUTOFF: f32 = 1.5;
-                const MAX_CUTOFF: f32 = 10.0;
-                MIN_CUTOFF + (MAX_CUTOFF - MIN_CUTOFF) * cutoff
-            }
-        };
+        // Also, when I tried this with a stable cutoff ratio, the sound missed
+        // some of its character and grittiness (although the harmonics were
+        // pleasant in some settings).
+        // The implemented behavior is to scale the cutoff knob based on the
+        // available frequency "headroom". The minimum cutoff is constant and
+        // the maximum is scaled down to always fit into the stable frequency
+        // range of the filter.
+        const MIN_CUTOFF: f32 = 1.5;
+        const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
+        let cutoff = MIN_CUTOFF + (MAX_CUTOFF_FREQUENCY / self.frequency) * taper::log(cutoff);
 
         self.filter
             .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));

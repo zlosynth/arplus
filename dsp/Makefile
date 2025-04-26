@@ -14,7 +14,6 @@ format:
 .PHONY: clippy
 clippy:
 	$(CARGO) clippy --all
-	$(CARGO) clippy --all --features stable-cutoff-ratio
 
 .PHONY: test
 test:

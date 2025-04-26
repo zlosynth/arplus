@@ -16,6 +16,3 @@ approx = "0.4"
 test-case = "1.2"
 proptest = "1"
 sirena = { git = "https://github.com/zlosynth/sirena", rev = "0ba4c32" }
-
-[features]
-stable-cutoff-ratio = []
