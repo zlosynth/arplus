@@ -41,7 +41,7 @@ impl CvMapping {
             scale: Discrete::new(config.scale, 6, 0.1, 1.0),
             arp: Discrete::new(config.arp, 6, 0.1, 1.0),
             tonic: Discrete::new(config.tonic, 6, 0.1, 1.0),
-            pluck: Discrete::new(config.tonic, 6, 0.1, 1.0),
+            pluck: Discrete::new(config.pluck, 6, 0.1, 1.0),
         }
     }
 
