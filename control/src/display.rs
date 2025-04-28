@@ -24,7 +24,6 @@ pub struct Page {
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum Screen {
-    Failure(FailureScreen),
     Step(StepScreen),
     ArpMode(ArpModeScreen),
     Scale(ScaleScreen),
@@ -100,9 +99,6 @@ pub struct CvMappingScreen {
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct ConfigurationScreen;
-
-#[derive(Debug, defmt::Format, PartialEq)]
-pub struct FailureScreen;
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum ToneCalibrationScreen {
@@ -220,10 +216,6 @@ impl Screen {
         Screen::CvMapping(CvMappingScreen::with_socket(socket))
     }
 
-    pub fn failure() -> Self {
-        Screen::Failure(FailureScreen)
-    }
-
     pub fn tone_calibration_octave_1() -> Self {
         Screen::ToneCalibration(ToneCalibrationScreen::Octave1)
     }
@@ -253,7 +245,6 @@ impl Screen {
             Screen::Tonic(s) => s.leds(),
             Screen::Gain(s) => s.leds(),
             Screen::CvMapping(s) => s.leds(),
-            Screen::Failure(s) => s.leds(clock),
             Screen::ToneCalibration(s) => s.leds(clock),
             Screen::Configuration(s) => s.leds(clock),
         }
@@ -466,17 +457,6 @@ impl CvMappingScreen {
         }
 
         leds
-    }
-}
-
-impl FailureScreen {
-    fn leds(&self, clock: usize) -> [bool; 8] {
-        let phase = (clock / 400) % 2;
-        if phase == 0 {
-            [true; 8]
-        } else {
-            [false; 8]
-        }
     }
 }
 

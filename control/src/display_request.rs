@@ -42,10 +42,6 @@ impl DisplayRequest {
             .process(display, Priority::Fallback);
     }
 
-    pub fn set_failure(&mut self, failure: Screen) {
-        self.failure = ScreenRequest::Set(failure);
-    }
-
     pub fn set_calibration_result(&mut self, calibration_result: Screen) {
         self.calibration_result = ScreenRequest::Set(calibration_result);
     }
