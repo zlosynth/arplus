@@ -512,18 +512,15 @@ impl Controller {
 
         parameter.set_cv_control(cv_value.is_some());
 
-        if is_button_held(button) || was_button_tapped(button) && cv_value.is_some() {
-            let selected = parameter.selected();
-            display_request.set_queried_attribute(Screen::arp_mode(selected));
-        } else if was_button_tapped(button) && cv_value.is_none() {
+        if was_button_tapped(button) && cv_value.is_none() {
             *needs_save |= parameter.reconcile_button(true);
-            let selected = parameter.selected();
-            display_request.set_queried_attribute(Screen::arp_mode(selected));
-        } else if was_button_tapped(button) && cv_value.is_some() {
-            display_request.set_failure(Screen::failure());
         } else if let Some(cv_value) = cv_value {
             parameter.reconcile_cv(cv_value);
-        };
+        }
+
+        if is_button_held(button) || was_button_tapped(button) {
+            display_request.set_queried_attribute(Screen::arp_mode(parameter.selected()));
+        }
     }
 
     fn generate_dsp_attributes(
