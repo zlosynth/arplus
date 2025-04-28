@@ -120,13 +120,15 @@ impl Scale {
             || old_cv_controls_scale != self.cv_controls_scale
             || old_cv_controls_tonic != self.cv_controls_tonic;
 
+        let switched_group_cv = old_cv_controls_group != self.cv_controls_group;
+
         let changed_group = if let Some(group_cv) = group_cv {
             self.cv_group.reconcile(group_cv)
         } else {
             self.button_group.reconcile(group_toggle)
         };
 
-        if changed_group {
+        if changed_group || switched_group_cv {
             let selected_group = if group_cv.is_some() {
                 // PANIC: This is called only after the value was just
                 // reconciled. Because of that, it will be always in sync
@@ -283,7 +285,18 @@ impl Scale {
         self.scale_cache = Some(
             self.library
                 .scale(self.selected_group_id(), self.selected_scale_index())
-                .unwrap()
+                // PANIC: Gracefuly ignore inconsistent scale index. This
+                // should work fine, but is error prone - and it already
+                // suffered from a bug in the past.
+                .unwrap_or_else(|_| {
+                    defmt::error!(
+                        "Unable to find scale for the given group group id {:?} scale index {:?}",
+                        self.selected_group_id(),
+                        self.selected_scale_index()
+                    );
+                    // PANIC: Scale groups are never empty, this is safe.
+                    self.library.scale(self.selected_group_id(), 0).unwrap()
+                })
                 .with_tonic(self.selected_tonic()),
         );
     }
