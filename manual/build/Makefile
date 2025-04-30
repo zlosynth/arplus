@@ -1,5 +1,5 @@
 DIAGRAMS = \
-	schema.pdf
+	diagram-schema.pdf
 
 pdf: pdf-images manual.tex
 	pdflatex manual.tex
