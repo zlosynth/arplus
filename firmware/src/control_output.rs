@@ -61,9 +61,9 @@ impl ControlOutputInterface {
 fn f32_cv_to_u16(value: f32) -> u16 {
     const OUT_MIN: f32 = 0.0;
     const OUT_MAX: f32 = 5.0;
-    // NOTE: The DSP works with 7 octaves, but the module can output only 5.
-    // Remove the first and the last octave.
-    let trimmed = (value - 1.0).clamp(0.0, 5.0);
+    // NOTE: The value should be already trimmed and scale. But clamp it again
+    // just to be sure.
+    let trimmed = value.clamp(OUT_MIN, OUT_MAX);
     let desired = (trimmed - OUT_MIN) / (OUT_MAX - OUT_MIN);
     // NOTE: Measuring of DAC showed that it actually starts above 0.0 V,
     // and does not get all the way to 5.0. This compensates for that.
