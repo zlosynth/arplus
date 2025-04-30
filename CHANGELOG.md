@@ -6,4 +6,6 @@ backwards compatibility.
 
 ## Unreleased
 
+## 0.1.0
+
 * The module is good to go.

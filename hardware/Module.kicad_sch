@@ -6,7 +6,7 @@
 
   (title_block
     (title "Arplus")
-    (rev "v0.0.1")
+    (rev "v0.1.0")
     (company "Petr Horáček")
     (comment 1 "petr@zlosynth.com")
     (comment 2 "https://github.com/zlosynth/arplus")
