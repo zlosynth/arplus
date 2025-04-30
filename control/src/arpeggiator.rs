@@ -74,10 +74,6 @@ impl Arpeggiator {
     pub fn apply_config(&mut self, config: Configuration, random: &mut impl Random) {
         if self.mode != config.mode {
             self.mode = config.mode;
-            // TODO(v1): Here make sure the arp always continues from after the previous step
-            // TODO(v1) FIXME: When Down is on the bottom-most note and arp is chaged to UpDown,
-            // then it immediatelly jumps to the last and continues down... if the last note
-            // was the bottom-most, it should just continue up.
             match self.mode {
                 Mode::UpWithReset => match self.state {
                     State::Up(_) => (),
