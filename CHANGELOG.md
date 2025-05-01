@@ -6,6 +6,8 @@ backwards compatibility.
 
 ## Unreleased
 
+* Fix ARP diagrams in the manual.
+
 ## 0.1.0
 
 * The module is good to go.
