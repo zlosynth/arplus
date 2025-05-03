@@ -220,6 +220,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C8598"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8efb4e41-3f8e-4955-a42f-39335686159f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/386532e8-ef8b-49c7-a1ee-d71feb06ccc4")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -510,6 +522,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "31de6fbc-655e-41c5-8935-5c96e0cf078c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/7b50d6cd-9c05-4b7a-9d74-fa195d48e477")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -718,6 +742,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "43052302-573e-4573-b4ba-ec25513d2301")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/ccb0badd-5535-4fff-9f5a-9e0f02f2dfe9")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -919,6 +955,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "28d03d1f-2f26-4d1a-b5b8-d9bd439a46c4")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C494835"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "6e6c33df-a379-40aa-bf3e-ad7286c7e903")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1368,7 +1416,7 @@
 		)
 		(path "/f4d7155b-4ef8-4cca-9c7a-e02dfcf2bc4f")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 3.87 -1.33)
 			(end 3.87 11.49)
@@ -1786,6 +1834,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "0e20185d-e312-4882-b82b-fd35ea8ae2de")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/a26b0886-a565-4dac-8134-a9c3ef41f031")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -1987,6 +2047,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "dac898a1-368b-41ad-85ba-c2aea9d59946")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "afe25a92-17c7-4659-ac40-273305468746")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2202,6 +2274,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "36ef5676-e9bf-45f7-b2de-e44c2b1b3ee3")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/a6fcc4e6-016b-4760-9f86-37e693371687")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -2403,6 +2487,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "d4a6c34e-eb90-45a9-b704-c7c40af59e53")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C1015"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "29ab90cd-618d-4b93-81bd-f90bca5b6f70")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2618,6 +2714,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "eb78465d-9da6-401f-a57e-f61d2ee8de7f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/c9250235-b98a-45c7-92f2-706968d5c396")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -2826,6 +2934,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "83954731-fa8e-4dd8-acb2-364dfda3acc5")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/c7c14549-1a52-4c9f-aa14-4a50e30f5a64")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -3027,6 +3147,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "bf95da4d-e105-46e1-b1cc-6378dfbd6351")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C8598"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "f7df5ae4-2b3a-426e-ac71-037aa378c372")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3317,6 +3449,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "6ab5259c-0174-4a9d-adab-4037286e7e3f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C494835"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "dcdbcdc4-cfaf-4cfa-a32e-e891ee0479e6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3763,6 +3907,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "70b16357-f9fa-42c2-a18b-1d8fd59ccd50")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/15a5defb-67a3-450d-b8fd-468e2967c8f7")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -3971,6 +4127,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "1f5bc33b-9c03-4d6a-af06-b0b2cb50cc10")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/844d8d39-479a-49be-8078-0f5f91af3a07")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -4172,6 +4340,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "e8279117-da53-4341-a4d2-045ab5120efb")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d324f00a-a2eb-4a9a-9201-c7dc27aa93fb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4607,6 +4787,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C5947"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "41cca994-b9fb-41e5-8aaa-d68c0a1b0fd4")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/34d96495-3fb9-441d-9113-6100272ed3f5")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -4999,6 +5191,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "a0a757c7-6d7e-41d1-9ce5-c13d4a742ee1")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/557566b3-aa0e-4398-b27d-33cf516bd2ef")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -5200,6 +5404,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "9b1e9003-01d8-4d05-95ca-04981f8de791")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "93853365-f462-4cd0-8256-6d9df61747c9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5415,6 +5631,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C1015"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e84f6ad4-7e23-4c5d-ab04-ce8e439d17e3")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/765d888a-ffee-4c35-8a6d-6b0c83be1292")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -5616,6 +5844,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "21253ac3-5343-4950-b7b0-d8c941f3c07a")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "0f6c5172-8c03-4e1c-9460-c3861cc4b70b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5831,6 +6071,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "0b561057-f5d2-44f8-9eaa-8211e5385e2e")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/c591d010-66d8-42fd-a195-3d75911e6416")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -6032,6 +6284,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "a809548b-8818-4dae-a500-95448b6bff2b")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "ee5169ad-4669-4c27-8a11-da1bb5004c75")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6247,6 +6511,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "cb9745d8-9d16-4b8c-b06b-fde5021faf87")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/e7c12267-6335-480b-9cfa-7127efcc37b5")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -6448,6 +6724,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "33f2b9cc-a926-4735-9062-fdd9a7d68d11")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C6961"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "db31c769-fe64-4182-98c4-37d67722ab71")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6767,7 +7055,7 @@
 		)
 		(path "/742b031b-801c-4ee5-bd28-d552a5e95657")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole allow_missing_courtyard)
+		(attr through_hole exclude_from_pos_files exclude_from_bom allow_missing_courtyard)
 		(fp_line
 			(start -24.825 -20)
 			(end -31.175 -20)
@@ -7673,6 +7961,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C49678"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "6453d466-9a87-4eed-ae80-e2a6cffcf984")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/c3085e3a-7e02-4fba-8bd0-8dc768e641c5")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -7874,6 +8174,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2d0a18e7-d4c5-4dc0-aba4-3ed790968e11")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d965a3b4-3162-47df-ab78-a0b8f13ef5cb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8089,6 +8401,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17713"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8623bdf5-dc27-4009-a6a7-b3b3a7a38aa5")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/c9da91ee-55cb-46c8-88e0-d4d6e37a6aca")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -8290,6 +8614,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "aef3499b-e802-4d76-bc27-5a3ea829295d")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e8240c2d-0e72-462f-bac5-d815791f7f5f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8505,6 +8841,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "9c94a961-9ca8-4080-ba00-e7a53b51a0b3")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/ee2ddb8e-380e-46d5-aee2-30b0382bfef6")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -8706,6 +9054,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "20fdf331-167c-41e9-900c-20c5a5240c06")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C49678"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "ab79fc1a-5566-4653-9e5e-cf2c3250adec")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8921,6 +9281,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C1797"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "f29adeea-95f4-4259-850f-7dd9aa84cb4c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/a147f99b-1fcf-4a73-9460-3b709b2e7c22")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -9129,6 +9501,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "1db9e9b6-b3e4-402c-ad92-2ecd36b6c465")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(path "/a1090165-4681-4f00-8ecf-49a3bf4449df")
 		(sheetfile "Module.kicad_sch")
 		(attr smd)
@@ -9330,6 +9714,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "231f0595-f93d-4c70-ba6e-ec0a97fa9518")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C1797"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "3ba3c4b4-dc3a-45b3-a9a8-1f96fee2ff2f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9549,7 +9945,7 @@
 		)
 		(path "/3e3f0e10-b6a9-4591-9464-d5baa8e7ffee")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -9927,7 +10323,7 @@
 		)
 		(path "/1dafff7b-971f-4416-8a9e-9eca6b18f3c7")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -10177,7 +10573,7 @@
 		)
 		(path "/39f22b0b-de48-46c8-b7f1-ca0dbc52090c")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -10555,7 +10951,7 @@
 		)
 		(path "/fc15e4f0-4b49-45c2-a68f-7b9386f08121")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -10804,7 +11200,7 @@
 		)
 		(path "/b1eaa100-2371-4972-858a-2805f8df3407")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -11182,7 +11578,7 @@
 		)
 		(path "/ba353832-178c-4933-bd33-42f78edc5a98")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -11530,7 +11926,7 @@
 		)
 		(path "/99782230-0226-461c-ba2c-5bc13090d3ee")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -11878,7 +12274,7 @@
 		)
 		(path "/4fdf9aa7-9d24-4e24-9788-9a45cb6b3c97")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -12226,7 +12622,7 @@
 		)
 		(path "/46bb242a-b155-4c41-916e-1fe4c06f0ade")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -12604,7 +13000,7 @@
 		)
 		(path "/0111ded6-274d-4d05-834e-c115639265e9")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -12853,7 +13249,7 @@
 		)
 		(path "/e3214644-c739-42dc-984c-b9ad3c271cf7")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -13231,7 +13627,7 @@
 		)
 		(path "/33e17429-0c6b-4afb-b9e5-f23650cd8966")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -13609,7 +14005,7 @@
 		)
 		(path "/5a4bfb56-ed83-422e-912e-e7ee4743bff0")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -13858,7 +14254,7 @@
 		)
 		(path "/2dc7a647-a92a-4926-a5e4-f3513abe8e6f")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 5.5 1)
 			(end 1 1)
@@ -14236,7 +14632,7 @@
 		)
 		(path "/296292d8-88df-4c29-ad16-9b0708fc8f6f")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -14614,7 +15010,7 @@
 		)
 		(path "/201ce74e-fc2e-4c4e-9e68-2c50a3e8b436")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -14863,7 +15259,7 @@
 		)
 		(path "/1e04bc59-8d7c-4e0e-986f-bce9f3b59866")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -15112,7 +15508,7 @@
 		)
 		(path "/a9b172e8-47af-4024-a1e0-b3566b9075f0")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -15491,7 +15887,7 @@
 		)
 		(path "/cce755d0-7aa6-43c5-af91-7cd4f257533c")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -15869,7 +16265,7 @@
 		)
 		(path "/93c55ef8-b24b-4d3d-8daf-9fb780ec9bb6")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -16247,7 +16643,7 @@
 		)
 		(path "/1fe32871-8639-48c8-a31d-7eb81c24d72c")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -16595,7 +16991,7 @@
 		)
 		(path "/1f95f420-23b0-4bf2-831d-5e2f43db2f27")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 5.5 1)
 			(end 1 1)
@@ -16973,7 +17369,7 @@
 		)
 		(path "/65ebf082-de7d-4430-b306-0530c86bc310")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -17321,7 +17717,7 @@
 		)
 		(path "/34586bf0-70ba-4226-b2ff-559d6e95a137")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -17669,7 +18065,7 @@
 		)
 		(path "/f9774f13-15a0-4237-b976-b12258e65af3")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -18047,7 +18443,7 @@
 		)
 		(path "/a30018a6-d9ce-4d2b-9e15-045e00798eec")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -18395,7 +18791,7 @@
 		)
 		(path "/156a7750-d974-4816-b975-a6335aa3fd26")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -18774,7 +19170,7 @@
 		)
 		(path "/953ab2ae-72eb-436f-b0a7-6e2ac604d67d")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -19153,7 +19549,7 @@
 		)
 		(path "/8f535abf-01d2-4c15-82da-1a7dafe47e7c")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -19531,7 +19927,7 @@
 		)
 		(path "/03c27961-b2bf-47f3-99f0-24728bced7b0")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
@@ -19780,7 +20176,7 @@
 		)
 		(path "/2573c3bb-a12f-436f-8e5e-c2d8eaa29c5e")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 1.236)
 			(end -0.29 1.08)
