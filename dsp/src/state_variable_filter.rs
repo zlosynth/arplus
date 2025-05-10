@@ -36,7 +36,11 @@ impl StateVariableFilter {
 
     pub fn set_frequency(&mut self, frequency: f32) -> &mut Self {
         self.frequency = frequency;
-        self.f = 2.0 * libm::sinf((PI * self.frequency) / self.sample_rate as f32);
+        // self.f = 2.0 * libm::sinf((PI * self.frequency) / self.sample_rate as f32);
+        // NOTE: Use the bilinear transform for stability. This does not seem
+        // to be absolutely necessary though.
+        let omega = 2.0 * PI * self.frequency / self.sample_rate as f32;
+        self.f = libm::tanf(omega / 2.0); // Use tan(omega/2) for better stability
         self
     }
 
@@ -45,7 +49,9 @@ impl StateVariableFilter {
     }
 
     pub fn set_q_factor(&mut self, q_factor: f32) -> &mut Self {
-        self.q_factor = q_factor;
+        // NOTE: Use the bilinear transform for stability. Don't trust the
+        // caller (myself).
+        self.q_factor = q_factor.clamp(0.1, 5.0);
         self.q = 1.0 / self.q_factor;
         self
     }
@@ -85,9 +91,12 @@ impl StateVariableFilter {
             }
         };
 
-        self.delay_1 = sum_2;
-        self.delay_2 = sum_3;
+        // NOTE: Normalize state variables to prevent runaway growth. Without
+        // this, noisy input and high cutoff runs away.
+        self.delay_1 = sum_2.clamp(-1.0, 1.0);
+        self.delay_2 = sum_3.clamp(-1.0, 1.0);
 
+        // NOTE: Clamp this too, for good measure.
         value.clamp(-1.0, 1.0)
     }
 }

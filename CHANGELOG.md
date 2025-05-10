@@ -7,6 +7,7 @@ backwards compatibility.
 ## Unreleased
 
 * Fix ARP diagrams in the manual.
+* Fix filter instability with long contour and high cutoff.
 
 ## 0.1.0
 
