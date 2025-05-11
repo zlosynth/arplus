@@ -84,7 +84,9 @@ impl KarplusStrong {
 
             let mixed_sample = noise_sample + delayed_sample * self.feedback;
 
-            let q = 0.5 + self.resonance / 2.0;
+            const MIN_Q: f32 = 0.6;
+            const MAX_Q: f32 = 0.9;
+            let q = MIN_Q + self.resonance * (MAX_Q - MIN_Q);
             let compressed_q = q - self.envelope_follower.level().min(ENV_MAX) * ENV_COEF;
             self.filter.set_q_factor(compressed_q);
 

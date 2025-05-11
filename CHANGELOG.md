@@ -6,6 +6,8 @@ backwards compatibility.
 
 ## Unreleased
 
+* Tweak resonance range to be responsive end to end.
+
 ## 0.1.1
 
 * Fix ARP diagrams in the manual.
