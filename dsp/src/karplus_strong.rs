@@ -182,17 +182,35 @@ impl KarplusStrong {
         // firmware.
         // TODO: Feature gate this and publish an alternative firmware with
         // infinite decay.
-        self.contour = ((contour - 0.05) / 0.96).clamp(0.0, 1.0);
-        let (attack, decay) = if self.contour == 0.0 {
-            (0.0, 0.001)
-        } else if self.contour == 1.0 {
-            let attack = taper::log(self.contour) * 5.0;
-            let decay = f32::INFINITY;
-            (attack, decay)
-        } else {
-            let attack = taper::log(self.contour) * 5.0;
-            let decay = attack + 0.001;
-            (attack, decay)
+        let (attack, decay) = {
+            const INSTANT_INPUT: f32 = 0.0;
+            const LINEAR_INPUT_START: f32 = 0.0;
+            const LINEAR_INPUT_END: f32 = 1.0 / 2.0;
+            const LINEAR_VALUE_START: f32 = 0.0;
+            const LINEAR_VALUE_END: f32 = 0.2;
+            const LOG_INPUT_START: f32 = LINEAR_INPUT_END;
+            const LOG_INPUT_END: f32 = 1.0;
+            const LOG_VALUE_START: f32 = LINEAR_VALUE_END;
+            const LOG_VALUE_END: f32 = 5.0;
+
+            // NOTE: Make sure both extremes are reachable.
+            self.contour = ((contour - 0.05) / 0.96).clamp(0.0, 1.0);
+
+            if self.contour == INSTANT_INPUT {
+                (0.0, 0.001)
+            } else if self.contour < LINEAR_INPUT_END {
+                let contour =
+                    (self.contour - LINEAR_INPUT_START) / (LINEAR_INPUT_END - LINEAR_INPUT_START);
+                let attack = LINEAR_VALUE_START + (LINEAR_VALUE_END - LINEAR_VALUE_START) * contour;
+                let decay = attack + 0.001;
+                (attack, decay)
+            } else {
+                let contour = (self.contour - LOG_INPUT_START) / (LOG_INPUT_END - LOG_INPUT_START);
+                let attack =
+                    LOG_VALUE_START + (LOG_VALUE_END - LOG_VALUE_START) * taper::log(contour);
+                let decay = attack + 0.001;
+                (attack, decay)
+            }
         };
         self.noise_envelope.trigger(
             Config::new()
