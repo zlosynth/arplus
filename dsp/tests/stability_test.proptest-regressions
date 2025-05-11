@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc b22d78144bca026930eed94d9ef0cd9a7a5ba8d4ef85f2742c83416ba4807afd # shrinks to resonance = 0.0, cutoff = 0.41373318, frequency = 2960.219, contour = 0.18158108, pluck = 0.7069944, is_root = false, gain = 0.0, chord_size = 1, trigger_interval = 0.1
+cc 041acd687001ecc9ad824294e60be3bf974304be179d6eff85d2a1ce5205fac7 # shrinks to resonance = 0.0, cutoff = 0.7800111, frequency = 2380.1484, contour = 0.6179586, pluck = 0.9818182, is_root = false, gain = 0.0, chord_size = 1, trigger_interval = 0.1

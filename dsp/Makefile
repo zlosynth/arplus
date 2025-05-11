@@ -18,7 +18,7 @@ clippy:
 .PHONY: test
 test:
 ifdef SLOW
-	$(CARGO) test -- --ignored
+	$(CARGO) test --release -- --ignored
 else
 	$(CARGO) test
 endif

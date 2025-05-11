@@ -141,6 +141,7 @@ impl KarplusStrong {
         // the maximum is scaled down to always fit into the stable frequency
         // range of the filter.
         const MIN_CUTOFF: f32 = 1.5;
+        // TODO: This should be matching the clamp?
         const MAX_CUTOFF_FREQUENCY: f32 = 12_000.0;
         let cutoff = MIN_CUTOFF + (MAX_CUTOFF_FREQUENCY / self.frequency) * taper::log(cutoff);
 
