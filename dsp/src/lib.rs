@@ -34,6 +34,7 @@ pub struct Dsp {
     active_rest_string_index: usize,
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
+    stereo_mode: StereoMode,
 }
 
 pub struct String {
@@ -58,6 +59,13 @@ pub struct TriggerAttributes {
     pub is_root: bool,
 }
 
+#[derive(Clone, Copy, Debug, defmt::Format)]
+pub enum StereoMode {
+    Haas,
+    RootRest,
+    PingPong,
+}
+
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
         Self {
@@ -76,56 +84,103 @@ impl Dsp {
             active_rest_string_index: 0,
             overdrive: Overdrive::new(),
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
+            stereo_mode: StereoMode::Haas,
         }
     }
 
     pub fn process(&mut self, buffer: &mut [(f32, f32); 32], random: &mut impl Random) {
-        let mut buffer_root = [0.0; 32];
-        let mut buffer_rest = [0.0; 32];
+        let mut buffer_left = [0.0; 32];
+        let mut buffer_right = [0.0; 32];
 
-        for string in self.strings.iter_mut() {
-            if string.is_root {
-                string.karplus_strong.populate_add(&mut buffer_root, random);
-            } else {
-                string.karplus_strong.populate_add(&mut buffer_rest, random);
+        match self.stereo_mode {
+            StereoMode::Haas => {
+                for string in self.strings.iter_mut() {
+                    string.karplus_strong.populate_add_stereo(
+                        &mut buffer_left,
+                        &mut buffer_right,
+                        random,
+                    );
+                }
+            }
+            StereoMode::RootRest => {
+                for string in self.strings.iter_mut() {
+                    if string.is_root {
+                        string.karplus_strong.populate_add(&mut buffer_left, random);
+                    } else {
+                        string
+                            .karplus_strong
+                            .populate_add(&mut buffer_right, random);
+                    }
+                }
+            }
+            StereoMode::PingPong => {
+                for (i, string) in self.strings.iter_mut().enumerate() {
+                    if i % 2 == 0 {
+                        string.karplus_strong.populate_add(&mut buffer_left, random);
+                    } else {
+                        string
+                            .karplus_strong
+                            .populate_add(&mut buffer_right, random);
+                    }
+                }
             }
         }
 
-        self.dc_blocker[0].process(&mut buffer_root);
-        self.dc_blocker[1].process(&mut buffer_rest);
+        self.dc_blocker[0].process(&mut buffer_left);
+        self.dc_blocker[1].process(&mut buffer_right);
 
         // NOTE: Despite the overdrive, there is no need for an additional
         // FIR filter here. Karplus strong is already filtered with the max
         // cutoff frequency of 10.5 kHz, which is 1/4 of the nyquist frequency.
         // When I tried adding a FIR, there was no noticeable difference in
         // the output quality.
-        self.overdrive.process(&mut buffer_root);
-        self.overdrive.process(&mut buffer_rest);
+        self.overdrive.process(&mut buffer_left);
+        self.overdrive.process(&mut buffer_right);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
-            *x = (buffer_root[i], buffer_rest[i]);
+            *x = (buffer_left[i], buffer_right[i]);
         })
     }
 
-    pub fn set_attributes(&mut self, attributes: Attributes) {
+    pub fn set_attributes(&mut self, attributes: Attributes, random: &mut impl Random) {
         for string in self.strings.iter_mut() {
             string.karplus_strong.set_resonance(attributes.resonance);
             string.karplus_strong.set_cutoff(attributes.cutoff);
         }
 
-        self.set_root_strings_len(attributes.chord_size);
+        if matches!(self.stereo_mode, StereoMode::PingPong) {
+            // XXX: This effectively disables the split to root and rest.
+            self.set_root_strings_len(8);
+        } else {
+            self.set_root_strings_len(attributes.chord_size);
+        }
 
         if let Some(trigger) = attributes.trigger {
-            let (string_index, next_string_index) = if trigger.is_root {
-                let string_index = self.root_string_index();
-                self.bump_root_string_index();
-                let next_string_index = self.root_string_index();
-                (string_index, next_string_index)
-            } else {
-                let string_index = self.rest_string_index();
-                self.bump_rest_string_index();
-                let next_string_index = self.rest_string_index();
-                (string_index, next_string_index)
+            let (string_index, next_string_index) = {
+                match self.stereo_mode {
+                    StereoMode::PingPong => {
+                        // XXX: Ping pong does not distinguish between root and
+                        // rest, so it can consistently shift left and right,
+                        // no matter how big is the chord.
+                        let string_index = self.root_string_index();
+                        self.bump_root_string_index();
+                        let next_string_index = self.root_string_index();
+                        (string_index, next_string_index)
+                    }
+                    _ => {
+                        if trigger.is_root {
+                            let string_index = self.root_string_index();
+                            self.bump_root_string_index();
+                            let next_string_index = self.root_string_index();
+                            (string_index, next_string_index)
+                        } else {
+                            let string_index = self.rest_string_index();
+                            self.bump_rest_string_index();
+                            let next_string_index = self.rest_string_index();
+                            (string_index, next_string_index)
+                        }
+                    }
+                }
             };
 
             let string = &mut self.strings[string_index];
@@ -135,6 +190,7 @@ impl Dsp {
                 trigger.contour,
                 trigger.pluck,
                 attributes.cutoff,
+                random,
             );
             string.is_root = trigger.is_root;
 
@@ -154,6 +210,7 @@ impl Dsp {
         let new_root_strings_len = match len {
             1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
             3..=6 => 3,
+            8 => 8, // XXX: Special value for ping pong, treating all notes as root
             _ => 2,
         };
 

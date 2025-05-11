@@ -6,6 +6,7 @@ backwards compatibility.
 
 ## Unreleased
 
+* Add support for haas and ping pong output modes, with haas as the default.
 * Tweak resonance range to be responsive end to end.
 * Change contour range to 0.0 to 0.4 seconds linear up to 12 o'clock and
   0.4 to 10 logarithmic above that.

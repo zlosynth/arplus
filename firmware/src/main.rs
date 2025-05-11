@@ -212,7 +212,7 @@ mod app {
         queue_utils::warn_about_capacity("dsp_attributes", dsp_attributes_consumer);
 
         if let Some(attributes) = queue_utils::dequeue_last(dsp_attributes_consumer) {
-            dsp.set_attributes(attributes);
+            dsp.set_attributes(attributes, random_generator);
         }
 
         audio_interface.update_buffer(|buffer| {

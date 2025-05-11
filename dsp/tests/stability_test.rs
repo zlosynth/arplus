@@ -59,7 +59,7 @@ fn check_stability(
             if i % trigger_every_x_controls == 0 {
                 attributes.trigger = Some(trigger);
             }
-            dsp.set_attributes(attributes);
+            dsp.set_attributes(attributes, &mut TestRandom);
         }
 
         dsp.process(&mut buffer, &mut TestRandom);
