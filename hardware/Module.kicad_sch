@@ -5726,6 +5726,28 @@
 			)
 		)
 	)
+	(global_label "POT_10"
+		(shape output)
+		(at 105.41 212.09 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2e54801e-786d-46d4-8725-ddd736d79d68")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 115.3499 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "BUTTON_6"
 		(shape output)
 		(at 168.91 142.24 0)
@@ -5794,7 +5816,7 @@
 	)
 	(global_label "POT_9"
 		(shape output)
-		(at 76.2 86.36 0)
+		(at 81.28 251.46 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5804,7 +5826,7 @@
 		)
 		(uuid "3911f8df-a1d9-4e91-9bd0-edefa0f2d443")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 84.9304 86.36 0)
+			(at 90.0104 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6036,7 +6058,7 @@
 	)
 	(global_label "POT_2"
 		(shape output)
-		(at 31.75 66.04 0)
+		(at 36.83 231.14 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6046,7 +6068,7 @@
 		)
 		(uuid "5d176b4f-c0ee-45c4-8a5a-a6762ae2dbfe")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 40.4804 66.04 0)
+			(at 45.5604 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6078,7 +6100,7 @@
 			)
 		)
 	)
-	(global_label "BUTTON_9"
+	(global_label "BUTTON_8"
 		(shape input)
 		(at 276.86 76.2 0)
 		(fields_autoplaced yes)
@@ -6102,7 +6124,7 @@
 	)
 	(global_label "POT_6"
 		(shape output)
-		(at 53.34 87.63 0)
+		(at 58.42 252.73 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6112,7 +6134,7 @@
 		)
 		(uuid "6bea4d44-9c33-4487-ab15-292c6da506cb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 62.0704 87.63 0)
+			(at 67.1504 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6146,7 +6168,7 @@
 	)
 	(global_label "POT_5"
 		(shape output)
-		(at 53.34 66.04 0)
+		(at 58.42 231.14 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6156,7 +6178,7 @@
 		)
 		(uuid "6eb89976-b0af-452a-a7c6-6c25dd634334")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 62.0704 66.04 0)
+			(at 67.1504 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6168,7 +6190,7 @@
 	)
 	(global_label "POT_4"
 		(shape output)
-		(at 53.34 46.99 0)
+		(at 58.42 212.09 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6178,7 +6200,7 @@
 		)
 		(uuid "73f56064-ae83-4701-b0ad-3f6706d888e2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 62.0704 46.99 0)
+			(at 67.1504 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6628,7 +6650,7 @@
 			)
 		)
 	)
-	(global_label "BUTTON_7"
+	(global_label "BUTTON_8"
 		(shape output)
 		(at 168.91 172.72 0)
 		(fields_autoplaced yes)
@@ -6762,7 +6784,7 @@
 	)
 	(global_label "POT_8"
 		(shape output)
-		(at 76.2 66.04 0)
+		(at 81.28 231.14 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6772,7 +6794,7 @@
 		)
 		(uuid "bbd9446e-01c4-4150-9d50-8832d98e273e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 84.9304 66.04 0)
+			(at 90.0104 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6872,7 +6894,7 @@
 	)
 	(global_label "POT_1"
 		(shape output)
-		(at 31.75 45.72 0)
+		(at 36.83 210.82 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6882,7 +6904,7 @@
 		)
 		(uuid "c32d4b70-4367-46a0-9c17-1184a7624e45")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 40.4804 45.72 0)
+			(at 45.5604 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6960,7 +6982,7 @@
 	)
 	(global_label "POT_3"
 		(shape output)
-		(at 31.75 87.63 0)
+		(at 36.83 252.73 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6970,7 +6992,7 @@
 		)
 		(uuid "cb221888-483b-49f7-903b-39f0b3b979b8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 40.4804 87.63 0)
+			(at 45.5604 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7070,7 +7092,7 @@
 	)
 	(global_label "POT_7"
 		(shape output)
-		(at 76.2 46.99 0)
+		(at 81.28 212.09 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7080,7 +7102,7 @@
 		)
 		(uuid "dac193e6-78ff-4ff9-bf10-f14f562a1c31")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 84.9304 46.99 0)
+			(at 90.0104 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7284,6 +7306,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "POT_10"
+		(shape input)
+		(at 278.13 88.9 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f76894f7-a358-46d1-a5d8-b67e4dc2cfd2")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 288.0699 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -7557,7 +7601,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 27.94 49.53 0)
+		(at 33.02 214.63 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7566,7 +7610,7 @@
 		(dnp no)
 		(uuid "0bcd52cb-f301-4431-af65-ab7676a7b92d")
 		(property "Reference" "#PWR016"
-			(at 27.94 55.88 0)
+			(at 33.02 220.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7575,7 +7619,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 27.94 53.34 0)
+			(at 33.02 218.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7583,7 +7627,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 49.53 0)
+			(at 33.02 214.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7592,7 +7636,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 49.53 0)
+			(at 33.02 214.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7601,7 +7645,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 49.53 0)
+			(at 33.02 214.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8352,7 +8396,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 27.94 62.23 0)
+		(at 33.02 227.33 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8360,7 +8404,7 @@
 		(dnp no)
 		(uuid "1f31d346-291a-4c01-a127-12287ff06ac6")
 		(property "Reference" "#PWR024"
-			(at 27.94 66.04 0)
+			(at 33.02 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8369,7 +8413,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 27.94 58.42 0)
+			(at 33.02 223.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8377,7 +8421,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 62.23 0)
+			(at 33.02 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8386,7 +8430,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 62.23 0)
+			(at 33.02 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8395,7 +8439,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 62.23 0)
+			(at 33.02 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8484,7 +8528,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 27.94 87.63 0)
+		(at 33.02 252.73 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8493,7 +8537,7 @@
 		(dnp no)
 		(uuid "1fe32871-8639-48c8-a31d-7eb81c24d72c")
 		(property "Reference" "RV6"
-			(at 26.035 86.36 0)
+			(at 31.115 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8502,7 +8546,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 26.035 88.9 0)
+			(at 31.115 254 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8511,7 +8555,7 @@
 			)
 		)
 		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
-			(at 27.94 87.63 0)
+			(at 33.02 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8520,7 +8564,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 27.94 87.63 0)
+			(at 33.02 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8529,7 +8573,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 87.63 0)
+			(at 33.02 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8868,7 +8912,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 49.53 43.18 0)
+		(at 54.61 208.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8876,7 +8920,7 @@
 		(dnp no)
 		(uuid "22fbf5f5-6138-435d-9dab-ffe49f6eb927")
 		(property "Reference" "#PWR020"
-			(at 49.53 46.99 0)
+			(at 54.61 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8885,7 +8929,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 49.53 39.37 0)
+			(at 54.61 204.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8893,7 +8937,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 43.18 0)
+			(at 54.61 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8902,7 +8946,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 43.18 0)
+			(at 54.61 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8911,7 +8955,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 43.18 0)
+			(at 54.61 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8933,7 +8977,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 27.94 69.85 0)
+		(at 33.02 234.95 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8942,7 +8986,7 @@
 		(dnp no)
 		(uuid "24104855-4987-41bf-9c9c-91782d43bdfc")
 		(property "Reference" "#PWR019"
-			(at 27.94 76.2 0)
+			(at 33.02 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8951,7 +8995,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 27.94 73.66 0)
+			(at 33.02 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8959,7 +9003,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 69.85 0)
+			(at 33.02 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8968,7 +9012,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 69.85 0)
+			(at 33.02 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8977,7 +9021,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 69.85 0)
+			(at 33.02 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9683,7 +9727,7 @@
 				)
 			)
 		)
-		(property "Value" "BUTTON_6"
+		(property "Value" "BUTTON_8"
 			(at 163.83 168.275 0)
 			(effects
 				(font
@@ -9735,7 +9779,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 49.53 62.23 0)
+		(at 54.61 227.33 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9744,7 +9788,7 @@
 		(dnp no)
 		(uuid "320066a4-b62b-41ad-ad91-70104b526492")
 		(property "Reference" "#PWR07"
-			(at 49.53 66.04 0)
+			(at 54.61 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9753,7 +9797,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 49.53 58.42 0)
+			(at 54.61 223.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9761,7 +9805,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 62.23 0)
+			(at 54.61 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9770,7 +9814,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 62.23 0)
+			(at 54.61 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9779,7 +9823,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 62.23 0)
+			(at 54.61 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10007,7 +10051,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 27.94 45.72 0)
+		(at 33.02 210.82 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10016,7 +10060,7 @@
 		(dnp no)
 		(uuid "34586bf0-70ba-4226-b2ff-559d6e95a137")
 		(property "Reference" "RV1"
-			(at 26.035 44.45 0)
+			(at 31.115 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10025,7 +10069,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 26.035 46.99 0)
+			(at 31.115 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10034,7 +10078,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
-			(at 27.94 45.72 0)
+			(at 33.02 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10043,7 +10087,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 27.94 45.72 0)
+			(at 33.02 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10052,7 +10096,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 45.72 0)
+			(at 33.02 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10637,7 +10681,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 49.53 83.82 0)
+		(at 54.61 248.92 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10646,7 +10690,7 @@
 		(dnp no)
 		(uuid "4463d559-7f7b-42d2-88be-c8ee25e91614")
 		(property "Reference" "#PWR018"
-			(at 49.53 87.63 0)
+			(at 54.61 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10655,7 +10699,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 49.53 80.01 0)
+			(at 54.61 245.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10663,7 +10707,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 83.82 0)
+			(at 54.61 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10672,7 +10716,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 83.82 0)
+			(at 54.61 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10681,7 +10725,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 83.82 0)
+			(at 54.61 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10837,35 +10881,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R_Potentiometer")
-		(at 72.39 66.04 0)
-		(mirror x)
+		(lib_id "power:+5V")
+		(at 101.6 208.28 0)
+		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "45ebba10-4f2f-4d21-848d-a07acf0f973b")
-		(property "Reference" "RV8"
-			(at 70.485 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "B10k"
-			(at 70.485 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
-			(at 72.39 66.04 0)
+		(uuid "45203496-aa2d-4d2f-87a7-9a88c68d1fe5")
+		(property "Reference" "#PWR67"
+			(at 101.6 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10873,8 +10899,25 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 72.39 66.04 0)
+		(property "Value" "+5V"
+			(at 101.6 204.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 101.6 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 101.6 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10883,7 +10926,74 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 66.04 0)
+			(at 101.6 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e73dc7e9-af17-4c13-ae87-a09de901f36f")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR67")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Potentiometer")
+		(at 77.47 231.14 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "45ebba10-4f2f-4d21-848d-a07acf0f973b")
+		(property "Reference" "RV8"
+			(at 75.565 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "B10k"
+			(at 75.565 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+			(at 77.47 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 77.47 231.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 77.47 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10911,7 +11021,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 27.94 91.44 0)
+		(at 33.02 256.54 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10920,7 +11030,7 @@
 		(dnp no)
 		(uuid "46b9f247-9b3b-4e0d-b7d5-e51df07b317e")
 		(property "Reference" "#PWR027"
-			(at 27.94 97.79 0)
+			(at 33.02 262.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10929,7 +11039,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 27.94 95.25 0)
+			(at 33.02 260.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10937,7 +11047,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 91.44 0)
+			(at 33.02 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10946,7 +11056,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 91.44 0)
+			(at 33.02 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10955,7 +11065,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 91.44 0)
+			(at 33.02 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11241,7 +11351,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 72.39 62.23 0)
+		(at 77.47 227.33 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11250,7 +11360,7 @@
 		(dnp no)
 		(uuid "4dad6810-836d-4821-b02c-42cbff3dfbff")
 		(property "Reference" "#PWR10"
-			(at 72.39 66.04 0)
+			(at 77.47 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11259,7 +11369,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 72.39 58.42 0)
+			(at 77.47 223.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11267,7 +11377,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 62.23 0)
+			(at 77.47 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11276,7 +11386,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 62.23 0)
+			(at 77.47 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11285,7 +11395,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 62.23 0)
+			(at 77.47 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11372,7 +11482,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 49.53 87.63 0)
+		(at 54.61 252.73 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11381,7 +11491,7 @@
 		(dnp no)
 		(uuid "4fdf9aa7-9d24-4e24-9788-9a45cb6b3c97")
 		(property "Reference" "RV7"
-			(at 47.625 86.36 0)
+			(at 52.705 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11390,7 +11500,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 47.625 88.9 0)
+			(at 52.705 254 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11399,7 +11509,7 @@
 			)
 		)
 		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
-			(at 49.53 87.63 0)
+			(at 54.61 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11408,7 +11518,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 49.53 87.63 0)
+			(at 54.61 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11417,7 +11527,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 87.63 0)
+			(at 54.61 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11852,7 +11962,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 72.39 69.85 0)
+		(at 77.47 234.95 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11861,7 +11971,7 @@
 		(dnp no)
 		(uuid "5e13dc06-394c-4eea-8a1f-8f16d3269228")
 		(property "Reference" "#PWR11"
-			(at 72.39 76.2 0)
+			(at 77.47 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11870,7 +11980,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 72.39 73.66 0)
+			(at 77.47 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11878,7 +11988,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 69.85 0)
+			(at 77.47 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11887,7 +11997,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 69.85 0)
+			(at 77.47 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11896,7 +12006,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 69.85 0)
+			(at 77.47 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11987,7 +12097,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 27.94 66.04 0)
+		(at 33.02 231.14 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11996,7 +12106,7 @@
 		(dnp no)
 		(uuid "65ebf082-de7d-4430-b306-0530c86bc310")
 		(property "Reference" "RV2"
-			(at 26.035 64.77 0)
+			(at 31.115 229.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12005,7 +12115,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 26.035 67.31 0)
+			(at 31.115 232.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12014,7 +12124,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
-			(at 27.94 66.04 0)
+			(at 33.02 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12023,7 +12133,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 27.94 66.04 0)
+			(at 33.02 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12032,7 +12142,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 66.04 0)
+			(at 33.02 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13154,7 +13264,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 72.39 43.18 0)
+		(at 77.47 208.28 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -13163,7 +13273,7 @@
 		(dnp no)
 		(uuid "7cf66a05-1bff-4f14-b2c5-1285bd0af9a8")
 		(property "Reference" "#PWR033"
-			(at 72.39 46.99 0)
+			(at 77.47 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13172,7 +13282,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 72.39 39.37 0)
+			(at 77.47 204.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13180,7 +13290,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 43.18 0)
+			(at 77.47 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13189,7 +13299,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 43.18 0)
+			(at 77.47 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13198,7 +13308,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 43.18 0)
+			(at 77.47 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14165,7 +14275,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 49.53 46.99 0)
+		(at 54.61 212.09 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14174,7 +14284,7 @@
 		(dnp no)
 		(uuid "99782230-0226-461c-ba2c-5bc13090d3ee")
 		(property "Reference" "RV4"
-			(at 47.625 45.72 0)
+			(at 52.705 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14183,7 +14293,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 47.625 48.26 0)
+			(at 52.705 213.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14192,7 +14302,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
-			(at 49.53 46.99 0)
+			(at 54.61 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14201,7 +14311,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 49.53 46.99 0)
+			(at 54.61 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14210,7 +14320,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 46.99 0)
+			(at 54.61 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14743,7 +14853,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 72.39 46.99 0)
+		(at 77.47 212.09 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14752,7 +14862,7 @@
 		(dnp no)
 		(uuid "a30018a6-d9ce-4d2b-9e15-045e00798eec")
 		(property "Reference" "RV5"
-			(at 70.485 45.72 0)
+			(at 75.565 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14761,7 +14871,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 70.485 48.26 0)
+			(at 75.565 213.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14770,7 +14880,7 @@
 			)
 		)
 		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
-			(at 72.39 46.99 0)
+			(at 77.47 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14779,7 +14889,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 72.39 46.99 0)
+			(at 77.47 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14788,7 +14898,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 46.99 0)
+			(at 77.47 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14809,6 +14919,79 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "RV5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Potentiometer")
+		(at 101.6 212.09 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a901b903-0978-46b4-9fc6-cb53a235dfb4")
+		(property "Reference" "RV10"
+			(at 99.695 210.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "B10k"
+			(at 99.695 213.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+			(at 101.6 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 101.6 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 101.6 212.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8f1cec8c-c485-4730-8cbb-30648a090fc0")
+		)
+		(pin "2"
+			(uuid "840e7cff-5fe3-4b15-9832-d3ea96f8ebda")
+		)
+		(pin "3"
+			(uuid "e1914fb8-7810-459f-bf45-4f5377a6f727")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "RV10")
 					(unit 1)
 				)
 			)
@@ -14953,7 +15136,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 72.39 86.36 0)
+		(at 77.47 251.46 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14962,7 +15145,7 @@
 		(dnp no)
 		(uuid "aaee1be4-ec18-492e-ad14-d9fec3048b18")
 		(property "Reference" "RV9"
-			(at 70.485 85.09 0)
+			(at 75.565 250.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14971,7 +15154,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 70.485 87.63 0)
+			(at 75.565 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14980,7 +15163,7 @@
 			)
 		)
 		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
-			(at 72.39 86.36 0)
+			(at 77.47 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14989,7 +15172,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 72.39 86.36 0)
+			(at 77.47 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14998,7 +15181,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 86.36 0)
+			(at 77.47 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15568,7 +15751,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Potentiometer")
-		(at 49.53 66.04 0)
+		(at 54.61 231.14 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15577,7 +15760,7 @@
 		(dnp no)
 		(uuid "ba353832-178c-4933-bd33-42f78edc5a98")
 		(property "Reference" "RV3"
-			(at 47.625 64.77 0)
+			(at 52.705 229.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15586,7 +15769,7 @@
 			)
 		)
 		(property "Value" "B10k"
-			(at 47.625 67.31 0)
+			(at 52.705 232.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15595,7 +15778,7 @@
 			)
 		)
 		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
-			(at 49.53 66.04 0)
+			(at 54.61 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15604,7 +15787,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 49.53 66.04 0)
+			(at 54.61 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15613,7 +15796,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 66.04 0)
+			(at 54.61 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15634,6 +15817,72 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "RV3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 101.6 215.9 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bceaf882-5250-494d-ae98-f6e5979826e1")
+		(property "Reference" "#PWR68"
+			(at 101.6 222.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 101.6 219.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 101.6 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 101.6 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 101.6 215.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ed4ba652-a3d1-4295-a770-b8583d5d4168")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR68")
 					(unit 1)
 				)
 			)
@@ -15709,7 +15958,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 49.53 50.8 0)
+		(at 54.61 215.9 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15718,7 +15967,7 @@
 		(dnp no)
 		(uuid "bfe3942b-a30c-4a41-997b-daac7ae51429")
 		(property "Reference" "#PWR023"
-			(at 49.53 57.15 0)
+			(at 54.61 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15727,7 +15976,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 49.53 54.61 0)
+			(at 54.61 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15735,7 +15984,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 50.8 0)
+			(at 54.61 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15744,7 +15993,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 50.8 0)
+			(at 54.61 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15753,7 +16002,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 50.8 0)
+			(at 54.61 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15908,7 +16157,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 72.39 50.8 0)
+		(at 77.47 215.9 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15917,7 +16166,7 @@
 		(dnp no)
 		(uuid "c83f465d-7e7e-4487-8767-2825d2ad3d94")
 		(property "Reference" "#PWR025"
-			(at 72.39 57.15 0)
+			(at 77.47 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15926,7 +16175,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 72.39 54.61 0)
+			(at 77.47 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15934,7 +16183,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 50.8 0)
+			(at 77.47 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15943,7 +16192,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 50.8 0)
+			(at 77.47 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15952,7 +16201,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 50.8 0)
+			(at 77.47 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16178,7 +16427,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 49.53 91.44 0)
+		(at 54.61 256.54 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -16187,7 +16436,7 @@
 		(dnp no)
 		(uuid "d4cbb46e-56f1-47e7-a45b-047080a45bc5")
 		(property "Reference" "#PWR050"
-			(at 49.53 97.79 0)
+			(at 54.61 262.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16196,7 +16445,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 49.53 95.25 0)
+			(at 54.61 260.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16204,7 +16453,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 91.44 0)
+			(at 54.61 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16213,7 +16462,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 91.44 0)
+			(at 54.61 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16222,7 +16471,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 91.44 0)
+			(at 54.61 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16577,7 +16826,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 27.94 41.91 0)
+		(at 33.02 207.01 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16585,7 +16834,7 @@
 		(dnp no)
 		(uuid "dfed97eb-bff5-4b01-b535-55dc32291ec3")
 		(property "Reference" "#PWR017"
-			(at 27.94 45.72 0)
+			(at 33.02 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16594,7 +16843,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 27.94 38.1 0)
+			(at 33.02 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16602,7 +16851,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 41.91 0)
+			(at 33.02 207.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16611,7 +16860,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 41.91 0)
+			(at 33.02 207.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16620,7 +16869,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 41.91 0)
+			(at 33.02 207.01 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16657,7 +16906,7 @@
 				)
 			)
 		)
-		(property "Value" "BUTTON_6"
+		(property "Value" "BUTTON_7"
 			(at 163.83 153.035 0)
 			(effects
 				(font
@@ -17290,7 +17539,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 49.53 69.85 0)
+		(at 54.61 234.95 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -17299,7 +17548,7 @@
 		(dnp no)
 		(uuid "eb97d966-afab-492c-8f2e-c14a3e3aa8df")
 		(property "Reference" "#PWR021"
-			(at 49.53 76.2 0)
+			(at 54.61 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17308,7 +17557,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 49.53 73.66 0)
+			(at 54.61 238.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17316,7 +17565,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 69.85 0)
+			(at 54.61 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17325,7 +17574,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 69.85 0)
+			(at 54.61 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17334,7 +17583,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 69.85 0)
+			(at 54.61 234.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17424,7 +17673,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 72.39 82.55 0)
+		(at 77.47 247.65 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -17433,7 +17682,7 @@
 		(dnp no)
 		(uuid "ee83c2a6-8561-4148-ac54-562ebd44ca94")
 		(property "Reference" "#PWR15"
-			(at 72.39 86.36 0)
+			(at 77.47 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17442,7 +17691,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 72.39 78.74 0)
+			(at 77.47 243.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17450,7 +17699,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 82.55 0)
+			(at 77.47 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17459,7 +17708,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 82.55 0)
+			(at 77.47 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17468,7 +17717,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 82.55 0)
+			(at 77.47 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17647,7 +17896,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 72.39 90.17 0)
+		(at 77.47 255.27 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -17656,7 +17905,7 @@
 		(dnp no)
 		(uuid "f600bca6-73e1-4438-baca-48bf0cd578cc")
 		(property "Reference" "#PWR66"
-			(at 72.39 96.52 0)
+			(at 77.47 261.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17665,7 +17914,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 72.39 93.98 0)
+			(at 77.47 259.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17673,7 +17922,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 72.39 90.17 0)
+			(at 77.47 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17682,7 +17931,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 72.39 90.17 0)
+			(at 77.47 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17691,7 +17940,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 72.39 90.17 0)
+			(at 77.47 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17982,7 +18231,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 27.94 83.82 0)
+		(at 33.02 248.92 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -17990,7 +18239,7 @@
 		(dnp no)
 		(uuid "feea4846-5377-45b0-96e7-d0973405cf41")
 		(property "Reference" "#PWR022"
-			(at 27.94 87.63 0)
+			(at 33.02 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17999,7 +18248,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 27.94 80.01 0)
+			(at 33.02 245.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18007,7 +18256,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 83.82 0)
+			(at 33.02 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18016,7 +18265,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 83.82 0)
+			(at 33.02 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18025,7 +18274,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 27.94 83.82 0)
+			(at 33.02 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
