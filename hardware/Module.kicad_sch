@@ -4327,6 +4327,16 @@
 	)
 	(wire
 		(pts
+			(xy 349.25 96.52) (xy 349.25 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1f6badd0-12bb-4ca9-9b22-842c1b60435a")
+	)
+	(wire
+		(pts
 			(xy 372.11 165.1) (xy 372.11 175.26)
 		)
 		(stroke
@@ -4554,6 +4564,16 @@
 			(type default)
 		)
 		(uuid "52c3ebcb-568c-45f5-8796-fb22481a10d0")
+	)
+	(wire
+		(pts
+			(xy 347.98 96.52) (xy 349.25 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "54c0ab64-4586-49cb-b5ea-688ed039fe63")
 	)
 	(wire
 		(pts
@@ -5194,6 +5214,16 @@
 			(type default)
 		)
 		(uuid "f66f90cf-98df-4fdf-a2bb-6734baa97be6")
+	)
+	(wire
+		(pts
+			(xy 347.98 90.17) (xy 349.25 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f6cd9fcd-45a9-429c-96df-8dd7802f9cbf")
 	)
 	(wire
 		(pts
@@ -6348,6 +6378,28 @@
 			)
 		)
 	)
+	(global_label "BURST"
+		(shape output)
+		(at 278.13 50.8 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9b411d38-0d75-44af-af26-f0a076b21b6d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 287.1628 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "CV_2"
 		(shape output)
 		(at 52.07 120.65 0)
@@ -6537,6 +6589,28 @@
 		(uuid "bbea56a8-6506-4bf1-8516-01c64ced942c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 113.7775 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "BURST"
+		(shape input)
+		(at 347.98 99.06 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bcc0e329-927c-4ca4-9ed5-da585c0197bc")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 357.0128 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6762,6 +6836,28 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PROBE"
+		(shape input)
+		(at 347.98 90.17 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "dedc425d-9abe-4aaa-989b-5307b50c0c23")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 338.7053 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -8358,6 +8454,77 @@
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "U4")
 					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Audio:AudioJack2_SwitchT")
+		(at 342.9 99.06 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "21186212-4409-4985-95a8-b98ac844f01a")
+		(property "Reference" "J9"
+			(at 337.185 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "IN"
+			(at 336.55 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles"
+			(at 342.9 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 342.9 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 342.9 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "S"
+			(uuid "16fb2f06-64a6-471b-a0c5-ad33f176121c")
+		)
+		(pin "TN"
+			(uuid "de69b92a-e4ed-47b4-bc04-fa762d803a7a")
+		)
+		(pin "T"
+			(uuid "4a33334a-b433-4b12-831b-c4910c351933")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "J9")
+					(unit 1)
 				)
 			)
 		)
@@ -12568,6 +12735,71 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 347.98 101.6 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8a332fdf-765a-4a96-bd52-78351d70e9bd")
+		(property "Reference" "#PWR9"
+			(at 347.98 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 347.98 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 347.98 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 347.98 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 347.98 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "69c52df2-aafa-4a77-b985-b0b39b58c237")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 100.33 85.09 0)
 		(unit 1)
@@ -14242,6 +14474,75 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "R10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 349.25 92.71 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b40044cf-3254-4cc0-b90f-9b534b4b390e")
+		(property "Reference" "R16"
+			(at 350.52 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1k"
+			(at 350.52 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 349.25 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 349.25 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 349.25 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "640310e4-8ea7-48af-b277-1d54b1a922e2")
+		)
+		(pin "2"
+			(uuid "1813301e-9aa4-491b-835a-a80112f2de05")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "R16")
 					(unit 1)
 				)
 			)
