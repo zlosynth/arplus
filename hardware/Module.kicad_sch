@@ -6034,6 +6034,28 @@
 			)
 		)
 	)
+	(global_label "BUTTON_9"
+		(shape input)
+		(at 276.86 76.2 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "63174007-552d-4bfe-8d32-a482261af47a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 289.219 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "POT_6"
 		(shape output)
 		(at 53.34 87.63 0)
@@ -6553,6 +6575,28 @@
 		(uuid "a39f3ece-19a3-4aaa-b6a1-43ba0d2359ee")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 81.1809 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "BUTTON_7"
+		(shape output)
+		(at 168.91 172.72 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a54fb38a-fb66-4c26-817e-5719afe62674")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 181.269 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9573,6 +9617,73 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "#PWR048")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Switch:SW_Push")
+		(at 163.83 172.72 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "303f2280-a0e9-45c7-8c4a-55935da35749")
+		(property "Reference" "SW7"
+			(at 163.83 165.735 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BUTTON_6"
+			(at 163.83 168.275 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+			(at 163.83 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 163.83 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 163.83 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "67ab3363-6699-4114-88e9-85b3d74ca4bc")
+		)
+		(pin "1"
+			(uuid "37beab0d-2044-4362-9e8a-55984a00a8ef")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "SW7")
 					(unit 1)
 				)
 			)
@@ -14315,6 +14426,71 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "R25")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 158.75 172.72 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9d1c616f-49af-4442-8a56-d02336e44e4d")
+		(property "Reference" "#PWR14"
+			(at 158.75 179.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 158.75 177.165 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 158.75 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 158.75 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c860d09b-940a-4575-a36f-59ab7db19fae")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR14")
 					(unit 1)
 				)
 			)
