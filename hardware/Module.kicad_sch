@@ -6379,7 +6379,7 @@
 		)
 	)
 	(global_label "BURST"
-		(shape output)
+		(shape input)
 		(at 278.13 50.8 0)
 		(fields_autoplaced yes)
 		(effects
@@ -6440,6 +6440,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "POT_3"
+		(shape input)
+		(at 278.13 55.88 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a304c59a-4e64-48e5-a752-45353f04e26c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 286.8604 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -6576,6 +6598,28 @@
 			)
 		)
 	)
+	(global_label "POT_8"
+		(shape output)
+		(at 76.2 66.04 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bbd9446e-01c4-4150-9d50-8832d98e273e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 84.9304 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "GATE_1"
 		(shape output)
 		(at 104.14 120.65 0)
@@ -6599,7 +6643,7 @@
 		)
 	)
 	(global_label "BURST"
-		(shape input)
+		(shape output)
 		(at 347.98 99.06 0)
 		(fields_autoplaced yes)
 		(effects
@@ -10364,6 +10408,79 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Potentiometer")
+		(at 72.39 66.04 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "45ebba10-4f2f-4d21-848d-a07acf0f973b")
+		(property "Reference" "RV8"
+			(at 70.485 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "B10k"
+			(at 70.485 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+			(at 72.39 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 72.39 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 72.39 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe4ba751-419b-4322-b63c-811d65539f1f")
+		)
+		(pin "2"
+			(uuid "108e00c8-40c4-4474-879c-882172abe410")
+		)
+		(pin "3"
+			(uuid "b6cb4599-455a-4330-b7ab-13c6dac18c19")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "RV8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 27.94 91.44 0)
 		(mirror y)
@@ -10688,6 +10805,72 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "#PWR58")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 72.39 62.23 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4dad6810-836d-4821-b02c-42cbff3dfbff")
+		(property "Reference" "#PWR10"
+			(at 72.39 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 72.39 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 72.39 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 72.39 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 72.39 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1a4322bb-93da-4f47-aaa4-6c2607819ec3")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR10")
 					(unit 1)
 				)
 			)
@@ -11233,6 +11416,72 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "R8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 72.39 69.85 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5e13dc06-394c-4eea-8a1f-8f16d3269228")
+		(property "Reference" "#PWR11"
+			(at 72.39 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 72.39 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 72.39 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 72.39 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 72.39 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1f2a1b68-8b8f-4897-9296-9bd6d8e62775")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR11")
 					(unit 1)
 				)
 			)
