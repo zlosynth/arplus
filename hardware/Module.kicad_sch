@@ -4347,6 +4347,16 @@
 	)
 	(wire
 		(pts
+			(xy 73.66 129.54) (xy 74.93 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "22d1be47-dd66-43db-94ef-c54eff2d0135")
+	)
+	(wire
+		(pts
 			(xy 359.41 128.27) (xy 364.49 128.27)
 		)
 		(stroke
@@ -4534,6 +4544,16 @@
 			(type default)
 		)
 		(uuid "4b33490f-684c-4b95-af04-c4acefdb931f")
+	)
+	(wire
+		(pts
+			(xy 74.93 135.89) (xy 74.93 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4bcff452-c32f-45bc-9aba-bf3bb7286f0b")
 	)
 	(wire
 		(pts
@@ -4754,6 +4774,16 @@
 			(type default)
 		)
 		(uuid "82e3f937-1733-44a7-b38c-c0c1eecbe3df")
+	)
+	(wire
+		(pts
+			(xy 73.66 135.89) (xy 74.93 135.89)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8395b062-25d4-4854-8931-46c06d546312")
 	)
 	(wire
 		(pts
@@ -5454,6 +5484,28 @@
 			)
 		)
 	)
+	(global_label "CV_6"
+		(shape input)
+		(at 279.4 68.58 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1bdeee8c-261c-4656-8e37-e4d9308abcbe")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 286.9209 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "PROBE"
 		(shape input)
 		(at 52.07 111.76 180)
@@ -5907,6 +5959,28 @@
 		(uuid "564444dc-17bd-41c2-a60f-2952a4bd22d2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 136.8794 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "CV_6"
+		(shape output)
+		(at 73.66 138.43 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "569cee04-cd74-4654-b6ed-84df021867fa")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 81.1809 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6752,6 +6826,28 @@
 			)
 		)
 	)
+	(global_label "PROBE"
+		(shape input)
+		(at 73.66 129.54 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c6486444-153c-4b29-bb0a-ba874fc7d8bf")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 64.3853 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "BUTTON_3"
 		(shape output)
 		(at 168.91 93.98 0)
@@ -6787,6 +6883,28 @@
 		(uuid "cb221888-483b-49f7-903b-39f0b3b979b8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 40.4804 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "BUTTON_7"
+		(shape input)
+		(at 279.4 63.5 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "cc39732d-c25e-40aa-bbbe-a303444eb55c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 291.759 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6875,6 +6993,28 @@
 		(uuid "dac193e6-78ff-4ff9-bf10-f14f562a1c31")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 84.9304 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "BUTTON_7"
+		(shape output)
+		(at 168.91 157.48 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "dd321e3a-41d5-4f3f-99e1-25a33aebb6c3")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 181.269 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7714,6 +7854,71 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "#PWR038")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 158.75 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "13679fdb-df47-40a5-a6b5-345d8d0c9ab8")
+		(property "Reference" "#PWR12"
+			(at 158.75 163.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 158.75 161.925 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 158.75 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 158.75 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 158.75 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "22b853e2-5c6a-459f-9368-7c2a2f33a2da")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR12")
 					(unit 1)
 				)
 			)
@@ -8766,6 +8971,75 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "D7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 74.93 132.08 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "26fb28ed-e71a-4a92-a5b8-dab98a6be773")
+		(property "Reference" "R17"
+			(at 76.2 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1k"
+			(at 76.2 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 74.93 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 74.93 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 74.93 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1abb76d1-b84b-4c1c-ac93-c74e138c4ecd")
+		)
+		(pin "2"
+			(uuid "a60cb5ab-3cd2-4603-8bc0-c8b7334780db")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "R17")
 					(unit 1)
 				)
 			)
@@ -11695,6 +11969,77 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Audio:AudioJack2_SwitchT")
+		(at 68.58 138.43 0)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "68a979f4-0c66-4df3-84aa-51e7d2e105d5")
+		(property "Reference" "J11"
+			(at 62.865 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "CV5"
+			(at 62.23 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_Audio:Jack_3.5mm_QingPu_WQP-PJ398SM_Vertical_CircularHoles"
+			(at 68.58 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 68.58 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 68.58 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "S"
+			(uuid "eab60d86-bd44-4eb0-a424-cfe415cf04df")
+		)
+		(pin "TN"
+			(uuid "a37a4d06-e0fd-484a-a36e-aea60edfaf97")
+		)
+		(pin "T"
+			(uuid "d04ac74c-a83e-4a9b-8b5e-039fc41afc3c")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "J11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 52.07 123.19 0)
 		(unit 1)
@@ -13256,6 +13601,71 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "C6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 73.66 140.97 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8bfb9a59-48a6-47dc-b32e-ec7b6d080c1a")
+		(property "Reference" "#PWR13"
+			(at 73.66 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 73.66 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 73.66 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "313f5841-a8c3-4d10-bb1c-caceaf1db815")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "#PWR13")
 					(unit 1)
 				)
 			)
@@ -15932,6 +16342,73 @@
 			(project "Module"
 				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
 					(reference "#PWR017")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Switch:SW_Push")
+		(at 163.83 157.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e0619cff-474a-4723-b51c-9115257f9efa")
+		(property "Reference" "SW8"
+			(at 163.83 150.495 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BUTTON_6"
+			(at 163.83 153.035 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm"
+			(at 163.83 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 163.83 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 163.83 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "f5e70058-855e-4aa5-a1ad-6cf9112e8a4b")
+		)
+		(pin "1"
+			(uuid "141f5e31-28b9-4a4b-a4da-daf8ac13cd9f")
+		)
+		(instances
+			(project "Module"
+				(path "/38a9b2e8-e758-4605-b298-bf733624b64c"
+					(reference "SW8")
 					(unit 1)
 				)
 			)
