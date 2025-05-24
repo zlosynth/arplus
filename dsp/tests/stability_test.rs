@@ -108,7 +108,7 @@ proptest! {
         pluck in 0.0..=1.0f32,
         is_root: bool,
         gain in 0.0..=1.0f32,
-        chord_size in 1..=8usize,
+        chord_size in 0..=7usize,
         trigger_interval in 0.1..3.0f32,
     ) {
         check_stability(
