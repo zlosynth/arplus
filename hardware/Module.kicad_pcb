@@ -13431,7 +13431,7 @@
 		(descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
 		(tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
 		(property "Reference" "J13"
-			(at 3.981 -1.0658 0)
+			(at -3.816666 -0.79 0)
 			(layer "B.SilkS")
 			(uuid "a2853df7-7bd1-4446-b412-fd988e88b3e0")
 			(effects
@@ -15047,7 +15047,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW8"
-			(at 3.25 2 90)
+			(at 4.52 -2.21 180)
 			(layer "B.SilkS")
 			(uuid "a836db98-1ac8-432f-9789-fb2885074ee3")
 			(effects
@@ -22374,7 +22374,7 @@
 		(descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
 		(tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
 		(property "Reference" "J11"
-			(at -4.03 -1.08 0)
+			(at 3.366666 -0.99 0)
 			(layer "B.SilkS")
 			(uuid "020a08ee-41ed-410f-9d38-3bc2b4054ddc")
 			(effects
@@ -23141,7 +23141,7 @@
 		(descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
 		(tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
 		(property "Reference" "J3"
-			(at -4.03 -1.08 0)
+			(at 3.852 -1.08 0)
 			(layer "B.SilkS")
 			(uuid "5e744376-d715-4d40-921c-a1538ae8f8af")
 			(effects
@@ -24230,7 +24230,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW6"
-			(at 3.25 2 90)
+			(at 1.8 -2.19 0)
 			(layer "B.SilkS")
 			(uuid "ec34824d-2b52-41b8-a452-ce83ce10a604")
 			(effects
@@ -25729,7 +25729,7 @@
 		(descr "TRS 3.5mm, vertical, Thonkiconn, PCB mount, (http://www.qingpu-electronics.com/en/products/WQP-PJ398SM-362.html)")
 		(tags "WQP-PJ398SM WQP-PJ301M-12 TRS 3.5mm mono vertical jack thonkiconn qingpu")
 		(property "Reference" "J10"
-			(at -4.03 -1.08 0)
+			(at 3.367332 -1.08 0)
 			(layer "B.SilkS")
 			(uuid "055619f8-8a91-45d4-b5c5-0dfe5293a491")
 			(effects
@@ -26686,6 +26686,18 @@
 		(uuid "17a238ac-0911-4a7e-a9ec-810d305f96f0")
 	)
 	(gr_circle
+		(center 88.128 143.646)
+		(end 89.528 144.196)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "1b6a3ea7-0e46-4e73-aff3-a424c9923f95")
+	)
+	(gr_circle
 		(center 255.47 54.18)
 		(end 256.77 54.18)
 		(stroke
@@ -26695,6 +26707,54 @@
 		(fill none)
 		(layer "Edge.Cuts")
 		(uuid "25e76d09-4efb-479f-9cd1-d7cdba94233e")
+	)
+	(gr_circle
+		(center 72.95584 63.04)
+		(end 74.35584 63.59)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "28137ae8-b299-4585-bd2d-f94c20e2ba22")
+	)
+	(gr_circle
+		(center 62.828 63.036)
+		(end 64.228 63.586)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "28a3cdbc-82b8-4c76-a0f0-f2647f644d14")
+	)
+	(gr_circle
+		(center 72.938 158.476)
+		(end 74.338 159.026)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "2f45c0bb-33df-440d-ac93-2eedbf4e105a")
+	)
+	(gr_circle
+		(center 83.10584 77.89)
+		(end 84.50584 78.44)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "3400b9f0-fa2b-4d88-be83-14364875e7fe")
 	)
 	(gr_circle
 		(center 245.35 54.16)
@@ -26708,8 +26768,9 @@
 		(uuid "3e7b8a16-2ed7-4343-b515-8a65a2dde6fe")
 	)
 	(gr_circle
-		(center 235.19 149.51)
-		(end 236.59 150.06)
+		(center 52.708145 158.495012)
+		(end 54.108145 159.045012)
+		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -26717,6 +26778,18 @@
 		(fill none)
 		(layer "Edge.Cuts")
 		(uuid "586bb281-0559-4a76-8500-e442c13764ee")
+	)
+	(gr_circle
+		(center 72.95584 77.9)
+		(end 74.35584 78.45)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "63df078d-04ec-4f6e-a984-66022bcb2482")
 	)
 	(gr_circle
 		(center 245.33 68.99)
@@ -26752,6 +26825,30 @@
 		(uuid "8b10dbfc-5471-4a2a-84e1-2a81f8fb756f")
 	)
 	(gr_circle
+		(center 83.098 158.516)
+		(end 84.498 159.066)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "8cbd79b7-bfe3-4032-abd0-1c270e66bb0f")
+	)
+	(gr_circle
+		(center 62.81584 77.87)
+		(end 64.21584 78.42)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "9ab87375-5d60-481c-aa33-186f82cb2a93")
+	)
+	(gr_circle
 		(center 245.35 149.52)
 		(end 246.75 150.07)
 		(stroke
@@ -26761,6 +26858,42 @@
 		(fill none)
 		(layer "Edge.Cuts")
 		(uuid "bf8d3c3b-a67b-48a6-9a56-2ff43fda4682")
+	)
+	(gr_circle
+		(center 78.008 143.666)
+		(end 79.408 144.216)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "ce67dbad-c207-43d7-8d42-bee04a86609d")
+	)
+	(gr_circle
+		(center 83.09584 63.05)
+		(end 84.49584 63.6)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "e733f9dd-8977-4bbf-9db3-49d4af933519")
+	)
+	(gr_circle
+		(center 62.84584 158.5)
+		(end 64.24584 159.05)
+		(locked yes)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill none)
+		(layer "Edge.Cuts")
+		(uuid "f03e439c-25dd-4367-b6f9-245c3706ca72")
 	)
 	(gr_circle
 		(center 255.46 134.72)
@@ -26783,19 +26916,6 @@
 		(fill none)
 		(layer "Edge.Cuts")
 		(uuid "ffaa1b45-72f5-4db4-818f-b9353580f209")
-	)
-	(gr_text "TODO\n- DONE align jacks\n- DONE align pots\n- DONE align trims\n- DONE align leds\n- DONE align buttons"
-		(at 156.44 100.9 0)
-		(layer "F.Cu")
-		(uuid "44b3800c-345d-4cfa-b1ad-47d57c15cf4e")
-		(effects
-			(font
-				(size 1.5 1.5)
-				(thickness 0.3)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
 	)
 	(gr_text "Button"
 		(at 280.9 53.33 0)
@@ -26821,6 +26941,43 @@
 			(justify left bottom mirror)
 		)
 	)
+	(gr_text "Green\npot"
+		(at 137.01 62.79 0)
+		(layer "B.SilkS")
+		(uuid "1078c928-6e0c-4471-92bc-bab6a20317df")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Green\npot"
+		(at 113.77 142.22 0)
+		(layer "B.SilkS")
+		(uuid "1d6cc8ab-a6dd-4ac4-82a1-ccd494cb7a96")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 64.58784 161.654 0)
+		(layer "B.SilkS")
+		(uuid "1e948024-8edd-4000-b741-f369419542b1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "Jack"
 		(at 247.092 137.932 0)
 		(layer "B.SilkS")
@@ -26833,10 +26990,34 @@
 			(justify left bottom mirror)
 		)
 	)
+	(gr_text "Button"
+		(at 144.6 95.76 0)
+		(layer "B.SilkS")
+		(uuid "29a6abb3-afc1-4d9d-9dac-2e1c7f0b431d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "Jack"
 		(at 247.092 66.812 0)
 		(layer "B.SilkS")
 		(uuid "2ad8d52a-442e-4c2e-9c5b-4ef301f05381")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
+		(at 127.08 95.98 0)
+		(layer "B.SilkS")
+		(uuid "38f26215-bb78-4d28-8386-bd5eca8831af")
 		(effects
 			(font
 				(size 1 1)
@@ -26861,6 +27042,19 @@
 		(at 237.69 120.4 0)
 		(layer "B.SilkS")
 		(uuid "45ab54f6-1d95-4641-89ab-00ad6d97b878")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 64.59784 75.734 0)
+		(layer "B.SilkS")
+		(uuid "4658eef9-a5b3-4f4f-87d1-58b02b56269d")
 		(effects
 			(font
 				(size 1 1)
@@ -26930,9 +27124,58 @@
 		)
 	)
 	(gr_text "Button"
+		(at 127.16 108.44 0)
+		(layer "B.SilkS")
+		(uuid "5edbd18a-445f-459f-9681-c5fcdcee8931")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
 		(at 237.54 108.7 0)
 		(layer "B.SilkS")
 		(uuid "67c0b019-0a77-4cc1-90a2-00df3c4f301e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
+		(at 137.1 95.67 0)
+		(layer "B.SilkS")
+		(uuid "69f29b86-f270-404b-84d6-2786f01fe700")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Green\npot"
+		(at 113.74 63 0)
+		(layer "B.SilkS")
+		(uuid "6b2c31a3-d071-470c-9b49-325bdd6e7290")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 74.73784 60.904 0)
+		(layer "B.SilkS")
+		(uuid "6cd93e52-93e2-4b98-81a7-8a8a0b416d5e")
 		(effects
 			(font
 				(size 1 1)
@@ -26965,10 +27208,48 @@
 			(justify left bottom mirror)
 		)
 	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 84.84 161.67 0)
+		(layer "B.SilkS")
+		(uuid "7b704702-9971-4a15-a456-46273608216d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 102.1 76.52 0)
+		(layer "B.SilkS")
+		(uuid "7f9d9096-5345-4e72-8956-d0d3141f9650")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
 	(gr_text "Button"
 		(at 296.53 86.72 0)
 		(layer "B.SilkS")
 		(uuid "80633e26-965f-48be-ba24-b9cbed7fcd99")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 89.87 146.8 0)
+		(layer "B.SilkS")
+		(uuid "83080642-6c0d-48a1-bc87-e958b1ae9ea8")
 		(effects
 			(font
 				(size 1 1)
@@ -26989,6 +27270,69 @@
 			(justify mirror)
 		)
 	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 74.73784 75.764 0)
+		(layer "B.SilkS")
+		(uuid "86b72894-de6d-437c-82a9-fd082b452767")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 57.4 138.25 0)
+		(layer "B.SilkS")
+		(uuid "96190bcf-aba9-4f43-93d2-705cad10be8f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 84.87784 60.914 0)
+		(layer "B.SilkS")
+		(uuid "9b06845d-d754-4bba-90f4-b2341fe1feb3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 125.35 156.25 0)
+		(layer "B.SilkS")
+		(uuid "9b0bd378-39f8-4721-ac6c-ccffb73e549d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 74.68 161.63 0)
+		(layer "B.SilkS")
+		(uuid "9b70c7fe-2f29-45d2-89fa-2833ba1d14e1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "Blue\npot"
 		(at 278.51 147.12 0)
 		(layer "B.SilkS")
@@ -27006,6 +27350,31 @@
 		(at 115.876 131.321 -90)
 		(layer "B.SilkS")
 		(uuid "a87ca064-ffd7-4faf-88ed-c9f4cd3c9f8b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 84.88784 75.754 0)
+		(layer "B.SilkS")
+		(uuid "aa24a0b2-d864-4ec6-8796-4db80d7843b8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
+		(at 55.24 95.79 0)
+		(layer "B.SilkS")
+		(uuid "b2593641-e30e-4bb6-9cdf-d820cf58a90f")
 		(effects
 			(font
 				(size 1 1)
@@ -27038,8 +27407,21 @@
 			(justify mirror)
 		)
 	)
+	(gr_text "Button"
+		(at 64.02 95.74 0)
+		(layer "B.SilkS")
+		(uuid "cc4a97de-30d6-4907-a157-8c35678797f8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "Jack"
-		(at 236.932 152.664 0)
+		(locked yes)
+		(at 54.450145 161.649012 0)
 		(layer "B.SilkS")
 		(uuid "cd82a4fc-84fe-4404-bd47-8c4475cff7e4")
 		(effects
@@ -27048,6 +27430,79 @@
 				(thickness 0.15)
 			)
 			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
+		(at 144.65 81.71 0)
+		(layer "B.SilkS")
+		(uuid "d16ed612-de6b-4107-8050-9dba95773571")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 64.61 60.9 0)
+		(layer "B.SilkS")
+		(uuid "d7397514-0c55-4b52-9e02-01168b1a532e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Button"
+		(at 55.24 64.42 0)
+		(layer "B.SilkS")
+		(uuid "da6e2b51-3797-4db7-9ec4-6b84db4a10ee")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Green\npot"
+		(at 137.01 142.33 0)
+		(layer "B.SilkS")
+		(uuid "ddaf6fc8-93af-47cb-aa54-9baacb9e9831")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 69.41 124.86 0)
+		(layer "B.SilkS")
+		(uuid "e026db3d-9190-486d-8e41-8d2f11d495a2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 102.26 156.25 0)
+		(layer "B.SilkS")
+		(uuid "ed034309-a335-4d04-8852-149f87a525c5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
 		)
 	)
 	(gr_text "Jack"
@@ -27079,6 +27534,31 @@
 		(at 236.932 137.932 0)
 		(layer "B.SilkS")
 		(uuid "fb490005-3f1f-4d3e-83d7-07d5aa3eef5b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 125.29 76.46 0)
+		(layer "B.SilkS")
+		(uuid "fc85f658-4a73-40c9-9f79-5a7d0c4c30f8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(gr_text "Jack"
+		(locked yes)
+		(at 79.75 146.82 0)
+		(layer "B.SilkS")
+		(uuid "fcefc818-eee7-4cd8-99d1-b2933d196879")
 		(effects
 			(font
 				(size 1 1)
