@@ -79,16 +79,19 @@ impl ControlOutputGenerator {
 }
 
 struct Statistics {
-    pots: [PotStatistics; 7],
-    input_cvs: [InputCvStatistics; 5],
+    pots: [PotStatistics; 10],
+    input_cvs: [InputCvStatistics; 6],
     input_gates: [InputGatesStatistics; 2],
-    buttons: [ButtonStatistics; 6],
+    buttons: [ButtonStatistics; 8],
 }
 
 impl Statistics {
     fn new() -> Self {
         Self {
             pots: [
+                PotStatistics::new(),
+                PotStatistics::new(),
+                PotStatistics::new(),
                 PotStatistics::new(),
                 PotStatistics::new(),
                 PotStatistics::new(),
@@ -103,9 +106,12 @@ impl Statistics {
                 InputCvStatistics::new(),
                 InputCvStatistics::new(),
                 InputCvStatistics::new(),
+                InputCvStatistics::new(),
             ],
             input_gates: [InputGatesStatistics::new(), InputGatesStatistics::new()],
             buttons: [
+                ButtonStatistics::new(),
+                ButtonStatistics::new(),
                 ButtonStatistics::new(),
                 ButtonStatistics::new(),
                 ButtonStatistics::new(),
