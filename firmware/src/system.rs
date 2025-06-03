@@ -10,6 +10,7 @@ use hal::prelude::*;
 use systick_monotonic::Systick;
 
 use crate::audio::AudioInterface;
+use crate::audio_probe::AudioProbeInterface;
 use crate::control_input::{
     ButtonsPins as ControlInputButtonsPins, Config as ControlInputConfig, ControlInputInterface,
     CvsPins as ControlInputCvsPins, GatesPins as ControlInputGatesPins,
@@ -30,6 +31,7 @@ pub struct System {
     pub flash_memory_interface: FlashMemoryInterface,
     pub control_input_interface: ControlInputInterface,
     pub control_output_interface: ControlOutputInterface,
+    pub audio_probe_interface: AudioProbeInterface,
 }
 
 impl System {
@@ -125,6 +127,12 @@ impl System {
                 dac,
             })
         };
+        // FIXME: Based on the layout, this should be B6. There is a mismatch between
+        // datasheet https://static1.squarespace.com/static/58d03fdc1b10e3bf442567b8/t/628bc1307a1e2b5bc04af099/1653326133665/ES_Patch_SM_datasheet_v1.0.4.pdf
+        // and lib daisy https://github.com/electro-smith/libDaisy/blob/master/src/daisy_patch_sm.cpp
+        // report this issue, and fix it in my daisy library.
+        let audio_probe_interface =
+            AudioProbeInterface::new(pins.GPIO.PIN_B5.into_push_pull_output());
 
         Self {
             frequency: system_frequency,
@@ -135,6 +143,7 @@ impl System {
             flash_memory_interface,
             control_input_interface,
             control_output_interface,
+            audio_probe_interface,
         }
     }
 }

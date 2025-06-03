@@ -4994,10 +4994,6 @@
 		(uuid "f9fe753a-82ca-43c0-bce0-a7c6abd932df")
 	)
 	(no_connect
-		(at 266.7 92.71)
-		(uuid "2cc9bf57-d12e-467a-8ada-41f7d8e60511")
-	)
-	(no_connect
 		(at 266.7 57.15)
 		(uuid "2e058b0c-4d71-4da5-9c2e-af203b5ea2f4")
 	)
@@ -6774,6 +6770,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "PROBE_AUDIO"
+		(shape output)
+		(at 266.7 92.71 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "13b24418-3ed6-43c3-8885-0082512de07a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 282.5667 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -8890,7 +8908,7 @@
 			)
 		)
 	)
-	(global_label "PROBE"
+	(global_label "PROBE_AUDIO"
 		(shape input)
 		(at 340.36 78.74 180)
 		(fields_autoplaced yes)
@@ -8902,7 +8920,7 @@
 		)
 		(uuid "dedc425d-9abe-4aaa-989b-5307b50c0c23")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 331.0853 78.74 0)
+			(at 324.4933 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)

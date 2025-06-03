@@ -15,6 +15,7 @@ mod app {
     use arplus_control::{ControlInputSnapshot, Controller, Save};
     use arplus_dsp::{Attributes as DspAttributes, Dsp, MemoryManager};
     use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
+    use arplus_firmware::audio_probe::AudioProbeInterface;
     use arplus_firmware::control_input::ControlInputInterface;
     use arplus_firmware::control_output::ControlOutputInterface;
     use arplus_firmware::flash_memory::FlashMemoryInterface;
@@ -46,6 +47,7 @@ mod app {
         flash_memory_interface: FlashMemoryInterface,
         control_input_interface: ControlInputInterface,
         control_output_interface: ControlOutputInterface,
+        audio_probe_interface: AudioProbeInterface,
         dsp: Dsp,
         controller: Controller,
         version_indicator: VersionIndicator,
@@ -85,6 +87,7 @@ mod app {
         let mut flash_memory_interface = system.flash_memory_interface;
         let mut control_input_interface = system.control_input_interface;
         let control_output_interface = system.control_output_interface;
+        let audio_probe_interface = system.audio_probe_interface;
 
         startup_sequence::warm_up_control_input(&mut control_input_interface);
         let save = startup_sequence::retrieve_save(
@@ -125,6 +128,7 @@ mod app {
                 flash_memory_interface,
                 control_input_interface,
                 control_output_interface,
+                audio_probe_interface,
                 dsp,
                 controller,
                 version_indicator,
@@ -197,6 +201,7 @@ mod app {
         binds = DMA1_STR1,
         local = [
             audio_interface,
+            audio_probe_interface,
             random_generator,
             dsp,
             dsp_attributes_consumer,
@@ -205,6 +210,7 @@ mod app {
     )]
     fn dsp_loop(cx: dsp_loop::Context) {
         let audio_interface = cx.local.audio_interface;
+        let audio_probe_interface = cx.local.audio_probe_interface;
         let random_generator = cx.local.random_generator;
         let dsp = cx.local.dsp;
         let dsp_attributes_consumer = cx.local.dsp_attributes_consumer;
@@ -216,8 +222,14 @@ mod app {
         }
 
         audio_interface.update_buffer(|buffer| {
-            dsp.process(buffer, random_generator);
+            audio_probe_interface.detector.write_from_left(buffer);
+            let input_connected = !audio_probe_interface.detector.detected();
+            dsp.process(buffer, input_connected, random_generator);
         });
+
+        // XXX: Selection happens at the end so the signal gets a chance
+        // to propagate to probe detectors before the next reading cycle.
+        audio_probe_interface.broadcaster.tick();
     }
 
     #[task(

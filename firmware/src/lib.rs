@@ -6,6 +6,7 @@ use panic_probe as _;
 use stm32h7xx_hal as _;
 
 pub mod audio;
+pub mod audio_probe;
 pub mod control_input;
 pub mod control_output;
 pub mod flash_memory;

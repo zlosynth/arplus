@@ -62,7 +62,8 @@ fn check_stability(
             dsp.set_attributes(attributes, &mut TestRandom);
         }
 
-        dsp.process(&mut buffer, &mut TestRandom);
+        let input_connected = false;
+        dsp.process(&mut buffer, input_connected, &mut TestRandom);
 
         for (x1, x2) in buffer.iter() {
             if x1.is_nan() || x2.is_nan() {

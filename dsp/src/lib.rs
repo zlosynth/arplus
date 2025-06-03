@@ -88,7 +88,12 @@ impl Dsp {
         }
     }
 
-    pub fn process(&mut self, buffer: &mut [(f32, f32); 32], random: &mut impl Random) {
+    pub fn process(
+        &mut self,
+        buffer: &mut [(f32, f32); 32],
+        _input_connected: bool,
+        random: &mut impl Random,
+    ) {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
 
