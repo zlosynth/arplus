@@ -11,40 +11,22 @@ use arplus_firmware::audio::{AudioInterface, SAMPLE_RATE};
 use arplus_firmware::system::System;
 
 #[derive(Default)]
-struct DualOscillator {
-    phase_l: f32,
-    phase_r: f32,
-    progression: u32,
+struct Oscillator {
+    phase: f32,
 }
 
-impl DualOscillator {
-    const STEP_L: f32 = 200.0 / SAMPLE_RATE as f32;
-    const STEP_R: f32 = 300.0 / SAMPLE_RATE as f32;
+impl Oscillator {
+    const STEP: f32 = 200.0 / SAMPLE_RATE as f32;
 
-    fn populate(&mut self, buffer: &mut [(f32, f32)]) {
-        for (l, r) in buffer.iter_mut() {
+    fn populate_right(&mut self, buffer: &mut [(f32, f32)]) {
+        for (_, r) in buffer.iter_mut() {
             const PI_2: f32 = core::f32::consts::PI * 2.0;
 
-            *l = libm::sinf(PI_2 * self.phase_l) * 0.5;
-            self.phase_l += Self::STEP_L;
-            if self.phase_l > 1.0 {
-                self.phase_l -= 1.0;
+            *r = libm::sinf(PI_2 * self.phase) * 0.5;
+            self.phase += Self::STEP;
+            if self.phase > 1.0 {
+                self.phase -= 1.0;
             }
-
-            *r = libm::sinf(PI_2 * self.phase_r) * 0.5;
-            self.phase_r += Self::STEP_R;
-            if self.phase_r > 1.0 {
-                self.phase_r -= 1.0;
-            }
-        }
-
-        self.progression += buffer.len() as u32;
-        if self.progression < SAMPLE_RATE {
-            buffer.iter_mut().for_each(|(_l, r)| *r = 0.0);
-        } else if self.progression < 2 * SAMPLE_RATE {
-            buffer.iter_mut().for_each(|(l, _r)| *l = 0.0);
-        } else if self.progression > 3 * SAMPLE_RATE {
-            self.progression = 0;
         }
     }
 }
@@ -359,7 +341,7 @@ impl BoolBuffer {
 }
 
 static AUDIO_INTERFACE: Mutex<RefCell<Option<AudioInterface>>> = Mutex::new(RefCell::new(None));
-static DUAL_OSCILLATOR: Mutex<RefCell<Option<DualOscillator>>> = Mutex::new(RefCell::new(None));
+static OSCILLATOR: Mutex<RefCell<Option<Oscillator>>> = Mutex::new(RefCell::new(None));
 
 #[cortex_m_rt::entry]
 fn main() -> ! {
@@ -375,9 +357,7 @@ fn main() -> ! {
         AUDIO_INTERFACE.borrow(cs).replace(Some(audio_interface));
     });
     cortex_m::interrupt::free(|cs| {
-        DUAL_OSCILLATOR
-            .borrow(cs)
-            .replace(Some(DualOscillator::default()));
+        OSCILLATOR.borrow(cs).replace(Some(Oscillator::default()));
     });
 
     let mut statistics = Statistics::new();
@@ -408,9 +388,12 @@ fn main() -> ! {
 fn DMA1_STR1() {
     cortex_m::interrupt::free(|cs| {
         if let Some(audio_interface) = AUDIO_INTERFACE.borrow(cs).borrow_mut().as_mut() {
-            if let Some(dual_oscillator) = DUAL_OSCILLATOR.borrow(cs).borrow_mut().as_mut() {
+            if let Some(dual_oscillator) = OSCILLATOR.borrow(cs).borrow_mut().as_mut() {
                 audio_interface.update_buffer(|buffer| {
-                    dual_oscillator.populate(buffer);
+                    // NOTE: Populate only one channel with a sine wave.
+                    // The other channel should contain the audio input which
+                    // should be left there for passthrough.
+                    dual_oscillator.populate_right(buffer);
                 })
             }
         }
