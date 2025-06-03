@@ -1,7 +1,7 @@
 use super::debouncer::Debouncer;
 use crate::system::hal::gpio;
 
-const BUTTONS: usize = 6;
+const BUTTONS: usize = 8;
 
 #[derive(Debug, defmt::Format)]
 pub struct Buttons {
@@ -17,20 +17,10 @@ pub struct Button {
 
 #[derive(Debug, defmt::Format)]
 pub struct Pins {
-    pub button_1: Button1Pin,
-    pub button_2: Button2Pin,
-    pub button_3: Button3Pin,
-    pub button_4: Button4Pin,
-    pub button_5: Button5Pin,
-    pub button_6: Button6Pin,
+    pub button_mux: ButtonMuxPin,
 }
 
-pub type Button1Pin = gpio::gpiob::PB8<gpio::Input>;
-pub type Button2Pin = gpio::gpiob::PB9<gpio::Input>;
-pub type Button3Pin = gpio::gpiob::PB14<gpio::Input>;
-pub type Button4Pin = gpio::gpiob::PB15<gpio::Input>;
-pub type Button5Pin = gpio::gpioc::PC12<gpio::Input>;
-pub type Button6Pin = gpio::gpioc::PC8<gpio::Input>;
+pub type ButtonMuxPin = gpio::gpiob::PB8<gpio::Input>;
 
 impl Buttons {
     pub fn new(pins: Pins) -> Self {
@@ -42,18 +32,16 @@ impl Buttons {
                 Button::new(),
                 Button::new(),
                 Button::new(),
+                Button::new(),
+                Button::new(),
             ],
             pins,
         }
     }
 
-    pub fn sample(&mut self) {
-        self.buttons[0].set(self.pins.button_1.is_low());
-        self.buttons[1].set(self.pins.button_2.is_low());
-        self.buttons[2].set(self.pins.button_3.is_low());
-        self.buttons[3].set(self.pins.button_4.is_low());
-        self.buttons[4].set(self.pins.button_5.is_low());
-        self.buttons[5].set(self.pins.button_6.is_low());
+    pub fn sample(&mut self, cycle: u8) {
+        assert!(cycle < BUTTONS as u8);
+        self.buttons[cycle as usize].set(self.pins.button_mux.is_low());
     }
 
     pub fn values(&self) -> [bool; BUTTONS] {
@@ -64,6 +52,8 @@ impl Buttons {
             self.buttons[3].active,
             self.buttons[4].active,
             self.buttons[5].active,
+            self.buttons[6].active,
+            self.buttons[7].active,
         ]
     }
 }

@@ -10,9 +10,9 @@ pub use gate::Gate;
 pub use pot::Pot;
 
 pub struct ControlInputSnapshot {
-    pub pots: [f32; 7],
-    pub buttons: [bool; 6],
-    pub cvs: [Option<f32>; 5],
+    pub pots: [f32; 10],
+    pub buttons: [bool; 8],
+    pub cvs: [Option<f32>; 6],
     pub gates: [bool; 2],
 }
 

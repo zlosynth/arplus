@@ -6,7 +6,7 @@ use crate::system::hal::pac::{ADC1, ADC2};
 
 use super::one_pole_filter::OnePoleFilter;
 
-const POTS: usize = 7;
+const POTS: usize = 10;
 
 #[derive(defmt::Format)]
 pub struct Pots {
@@ -24,22 +24,14 @@ pub struct Pot {
 
 #[derive(defmt::Format)]
 pub struct Pins {
-    pub pot_1: Pot1Pin,
-    pub pot_2: Pot2Pin,
-    pub pot_3: Pot3Pin,
-    pub pot_4: Pot4Pin,
-    pub pot_5: Pot5Pin,
-    pub pot_6: Pot6Pin,
-    pub pot_7: Pot7Pin,
+    pub pot_mux: PotMuxPin,
+    pub pot_9: Pot9Pin,
+    pub pot_10: Pot10Pin,
 }
 
-pub type Pot1Pin = gpio::gpioa::PA0<gpio::Analog>;
-pub type Pot2Pin = gpio::gpioc::PC3<gpio::Analog>;
-pub type Pot3Pin = gpio::gpioa::PA1<gpio::Analog>;
-pub type Pot4Pin = gpio::gpioc::PC2<gpio::Analog>;
-pub type Pot5Pin = gpio::gpioa::PA2<gpio::Analog>;
-pub type Pot6Pin = gpio::gpioa::PA7<gpio::Analog>;
-pub type Pot7Pin = gpio::gpioa::PA6<gpio::Analog>;
+pub type PotMuxPin = gpio::gpioa::PA1<gpio::Analog>;
+pub type Pot9Pin = gpio::gpioa::PA3<gpio::Analog>;
+pub type Pot10Pin = gpio::gpioc::PC1<gpio::Analog>;
 
 impl Pots {
     pub fn new(pins: Pins) -> Self {
@@ -52,7 +44,10 @@ impl Pots {
                 Pot::new(0.99, 0.01),
                 Pot::new(0.99, 0.01),
                 Pot::new(0.99, 0.01),
-                Pot::new(0.505, 0.99),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
+                Pot::new(0.99, 0.01),
                 Pot::new(0.505, 0.99),
                 Pot::new(0.505, 0.99),
             ],
@@ -60,31 +55,37 @@ impl Pots {
         }
     }
 
-    pub fn sample(&mut self, adc_1: &mut Adc<ADC1, Enabled>, adc_2: &mut Adc<ADC2, Enabled>) {
-        adc_1.start_conversion(&mut self.pins.pot_1);
-        adc_2.start_conversion(&mut self.pins.pot_2);
-        let sample_1: u32 = block!(adc_1.read_sample()).unwrap_or_default();
-        let sample_2: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        self.pots[0].set(sample_1, adc_1.slope());
-        self.pots[1].set(sample_2, adc_2.slope());
+    pub fn sample(
+        &mut self,
+        cycle: u8,
+        adc_1: &mut Adc<ADC1, Enabled>,
+        adc_2: &mut Adc<ADC2, Enabled>,
+    ) {
+        assert!(cycle < POTS as u8);
 
-        adc_1.start_conversion(&mut self.pins.pot_3);
-        adc_2.start_conversion(&mut self.pins.pot_4);
-        let sample_3: u32 = block!(adc_1.read_sample()).unwrap_or_default();
-        let sample_4: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        self.pots[2].set(sample_3, adc_1.slope());
-        self.pots[3].set(sample_4, adc_2.slope());
-
-        adc_2.start_conversion(&mut self.pins.pot_5);
-        adc_1.start_conversion(&mut self.pins.pot_6);
-        let sample_5: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-        let sample_6: u32 = block!(adc_1.read_sample()).unwrap_or_default();
-        self.pots[4].set(sample_5, adc_2.slope());
-        self.pots[5].set(sample_6, adc_1.slope());
-
-        adc_1.start_conversion(&mut self.pins.pot_7);
-        let sample_7: u32 = block!(adc_1.read_sample()).unwrap_or_default();
-        self.pots[6].set(sample_7, adc_1.slope());
+        match cycle {
+            0 => {
+                adc_1.start_conversion(&mut self.pins.pot_mux);
+                adc_2.start_conversion(&mut self.pins.pot_9);
+                let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
+                let sample_9: u32 = block!(adc_2.read_sample()).unwrap_or_default();
+                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+                self.pots[8].set(sample_9, adc_2.slope());
+            }
+            1 => {
+                adc_1.start_conversion(&mut self.pins.pot_mux);
+                adc_2.start_conversion(&mut self.pins.pot_10);
+                let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
+                let sample_10: u32 = block!(adc_2.read_sample()).unwrap_or_default();
+                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+                self.pots[9].set(sample_10, adc_2.slope());
+            }
+            _ => {
+                adc_1.start_conversion(&mut self.pins.pot_mux);
+                let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
+                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+            }
+        }
     }
 
     pub fn values(&self) -> [f32; POTS] {
@@ -96,6 +97,9 @@ impl Pots {
             self.pots[4].value,
             self.pots[5].value,
             self.pots[6].value,
+            self.pots[7].value,
+            self.pots[8].value,
+            self.pots[9].value,
         ]
     }
 }

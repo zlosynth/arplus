@@ -13,7 +13,7 @@ use crate::audio::AudioInterface;
 use crate::control_input::{
     ButtonsPins as ControlInputButtonsPins, Config as ControlInputConfig, ControlInputInterface,
     CvsPins as ControlInputCvsPins, GatesPins as ControlInputGatesPins,
-    PotsPins as ControlInputPotsPins,
+    MultiplexerPins as ControlInputMultiplexerPins, PotsPins as ControlInputPotsPins,
 };
 use crate::control_output::{
     Config as ControlOutputConfig, ControlOutputInterface, Pins as ControlOutputPins,
@@ -77,28 +77,20 @@ impl System {
             };
             ControlInputInterface::new(ControlInputConfig {
                 buttons_pins: ControlInputButtonsPins {
-                    button_1: pins.GPIO.PIN_B7.into_pull_up_input(),
-                    button_2: pins.GPIO.PIN_B8.into_pull_up_input(),
-                    button_3: pins.GPIO.PIN_A8.into_pull_up_input(),
-                    button_4: pins.GPIO.PIN_A9.into_pull_up_input(),
-                    button_5: pins.GPIO.PIN_D6.into_pull_up_input(),
-                    button_6: pins.GPIO.PIN_D5.into_pull_up_input(),
+                    button_mux: pins.GPIO.PIN_B7.into_floating_input(),
                 },
                 pots_pins: ControlInputPotsPins {
-                    pot_1: pins.GPIO.PIN_A3.into_analog(),
-                    pot_2: pins.GPIO.PIN_D9.into_analog(),
-                    pot_3: pins.GPIO.PIN_A2.into_analog(),
-                    pot_4: pins.GPIO.PIN_D8.into_analog(),
-                    pot_5: pins.GPIO.PIN_C3.into_analog(),
-                    pot_6: pins.GPIO.PIN_C2.into_analog(),
-                    pot_7: pins.GPIO.PIN_C4.into_analog(),
+                    pot_mux: pins.GPIO.PIN_A2.into_analog(),
+                    pot_9: pins.GPIO.PIN_C5.into_analog(),
+                    pot_10: pins.GPIO.PIN_C6.into_analog(),
                 },
                 cvs_pins: ControlInputCvsPins {
                     cv_1: pins.GPIO.PIN_C9.into_analog(),
                     cv_2: pins.GPIO.PIN_C8.into_analog(),
-                    cv_3: pins.GPIO.PIN_C5.into_analog(),
-                    cv_4: pins.GPIO.PIN_C6.into_analog(),
-                    cv_5: pins.GPIO.PIN_C7.into_analog(),
+                    cv_3: pins.GPIO.PIN_C7.into_analog(),
+                    cv_4: pins.GPIO.PIN_C2.into_analog(),
+                    cv_5: pins.GPIO.PIN_C3.into_analog(),
+                    cv_6: pins.GPIO.PIN_C4.into_analog(),
                 },
                 gates_pins: ControlInputGatesPins {
                     gate_1: pins.GPIO.PIN_B10.into_floating_input(),
@@ -109,6 +101,11 @@ impl System {
                 // and lib daisy https://github.com/electro-smith/libDaisy/blob/master/src/daisy_patch_sm.cpp
                 // report this issue, and fix it in my daisy library.
                 probe_pin: pins.GPIO.PIN_B6.into_push_pull_output(),
+                multiplexer_pins: ControlInputMultiplexerPins {
+                    address_a: pins.GPIO.PIN_A9.into_push_pull_output(),
+                    address_b: pins.GPIO.PIN_A8.into_push_pull_output(),
+                    address_c: pins.GPIO.PIN_A3.into_push_pull_output(),
+                },
                 adc_1,
                 adc_2,
             })
