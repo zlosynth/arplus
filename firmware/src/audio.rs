@@ -5,6 +5,8 @@ pub const BLOCK_LENGTH: usize = audio::BLOCK_LENGTH;
 // NOTE: The SAMPLE_RATE needs to be adjusted. Probably because the clock on
 // STM32 is unable to exactly match the speed. With this value, it is perfectly
 // in tune on A4.
+// TODO: Fix this at the root by adjusting the PLL configuration
+// <https://github.com/antoinevg/daisy_bsp/pull/16>.
 pub const SAMPLE_RATE: u32 = 47_793 * 2;
 
 pub struct AudioInterface {
