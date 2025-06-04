@@ -62,23 +62,30 @@ impl KarplusStrong {
         s
     }
 
-    pub fn populate_add(&mut self, buffer: &mut [f32], random: &mut impl Random) {
-        self.populate_add_internal(buffer, &mut None, random);
+    pub fn populate_add(
+        &mut self,
+        buffer: &mut [f32],
+        noise_buffer: Option<&[f32]>,
+        random: &mut impl Random,
+    ) {
+        self.populate_add_internal(buffer, &mut None, noise_buffer, random);
     }
 
     pub fn populate_add_stereo(
         &mut self,
-        buffer_left: &mut [f32],
-        buffer_right: &mut [f32],
+        left_buffer: &mut [f32],
+        right_buffer: &mut [f32],
+        noise_buffer: Option<&[f32]>,
         random: &mut impl Random,
     ) {
-        self.populate_add_internal(buffer_left, &mut Some(buffer_right), random);
+        self.populate_add_internal(left_buffer, &mut Some(right_buffer), noise_buffer, random);
     }
 
     fn populate_add_internal(
         &mut self,
-        buffer_main: &mut [f32],
-        buffer_optional: &mut Option<&mut [f32]>,
+        main_buffer: &mut [f32],
+        optional_buffer: &mut Option<&mut [f32]>,
+        noise_buffer: Option<&[f32]>,
         random: &mut impl Random,
     ) {
         if self.frequency < 12.0 {
@@ -86,21 +93,23 @@ impl KarplusStrong {
         }
 
         let reset_phase = self.reset as f32 / RESET as f32;
-        let buffer_len = buffer_main.len() as f32;
-        for (i, x) in buffer_main.iter_mut().enumerate() {
+        let buffer_len = main_buffer.len() as f32;
+        for (i, x) in main_buffer.iter_mut().enumerate() {
             // NOTE: If optional buffer is not provided, write into a black
             // hole. This keeps the code simpler and performance requirements
             // static - predictable.
-            let y = if let Some(buffer_optional) = buffer_optional.as_mut() {
+            let y = if let Some(buffer_optional) = optional_buffer.as_mut() {
                 &mut buffer_optional[i]
             } else {
                 &mut 0.0
             };
 
-            // NOTE: Positive-only noise sounds more pleasant and produces
-            // ritcher overtones with a short attack. However, with a longer
-            // attack it does not get DC blocked fast enough.
-            let new_noise_sample = {
+            let new_noise_sample = if let Some(buffer_noise) = noise_buffer {
+                buffer_noise[i]
+            } else {
+                // NOTE: Positive-only noise sounds more pleasant and produces
+                // ritcher overtones with a short attack. However, with a longer
+                // attack it does not get DC blocked fast enough.
                 let offset_noise = if self.contour < 0.001 {
                     random.normal() * 2.0
                 } else {

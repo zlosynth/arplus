@@ -91,11 +91,21 @@ impl Dsp {
     pub fn process(
         &mut self,
         buffer: &mut [(f32, f32); 32],
-        _input_connected: bool,
+        input_connected: bool,
         random: &mut impl Random,
     ) {
         let mut buffer_left = [0.0; 32];
         let mut buffer_right = [0.0; 32];
+        let mut noise_buffer = [0.0; 32];
+
+        let noise_buffer = if input_connected {
+            for (i, x) in noise_buffer.iter_mut().enumerate() {
+                *x = buffer[i].0;
+            }
+            Some(&noise_buffer[..])
+        } else {
+            None
+        };
 
         match self.stereo_mode {
             StereoMode::Haas => {
@@ -103,6 +113,7 @@ impl Dsp {
                     string.karplus_strong.populate_add_stereo(
                         &mut buffer_left,
                         &mut buffer_right,
+                        noise_buffer,
                         random,
                     );
                 }
@@ -110,22 +121,26 @@ impl Dsp {
             StereoMode::RootRest => {
                 for string in self.strings.iter_mut() {
                     if string.is_root {
-                        string.karplus_strong.populate_add(&mut buffer_left, random);
+                        string
+                            .karplus_strong
+                            .populate_add(&mut buffer_left, noise_buffer, random);
                     } else {
                         string
                             .karplus_strong
-                            .populate_add(&mut buffer_right, random);
+                            .populate_add(&mut buffer_right, noise_buffer, random);
                     }
                 }
             }
             StereoMode::PingPong => {
                 for (i, string) in self.strings.iter_mut().enumerate() {
                     if i % 2 == 0 {
-                        string.karplus_strong.populate_add(&mut buffer_left, random);
+                        string
+                            .karplus_strong
+                            .populate_add(&mut buffer_left, noise_buffer, random);
                     } else {
                         string
                             .karplus_strong
-                            .populate_add(&mut buffer_right, random);
+                            .populate_add(&mut buffer_right, noise_buffer, random);
                     }
                 }
             }
