@@ -1,7 +1,7 @@
 use super::debouncer::Debouncer;
 use crate::system::hal::gpio;
 
-const BUTTONS: usize = 8;
+const BUTTONS: usize = 7;
 
 #[derive(Debug, defmt::Format)]
 pub struct Buttons {
@@ -33,15 +33,15 @@ impl Buttons {
                 Button::new(),
                 Button::new(),
                 Button::new(),
-                Button::new(),
             ],
             pins,
         }
     }
 
     pub fn sample(&mut self, cycle: u8) {
-        assert!(cycle < BUTTONS as u8);
-        self.buttons[cycle as usize].set(self.pins.button_mux.is_low());
+        if cycle < BUTTONS as u8 {
+            self.buttons[cycle as usize].set(self.pins.button_mux.is_low());
+        }
     }
 
     pub fn values(&self) -> [bool; BUTTONS] {
@@ -53,7 +53,6 @@ impl Buttons {
             self.buttons[4].active,
             self.buttons[5].active,
             self.buttons[6].active,
-            self.buttons[7].active,
         ]
     }
 }

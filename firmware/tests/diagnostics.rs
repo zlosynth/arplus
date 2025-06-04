@@ -31,13 +31,6 @@ impl Oscillator {
     }
 }
 
-// TODO: Implement probe detector on audio input
-// Probe detector is now owned by the control input loop which provides no guarantees about the interval time, except that reads happen at most once a ms, not faster.
-// ...
-// Doing this right would be difficult
-// I can just have another probe from second gate output
-// And DSP can have its own probe generator and detector
-
 struct ControlOutputGenerator {
     index: usize,
 }
@@ -71,7 +64,7 @@ struct Statistics {
     pots: [PotStatistics; 10],
     input_cvs: [InputCvStatistics; 6],
     input_gates: [InputGatesStatistics; 2],
-    buttons: [ButtonStatistics; 8],
+    buttons: [ButtonStatistics; 7],
 }
 
 impl Statistics {
@@ -99,7 +92,6 @@ impl Statistics {
             ],
             input_gates: [InputGatesStatistics::new(), InputGatesStatistics::new()],
             buttons: [
-                ButtonStatistics::new(),
                 ButtonStatistics::new(),
                 ButtonStatistics::new(),
                 ButtonStatistics::new(),

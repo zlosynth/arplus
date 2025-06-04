@@ -11,7 +11,7 @@ pub use pot::Pot;
 
 pub struct ControlInputSnapshot {
     pub pots: [f32; 10],
-    pub buttons: [bool; 8],
+    pub buttons: [bool; 7],
     pub cvs: [Option<f32>; 6],
     pub gates: [bool; 2],
 }
