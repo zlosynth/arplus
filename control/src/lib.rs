@@ -27,7 +27,7 @@ use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration}
 use crate::chords::Chords;
 use crate::display::{Display, Screen};
 use crate::inputs::{Button, Inputs};
-use crate::parameters::{CvMappingSocket, Parameters};
+use crate::parameters::{CvAssignment, Parameters};
 use crate::quantized_output::QuantizedOutput;
 use crate::random::RandomGenerator;
 use crate::scales::Scales;
@@ -47,7 +47,6 @@ pub struct Controller {
 enum State {
     CalibratingTone(CalibrationPhase),
     CalibratingQuant(CalibrationPhase),
-    Configuring,
     Normal,
 }
 
@@ -89,7 +88,6 @@ impl Controller {
 
         self.reconcile_tone_calibration(&mut display_request, &mut needs_save);
         self.reconcile_quant_calibration(&mut display_request, &mut needs_save);
-        self.reconcile_configuration(&mut display_request, &mut needs_save);
         self.reconcile_parameters_with_inputs(&mut display_request, &mut needs_save);
 
         let dsp_attributes = self.generate_dsp_attributes(&mut display_request);
@@ -118,7 +116,7 @@ impl Controller {
         let tone_cv = &mut self.inputs.cvs.tone;
 
         match state {
-            State::Normal | State::Configuring => {
+            State::Normal => {
                 if button.pressed() && tone_cv.just_plugged() {
                     display_request.set_tone_calibration_phase(Screen::tone_calibration_octave_1());
                     *state = State::CalibratingTone(CalibrationPhase::Octave1);
@@ -179,7 +177,7 @@ impl Controller {
         let tone_cv = &mut self.inputs.cvs.tone;
 
         match state {
-            State::Normal | State::Configuring => {
+            State::Normal => {
                 if button.pressed() && tone_cv.just_plugged() {
                     *state = State::CalibratingQuant(CalibrationPhase::Octave1);
                     self.quantized_output.force_octave_1();
@@ -229,111 +227,11 @@ impl Controller {
         };
     }
 
-    fn reconcile_configuration(
-        &mut self,
-        display_request: &mut display_request::DisplayRequest,
-        needs_save: &mut bool,
-    ) {
-        let state = &mut self.state;
-
-        match state {
-            State::CalibratingTone(_) => (),
-            State::CalibratingQuant(_) => (),
-            State::Normal => {
-                if self.inputs.buttons.group.held_for() > 3000
-                    && self.inputs.buttons.scale.held_for() > 3000
-                {
-                    defmt::info!("Entering configuration");
-                    self.state = State::Configuring;
-                }
-            }
-            State::Configuring => {
-                if self.inputs.buttons.group.clicked() || self.inputs.buttons.scale.clicked() {
-                    defmt::info!("Exiting configuration");
-                    self.state = State::Normal;
-                    display_request.reset_fallback_attribute();
-                } else {
-                    // Configuration
-                    // =============
-                    // POT -> ATTRIBUTE
-                    // Tone -> Tonic CV mapping
-                    // Chord -> Gain
-                    // Chord Size -> Chord size CV mapping
-                    // Resonance -> Group CV mapping
-                    // Cutoff -> Scale CV mapping
-                    // Contour -> Arp CV mapping
-                    // Pluck -> Pluck CV mapping
-
-                    display_request.set_fallback_attribute(Screen::configuration());
-
-                    let cv_mapping = &mut self.parameters.cv_mapping;
-                    let pots = &mut self.inputs.pots;
-
-                    // Tone knob selects tonic CV.
-                    if pots.tone.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_tonic_mapping(pots.tone.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.tonic_socket()));
-                    }
-
-                    // TODO: Document this, test it, then re-enable it.
-                    // // Chord knob sets gain.
-                    // if pots.chord.activation_movement() {
-                    //     *needs_save |= self.parameters.gain.reconcile(pots.chord.value());
-                    //     display_request.set_queried_attribute(Screen::gain(
-                    //         self.parameters.gain.selected_index(),
-                    //     ));
-                    // }
-
-                    // Chord size knob selects chord size CV.
-                    if pots.chord_size.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_size_mapping(pots.chord_size.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.size_socket()));
-                    }
-
-                    // Resonance knob selects group CV.
-                    if pots.resonance.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_group_mapping(pots.resonance.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.group_socket()));
-                    }
-
-                    // Cutoff knob selects scale CV.
-                    if pots.cutoff.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_scale_mapping(pots.cutoff.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.scale_socket()));
-                    }
-
-                    // Contour knob selects arp CV.
-                    if pots.contour.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_arp_mapping(pots.contour.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.arp_socket()));
-                    }
-
-                    // Pluck knob selects pluck CV.
-                    if pots.pluck.activation_movement() {
-                        *needs_save |= cv_mapping.reconcile_pluck_mapping(pots.pluck.value());
-                        display_request
-                            .set_queried_attribute(Screen::cv_mapping(cv_mapping.pluck_socket()));
-                    }
-                }
-            }
-        }
-    }
-
     fn reconcile_parameters_with_inputs(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
-        // NOTE: Things get confusing otherwise.
-        if matches!(self.state, State::Configuring) {
-            return;
-        }
-
         self.reconcile_chord(display_request, needs_save);
         self.reconcile_contour();
         self.reconcile_cutoff();
@@ -343,6 +241,10 @@ impl Controller {
         self.reconcile_reset_next();
         self.reconcile_scale(display_request, needs_save);
         self.reconcile_arp_mode(display_request, needs_save);
+        self.reconcile_stereo_mode(display_request, needs_save);
+        self.reconcile_width();
+        self.reconcile_gain();
+        self.reconcile_cv_assignment(display_request, needs_save);
     }
 
     fn reconcile_chord(
@@ -416,6 +318,20 @@ impl Controller {
         parameter.reconcile(pot.value(), cv_value);
     }
 
+    fn reconcile_width(&mut self) {
+        let pot = &self.inputs.pots.width;
+        let cv_value = self.width_cv();
+        let parameter = &mut self.parameters.width;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
+    fn reconcile_gain(&mut self) {
+        let pot = &self.inputs.pots.gain;
+        let cv_value = self.gain_cv();
+        let parameter = &mut self.parameters.gain;
+        parameter.reconcile(pot.value(), cv_value);
+    }
+
     fn reconcile_contour(&mut self) {
         let pot = &self.inputs.pots.contour;
         let cv_value = self.contour_cv();
@@ -429,10 +345,10 @@ impl Controller {
         needs_save: &mut bool,
     ) {
         let tone_pot = &self.inputs.pots.tone;
-        let tone_cv_value = self.tone_cv();
+        let tone_cv = self.tone_cv();
         let group_button = &self.inputs.buttons.group;
         let scale_button = &self.inputs.buttons.scale;
-        let tonic_button = &self.inputs.buttons.tonic;
+        let tonic_pot = &self.inputs.pots.tonic;
         let group_cv = self.group_cv();
         let scale_cv = self.scale_cv();
         let tonic_cv = self.tonic_cv();
@@ -440,18 +356,16 @@ impl Controller {
 
         let group_held = is_button_held(group_button);
         let scale_held = is_button_held(scale_button);
-        let tonic_held = is_button_held(tonic_button);
         let group_tapped = was_button_tapped(group_button);
         let scale_tapped = was_button_tapped(scale_button);
 
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
                 tone_pot.value(),
-                tone_pot.activation_movement(),
-                tone_cv_value,
+                tone_cv,
                 group_tapped,
                 scale_tapped,
-                tonic_held,
+                tonic_pot.value(),
                 group_cv,
                 scale_cv,
                 tonic_cv,
@@ -461,7 +375,7 @@ impl Controller {
             || (scale_cv.is_none() && scale_changed)
             || (tonic_cv.is_none() && tonic_changed)
             || octave_changed
-            || (tone_cv_value.is_none()
+            || (tone_cv.is_none()
                 && group_cv.is_none()
                 && scale_cv.is_none()
                 && tonic_cv.is_none()
@@ -482,20 +396,16 @@ impl Controller {
         } else if scale_held || scale_tapped || (scale_changed && scale_cv.is_none()) {
             let selected = parameter.selected_scale_index();
             display_request.set_queried_attribute(Screen::scale(selected));
-        } else if !tonic_held
-            && tone_cv_value.is_none()
+        } else if tone_cv.is_none()
             && (tone_pot.activation_movement()
                 || (note_changed && !group_changed && !scale_changed))
         {
             let selected = parameter.selected_note().index();
             display_request.set_queried_attribute(Screen::note(selected as usize));
-        } else if !tonic_held
-            && tone_cv_value.is_some()
-            && (tone_pot.activation_movement() || octave_changed)
-        {
+        } else if tone_cv.is_some() && (tone_pot.activation_movement() || octave_changed) {
             let selected = parameter.selected_octave_index();
             display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tonic_held {
+        } else if tonic_cv.is_none() && tonic_changed {
             let selected = parameter.selected_tonic();
             display_request.set_queried_attribute(Screen::tonic(selected));
         }
@@ -520,6 +430,36 @@ impl Controller {
 
         if is_button_held(button) || was_button_tapped(button) {
             display_request.set_queried_attribute(Screen::arp_mode(parameter.selected()));
+        }
+    }
+
+    fn reconcile_stereo_mode(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let button = &self.inputs.buttons.stereo;
+        let parameter = &mut self.parameters.stereo_mode;
+
+        *needs_save |= parameter.reconcile_button(was_button_tapped(button));
+
+        if is_button_held(button) || was_button_tapped(button) {
+            display_request.set_queried_attribute(Screen::stereo_mode(parameter.selected()));
+        }
+    }
+
+    fn reconcile_cv_assignment(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let button = &self.inputs.buttons.cv_assignment;
+        let parameter = &mut self.parameters.cv_assignment;
+
+        *needs_save |= parameter.reconcile_button(was_button_tapped(button));
+
+        if is_button_held(button) || was_button_tapped(button) {
+            display_request.set_queried_attribute(Screen::cv_assignment(parameter.selected()));
         }
     }
 
@@ -556,6 +496,8 @@ impl Controller {
             trigger: trigger_attributes,
             gain: self.parameters.gain.value(),
             chord_size: self.parameters.chord.selected_size(),
+            width: self.parameters.width.value(),
+            stereo_mode: self.parameters.stereo_mode.selected().into(),
         }
     }
 
@@ -586,65 +528,62 @@ impl Controller {
     }
 
     fn tone_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::Tone)
+        self.inputs.cvs.tone.value()
     }
 
     fn chord_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::Chord)
+        self.inputs.cvs.chord.value()
     }
 
     fn resonance_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::Resonance)
+        self.inputs.cvs.resonance.value()
     }
 
     fn cutoff_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::Cutoff)
-    }
-
-    fn pluck_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.pluck_socket())
-    }
-
-    fn chord_size_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.size_socket())
+        self.inputs.cvs.cutoff.value()
     }
 
     fn contour_cv(&self) -> Option<f32> {
-        self.socket_cv_unless_remapped(CvMappingSocket::Contour)
+        self.inputs.cvs.contour.value()
     }
 
     fn tonic_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.tonic_socket())
+        self.assignable_cv(CvAssignment::Tonic)
     }
 
-    fn group_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.group_socket())
-    }
-
-    fn scale_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.scale_socket())
+    fn chord_size_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Size)
     }
 
     fn arp_cv(&self) -> Option<f32> {
-        self.socket_cv(self.parameters.cv_mapping.arp_socket())
+        self.assignable_cv(CvAssignment::Arp)
     }
 
-    fn socket_cv_unless_remapped(&self, socket: CvMappingSocket) -> Option<f32> {
-        if self.parameters.cv_mapping.is_socket_remapped(socket) {
-            None
+    fn group_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Group)
+    }
+
+    fn scale_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Scale)
+    }
+
+    fn pluck_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Pluck)
+    }
+
+    fn gain_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Gain)
+    }
+
+    fn width_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Width)
+    }
+
+    fn assignable_cv(&self, seeked_assignment: CvAssignment) -> Option<f32> {
+        if self.parameters.cv_assignment.selected() == seeked_assignment {
+            self.inputs.cvs.assignable.value()
         } else {
-            self.socket_cv(socket)
-        }
-    }
-
-    fn socket_cv(&self, socket: CvMappingSocket) -> Option<f32> {
-        match socket {
-            CvMappingSocket::None => None,
-            CvMappingSocket::Tone => self.inputs.cvs.tone.value(),
-            CvMappingSocket::Chord => self.inputs.cvs.chord.value(),
-            CvMappingSocket::Resonance => self.inputs.cvs.resonance.value(),
-            CvMappingSocket::Cutoff => self.inputs.cvs.cutoff.value(),
-            CvMappingSocket::Contour => self.inputs.cvs.contour.value(),
+            None
         }
     }
 }

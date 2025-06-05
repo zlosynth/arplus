@@ -49,6 +49,8 @@ pub struct Attributes {
     pub trigger: Option<TriggerAttributes>,
     pub gain: f32,
     pub chord_size: usize,
+    pub width: f32,
+    pub stereo_mode: StereoMode,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]

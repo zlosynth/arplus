@@ -18,7 +18,7 @@ pub enum Tonic {
 }
 
 impl Tonic {
-    const LAST_TONIC: Self = Self::B;
+    pub const LAST_TONIC: Self = Self::B;
 
     pub fn index(self) -> u8 {
         self as u8

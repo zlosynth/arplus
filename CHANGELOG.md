@@ -10,6 +10,7 @@ backwards compatibility.
 * Tweak resonance range to be responsive end to end.
 * Change contour range to 0.0 to 0.4 seconds linear up to 12 o'clock and
   0.4 to 10 logarithmic above that.
+* Rework the interface to provide more direct control over attributes.
 
 ## 0.1.1
 

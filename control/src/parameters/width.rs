@@ -1,11 +1,11 @@
 use super::primitives::continuous::Continuous;
 use super::primitives::math;
 
-pub struct Gain {
+pub struct Width {
     continuous: Continuous,
 }
 
-impl Gain {
+impl Width {
     pub fn new() -> Self {
         Self {
             continuous: Continuous::new(),

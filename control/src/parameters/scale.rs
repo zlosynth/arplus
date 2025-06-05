@@ -22,7 +22,6 @@ pub struct Scale {
     cv_controls_scale: bool,
     pot_tonic: Discrete,
     cv_tonic: Discrete,
-    cv_controls_tonic: bool,
     scale_cache: Option<ProjectedScale>,
 }
 
@@ -87,8 +86,7 @@ impl Scale {
             cv_scale,
             cv_controls_scale: false,
             pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1, 1.0),
-            cv_tonic: Discrete::new(config.cv_tonic, 12, 0.1, 5.0),
-            cv_controls_tonic: false,
+            cv_tonic: Discrete::new(config.cv_tonic, 12 * 2 + 1, 0.1, 5.0),
             scale_cache: None,
         };
         s.update_scale_cache();
@@ -99,26 +97,22 @@ impl Scale {
     pub fn reconcile_note_tonic_group_and_scale(
         &mut self,
         note_pot: f32,
-        note_pot_moved: bool,
         note_cv: Option<f32>,
         group_toggle: bool,
         scale_toggle: bool,
-        trigger_held: bool,
+        tonic_pot: f32,
         group_cv: Option<f32>,
         scale_cv: Option<f32>,
         tonic_cv: Option<f32>,
     ) -> (bool, bool, bool, bool, bool) {
         let old_cv_controls_group = self.cv_controls_group;
         let old_cv_controls_scale = self.cv_controls_scale;
-        let old_cv_controls_tonic = self.cv_controls_tonic;
 
         self.cv_controls_group = group_cv.is_some();
         self.cv_controls_scale = scale_cv.is_some();
-        self.cv_controls_tonic = tonic_cv.is_some();
 
         let switched_cv = old_cv_controls_group != self.cv_controls_group
-            || old_cv_controls_scale != self.cv_controls_scale
-            || old_cv_controls_tonic != self.cv_controls_tonic;
+            || old_cv_controls_scale != self.cv_controls_scale;
 
         let switched_group_cv = old_cv_controls_group != self.cv_controls_group;
 
@@ -149,13 +143,9 @@ impl Scale {
             self.button_scale.reconcile(scale_toggle)
         };
 
-        let changed_tonic = if let Some(tonic_cv) = tonic_cv {
-            self.cv_tonic.reconcile(tonic_cv)
-        } else if trigger_held && note_pot_moved {
-            // TODO: Warn the user that CV is remapped
-            self.pot_tonic.reconcile(note_pot)
-        } else {
-            false
+        let changed_tonic = {
+            let tonic_cv = tonic_cv.unwrap_or(0.0);
+            self.pot_tonic.reconcile(tonic_pot) || self.cv_tonic.reconcile(tonic_cv)
         };
 
         if changed_group || changed_scale || changed_tonic || switched_cv {
@@ -248,14 +238,12 @@ impl Scale {
     }
 
     pub fn selected_tonic(&self) -> Tonic {
-        if self.cv_controls_tonic {
-            // PANIC: Number of tonics to select from is static and unikely
-            // to change. This is safe enough.
-            self.cv_tonic.selected_value().try_into().unwrap()
-        } else {
-            // PANIC: Ditto.
-            self.pot_tonic.selected_value().try_into().unwrap()
-        }
+        let pot_tonic_index = self.pot_tonic.selected_value() as i32;
+        let cv_tonic_offset = self.cv_tonic.selected_value() as i32 - 12;
+        let tonic_index =
+            (pot_tonic_index + cv_tonic_offset).clamp(0, Tonic::LAST_TONIC as i32) as usize;
+        // PANIC: Number of tonics is clamped above. This is safe enough.
+        tonic_index.try_into().unwrap()
     }
 
     pub fn copy_config(&self) -> PersistentConfig {

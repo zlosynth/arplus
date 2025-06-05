@@ -39,8 +39,13 @@ impl Buttons {
     }
 
     pub fn sample(&mut self, cycle: u8) {
-        if cycle < BUTTONS as u8 {
-            self.buttons[cycle as usize].set(self.pins.button_mux.is_low());
+        // NOTE: The order of multiplexer pins is not matching the numbering of
+        // buttons on the module.
+        const CYCLE_TO_BUTTON: [usize; 8] = [3, 2, 1, 6, 5, 999, 4, 0];
+        // NOTE: No button is mapped to multiplexer's input 5.
+        if cycle < 8 && cycle != 5 {
+            let button_index = CYCLE_TO_BUTTON[cycle as usize];
+            self.buttons[button_index].set(self.pins.button_mux.is_low());
         }
     }
 

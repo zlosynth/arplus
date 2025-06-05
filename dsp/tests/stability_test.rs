@@ -1,6 +1,6 @@
 use core::mem::MaybeUninit;
 
-use arplus_dsp::{Attributes, Dsp, MemoryManager, Random, TriggerAttributes};
+use arplus_dsp::{Attributes, Dsp, MemoryManager, Random, StereoMode, TriggerAttributes};
 use proptest::prelude::*;
 
 struct TestRandom;
@@ -23,6 +23,7 @@ fn check_stability(
     gain: f32,
     chord_size: usize,
     trigger_interval: f32,
+    width: f32,
 ) {
     const SECONDS: f32 = 30.0;
     const SAMPLE_RATE: f32 = 96_000.0;
@@ -45,6 +46,8 @@ fn check_stability(
         trigger: None,
         gain,
         chord_size,
+        width,
+        stereo_mode: StereoMode::Haas,
     };
 
     let mut buffer = [(0.0, 0.0); 32];
@@ -85,6 +88,7 @@ fn stability_with_high_cutoff() {
     let gain = 0.7;
     let chord_size = 6;
     let trigger_interval = 2.965139;
+    let width = 0.0;
     check_stability(
         resonance,
         cutoff,
@@ -95,6 +99,7 @@ fn stability_with_high_cutoff() {
         gain,
         chord_size,
         trigger_interval,
+        width,
     );
 }
 
@@ -111,6 +116,7 @@ proptest! {
         gain in 0.0..=1.0f32,
         chord_size in 0..=7usize,
         trigger_interval in 0.1..3.0f32,
+        width in 0.0..=1.0f32,
     ) {
         check_stability(
             resonance,
@@ -122,6 +128,7 @@ proptest! {
             gain,
             chord_size,
             trigger_interval,
+            width,
         );
     }
 }

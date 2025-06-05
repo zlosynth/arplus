@@ -1,6 +1,7 @@
 use crate::arpeggiator::Mode as ArpMode;
 use crate::chords::Chord;
-use crate::parameters::CvMappingSocket;
+use crate::parameters::CvAssignment;
+use crate::parameters::StereoMode;
 use crate::scales::{GroupId, Tonic};
 
 #[repr(u8)]
@@ -34,11 +35,8 @@ pub enum Screen {
     ToneCalibration(ToneCalibrationScreen),
     Octave(OctaveScreen),
     Tonic(TonicScreen),
-    Configuration(ConfigurationScreen),
-    // TODO: Decide what to do with gain.
-    #[allow(dead_code)]
-    Gain(GainScreen),
-    CvMapping(CvMappingScreen),
+    CvAssignment(CvAssignmentScreen),
+    StereoMode(StereoModeScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -49,6 +47,11 @@ pub struct StepScreen {
 #[derive(Debug, defmt::Format, PartialEq)]
 pub struct ArpModeScreen {
     mode: ArpMode,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct StereoModeScreen {
+    mode: StereoMode,
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -88,17 +91,9 @@ pub struct TonicScreen {
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
-pub struct GainScreen {
-    index: usize,
+pub struct CvAssignmentScreen {
+    assignment: CvAssignment,
 }
-
-#[derive(Debug, defmt::Format, PartialEq)]
-pub struct CvMappingScreen {
-    socket: CvMappingSocket,
-}
-
-#[derive(Debug, defmt::Format, PartialEq)]
-pub struct ConfigurationScreen;
 
 #[derive(Debug, defmt::Format, PartialEq)]
 pub enum ToneCalibrationScreen {
@@ -170,6 +165,10 @@ impl Screen {
         Screen::ArpMode(ArpModeScreen::with_selected(arp_mode))
     }
 
+    pub fn stereo_mode(stereo_mode: StereoMode) -> Self {
+        Screen::StereoMode(StereoModeScreen::with_selected(stereo_mode))
+    }
+
     pub fn group(group: GroupId) -> Self {
         Screen::Group(GroupScreen::with_selected(group))
     }
@@ -202,18 +201,8 @@ impl Screen {
         Screen::Tonic(TonicScreen::with_tonic(tonic))
     }
 
-    pub fn configuration() -> Self {
-        Screen::Configuration(ConfigurationScreen)
-    }
-
-    // TODO: Decide what to do with gain.
-    #[allow(dead_code)]
-    pub fn gain(index: usize) -> Screen {
-        Screen::Gain(GainScreen::with_index(index))
-    }
-
-    pub fn cv_mapping(socket: CvMappingSocket) -> Screen {
-        Screen::CvMapping(CvMappingScreen::with_socket(socket))
+    pub fn cv_assignment(assignment: CvAssignment) -> Screen {
+        Screen::CvAssignment(CvAssignmentScreen::with_selected(assignment))
     }
 
     pub fn tone_calibration_octave_1() -> Self {
@@ -236,6 +225,7 @@ impl Screen {
         match self {
             Screen::Step(s) => s.leds(),
             Screen::ArpMode(s) => s.leds(),
+            Screen::StereoMode(s) => s.leds(),
             Screen::Scale(s) => s.leds(),
             Screen::Group(s) => s.leds(),
             Screen::Size(s) => s.leds(),
@@ -243,10 +233,8 @@ impl Screen {
             Screen::Chord(s) => s.leds(),
             Screen::Octave(s) => s.leds(),
             Screen::Tonic(s) => s.leds(),
-            Screen::Gain(s) => s.leds(),
-            Screen::CvMapping(s) => s.leds(),
+            Screen::CvAssignment(s) => s.leds(),
             Screen::ToneCalibration(s) => s.leds(clock),
-            Screen::Configuration(s) => s.leds(clock),
         }
     }
 }
@@ -268,6 +256,21 @@ impl StepScreen {
 
 impl ArpModeScreen {
     pub fn with_selected(mode: ArpMode) -> Self {
+        Self { mode }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+        let leds_max = leds.len() - 1;
+        if let Some(led) = leds.get_mut(leds_max - self.mode as usize) {
+            *led = true;
+        }
+        leds
+    }
+}
+
+impl StereoModeScreen {
+    pub fn with_selected(mode: StereoMode) -> Self {
         Self { mode }
     }
 
@@ -422,52 +425,18 @@ impl TonicScreen {
     }
 }
 
-impl GainScreen {
-    // TODO: Decide what to do with gain.
-    #[allow(dead_code)]
-    pub fn with_index(index: usize) -> Self {
-        Self { index }
+impl CvAssignmentScreen {
+    pub fn with_selected(assignment: CvAssignment) -> Self {
+        Self { assignment }
     }
 
     fn leds(&self) -> [bool; 8] {
         let mut leds = [false; 8];
-        let len = leds.len();
-        for led in leds[0..usize::min((self.index + 1) * 2, len)].iter_mut() {
+        let leds_max = leds.len() - 1;
+        if let Some(led) = leds.get_mut(leds_max - self.assignment as usize) {
             *led = true;
         }
         leds
-    }
-}
-
-impl CvMappingScreen {
-    pub fn with_socket(socket: CvMappingSocket) -> Self {
-        Self { socket }
-    }
-
-    fn leds(&self) -> [bool; 8] {
-        let mut leds = [false; 8];
-
-        if self.socket.is_none() {
-            return leds;
-        }
-
-        let index = self.socket as usize - 1;
-        if let Some(led) = leds.get_mut(index) {
-            *led = true;
-        }
-
-        leds
-    }
-}
-
-impl ConfigurationScreen {
-    fn leds(&self, clock: usize) -> [bool; 8] {
-        let phase = (clock / 400) % 2;
-        if phase == 0 {
-            [true, false, true, false, true, false, true, false]
-        } else {
-            [false, true, false, true, false, true, false, true]
-        }
     }
 }
 

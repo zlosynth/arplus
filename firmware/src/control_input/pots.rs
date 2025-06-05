@@ -61,7 +61,11 @@ impl Pots {
         adc_1: &mut Adc<ADC1, Enabled>,
         adc_2: &mut Adc<ADC2, Enabled>,
     ) {
-        assert!(cycle < POTS as u8);
+        assert!(cycle < 8);
+
+        // NOTE: The order of multiplexer pins is not matching the numbering of
+        // pots on the module.
+        const CYCLE_TO_POT: [usize; 8] = [3, 1, 0, 2, 7, 5, 6, 4];
 
         match cycle {
             0 => {
@@ -69,7 +73,8 @@ impl Pots {
                 adc_2.start_conversion(&mut self.pins.pot_9);
                 let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
                 let sample_9: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+                let pot_index = CYCLE_TO_POT[cycle as usize];
+                self.pots[pot_index].set(sample_mux, adc_1.slope());
                 self.pots[8].set(sample_9, adc_2.slope());
             }
             1 => {
@@ -77,13 +82,15 @@ impl Pots {
                 adc_2.start_conversion(&mut self.pins.pot_10);
                 let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
                 let sample_10: u32 = block!(adc_2.read_sample()).unwrap_or_default();
-                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+                let pot_index = CYCLE_TO_POT[cycle as usize];
+                self.pots[pot_index].set(sample_mux, adc_1.slope());
                 self.pots[9].set(sample_10, adc_2.slope());
             }
             _ => {
                 adc_1.start_conversion(&mut self.pins.pot_mux);
                 let sample_mux: u32 = block!(adc_1.read_sample()).unwrap_or_default();
-                self.pots[cycle as usize].set(sample_mux, adc_1.slope());
+                let pot_index = CYCLE_TO_POT[cycle as usize];
+                self.pots[pot_index].set(sample_mux, adc_1.slope());
             }
         }
     }
