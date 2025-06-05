@@ -36,6 +36,10 @@ clean:
 	make -C dsp clean
 	make -C firmware clean
 
+.PHONY: bloat
+bloat:
+	make -C firmware bloat
+
 .PHONY: flash
 flash:
 	make -C firmware flash

@@ -23,6 +23,11 @@ update:
 clean:
 	$(CARGO) clean
 
+.PHONY: bloat
+bloat:
+	$(CARGO) size --bin main --release -- -m
+	$(CARGO) bloat --release
+
 .PHONY: flash
 flash:
 	$(CARGO) run --release --features idle-measuring
