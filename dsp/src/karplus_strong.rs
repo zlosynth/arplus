@@ -18,6 +18,9 @@ const TRESHOLD: f32 = 0.5;
 const ENV_MAX: f32 = 1.0;
 const ENV_COEF: f32 = 2.0;
 
+// Anything longer would be an audible delay.
+const MAX_HAAS_DISTANCE: f32 = 25.0 / 1000.0; // 25 ms
+
 const RESET: usize = 40;
 
 pub struct KarplusStrong {
@@ -34,7 +37,14 @@ pub struct KarplusStrong {
     filter: StateVariableFilter,
     envelope_follower: EnvelopeFollower,
     reset: usize,
-    max_haas_distance: f32,
+    trigger_random_coefficient: f32,
+}
+
+#[derive(Clone, Copy, Debug, defmt::Format)]
+pub enum StereoMode {
+    FocusLeft,
+    FocusRight,
+    Haas,
 }
 
 impl KarplusStrong {
@@ -55,7 +65,7 @@ impl KarplusStrong {
             envelope_follower: EnvelopeFollower::new(ATTACK, DECAY, TRESHOLD, sample_rate),
             reset: RESET,
             phase_delay: 0.0,
-            max_haas_distance: 0.0,
+            trigger_random_coefficient: 0.0,
         };
         // XXX: Without this silent trigger, the first trigger on the string is mute.
         s.trigger_without_random(0.0, 10.0, 0.0, 0.0, 0.0);
@@ -64,28 +74,11 @@ impl KarplusStrong {
 
     pub fn populate_add(
         &mut self,
-        buffer: &mut [f32],
-        noise_buffer: Option<&[f32]>,
-        random: &mut impl Random,
-    ) {
-        self.populate_add_internal(buffer, &mut None, noise_buffer, random);
-    }
-
-    pub fn populate_add_stereo(
-        &mut self,
         left_buffer: &mut [f32],
         right_buffer: &mut [f32],
         noise_buffer: Option<&[f32]>,
-        random: &mut impl Random,
-    ) {
-        self.populate_add_internal(left_buffer, &mut Some(right_buffer), noise_buffer, random);
-    }
-
-    fn populate_add_internal(
-        &mut self,
-        main_buffer: &mut [f32],
-        optional_buffer: &mut Option<&mut [f32]>,
-        noise_buffer: Option<&[f32]>,
+        stereo_mode: StereoMode,
+        width: f32,
         random: &mut impl Random,
     ) {
         if self.frequency < 12.0 {
@@ -93,17 +86,12 @@ impl KarplusStrong {
         }
 
         let reset_phase = self.reset as f32 / RESET as f32;
-        let buffer_len = main_buffer.len() as f32;
-        for (i, x) in main_buffer.iter_mut().enumerate() {
-            // NOTE: If optional buffer is not provided, write into a black
-            // hole. This keeps the code simpler and performance requirements
-            // static - predictable.
-            let y = if let Some(buffer_optional) = optional_buffer.as_mut() {
-                &mut buffer_optional[i]
-            } else {
-                &mut 0.0
-            };
-
+        let buffer_len = left_buffer.len() as f32;
+        for (i, (l, r)) in left_buffer
+            .iter_mut()
+            .zip(right_buffer.iter_mut())
+            .enumerate()
+        {
             let new_noise_sample = if let Some(buffer_noise) = noise_buffer {
                 buffer_noise[i]
             } else {
@@ -147,20 +135,30 @@ impl KarplusStrong {
                 1.0 - (reset_phase + sample_phase / RESET as f32)
             };
 
-            // TODO: This should be set with the width knob, once it exists.
-            // TODO: Calculat this just once, not per each sample in a buffer,
-            // then use log on it.
-            let haas_distance = self.max_haas_distance * 1.0;
-            if haas_distance > 0.0 {
-                // NOTE: Tilt left.
-                let stereo_sample = self.buffer.peek(haas_distance as usize);
-                *x += filtered_sample * 0.5 * reset_fade;
-                *y += stereo_sample * 0.5 * reset_fade;
-            } else {
-                // NOTE: Tilt right.
-                let stereo_sample = self.buffer.peek(-haas_distance as usize);
-                *x += stereo_sample * 0.5 * reset_fade;
-                *y += filtered_sample * 0.5 * reset_fade;
+            match stereo_mode {
+                StereoMode::FocusLeft => {
+                    *l += filtered_sample * 0.5 * width * reset_fade;
+                    *r += filtered_sample * 0.5 * (1.0 - width) * reset_fade;
+                }
+                StereoMode::FocusRight => {
+                    *l += filtered_sample * 0.5 * (1.0 - width) * reset_fade;
+                    *r += filtered_sample * 0.5 * width * reset_fade;
+                }
+                StereoMode::Haas => {
+                    let distance =
+                        MAX_HAAS_DISTANCE * self.trigger_random_coefficient * width * 2.0 - 1.0;
+                    if distance > 0.0 {
+                        // NOTE: Tilt left.
+                        let delayed_sample = self.buffer.peek(distance as usize);
+                        *l += filtered_sample * 0.5 * reset_fade;
+                        *r += delayed_sample * 0.5 * reset_fade;
+                    } else {
+                        // NOTE: Tilt right.
+                        let delayed_sample = self.buffer.peek(-distance as usize);
+                        *l += delayed_sample * 0.5 * reset_fade;
+                        *r += filtered_sample * 0.5 * reset_fade;
+                    }
+                }
             }
         }
 
@@ -219,10 +217,7 @@ impl KarplusStrong {
         random: &mut impl Random,
     ) {
         self.trigger_without_random(feedback, frequency, contour, pluck, cutoff);
-
-        const HAAS_ABSOLUTE_MAX_DISTANCE: f32 = 25.0 / 1000.0; // 25 ms
-        self.max_haas_distance =
-            (random.normal() * 2.0 - 1.0) * (self.sample_rate * HAAS_ABSOLUTE_MAX_DISTANCE);
+        self.trigger_random_coefficient = random.normal();
     }
 
     // NOTE: This is a separate method, so it can be called from `new` in order

@@ -35,6 +35,7 @@ pub struct Dsp {
     overdrive: Overdrive,
     dc_blocker: [DCBlocker; 2],
     stereo_mode: StereoMode,
+    width: f32,
 }
 
 pub struct String {
@@ -87,6 +88,7 @@ impl Dsp {
             overdrive: Overdrive::new(),
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
             stereo_mode: StereoMode::Haas,
+            width: 0.0,
         }
     }
 
@@ -112,38 +114,48 @@ impl Dsp {
         match self.stereo_mode {
             StereoMode::Haas => {
                 for string in self.strings.iter_mut() {
-                    string.karplus_strong.populate_add_stereo(
+                    string.karplus_strong.populate_add(
                         &mut buffer_left,
                         &mut buffer_right,
                         noise_buffer,
+                        karplus_strong::StereoMode::Haas,
+                        self.width,
                         random,
                     );
                 }
             }
             StereoMode::RootRest => {
                 for string in self.strings.iter_mut() {
-                    if string.is_root {
-                        string
-                            .karplus_strong
-                            .populate_add(&mut buffer_left, noise_buffer, random);
+                    let focus = if string.is_root {
+                        karplus_strong::StereoMode::FocusLeft
                     } else {
-                        string
-                            .karplus_strong
-                            .populate_add(&mut buffer_right, noise_buffer, random);
-                    }
+                        karplus_strong::StereoMode::FocusRight
+                    };
+                    string.karplus_strong.populate_add(
+                        &mut buffer_left,
+                        &mut buffer_right,
+                        noise_buffer,
+                        focus,
+                        self.width,
+                        random,
+                    );
                 }
             }
             StereoMode::PingPong => {
                 for (i, string) in self.strings.iter_mut().enumerate() {
-                    if i % 2 == 0 {
-                        string
-                            .karplus_strong
-                            .populate_add(&mut buffer_left, noise_buffer, random);
+                    let focus = if i % 2 == 0 {
+                        karplus_strong::StereoMode::FocusLeft
                     } else {
-                        string
-                            .karplus_strong
-                            .populate_add(&mut buffer_right, noise_buffer, random);
-                    }
+                        karplus_strong::StereoMode::FocusRight
+                    };
+                    string.karplus_strong.populate_add(
+                        &mut buffer_left,
+                        &mut buffer_right,
+                        noise_buffer,
+                        focus,
+                        self.width,
+                        random,
+                    );
                 }
             }
         }
@@ -221,6 +233,7 @@ impl Dsp {
         }
 
         self.overdrive.gain = attributes.gain;
+        self.width = attributes.width;
     }
 
     fn set_root_strings_len(&mut self, len: usize) {
