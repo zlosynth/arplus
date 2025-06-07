@@ -2,7 +2,12 @@ pub use daisy::flash::Flash;
 
 use arplus_control::{Save, WrappedSave};
 
-const NUM_SECTORS: usize = 2048;
+// NOTE: The beginning of flash is used to store the firmware. Do not use it
+// for saves. Bootloader would copy the firmware from flash to SRAM on boot.
+// The first 4x64 kB of flash is reserved by bootloader. SRAM can take 512 kB
+// of firmware. This means the first 768 kB of flash (192 sectors) is occupied.
+const SECTORS_OFFSET: usize = 192;
+const NUM_SECTORS: usize = 2048 - SECTORS_OFFSET;
 
 pub struct FlashMemoryInterface {
     flash: Flash,
@@ -18,8 +23,10 @@ impl FlashMemoryInterface {
         defmt::info!("Saving version={:?}", self.version);
         defmt::debug!("Saving save={:?}", save);
         let data = WrappedSave::new(save, self.version).to_bytes();
-        self.flash
-            .write(sector_address(self.version as usize % NUM_SECTORS), &data);
+        self.flash.write(
+            sector_address(self.version as usize % NUM_SECTORS + SECTORS_OFFSET),
+            &data,
+        );
         self.version = self.version.wrapping_add(1);
     }
 
