@@ -27,8 +27,10 @@ mod taper;
 pub use crate::memory_manager::MemoryManager;
 pub use crate::random::Random;
 
+const STRINGS: usize = 8;
+
 pub struct Dsp {
-    strings: [String; 8],
+    strings: [String; STRINGS],
     root_strings_len: usize,
     active_root_string_index: usize,
     active_rest_string_index: usize,
@@ -60,6 +62,11 @@ pub struct TriggerAttributes {
 
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
+        assert!(
+            STRINGS == 8,
+            "If the constant changed, adjust memory manager in the firmware"
+        );
+
         Self {
             strings: [
                 String::new(sample_rate, memory_manager),

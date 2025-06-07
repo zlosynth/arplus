@@ -37,6 +37,11 @@ pub struct KarplusStrong {
 
 impl KarplusStrong {
     pub fn new(sample_rate: f32, stack_manager: &mut MemoryManager) -> Self {
+        assert_eq!(
+            SAMPLES, 8192,
+            "If the constant changed, adjust memory manager in the firmware"
+        );
+
         let mut filter = StateVariableFilter::new(sample_rate as u32);
         filter.set_bandform(Bandform::LowPass);
         filter.set_q_factor(0.7);

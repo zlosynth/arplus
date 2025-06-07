@@ -26,8 +26,9 @@ mod app {
     // Blinks on the PCB's LED signalize the current revision.
     const BLINKS: u8 = 1;
 
-    #[link_section = ".sram"]
-    static mut MEMORY: [MaybeUninit<u32>; 96 * 1024] =
+    // This is used by 8 karplus strong strings, each taking 8192 samples.
+    #[link_section = ".sram1_bss"]
+    static mut MEMORY: [MaybeUninit<u32>; 8 * 8192] =
         unsafe { MaybeUninit::uninit().assume_init() };
 
     // 1 kHz granularity for task scheduling.
