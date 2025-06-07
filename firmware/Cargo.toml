@@ -34,7 +34,7 @@ stm32h7xx-hal = { version = "0.16", features = [
   "revision_v",
   "defmt",
 ] }
-daisy = { version = "0.10.0", features = ["patch_sm", "sampling_rate_96khz"] }
+daisy = { git = "https://github.com/zlosynth/daisy", rev = "511e341636ab24be0b779604a8fd919d2edcd1a8", features = ["patch_sm", "sampling_rate_96khz", "block_length_64"] }
 fugit = "0.3"
 nb = "1"
 heapless = "0.7"

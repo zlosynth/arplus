@@ -62,8 +62,8 @@ pub struct TriggerAttributes {
 
 impl Dsp {
     pub fn new(sample_rate: f32, memory_manager: &mut MemoryManager) -> Self {
-        assert!(
-            STRINGS == 8,
+        assert_eq!(
+            STRINGS, 8,
             "If the constant changed, adjust memory manager in the firmware"
         );
 
@@ -86,9 +86,9 @@ impl Dsp {
         }
     }
 
-    pub fn process(&mut self, buffer: &mut [(f32, f32); 32], random: &mut impl Random) {
-        let mut buffer_root = [0.0; 32];
-        let mut buffer_rest = [0.0; 32];
+    pub fn process(&mut self, buffer: &mut [(f32, f32); 64], random: &mut impl Random) {
+        let mut buffer_root = [0.0; 64];
+        let mut buffer_rest = [0.0; 64];
 
         for string in self.strings.iter_mut() {
             if string.is_root {
