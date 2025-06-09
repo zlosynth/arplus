@@ -4,6 +4,8 @@ use arplus_control::{Save, WrappedSave};
 
 const NUM_SECTORS: usize = 2048;
 
+const SAVE_SIZE_IN_SECTORS: usize = 2;
+
 pub struct FlashMemoryInterface {
     flash: Flash,
     version: u32,
@@ -18,8 +20,10 @@ impl FlashMemoryInterface {
         defmt::info!("Saving version={:?}", self.version);
         defmt::debug!("Saving save={:?}", save);
         let data = WrappedSave::new(save, self.version).to_bytes();
-        self.flash
-            .write(sector_address(self.version as usize % NUM_SECTORS), &data);
+        self.flash.write(
+            sector_address((self.version as usize * SAVE_SIZE_IN_SECTORS) % NUM_SECTORS),
+            &data,
+        );
         self.version = self.version.wrapping_add(1);
     }
 
@@ -27,6 +31,10 @@ impl FlashMemoryInterface {
         let mut latest_store: Option<WrappedSave> = None;
 
         for i in 0..NUM_SECTORS {
+            if i % SAVE_SIZE_IN_SECTORS != 0 {
+                continue;
+            }
+
             let mut store_buffer = [0; WrappedSave::SIZE];
 
             self.flash.read(sector_address(i), &mut store_buffer);

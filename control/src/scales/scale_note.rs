@@ -15,6 +15,14 @@ impl ScaleNote {
         self.tone
     }
 
+    pub fn offset_tone(&mut self, offset: i8) {
+        if let Some(quarter_note) = QuarterTone::try_from_u8(
+            (self.tone as i16 + offset as i16).clamp(0, QuarterTone::HIGHEST_NOTE as i16) as u8,
+        ) {
+            self.tone = quarter_note;
+        }
+    }
+
     pub fn index(&self) -> u8 {
         self.index
     }

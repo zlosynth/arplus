@@ -4,6 +4,8 @@ use crate::parameters::CvAssignment;
 use crate::parameters::StereoMode;
 use crate::scales::{GroupId, Tonic};
 
+const QUERY_TIME: usize = 2000;
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
 pub enum Priority {
@@ -37,6 +39,7 @@ pub enum Screen {
     Tonic(TonicScreen),
     CvAssignment(CvAssignmentScreen),
     StereoMode(StereoModeScreen),
+    Offset(OffsetScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -103,6 +106,14 @@ pub enum ToneCalibrationScreen {
     Success,
 }
 
+#[derive(Debug, defmt::Format, PartialEq)]
+pub enum OffsetScreen {
+    Offset(i8),
+    Lock,
+    Unlock,
+    Reset,
+}
+
 impl Display {
     pub fn new() -> Self {
         Self {
@@ -136,7 +147,7 @@ impl Display {
         }
 
         if let Some(page) = self.prioritized[Priority::Queried as usize].as_ref() {
-            if page.clock > 2000 {
+            if page.clock > QUERY_TIME {
                 self.reset(Priority::Queried);
             }
         }
@@ -221,6 +232,22 @@ impl Screen {
         Screen::ToneCalibration(ToneCalibrationScreen::Failure)
     }
 
+    pub fn offset_query(offset: i8) -> Self {
+        Screen::Offset(OffsetScreen::Offset(offset))
+    }
+
+    pub fn offset_lock() -> Self {
+        Screen::Offset(OffsetScreen::Lock)
+    }
+
+    pub fn offset_unlock() -> Self {
+        Screen::Offset(OffsetScreen::Unlock)
+    }
+
+    pub fn offset_reset() -> Self {
+        Screen::Offset(OffsetScreen::Reset)
+    }
+
     pub fn leds(&self, clock: usize) -> [bool; 8] {
         match self {
             Screen::Step(s) => s.leds(),
@@ -235,6 +262,7 @@ impl Screen {
             Screen::Tonic(s) => s.leds(),
             Screen::CvAssignment(s) => s.leds(),
             Screen::ToneCalibration(s) => s.leds(clock),
+            Screen::Offset(s) => s.leds(clock),
         }
     }
 }
@@ -463,6 +491,96 @@ impl ToneCalibrationScreen {
                 [false, false, false, false, false, false, false, false]
             }
             ToneCalibrationScreen::Success => [true, true, true, true, true, true, true, true],
+        }
+    }
+}
+
+impl OffsetScreen {
+    fn leds(&self, clock: usize) -> [bool; 8] {
+        match self {
+            Self::Offset(offset) => {
+                let mut leds = [false; 8];
+                match offset {
+                    0 => {
+                        leds[3] = true;
+                        leds[4] = true;
+                    }
+                    n => {
+                        if let Some(i) = match n {
+                            4 => Some(7),
+                            3 => Some(6),
+                            2 => Some(5),
+                            1 => Some(4),
+                            -1 => Some(4),
+                            -2 => Some(3),
+                            -3 => Some(2),
+                            -4 => Some(1),
+                            _ => None,
+                        } {
+                            leds[i] = true;
+                        }
+                    }
+                }
+                leds
+            }
+            Self::Lock => {
+                let mut leds = [false; 8];
+
+                if clock > QUERY_TIME / 5 {
+                    leds[0] = true;
+                    leds[7] = true;
+                }
+
+                if clock > 2 * QUERY_TIME / 5 {
+                    leds[1] = true;
+                    leds[6] = true;
+                }
+
+                if clock > 3 * QUERY_TIME / 5 {
+                    leds[2] = true;
+                    leds[5] = true;
+                }
+
+                if clock > 4 * QUERY_TIME / 5 {
+                    leds[3] = true;
+                    leds[4] = true;
+                }
+
+                leds
+            }
+            Self::Unlock => {
+                let mut leds = [true; 8];
+
+                if clock > QUERY_TIME / 5 {
+                    leds[3] = false;
+                    leds[4] = false;
+                }
+
+                if clock > 2 * QUERY_TIME / 5 {
+                    leds[2] = false;
+                    leds[5] = false;
+                }
+
+                if clock > 3 * QUERY_TIME / 5 {
+                    leds[1] = false;
+                    leds[6] = false;
+                }
+
+                if clock > 4 * QUERY_TIME / 5 {
+                    leds[0] = false;
+                    leds[7] = false;
+                }
+
+                leds
+            }
+            Self::Reset => {
+                let phase = (clock / (QUERY_TIME / 5)) % 2;
+                if phase == 0 {
+                    [true; 8]
+                } else {
+                    [false; 8]
+                }
+            }
         }
     }
 }

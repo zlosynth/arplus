@@ -9,6 +9,7 @@ mod primitives;
 mod reset_next;
 mod resonance;
 mod scale;
+mod scale_offsets;
 mod stereo_mode;
 mod trigger;
 mod width;
@@ -17,6 +18,7 @@ use arp_mode::PersistentConfig as ArpModePersistentConfig;
 use chord::PersistentConfig as ChordPersistentConfig;
 use cv_assignment::PersistentConfig as CvAssignmentPersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
+use scale_offsets::PersistentConfig as ScaleOffsetsPersistentConfig;
 use stereo_mode::PersistentConfig as StereoModePersistentConfig;
 
 use crate::chords::Chords;
@@ -32,6 +34,7 @@ pub use self::pluck::Pluck;
 pub use self::reset_next::ResetNext;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
+pub use self::scale_offsets::{ScaleOffsets, MAX_STEPS as SCALE_OFFSET_MAX_STEPS};
 pub use self::stereo_mode::{StereoMode, StereoModeHandler};
 pub use self::trigger::Trigger;
 pub use self::width::Width;
@@ -50,6 +53,7 @@ pub struct Parameters {
     pub width: Width,
     pub stereo_mode: StereoModeHandler,
     pub cv_assignment: CvAssignmentHandler,
+    pub scale_offsets: ScaleOffsets,
 }
 
 #[derive(Default, PartialEq, Debug, Clone, Copy, defmt::Format)]
@@ -59,6 +63,7 @@ pub struct PersistentConfig {
     pub arp_mode: ArpModePersistentConfig,
     pub stereo_mode: StereoModePersistentConfig,
     pub cv_mapping: CvAssignmentPersistentConfig,
+    pub scale_offsets: ScaleOffsetsPersistentConfig,
 }
 
 impl Parameters {
@@ -78,6 +83,7 @@ impl Parameters {
             width: Width::new(),
             stereo_mode: StereoModeHandler::new(config.stereo_mode),
             cv_assignment: CvAssignmentHandler::new(config.cv_mapping),
+            scale_offsets: ScaleOffsets::new(config.scale_offsets),
         }
     }
 
@@ -88,6 +94,7 @@ impl Parameters {
             arp_mode: self.arp_mode.copy_config(),
             stereo_mode: self.stereo_mode.copy_config(),
             cv_mapping: self.cv_assignment.copy_config(),
+            scale_offsets: self.scale_offsets.copy_config(),
         }
     }
 }

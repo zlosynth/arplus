@@ -1,4 +1,5 @@
 use crate::chords::Chord;
+use crate::parameters::SCALE_OFFSET_MAX_STEPS;
 use crate::random::Random;
 use crate::scales::ProjectedScale;
 use crate::scales::ScaleNote;
@@ -11,6 +12,7 @@ pub struct Arpeggiator {
     mode: Mode,
     state: State,
     voct_cache: f32,
+    note_index_cache: u8,
 }
 
 // ALLOW: All the values are constructed via `try_from_index`.
@@ -68,6 +70,7 @@ impl Arpeggiator {
             },
             chord: config.chord,
             voct_cache: 0.0,
+            note_index_cache: 0,
         }
     }
 
@@ -165,7 +168,11 @@ impl Arpeggiator {
         self.root = config.root;
     }
 
-    pub fn pop(&mut self, random: &mut impl Random) -> Option<(ScaleNote, i16)> {
+    pub fn pop(
+        &mut self,
+        random: &mut impl Random,
+        scale_offsets: &[i8; SCALE_OFFSET_MAX_STEPS],
+    ) -> Option<(ScaleNote, i16)> {
         // XXX: Empty chords don't make sense. This check simplifies the rest
         // of the method.
         // PANIC: The chord is set from the chord bank which has no empty
@@ -254,14 +261,20 @@ impl Arpeggiator {
 
         self.scale
             .get_note_in_interval_ascending(self.root, chord_degree)
-            .map(|n| {
+            .map(|mut n| {
+                self.note_index_cache = n.index();
                 self.voct_cache = n.tone().voct();
+                n.offset_tone(*scale_offsets.get(n.index() as usize).unwrap_or(&0));
                 (n, chord_degree)
             })
     }
 
     pub fn last_voct_output(&self) -> f32 {
         self.voct_cache
+    }
+
+    pub fn last_note_index(&self) -> u8 {
+        self.note_index_cache
     }
 }
 
@@ -362,20 +375,51 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration);
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
+        );
+    }
+
+    #[test]
+    fn up_arp_with_offsets() {
+        let mut r = TestRandom::new();
+        let configuration = Configuration {
+            scale: ionian().with_tonic(Tonic::C),
+            root: ScaleNote::new(QuarterTone::D1, 1),
+            chord: Chord::from_slice(&[0, 1, 2]).unwrap(),
+            mode: Mode::UpWithReset,
+            reset_next: false,
+        };
+        let mut offsets = [0; SCALE_OFFSET_MAX_STEPS];
+        offsets[1] = -2;
+        let mut arp = Arpeggiator::with_config(configuration);
+        assert_eq!(
+            arp.pop(&mut r, &offsets),
+            Some((ScaleNote::new(QuarterTone::CSharp1, 1), 0))
+        );
+        assert_eq!(
+            arp.pop(&mut r, &offsets),
+            Some((ScaleNote::new(QuarterTone::E1, 2), 1))
+        );
+        assert_eq!(
+            arp.pop(&mut r, &offsets),
+            Some((ScaleNote::new(QuarterTone::F1, 3), 2))
+        );
+        assert_eq!(
+            arp.pop(&mut r, &offsets),
+            Some((ScaleNote::new(QuarterTone::CSharp1, 1), 0))
         );
     }
 
@@ -391,23 +435,23 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -418,7 +462,7 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
     }
@@ -435,27 +479,27 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
     }
@@ -472,35 +516,35 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
     }
@@ -517,27 +561,27 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
     }
@@ -554,39 +598,39 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -603,11 +647,11 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -618,11 +662,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -639,15 +683,15 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         arp.apply_config(
@@ -658,11 +702,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
     }
@@ -679,15 +723,15 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         arp.apply_config(
@@ -698,11 +742,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -719,27 +763,27 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::A1, 5), 4))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         arp.apply_config(
@@ -750,11 +794,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -771,15 +815,15 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         arp.apply_config(
@@ -790,15 +834,15 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -815,31 +859,31 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::A1, 5), 4))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::A1, 5), 4))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         arp.apply_config(
@@ -850,11 +894,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }
@@ -871,11 +915,11 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -886,7 +930,7 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
     }
@@ -903,11 +947,11 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -918,7 +962,7 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 2))
         );
     }
@@ -935,11 +979,11 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -950,11 +994,11 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
     }
@@ -971,15 +1015,15 @@ mod tests {
         };
         let mut arp = Arpeggiator::with_config(configuration.clone());
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         arp.apply_config(
@@ -990,23 +1034,23 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::G1, 4), 3))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::F1, 3), 2))
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::E1, 2), 1))
         );
         arp.apply_config(
@@ -1017,7 +1061,7 @@ mod tests {
             &mut r,
         );
         assert_eq!(
-            arp.pop(&mut r),
+            arp.pop(&mut r, &[0; SCALE_OFFSET_MAX_STEPS]),
             Some((ScaleNote::new(QuarterTone::D1, 1), 0))
         );
     }

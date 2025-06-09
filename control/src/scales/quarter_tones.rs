@@ -506,7 +506,7 @@ const FREQUENCIES: [f32; 241] = [
 ];
 
 impl QuarterTone {
-    const HIGHEST_NOTE: Self = Self::BQSharp8;
+    pub const HIGHEST_NOTE: Self = Self::BQSharp8;
 
     pub fn voct(self) -> f32 {
         self as u8 as f32 / 24.0

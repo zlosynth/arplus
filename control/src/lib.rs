@@ -27,7 +27,7 @@ use crate::arpeggiator::{Arpeggiator, Configuration as ArpeggiatorConfiguration}
 use crate::chords::Chords;
 use crate::display::{Display, Screen};
 use crate::inputs::{Button, Inputs};
-use crate::parameters::{CvAssignment, Parameters};
+use crate::parameters::{CvAssignment, Parameters, SCALE_OFFSET_MAX_STEPS};
 use crate::quantized_output::QuantizedOutput;
 use crate::random::RandomGenerator;
 use crate::scales::Scales;
@@ -240,6 +240,7 @@ impl Controller {
         self.reconcile_trigger(display_request);
         self.reconcile_reset_next();
         self.reconcile_scale(display_request, needs_save);
+        self.reconcile_scale_offsets(display_request, needs_save);
         self.reconcile_arp_mode(display_request, needs_save);
         self.reconcile_stereo_mode(display_request, needs_save);
         self.reconcile_width();
@@ -411,6 +412,68 @@ impl Controller {
         }
     }
 
+    fn reconcile_scale_offsets(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let rsnx_button = &self.inputs.buttons.rsnx;
+        let arp_button = &self.inputs.buttons.arp;
+        let group_button = &self.inputs.buttons.group;
+        let scale_button = &self.inputs.buttons.scale;
+        let stereo_button = &self.inputs.buttons.stereo;
+        let cv_assignment_button = &self.inputs.buttons.cv_assignment;
+
+        let requested_increase =
+            rsnx_button.pressed() && arp_button.pressed() && group_button.clicked();
+        let requested_decrease =
+            rsnx_button.pressed() && arp_button.pressed() && scale_button.clicked();
+        let requested_lock =
+            rsnx_button.pressed() && arp_button.pressed() && cv_assignment_button.clicked();
+        let requested_reset = is_button_held(rsnx_button)
+            && is_button_held(arp_button)
+            && is_button_held(stereo_button)
+            && is_button_held(stereo_button)
+            && is_button_held(cv_assignment_button);
+        let queried = (is_button_held(rsnx_button) && is_button_held(arp_button))
+            && !(group_button.pressed()
+                || scale_button.pressed()
+                || stereo_button.pressed()
+                || cv_assignment_button.pressed());
+
+        let parameter = &mut self.parameters.scale_offsets;
+
+        if queried || requested_increase || requested_decrease {
+            let group_index = self.parameters.scale.selected_group_id() as usize;
+            let scale_index = self.parameters.scale.selected_scale_index();
+            let note_index = self.arp.last_note_index() as usize;
+            let scale_size = self.parameters.scale.selected_scale_size();
+
+            if !parameter.locked() && scale_size <= SCALE_OFFSET_MAX_STEPS {
+                if requested_increase {
+                    *needs_save |= parameter.request_increase(group_index, scale_index, note_index);
+                } else if requested_decrease {
+                    *needs_save |= parameter.request_decrease(group_index, scale_index, note_index);
+                }
+            }
+
+            let offset = parameter.offset(group_index, scale_index, note_index);
+            display_request.set_queried_attribute(Screen::offset_query(offset));
+        } else if requested_lock {
+            let locked = parameter.toggle_lock();
+            display_request.set_queried_attribute(if locked {
+                Screen::offset_lock()
+            } else {
+                Screen::offset_unlock()
+            });
+        } else if requested_reset {
+            let group_index = self.parameters.scale.selected_group_id() as usize;
+            let scale_index = self.parameters.scale.selected_scale_index();
+            *needs_save |= parameter.reset_scale(group_index, scale_index);
+            display_request.set_queried_attribute(Screen::offset_reset());
+        }
+    }
+
     fn reconcile_arp_mode(
         &mut self,
         display_request: &mut display_request::DisplayRequest,
@@ -473,7 +536,15 @@ impl Controller {
                 &mut self.random_generator,
             );
 
-            if let Some((note, index)) = self.arp.pop(&mut self.random_generator) {
+            let group_index = self.parameters.scale.selected_group_id() as usize;
+            let scale_index = self.parameters.scale.selected_scale_index();
+
+            if let Some((note, index)) = self.arp.pop(
+                &mut self.random_generator,
+                self.parameters
+                    .scale_offsets
+                    .scale_offsets_ref(group_index, scale_index),
+            ) {
                 display_request.set_fallback_attribute(Screen::step(note.index() as usize));
                 let dsp_trigger_attributes = DSPTriggerAttributes {
                     frequency: note.tone().frequency(),

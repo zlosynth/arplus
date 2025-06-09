@@ -137,9 +137,11 @@ mod tests {
     }
 
     #[test]
-    fn store_fits_into_one_page() {
+    fn store_fits_in_two_pages() {
+        // XXX: If this is changed, `firmware/src/flash_memory.rs:SAVE_SIZE_IN_SECTORS`
+        // should be adjusted accordingly.
         let page_size = 256;
         let store_size = mem::size_of::<WrappedSave>();
-        assert!(store_size < page_size);
+        assert!(store_size <= page_size * 2);
     }
 }
