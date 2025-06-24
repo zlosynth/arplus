@@ -80,7 +80,7 @@ impl ControlInputInterface {
 
             self.pots
                 .sample(self.cycle, &mut self.adc_1, &mut self.adc_2);
-            self.buttons.sample(self.cycle);
+            self.buttons.sample();
 
             // XXX: Selection happens at the end so the signal gets a chance
             // to propagate to mux before the next reading cycle.

@@ -17,10 +17,22 @@ pub struct Button {
 
 #[derive(Debug, defmt::Format)]
 pub struct Pins {
-    pub button_mux: ButtonMuxPin,
+    pub button_1: Button1Pin,
+    pub button_2: Button2Pin,
+    pub button_3: Button3Pin,
+    pub button_4: Button4Pin,
+    pub button_5: Button5Pin,
+    pub button_6: Button6Pin,
+    pub button_7: Button7Pin,
 }
 
-pub type ButtonMuxPin = gpio::gpiob::PB8<gpio::Input>;
+pub type Button1Pin = gpio::gpioc::PC3<gpio::Input>;
+pub type Button2Pin = gpio::gpiod::PD3<gpio::Input>;
+pub type Button3Pin = gpio::gpiod::PD2<gpio::Input>;
+pub type Button4Pin = gpio::gpioc::PC12<gpio::Input>;
+pub type Button5Pin = gpio::gpioc::PC8<gpio::Input>;
+pub type Button6Pin = gpio::gpioc::PC2<gpio::Input>;
+pub type Button7Pin = gpio::gpioc::PC9<gpio::Input>;
 
 impl Buttons {
     pub fn new(pins: Pins) -> Self {
@@ -38,15 +50,14 @@ impl Buttons {
         }
     }
 
-    pub fn sample(&mut self, cycle: u8) {
-        // NOTE: The order of multiplexer pins is not matching the numbering of
-        // buttons on the module.
-        const CYCLE_TO_BUTTON: [usize; 8] = [3, 2, 1, 6, 5, 999, 4, 0];
-        // NOTE: No button is mapped to multiplexer's input 5.
-        if cycle < 8 && cycle != 5 {
-            let button_index = CYCLE_TO_BUTTON[cycle as usize];
-            self.buttons[button_index].set(self.pins.button_mux.is_low());
-        }
+    pub fn sample(&mut self) {
+        self.buttons[0].set(self.pins.button_1.is_low());
+        self.buttons[1].set(self.pins.button_2.is_low());
+        self.buttons[2].set(self.pins.button_3.is_low());
+        self.buttons[3].set(self.pins.button_4.is_low());
+        self.buttons[4].set(self.pins.button_5.is_low());
+        self.buttons[5].set(self.pins.button_6.is_low());
+        self.buttons[6].set(self.pins.button_7.is_low());
     }
 
     pub fn values(&self) -> [bool; BUTTONS] {

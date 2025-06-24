@@ -22,9 +22,9 @@ pub struct Pins {
     pub led_rclk: LedRclk,   // Latch
 }
 
-type LedSer = gpio::gpiob::PB4<gpio::Output>;
-type LedSrclk = gpio::gpioc::PC11<gpio::Output>;
-type LedRclk = gpio::gpioc::PC10<gpio::Output>;
+type LedSer = gpio::gpioc::PC10<gpio::Output>;
+type LedSrclk = gpio::gpiob::PB4<gpio::Output>;
+type LedRclk = gpio::gpioc::PC11<gpio::Output>;
 
 impl ControlOutputInterface {
     pub fn new(config: Config) -> Self {

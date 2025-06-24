@@ -79,7 +79,13 @@ impl System {
             };
             ControlInputInterface::new(ControlInputConfig {
                 buttons_pins: ControlInputButtonsPins {
-                    button_mux: pins.GPIO.PIN_B7.into_floating_input(),
+                    button_1: pins.GPIO.PIN_D9.into_pull_up_input(),
+                    button_2: pins.GPIO.PIN_D10.into_pull_up_input(),
+                    button_3: pins.GPIO.PIN_D7.into_pull_up_input(),
+                    button_4: pins.GPIO.PIN_D6.into_pull_up_input(),
+                    button_5: pins.GPIO.PIN_D5.into_pull_up_input(),
+                    button_6: pins.GPIO.PIN_D8.into_pull_up_input(),
+                    button_7: pins.GPIO.PIN_D4.into_pull_up_input(),
                 },
                 pots_pins: ControlInputPotsPins {
                     pot_mux: pins.GPIO.PIN_A2.into_analog(),
@@ -120,9 +126,9 @@ impl System {
                 .enable();
             ControlOutputInterface::new(ControlOutputConfig {
                 pins: ControlOutputPins {
-                    led_ser: pins.GPIO.PIN_D1.into_push_pull_output(),
-                    led_srclk: pins.GPIO.PIN_D2.into_push_pull_output(),
-                    led_rclk: pins.GPIO.PIN_D3.into_push_pull_output(),
+                    led_ser: pins.GPIO.PIN_D3.into_push_pull_output(),
+                    led_srclk: pins.GPIO.PIN_D1.into_push_pull_output(),
+                    led_rclk: pins.GPIO.PIN_D2.into_push_pull_output(),
                 },
                 dac,
             })
@@ -132,7 +138,7 @@ impl System {
         // and lib daisy https://github.com/electro-smith/libDaisy/blob/master/src/daisy_patch_sm.cpp
         // report this issue, and fix it in my daisy library.
         let audio_probe_interface =
-            AudioProbeInterface::new(pins.GPIO.PIN_B5.into_push_pull_output());
+            AudioProbeInterface::new(pins.GPIO.PIN_B8.into_push_pull_output());
 
         Self {
             frequency: system_frequency,

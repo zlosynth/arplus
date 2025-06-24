@@ -28,7 +28,7 @@ pub struct Broadcaster {
     pin: BroadcasterPin,
 }
 
-pub type BroadcasterPin = gpio::gpioc::PC13<gpio::Output>;
+pub type BroadcasterPin = gpio::gpiob::PB9<gpio::Output>;
 
 impl Broadcaster {
     pub fn new(pin: BroadcasterPin) -> Self {
