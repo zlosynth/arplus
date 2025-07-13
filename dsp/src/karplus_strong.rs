@@ -37,7 +37,7 @@ pub struct KarplusStrong {
     filter: StateVariableFilter,
     envelope_follower: EnvelopeFollower,
     reset: usize,
-    trigger_random_coefficient: f32,
+    haas_distance: f32,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
@@ -65,7 +65,7 @@ impl KarplusStrong {
             envelope_follower: EnvelopeFollower::new(ATTACK, DECAY, TRESHOLD, sample_rate),
             reset: RESET,
             phase_delay: 0.0,
-            trigger_random_coefficient: 0.0,
+            haas_distance: 0.0,
         };
         // XXX: Without this silent trigger, the first trigger on the string is mute.
         s.trigger_without_random(0.0, 10.0, 0.0, 0.0, 0.0);
@@ -145,8 +145,7 @@ impl KarplusStrong {
                     *r += filtered_sample * 0.5 * width * reset_fade;
                 }
                 StereoMode::Haas => {
-                    let distance =
-                        MAX_HAAS_DISTANCE * self.trigger_random_coefficient * width * 2.0 - 1.0;
+                    let distance = self.haas_distance;
                     if distance > 0.0 {
                         // NOTE: Tilt left.
                         let delayed_sample = self.buffer.peek(distance as usize);
@@ -214,10 +213,16 @@ impl KarplusStrong {
         contour: f32,
         pluck: f32,
         cutoff: f32,
+        width: f32,
         random: &mut impl Random,
     ) {
         self.trigger_without_random(feedback, frequency, contour, pluck, cutoff);
-        self.trigger_random_coefficient = random.normal();
+
+        let random_width_and_direction_coef = random.normal() * 2.0 - 1.0;
+        let scaled_coef = random_width_and_direction_coef * taper::log(width);
+        let in_ms = scaled_coef * MAX_HAAS_DISTANCE;
+        let in_samples = in_ms * self.sample_rate;
+        self.haas_distance = in_samples;
     }
 
     // NOTE: This is a separate method, so it can be called from `new` in order

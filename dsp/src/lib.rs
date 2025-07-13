@@ -182,6 +182,8 @@ impl Dsp {
             string.karplus_strong.set_cutoff(attributes.cutoff);
         }
 
+        self.stereo_mode = attributes.stereo_mode;
+
         if matches!(self.stereo_mode, StereoMode::PingPong) {
             // XXX: This effectively disables the split to root and rest.
             self.set_root_strings_len(8);
@@ -224,6 +226,7 @@ impl Dsp {
                 trigger.contour,
                 trigger.pluck,
                 attributes.cutoff,
+                attributes.width,
                 random,
             );
             string.is_root = trigger.is_root;
