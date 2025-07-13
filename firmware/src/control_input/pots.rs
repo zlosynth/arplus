@@ -40,16 +40,16 @@ impl Pots {
                 // NOTE: To calibrate, set this to (0.0, 1.0), remove clamping
                 // from Pot.set, and run diagnostics. Note the minimum and
                 // maximum of each pot and then use it here.
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.99, 0.01),
-                Pot::new(0.505, 0.99),
-                Pot::new(0.505, 0.99),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.99, 0.01, 100),
+                Pot::new(0.505, 0.99, 1000),
+                Pot::new(0.505, 0.99, 1000),
             ],
             pins,
         }
@@ -112,10 +112,10 @@ impl Pots {
 }
 
 impl Pot {
-    fn new(adc_min: f32, adc_max: f32) -> Self {
+    fn new(adc_min: f32, adc_max: f32, sample_rate: usize) -> Self {
         let offset = -adc_min;
         let multiplier = 1.0 / (adc_max - adc_min);
-        let filter = OnePoleFilter::new(1000.0, 10.0);
+        let filter = OnePoleFilter::new(sample_rate as f32, 20.0);
         Self {
             value: 0.0,
             offset,
