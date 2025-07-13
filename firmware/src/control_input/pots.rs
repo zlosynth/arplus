@@ -97,12 +97,12 @@ impl Pots {
 
     pub fn values(&self) -> [f32; POTS] {
         [
-            self.pots[0].value,
+            self.pots[3].value,
             self.pots[1].value,
             self.pots[2].value,
-            self.pots[3].value,
-            self.pots[4].value,
+            self.pots[0].value,
             self.pots[5].value,
+            self.pots[4].value,
             self.pots[6].value,
             self.pots[7].value,
             self.pots[8].value,

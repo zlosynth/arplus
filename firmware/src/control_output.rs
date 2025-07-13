@@ -40,9 +40,7 @@ impl ControlOutputInterface {
         // NOTE: Minimal pulse time for RCLK is guaranteed from both sides.
         self.pins.led_rclk.set_low();
         for i in 0..8 {
-            // NOTE: Shift register is wired from top to bottom, but the
-            // state expects bottom up.
-            self.pins.led_ser.set_state(state.leds[7 - i].into());
+            self.pins.led_ser.set_state(state.leds[i].into());
             // NOTE: Minimal setup time of SER before SRCLK is 125 ns.
             cortex_m::asm::delay(USECOND);
 

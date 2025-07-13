@@ -106,12 +106,12 @@ impl Inputs {
 
     pub fn apply_input_snapshot(&mut self, snapshot: ControlInputSnapshot) {
         self.pots.tone.reconcile(snapshot.pots[0]);
-        self.pots.tonic.reconcile(snapshot.pots[1]);
-        self.pots.chord.reconcile(snapshot.pots[2]);
+        self.pots.chord.reconcile(snapshot.pots[1]);
+        self.pots.tonic.reconcile(snapshot.pots[2]);
         self.pots.chord_size.reconcile(snapshot.pots[3]);
-        self.pots.contour.reconcile(snapshot.pots[4]);
+        self.pots.resonance.reconcile(snapshot.pots[4]);
         self.pots.cutoff.reconcile(snapshot.pots[5]);
-        self.pots.resonance.reconcile(snapshot.pots[6]);
+        self.pots.contour.reconcile(snapshot.pots[6]);
         self.pots.pluck.reconcile(snapshot.pots[7]);
         self.pots.gain.reconcile(snapshot.pots[8]);
         self.pots.width.reconcile(snapshot.pots[9]);
@@ -126,13 +126,13 @@ impl Inputs {
         self.gates.rsnx.reconcile(snapshot.gates[0]);
         self.gates.trigger.reconcile(snapshot.gates[1]);
 
-        self.buttons.group.reconcile(snapshot.buttons[0]);
-        self.buttons.scale.reconcile(snapshot.buttons[1]);
+        self.buttons.trigger.reconcile(snapshot.buttons[0]);
+        self.buttons.rsnx.reconcile(snapshot.buttons[1]);
         self.buttons.arp.reconcile(snapshot.buttons[2]);
-        self.buttons.trigger.reconcile(snapshot.buttons[3]);
-        self.buttons.rsnx.reconcile(snapshot.buttons[4]);
-        self.buttons.stereo.reconcile(snapshot.buttons[5]);
-        self.buttons.cv_assignment.reconcile(snapshot.buttons[6]);
+        self.buttons.group.reconcile(snapshot.buttons[3]);
+        self.buttons.stereo.reconcile(snapshot.buttons[4]);
+        self.buttons.cv_assignment.reconcile(snapshot.buttons[5]);
+        self.buttons.scale.reconcile(snapshot.buttons[6]);
     }
 
     pub fn copy_config(&self) -> PersistentConfig {
