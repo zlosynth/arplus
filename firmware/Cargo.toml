@@ -34,7 +34,7 @@ stm32h7xx-hal = { version = "0.16", features = [
   "revision_v",
   "defmt",
 ] }
-daisy = { version = "0.10.0", features = ["patch_sm", "sampling_rate_96khz"] }
+daisy = { version = "0.11.0", features = ["patch_sm", "sampling_rate_96khz", "block_length_64"] }
 fugit = "0.3"
 nb = "1"
 heapless = "0.7"

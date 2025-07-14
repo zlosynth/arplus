@@ -94,13 +94,13 @@ impl Dsp {
 
     pub fn process(
         &mut self,
-        buffer: &mut [(f32, f32); 32],
+        buffer: &mut [(f32, f32); 64],
         input_connected: bool,
         random: &mut impl Random,
     ) {
-        let mut buffer_left = [0.0; 32];
-        let mut buffer_right = [0.0; 32];
-        let mut noise_buffer = [0.0; 32];
+        let mut buffer_left = [0.0; 64];
+        let mut buffer_right = [0.0; 64];
+        let mut noise_buffer = [0.0; 64];
 
         let noise_buffer = if input_connected {
             for (i, x) in noise_buffer.iter_mut().enumerate() {
