@@ -77,11 +77,10 @@ fn compare_circular_buffers_with_tolerance(
     b: &[bool; 32],
     tolerance: usize,
 ) -> bool {
-    assert_eq!(a.len(), b.len());
-    'outter: for offset in 0..a.len() {
+    'outter: for offset in 0..32 {
         let mut misses = 0;
-        for i in 0..a.len() {
-            if a[(offset + i) % a.len()] != b[i] {
+        for i in 0..32 {
+            if a[mod_32(offset + i)] != b[i] {
                 misses += 1;
                 if misses > tolerance {
                     continue 'outter;
