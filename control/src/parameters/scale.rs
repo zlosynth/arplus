@@ -86,7 +86,7 @@ impl Scale {
             cv_scale,
             cv_controls_scale: false,
             pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1, 1.0),
-            cv_tonic: Discrete::new(config.cv_tonic, 12 * 2 + 1, 0.1, 5.0),
+            cv_tonic: Discrete::new(config.cv_tonic, 12 * 2 + 1, 0.1, 10.0),
             scale_cache: None,
         };
         s.update_scale_cache();
@@ -144,7 +144,7 @@ impl Scale {
         };
 
         let changed_tonic = {
-            let tonic_cv = tonic_cv.unwrap_or(0.0);
+            let tonic_cv = tonic_cv.unwrap_or(0.0) + 5.0;
             self.pot_tonic.reconcile(tonic_pot) || self.cv_tonic.reconcile(tonic_cv)
         };
 
