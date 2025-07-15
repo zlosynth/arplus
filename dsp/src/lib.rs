@@ -36,6 +36,7 @@ pub struct Dsp {
     dc_blocker: [DCBlocker; 2],
     stereo_mode: StereoMode,
     width: f32,
+    burst_input: bool,
 }
 
 pub struct String {
@@ -89,6 +90,7 @@ impl Dsp {
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
             stereo_mode: StereoMode::Haas,
             width: 0.0,
+            burst_input: false,
         }
     }
 
@@ -110,6 +112,7 @@ impl Dsp {
         } else {
             None
         };
+        self.burst_input = noise_buffer.is_some();
 
         match self.stereo_mode {
             StereoMode::Haas => {
@@ -219,11 +222,15 @@ impl Dsp {
                 }
             };
 
+            // NOTE: With anything shorter than 60 ms, any input will sound
+            // like a noise.
+            let minimal_burst_interval = if self.burst_input { 0.06 } else { 0.0 };
+
             let string = &mut self.strings[string_index];
             string.karplus_strong.trigger(
                 0.99,
                 trigger.frequency,
-                trigger.contour,
+                trigger.contour + minimal_burst_interval,
                 trigger.pluck,
                 attributes.cutoff,
                 attributes.width,
