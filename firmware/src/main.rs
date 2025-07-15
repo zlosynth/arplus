@@ -217,6 +217,10 @@ mod app {
 
         queue_utils::warn_about_capacity("dsp_attributes", dsp_attributes_consumer);
 
+        // XXX: Selection happens already here to put as much distance between
+        // the setting and reading in the next DSP cycle.
+        audio_probe_interface.broadcaster.tick();
+
         if let Some(attributes) = queue_utils::dequeue_last(dsp_attributes_consumer) {
             dsp.set_attributes(attributes, random_generator);
         }
@@ -226,10 +230,6 @@ mod app {
             let input_connected = !audio_probe_interface.detector.detected();
             dsp.process(buffer, input_connected, random_generator);
         });
-
-        // XXX: Selection happens at the end so the signal gets a chance
-        // to propagate to probe detectors before the next reading cycle.
-        audio_probe_interface.broadcaster.tick();
     }
 
     #[task(

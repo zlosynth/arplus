@@ -53,27 +53,44 @@ pub struct Detector {
 
 impl Detector {
     pub fn write_from_left(&mut self, buffer: &[(f32, f32)]) {
-        let middle_sample_index = buffer.len() / 2;
-        self.write(buffer[middle_sample_index].0 > 0.0);
+        let last_sample_index = buffer.len() - 1;
+        self.write(buffer[last_sample_index].0 > 0.0);
     }
 
     fn write(&mut self, value: bool) {
-        self.queue[self.position] = value;
+        // NOTE: The audio input is read inverted.
+        self.queue[self.position] = !value;
         self.position = mod_32(self.position + 1);
     }
 
     pub fn detected(&mut self) -> bool {
         if self.position == 0 {
-            let unmatched: u32 = self
-                .queue
-                .iter()
-                .zip(&SEQUENCE)
-                .map(|(q, s)| u32::from(q != s))
-                .sum();
-            self.detected_cache = unmatched <= 4;
+            self.detected_cache =
+                compare_circular_buffers_with_tolerance(&self.queue, &SEQUENCE, 4);
         }
         self.detected_cache
     }
+}
+
+fn compare_circular_buffers_with_tolerance(
+    a: &[bool; 32],
+    b: &[bool; 32],
+    tolerance: usize,
+) -> bool {
+    assert_eq!(a.len(), b.len());
+    'outter: for offset in 0..a.len() {
+        let mut misses = 0;
+        for i in 0..a.len() {
+            if a[(offset + i) % a.len()] != b[i] {
+                misses += 1;
+                if misses > tolerance {
+                    continue 'outter;
+                }
+            }
+        }
+        return true;
+    }
+    false
 }
 
 fn mod_32(x: usize) -> usize {
