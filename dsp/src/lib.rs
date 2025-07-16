@@ -208,13 +208,11 @@ impl Dsp {
                     _ => {
                         if trigger.is_root {
                             let string_index = self.root_string_index();
-                            defmt::info!("A {:?}", string_index);
                             self.bump_root_string_index();
                             let next_string_index = self.root_string_index();
                             (string_index, next_string_index)
                         } else {
                             let string_index = self.rest_string_index();
-                            defmt::info!("B {:?}", string_index);
                             self.bump_rest_string_index();
                             let next_string_index = self.rest_string_index();
                             (string_index, next_string_index)
