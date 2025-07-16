@@ -1,6 +1,9 @@
 use super::primitives::continuous::Continuous;
 use super::primitives::math;
 
+const MIN: f32 = 0.2;
+const MAX: f32 = 2.0;
+
 pub struct Gain {
     continuous: Continuous,
 }
@@ -17,6 +20,6 @@ impl Gain {
     }
 
     pub fn value(&self) -> f32 {
-        self.continuous.value() * 2.0
+        MIN + self.continuous.value() * (MAX - MIN)
     }
 }
