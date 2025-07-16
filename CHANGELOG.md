@@ -13,6 +13,7 @@ backwards compatibility.
 * Rework the interface to provide more direct control over attributes.
 * Make it possible to offset scale steps by up to 4 quarter notes in either
   direction.
+* Allow using a custom "noise" burst source.
 
 ## 0.1.1
 
