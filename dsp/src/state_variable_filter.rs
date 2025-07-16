@@ -36,11 +36,14 @@ impl StateVariableFilter {
 
     pub fn set_frequency(&mut self, frequency: f32) -> &mut Self {
         self.frequency = frequency;
-        // self.f = 2.0 * libm::sinf((PI * self.frequency) / self.sample_rate as f32);
-        // NOTE: Use the bilinear transform for stability. This does not seem
-        // to be absolutely necessary though.
-        let omega = 2.0 * PI * self.frequency / self.sample_rate as f32;
-        self.f = libm::tanf(omega / 2.0); // Use tan(omega/2) for better stability
+        self.f = 2.0 * libm::sinf((PI * self.frequency) / self.sample_rate as f32);
+        // NOTE: This used to use bilinear transform for stability. It did not
+        // seem necessary though. The code was however too slow and caused
+        // crackling, so I moved back to the old version. Keeping the snippet
+        // arround in case stability will become an issue - in which case
+        // I'd probably move the calculation under control.
+        // let omega = 2.0 * PI * self.frequency / self.sample_rate as f32;
+        // self.f = libm::tanf(omega / 2.0); // Use tan(omega/2) for better stability
         self
     }
 
