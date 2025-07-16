@@ -17,6 +17,6 @@ impl Gain {
     }
 
     pub fn value(&self) -> f32 {
-        self.continuous.value()
+        self.continuous.value() * 2.0
     }
 }
