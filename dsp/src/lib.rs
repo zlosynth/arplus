@@ -208,11 +208,13 @@ impl Dsp {
                     _ => {
                         if trigger.is_root {
                             let string_index = self.root_string_index();
+                            defmt::info!("A {:?}", string_index);
                             self.bump_root_string_index();
                             let next_string_index = self.root_string_index();
                             (string_index, next_string_index)
                         } else {
                             let string_index = self.rest_string_index();
+                            defmt::info!("B {:?}", string_index);
                             self.bump_rest_string_index();
                             let next_string_index = self.rest_string_index();
                             (string_index, next_string_index)
@@ -251,12 +253,17 @@ impl Dsp {
         // adjusted if the number of strings changes.
         assert_eq!(self.strings.len(), 8);
 
-        self.root_strings_len = match len {
+        let new_root_strings_len = match len {
             1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
             3..=6 => 3,
             _ => 2,
         };
 
+        if new_root_strings_len == self.root_strings_len {
+            return;
+        }
+
+        self.root_strings_len = new_root_strings_len;
         self.active_root_string_index = 0;
         self.active_rest_string_index = self.root_strings_len;
     }
