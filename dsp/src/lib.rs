@@ -187,9 +187,11 @@ impl Dsp {
 
         self.stereo_mode = attributes.stereo_mode;
 
-        if matches!(self.stereo_mode, StereoMode::PingPong) {
-            // XXX: This effectively disables the split to root and rest.
-            self.set_root_strings_len(8);
+        if matches!(attributes.stereo_mode, StereoMode::PingPong) {
+            // XXX: Ping pong does not distinguish between root and
+            // rest, so it can consistently shift left and right,
+            // no matter how big is the chord.
+            self.share_strings_between_root_and_rest();
         } else {
             self.set_root_strings_len(attributes.chord_size);
         }
@@ -198,12 +200,9 @@ impl Dsp {
             let (string_index, next_string_index) = {
                 match self.stereo_mode {
                     StereoMode::PingPong => {
-                        // XXX: Ping pong does not distinguish between root and
-                        // rest, so it can consistently shift left and right,
-                        // no matter how big is the chord.
-                        let string_index = self.root_string_index();
-                        self.bump_root_string_index();
-                        let next_string_index = self.root_string_index();
+                        let string_index = self.shared_string_index();
+                        self.bump_shared_string_index();
+                        let next_string_index = self.shared_string_index();
                         (string_index, next_string_index)
                     }
                     _ => {
@@ -252,26 +251,19 @@ impl Dsp {
         // adjusted if the number of strings changes.
         assert_eq!(self.strings.len(), 8);
 
-        let new_root_strings_len = match len {
+        self.root_strings_len = match len {
             1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
             3..=6 => 3,
-            8 => 8, // XXX: Special value for ping pong, treating all notes as root
             _ => 2,
         };
 
-        if new_root_strings_len == self.root_strings_len {
-            return;
-        }
+        self.active_root_string_index = 0;
+        self.active_rest_string_index = self.root_strings_len;
+    }
 
-        self.root_strings_len = new_root_strings_len;
-
-        if self.active_root_string_index >= self.root_strings_len {
-            self.active_root_string_index = 0;
-        }
-
-        if self.active_rest_string_index < self.root_strings_len {
-            self.active_rest_string_index = self.root_strings_len;
-        }
+    fn share_strings_between_root_and_rest(&mut self) {
+        self.root_strings_len = self.strings.len();
+        self.active_rest_string_index = 0;
     }
 
     fn root_string_index(&mut self) -> usize {
@@ -292,6 +284,14 @@ impl Dsp {
         if self.active_rest_string_index >= self.strings.len() {
             self.active_rest_string_index = self.root_strings_len;
         }
+    }
+
+    fn shared_string_index(&mut self) -> usize {
+        self.root_string_index()
+    }
+
+    fn bump_shared_string_index(&mut self) {
+        self.bump_root_string_index();
     }
 }
 
