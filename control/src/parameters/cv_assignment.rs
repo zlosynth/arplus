@@ -1,6 +1,5 @@
 use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Toggle};
 
-// TODO: Just a single discrete
 pub struct CvAssignmentHandler {
     toggle: Toggle,
 }
