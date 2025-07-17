@@ -50,7 +50,7 @@ fn check_stability(
         stereo_mode: StereoMode::Haas,
     };
 
-    let mut buffer = [(0.0, 0.0); 32];
+    let mut buffer = [(0.0, 0.0); 64];
 
     let buffers = ((SAMPLE_RATE * SECONDS) / buffer.len() as f32) as usize;
     let control_every_x_buffers = ((SAMPLE_RATE / buffer.len() as f32) / CONTROL_RATE) as usize;
