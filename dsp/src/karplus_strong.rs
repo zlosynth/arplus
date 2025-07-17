@@ -212,6 +212,7 @@ impl KarplusStrong {
             .set_frequency((cutoff * self.frequency).clamp(20.0, 10_500.0));
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn trigger(
         &mut self,
         feedback: f32,
