@@ -139,12 +139,16 @@ impl KarplusStrong {
 
             match stereo_mode {
                 StereoMode::FocusLeft => {
-                    *l += filtered_sample * 0.5 * width * reset_fade;
-                    *r += filtered_sample * 0.5 * (1.0 - width) * reset_fade;
+                    let volume_left = 0.5 + width * 0.5;
+                    let volume_right = 1.0 - volume_left;
+                    *l += filtered_sample * volume_left * reset_fade;
+                    *r += filtered_sample * volume_right * reset_fade;
                 }
                 StereoMode::FocusRight => {
-                    *l += filtered_sample * 0.5 * (1.0 - width) * reset_fade;
-                    *r += filtered_sample * 0.5 * width * reset_fade;
+                    let volume_right = 0.5 + width * 0.5;
+                    let volume_left = 1.0 - volume_right;
+                    *l += filtered_sample * volume_left * reset_fade;
+                    *r += filtered_sample * volume_right * reset_fade;
                 }
                 StereoMode::Haas => {
                     let distance = self.haas_distance;
