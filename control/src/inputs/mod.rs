@@ -118,10 +118,10 @@ impl Inputs {
 
         self.cvs.tone.reconcile(snapshot.cvs[0]);
         self.cvs.chord.reconcile(snapshot.cvs[1]);
-        self.cvs.contour.reconcile(snapshot.cvs[2]);
-        self.cvs.cutoff.reconcile(snapshot.cvs[3]);
-        self.cvs.resonance.reconcile(snapshot.cvs[4]);
-        self.cvs.assignable.reconcile(snapshot.cvs[5]);
+        self.cvs.assignable.reconcile(snapshot.cvs[2]);
+        self.cvs.cutoff.reconcile(snapshot.cvs[4]);
+        self.cvs.contour.reconcile(snapshot.cvs[3]);
+        self.cvs.resonance.reconcile(snapshot.cvs[5]);
 
         self.gates.rsnx.reconcile(snapshot.gates[0]);
         self.gates.trigger.reconcile(snapshot.gates[1]);
