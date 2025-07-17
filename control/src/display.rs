@@ -5,12 +5,15 @@ use crate::parameters::StereoMode;
 use crate::scales::{GroupId, Tonic};
 
 const QUERY_TIME: usize = 2000;
+const FAILURE_TIME: usize = 2000;
+const ANIMATION_TIME: usize = 1000;
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, defmt::Format)]
 pub enum Priority {
     Failure = 0,
     Dialog,
+    Animation,
     Queried,
     Fallback,
 }
@@ -141,8 +144,14 @@ impl Display {
         }
 
         if let Some(page) = self.prioritized[Priority::Failure as usize].as_ref() {
-            if page.clock > 2000 {
+            if page.clock > FAILURE_TIME {
                 self.reset(Priority::Failure);
+            }
+        }
+
+        if let Some(page) = self.prioritized[Priority::Animation as usize].as_ref() {
+            if page.clock > ANIMATION_TIME {
+                self.reset(Priority::Animation);
             }
         }
 
@@ -526,22 +535,22 @@ impl OffsetScreen {
             Self::Lock => {
                 let mut leds = [false; 8];
 
-                if clock > QUERY_TIME / 5 {
+                if clock > ANIMATION_TIME / 8 {
                     leds[0] = true;
                     leds[7] = true;
                 }
 
-                if clock > 2 * QUERY_TIME / 5 {
+                if clock > 2 * ANIMATION_TIME / 8 {
                     leds[1] = true;
                     leds[6] = true;
                 }
 
-                if clock > 3 * QUERY_TIME / 5 {
+                if clock > 3 * ANIMATION_TIME / 8 {
                     leds[2] = true;
                     leds[5] = true;
                 }
 
-                if clock > 4 * QUERY_TIME / 5 {
+                if clock > 4 * ANIMATION_TIME / 8 {
                     leds[3] = true;
                     leds[4] = true;
                 }
@@ -551,22 +560,22 @@ impl OffsetScreen {
             Self::Unlock => {
                 let mut leds = [true; 8];
 
-                if clock > QUERY_TIME / 5 {
+                if clock > ANIMATION_TIME / 8 {
                     leds[3] = false;
                     leds[4] = false;
                 }
 
-                if clock > 2 * QUERY_TIME / 5 {
+                if clock > 2 * ANIMATION_TIME / 8 {
                     leds[2] = false;
                     leds[5] = false;
                 }
 
-                if clock > 3 * QUERY_TIME / 5 {
+                if clock > 3 * ANIMATION_TIME / 8 {
                     leds[1] = false;
                     leds[6] = false;
                 }
 
-                if clock > 4 * QUERY_TIME / 5 {
+                if clock > 4 * ANIMATION_TIME / 8 {
                     leds[0] = false;
                     leds[7] = false;
                 }
@@ -574,7 +583,7 @@ impl OffsetScreen {
                 leds
             }
             Self::Reset => {
-                let phase = (clock / (QUERY_TIME / 5)) % 2;
+                let phase = (clock / (ANIMATION_TIME / 5)) % 2;
                 if phase == 0 {
                     [true; 8]
                 } else {

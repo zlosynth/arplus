@@ -355,10 +355,13 @@ impl Controller {
         let tonic_cv = self.tonic_cv();
         let parameter = &mut self.parameters.scale;
 
+        let offset_config_active =
+            self.inputs.buttons.rsnx.pressed() && !self.parameters.scale_offsets.locked();
+
         let group_held = is_button_held(group_button);
         let scale_held = is_button_held(scale_button);
-        let group_tapped = was_button_tapped(group_button);
-        let scale_tapped = was_button_tapped(scale_button);
+        let group_tapped = was_button_tapped(group_button) && !offset_config_active;
+        let scale_tapped = was_button_tapped(scale_button) && !offset_config_active;
 
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
@@ -418,24 +421,16 @@ impl Controller {
         needs_save: &mut bool,
     ) {
         let rsnx_button = &self.inputs.buttons.rsnx;
-        let arp_button = &self.inputs.buttons.arp;
         let group_button = &self.inputs.buttons.group;
         let scale_button = &self.inputs.buttons.scale;
         let stereo_button = &self.inputs.buttons.stereo;
         let cv_assignment_button = &self.inputs.buttons.cv_assignment;
 
-        let requested_increase =
-            rsnx_button.pressed() && arp_button.pressed() && group_button.clicked();
-        let requested_decrease =
-            rsnx_button.pressed() && arp_button.pressed() && scale_button.clicked();
-        let requested_lock =
-            rsnx_button.pressed() && arp_button.pressed() && cv_assignment_button.clicked();
-        let requested_reset = is_button_held(rsnx_button)
-            && is_button_held(arp_button)
-            && is_button_held(stereo_button)
-            && is_button_held(stereo_button)
-            && is_button_held(cv_assignment_button);
-        let queried = (is_button_held(rsnx_button) && is_button_held(arp_button))
+        let requested_increase = rsnx_button.pressed() && group_button.clicked();
+        let requested_decrease = rsnx_button.pressed() && scale_button.clicked();
+        let requested_lock = rsnx_button.pressed() && cv_assignment_button.clicked();
+        let requested_reset = rsnx_button.pressed() && stereo_button.held_for() > 1000;
+        let queried = is_button_held(rsnx_button)
             && !(group_button.pressed()
                 || scale_button.pressed()
                 || stereo_button.pressed()
@@ -451,8 +446,10 @@ impl Controller {
 
             if !parameter.locked() && scale_size <= SCALE_OFFSET_MAX_STEPS {
                 if requested_increase {
+                    defmt::info!("Requested scales offset increase");
                     *needs_save |= parameter.request_increase(group_index, scale_index, note_index);
                 } else if requested_decrease {
+                    defmt::info!("Requested scales offset decrease");
                     *needs_save |= parameter.request_decrease(group_index, scale_index, note_index);
                 }
             }
@@ -461,16 +458,21 @@ impl Controller {
             display_request.set_queried_attribute(Screen::offset_query(offset));
         } else if requested_lock {
             let locked = parameter.toggle_lock();
-            display_request.set_queried_attribute(if locked {
+            display_request.set_offset_animation(if locked {
+                defmt::info!("Requested scales offset lock");
                 Screen::offset_lock()
             } else {
+                defmt::info!("Requested scales offset unlock");
                 Screen::offset_unlock()
             });
         } else if requested_reset {
-            let group_index = self.parameters.scale.selected_group_id() as usize;
-            let scale_index = self.parameters.scale.selected_scale_index();
-            *needs_save |= parameter.reset_scale(group_index, scale_index);
-            display_request.set_queried_attribute(Screen::offset_reset());
+            defmt::info!("Requested scales offset reset");
+            if !parameter.locked() {
+                let group_index = self.parameters.scale.selected_group_id() as usize;
+                let scale_index = self.parameters.scale.selected_scale_index();
+                *needs_save |= parameter.reset_scale(group_index, scale_index);
+                display_request.set_offset_animation(Screen::offset_reset());
+            }
         }
     }
 
@@ -501,6 +503,11 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
+        let rsnx_button = &self.inputs.buttons.rsnx;
+        if rsnx_button.pressed() {
+            return;
+        }
+
         let button = &self.inputs.buttons.stereo;
         let parameter = &mut self.parameters.stereo_mode;
 
@@ -516,6 +523,11 @@ impl Controller {
         display_request: &mut display_request::DisplayRequest,
         needs_save: &mut bool,
     ) {
+        let rsnx_button = &self.inputs.buttons.rsnx;
+        if rsnx_button.pressed() {
+            return;
+        }
+
         let button = &self.inputs.buttons.cv_assignment;
         let parameter = &mut self.parameters.cv_assignment;
 

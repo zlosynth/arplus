@@ -4,6 +4,7 @@ pub struct DisplayRequest {
     pub failure: ScreenRequest,
     pub calibration_result: ScreenRequest,
     pub calibration_phase: ScreenRequest,
+    pub offset_locking: ScreenRequest,
     pub queried_attribute: ScreenRequest,
     pub fallback_attribute: ScreenRequest,
 }
@@ -21,6 +22,7 @@ impl DisplayRequest {
             failure: ScreenRequest::Keep,
             calibration_result: ScreenRequest::Keep,
             calibration_phase: ScreenRequest::Keep,
+            offset_locking: ScreenRequest::Keep,
             queried_attribute: ScreenRequest::Keep,
             fallback_attribute: ScreenRequest::Keep,
         }
@@ -34,6 +36,9 @@ impl DisplayRequest {
         self.calibration_phase
             .take()
             .process(display, Priority::Dialog);
+        self.offset_locking
+            .take()
+            .process(display, Priority::Animation);
         self.queried_attribute
             .take()
             .process(display, Priority::Queried);
@@ -52,6 +57,10 @@ impl DisplayRequest {
 
     pub fn reset_calibration_phase(&mut self) {
         self.calibration_phase = ScreenRequest::Reset;
+    }
+
+    pub fn set_offset_animation(&mut self, offset_locking_screen: Screen) {
+        self.offset_locking = ScreenRequest::Set(offset_locking_screen);
     }
 
     pub fn set_queried_attribute(&mut self, queried_attribute: Screen) {
