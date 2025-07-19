@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="38.546024mm"
-   height="30.763468mm"
-   viewBox="0 0 38.546024 30.763467"
+   width="48.64072mm"
+   height="13.144309mm"
+   viewBox="0 0 48.64072 13.144309"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    sodipodi:docname="diagram-group-select.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="3.4495587"
-     inkscape:cx="72.328092"
-     inkscape:cy="63.486381"
+     inkscape:zoom="2.786666"
+     inkscape:cx="65.131594"
+     inkscape:cy="36.602879"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -134,7 +134,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-187.07877,-82.549998)">
+     transform="translate(-175.61191,-78.834684)">
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.331549;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
@@ -268,14 +268,14 @@
     <circle
        style="display:inline;fill:#000000;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
        id="path1450-8-5-56-3-2-6-4-4-7-5-9"
-       cx="221.6145"
-       cy="106.94975"
+       cx="179.62218"
+       cy="85.016525"
        r="1.65" />
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        id="g514-7"
-       transform="translate(-255.76712,-175.75181)">
+       transform="translate(-297.75945,-197.68504)">
       <g
          transform="translate(473.238,289.00708)"
          id="g513-6"
@@ -310,13 +310,13 @@
     <text
        xml:space="preserve"
        style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="221.60869"
-       y="103.46101"
+       x="179.61636"
+       y="81.527786"
        id="text5-6-2-6"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="221.60869"
-         y="103.46101"
+         x="179.61636"
+         y="81.527786"
          id="tspan9-0">click</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.200007;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-0)"

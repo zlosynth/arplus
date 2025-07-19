@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="50.206051mm"
+   width="60.140682mm"
    height="40.162144mm"
-   viewBox="0 0 50.206051 40.162143"
+   viewBox="0 0 60.140682 40.162143"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    sodipodi:docname="diagram-group-query.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="3.4495587"
-     inkscape:cx="86.532807"
-     inkscape:cy="76.241636"
+     inkscape:zoom="3.0692611"
+     inkscape:cx="127.55513"
+     inkscape:cy="81.45283"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -58,7 +58,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-175.41874,-80.9625)">
+     transform="translate(-164.11195,-80.9625)">
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.331549;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
@@ -216,14 +216,14 @@
     <circle
        style="display:inline;fill:#000000;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
        id="path1450-8-5-56-3-2-6-4-4-7-5-9"
-       cx="221.6145"
-       cy="106.94975"
+       cx="168.12222"
+       cy="87.516548"
        r="1.65" />
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        id="g514-7"
-       transform="translate(-255.76712,-175.75181)">
+       transform="translate(-309.25941,-195.18502)">
       <g
          transform="translate(473.238,289.00708)"
          id="g513-6"
@@ -319,13 +319,13 @@
     <text
        xml:space="preserve"
        style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="221.61838"
-       y="103.23476"
+       x="168.1261"
+       y="83.801552"
        id="text5-6-2-6-9"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="221.61838"
-         y="103.23476"
+         x="168.1261"
+         y="83.801552"
          id="tspan9-0-0">hold</tspan></text>
   </g>
 </svg>

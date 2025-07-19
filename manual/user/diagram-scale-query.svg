@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="50.206051mm"
-   height="44.075954mm"
-   viewBox="0 0 50.206051 44.075954"
+   width="60.111404mm"
+   height="40.162144mm"
+   viewBox="0 0 60.111405 40.162143"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    sodipodi:docname="diagram-scale-query.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="3.4495587"
-     inkscape:cx="72.907877"
-     inkscape:cy="86.09797"
+     inkscape:zoom="2.1395331"
+     inkscape:cx="113.34249"
+     inkscape:cy="20.565235"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -58,7 +58,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-175.41874,-80.9625)">
+     transform="translate(-164.61805,-80.9625)">
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.331549;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
@@ -1399,13 +1399,13 @@
     <text
        xml:space="preserve"
        style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="221.61838"
-       y="115.20006"
+       x="168.12608"
+       y="93.916153"
        id="text5-6-2-6-9"><tspan
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="221.61838"
-         y="115.20006"
+         x="168.12608"
+         y="93.916153"
          id="tspan9-0-0">hold</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
@@ -1415,14 +1415,14 @@
     <circle
        style="display:inline;fill:#000000;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.3;stroke-dasharray:none"
        id="path1450-8-5-56-3-2-6-4-6-3-9"
-       cx="221.6145"
-       cy="118.66697"
+       cx="168.12221"
+       cy="97.383064"
        r="1.65" />
     <g
        inkscape:label="Hershey Text"
        style="display:inline;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        id="g519-5"
-       transform="translate(-254.54691,-170.70274)">
+       transform="translate(-308.03921,-191.98664)">
       <g
          transform="translate(472.566,295.683)"
          id="g518-1"
