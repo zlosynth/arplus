@@ -54,33 +54,40 @@ impl Scales {
         const T2: Step = 2 * T;
 
         let diatonic = initialize_group(&[
-            (&[T, T, S, T, T, T, S], None), // Ionian
-            (&[T, S, T, T, T, S, T], None), // Dorian
-            (&[S, T, T, T, S, T, T], None), // Phrygian
-            (&[T, T, T, S, T, T, S], None), // Lydian
-            (&[T, T, S, T, T, S, T], None), // Mixolydian
-            (&[T, S, T, T, S, T, T], None), // Aeolian
-            (&[S, T, T, S, T, T, T], None), // Locrian
+            // Ionian
+            (&[T, T, S, T, T, T, S], None),
+            // Dorian
+            (&[T, S, T, T, T, S, T], None),
+            // Phrygian
+            (&[S, T, T, T, S, T, T], None),
+            // Lydian
+            (&[T, T, T, S, T, T, S], None),
+            // Mixolydian
+            (&[T, T, S, T, T, S, T], None),
+            // Aeolian
+            (&[T, S, T, T, S, T, T], None),
+            // Locrian
+            (&[S, T, T, S, T, T, T], None),
         ]);
         // Sources:
         // * <https://www.maqamworld.com/en/maqam/bayati.php>
         // * <https://en.wikipedia.org/wiki/Arabic_maqam>
         let maqam = initialize_group(&[
-            // Bayati D Ep F G A Bb C D
+            // Bayati, D Ep F G A Bb C D
             (&[Q3, Q3, T, T, S, T, T], None),
-            // Hijaz D Eb Fs G A Bb C D
+            // Hijaz, D Eb Fs G A Bb C D
             (&[S, S3, S, T, S, T, T], None),
-            // Kurd D Eb F G A Bb C D
+            // Kurd, D Eb F G A Bb C D
             (&[S, T, T, T, S, T, T], None),
-            // Nahawand C D Eb F G Ab B C
+            // Nahawand, C D Eb F G Ab B C
             (&[T, S, T, T, S, S3, S], None),
-            // Nawa Athar C D Eb Fs G Ab B C
+            // Nawa Athar, C D Eb Fs G Ab B C
             (&[T, S, S3, S, S, S3, S], None),
-            // Rast C D Ep F G A Bp C
+            // Rast, C D Ep F G A Bp C
             (&[T, Q3, Q3, T, T, Q3, Q3], None),
-            // Saba D Ep F Gb A Bb C D
+            // Saba, D Ep F Gb A Bb C D
             (&[Q3, Q3, S, S3, S, T, T], None),
-            // Sikah Ep F G A Bp C D Ep
+            // Sikah, Ep F G A Bp C D Ep
             (&[Q3, T, T, Q3, Q3, T, Q3], None),
         ]);
         // Sources:
@@ -89,41 +96,43 @@ impl Scales {
         // * <https://www.quora.com/What-are-some-ragas-which-are-more-popular-than-the-Melakartha-ragas-to-which-they-belong-to>
         // * <https://en.wikipedia.org/wiki/Melakarta>
         let melakarta = initialize_group(&[
-            // Ratnangi (2) C Cs D F G Ab Bb C
+            // Ratnangi (2), C Cs D F G Ab Bb C
             (&[S, S, S3, T, S, T, T], None),
-            // Rupavati (12) C Cs Ds F G As B C
+            // Rupavati (12), C Cs Ds F G As B C
             (&[S, T, T, T, S3, S, S], None),
-            // Mayamalavagowla (15) G Ab B C D Eb Fs G
+            // Mayamalavagowla (15), G Ab B C D Eb Fs G
             (&[S, S3, S, T, S, S3, S], None),
-            // Natabhairavi (20) minor C D Ds F G Gs As C
+            // Natabhairavi (20), minor C D Ds F G Gs As C
             (&[T, S, T, T, S, T, T], None),
-            // Karaharapriya (22) C D Ds F G A As C
+            // Karaharapriya (22), C D Ds F G A As C
             (&[T, S, T, T, T, S, T], None),
-            // Sangarabharanam (29) major C D E F G A B C
+            // Sangarabharanam (29), major C D E F G A B C
             (&[T, T, S, T, T, T, S], None),
-            // Jalavarali (39) C Cs D Fs G Gs B C
+            // Jalavarali (39), C Cs D Fs G Gs B C
             (&[S, S, T2, S, S, S3, S], None),
-            // Gamanasrama (53) C Cs E Fs G A B C
+            // Gamanasrama (53), C Cs E Fs G A B C
             (&[S, S3, T, S, T, T, S], None),
         ]);
         // Source: <https://www.musicnotes.com/blog/japanese-scales-in-music-theory/>
         let japanese = initialize_group(&[
-            // Hirajoshi C D Eb G Ab C
+            // Hirajoshi, C D Eb G Ab C
             (&[T, S, T2, S, T2], None),
-            // In C Db F G Ab C
+            // In, C Db F G Ab C
             (&[S, T2, T, S, T2], None),
-            // Insen C Db F G Bb C
+            // Insen, C Db F G Bb C
             (&[S, T2, T, S3, T], None),
-            // Iwato C Db F Gb Bb C
+            // Iwato, C Db F Gb Bb C
             (&[S, T2, S, T2, T], None),
-            // Yo C D F G A C
+            // Yo, C D F G A C
             (&[T, S3, T, T, S3], None),
         ]);
         let full = initialize_group(&[
+            // Tones
             (&[T, T, T, T, T, T], None),
+            // Semitones
             (&[S, S, S, S, S, S, S, S, S, S, S, S], None),
-            (&[Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q,
-               Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None),
+            // Quarter tones
+            (&[Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q, Q], None),
         ]);
         Self {
             diatonic,

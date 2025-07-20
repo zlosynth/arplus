@@ -9,3 +9,13 @@ pdf-images: $(DIAGRAMS)
 
 %.pdf: %.svg
 	inkscape --export-text-to-path -D $< -o $@ --export-latex
+
+.PHONY: chords
+chords:
+	../../hack/generate_chords_list.py ../../control/src/chords.rs > chords.ly
+	lilypond chords.ly
+
+.PHONY: scales
+scales:
+	../../hack/generate_scales_list.py ../../control/src/scales/mod.rs > scales.ly
+	lilypond scales.ly
