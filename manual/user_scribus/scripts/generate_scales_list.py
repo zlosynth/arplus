@@ -320,9 +320,53 @@ def fix_consecutive_same_letters(spelling, start_octave=4):
     
     return fixed
 
+def make_chromatic_scale_notes(intervals, start_octave=4):
+    """Special handling for chromatic (semitone) scales to use sensible enharmonic spellings"""
+    # Use standard chromatic spelling: C, C#, D, D#, E, F, F#, G, G#, A, A#, B, C
+    chromatic_notes = [
+        ('c', 0, start_octave),     # C
+        ('c', 2, start_octave),     # C# (not Db)
+        ('d', 0, start_octave),     # D
+        ('d', 2, start_octave),     # D# (not Eb)
+        ('e', 0, start_octave),     # E
+        ('f', 0, start_octave),     # F
+        ('f', 2, start_octave),     # F# (not Gb)
+        ('g', 0, start_octave),     # G
+        ('g', 2, start_octave),     # G# (not Ab)
+        ('a', 0, start_octave),     # A
+        ('a', 2, start_octave),     # A# (not Bb)
+        ('b', 0, start_octave),     # B
+        ('c', 0, start_octave + 1), # C (octave)
+    ]
+    
+    return [lilypond_note(*n) for n in chromatic_notes]
+
+def make_whole_tone_scale_notes(intervals, start_octave=4):
+    """Special handling for whole tone scales to use clear spellings"""
+    # Use clear whole tone spelling: C, D, E, F#, G#, A#, C
+    whole_tone_notes = [
+        ('c', 0, start_octave),     # C
+        ('d', 0, start_octave),     # D
+        ('e', 0, start_octave),     # E
+        ('f', 2, start_octave),     # F# (not Gb)
+        ('g', 2, start_octave),     # G# (not Ab)
+        ('a', 2, start_octave),     # A# (not Bb)
+        ('c', 0, start_octave + 1), # C (octave)
+    ]
+    
+    return [lilypond_note(*n) for n in whole_tone_notes]
+
 def make_scale_notes(step_syms, group_name):
     intervals = [step_to_q(s) for s in step_syms]
     group_name_l = group_name.lower()
+    
+    # Special handling for whole tone scales in the "full" group
+    if group_name_l == "full" and len(step_syms) == 6 and all(s == "T" for s in step_syms):
+        return make_whole_tone_scale_notes(intervals)
+    
+    # Special handling for chromatic (semitone) scales in the "full" group
+    if group_name_l == "full" and len(step_syms) == 12 and all(s == "S" for s in step_syms):
+        return make_chromatic_scale_notes(intervals)
     
     # Special handling for quarter-tone scales in the "full" group
     if group_name_l == "full" and len(step_syms) == 24 and all(s == "Q" for s in step_syms):
