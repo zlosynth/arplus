@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # Do not bother reading/changing this file beyond the HEADER definition.
 # Everything else is an AI-generated mess. But it works.
 
