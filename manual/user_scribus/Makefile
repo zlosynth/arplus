@@ -1,8 +1,10 @@
 DIAGRAMS = \
-	panel.pdf \
-	arp-symbol.pdf \
-	signal-flow.pdf \
-	block-root-note.pdf
+	graphics/panel.pdf \
+	graphics/arp-symbol.pdf \
+	graphics/signal-flow.pdf \
+	graphics/block-root-note.pdf \
+	graphics/block-chord.pdf \
+	graphics/block-arp.pdf
 
 Manual.pdf: main.pdf scales.pdf chords.pdf
 	pdfunite $^ $@
