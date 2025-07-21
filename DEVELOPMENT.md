@@ -121,21 +121,37 @@ make bloat
 I extensivelly use <https://github.com/Bouni/kicad-jlcpcb-tools> to deal with
 the matters listed in the title, and to prepare project for manufacture.
 
-## Manuals
+## User manual
 
-The user and build manuals are defined in latex under `manual/user` and
-`manual/build` respectively. To build it, first install needed pre-requisites.
-On Fedora it can be done by running the following:
+The user manual is defined as a Scribus project under `manual/user`. To build
+it, first install needed pre-requisites. On Fedora it can be done by running
+the following:
+
+```sh
+sudo dnf install python inkscape scribus lilypond
+```
+
+To build the manual:
+
+```sh
+make manual/user
+```
+
+The built PDF is then available in `manual/user/manual.pdf`.
+
+## Build manual
+
+The build manual is defined in latex under `manual/build`. To build it, first
+install needed pre-requisites. On Fedora it can be done by running the following:
 
 ```sh
 sudo dnf install inkscape texlive-latex texlive-ec texlive-microtype texlive-pagecolor texlive-parskip texlive-titling texlive-hardwrap texlive-mdwtools texlive-tcolorbox
 ```
 
-To build the manuals:
+To build the manual:
 
 ```sh
-make manual/user
 make manual/build
 ```
 
-The built PDF is then available in `manual/user/manual.pdf` and `build/user/manual.pdf`.
+The built PDF is then available in `manual/build/manual.pdf`.
