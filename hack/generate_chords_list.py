@@ -17,9 +17,12 @@ HEADER = r"""
   markup-system-spacing.basic-distance = #16
 }
 
+\markup sans_big = \markup \override #'((font-name . "Latin Modern Sans") (font-size . 4)) \etc
+\markup sans_small = \markup \override #'((font-name . "Latin Modern Sans") (font-size . 0)) \etc
+
 \header {
-  title = "List of chords"
-  subsubtitle = "All the available chords grouped by size. The actual notes will differ based on the selected scale and tonic."
+  title = \markup \sans_big "Appendix: Chords"
+  subsubtitle = \markup \sans_small "All the available chords grouped by size. The actual notes will differ based on the selected scale and tonic."
   tagline = ##f
 }
 

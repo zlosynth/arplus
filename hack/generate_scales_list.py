@@ -18,9 +18,12 @@ HEADER = r"""
   markup-system-spacing.basic-distance = #16
 }
 
+\markup sans_big = \markup \override #'((font-name . "Latin Modern Sans") (font-size . 4)) \etc
+\markup sans_small = \markup \override #'((font-name . "Latin Modern Sans") (font-size . 0)) \etc
+
 \header {
-  title = "Scales"
-  subsubtitle = "All the available scales divided by groups."
+  title = \markup \sans_big "Appendix: Scales"
+  subsubtitle = \markup \sans_small "All the available scales divided into groups."
   tagline = ##f
 }
 
