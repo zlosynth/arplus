@@ -5,7 +5,8 @@ DIAGRAMS = \
 	graphics/block-root-note.pdf \
 	graphics/block-chord.pdf \
 	graphics/block-arp.pdf \
-	graphics/block-scale.pdf
+	graphics/block-scale.pdf \
+	graphics/block-karplus-strong.pdf
 
 Manual.pdf: main.pdf scales.pdf chords.pdf
 	pdfunite $^ $@
