@@ -8,7 +8,8 @@ DIAGRAMS = \
 	graphics/block-scale.pdf \
 	graphics/block-karplus-strong.pdf \
 	graphics/block-stereo.pdf \
-	graphics/block-scale-customization.pdf
+	graphics/block-scale-customization.pdf \
+	graphics/block-quantized-cv-output.pdf
 
 Manual.pdf: main.pdf scales.pdf chords.pdf
 	pdfunite $^ $@
