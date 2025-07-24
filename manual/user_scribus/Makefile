@@ -7,7 +7,8 @@ DIAGRAMS = \
 	graphics/block-arp.pdf \
 	graphics/block-scale.pdf \
 	graphics/block-karplus-strong.pdf \
-	graphics/block-stereo.pdf
+	graphics/block-stereo.pdf \
+	graphics/block-scale-customization.pdf
 
 Manual.pdf: main.pdf scales.pdf chords.pdf
 	pdfunite $^ $@
