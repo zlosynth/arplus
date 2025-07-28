@@ -13,15 +13,19 @@ pub const T: Step = 4;
 #[derive(Clone, Debug, defmt::Format)]
 pub struct Scale<const N: usize> {
     tonic: Tonic,
+    lowest: Option<ScaleNote>,
     ascending: Vec<Step, N>,
 }
 
 impl<const N: usize> Scale<N> {
     pub fn new(tonic: Tonic, ascending: &[Step]) -> Result<Self, ()> {
-        Ok(Self {
+        let mut scale = Self {
             tonic,
+            lowest: None,
             ascending: Vec::from_slice(ascending)?,
-        })
+        };
+        scale.calculate_lowest_available_note();
+        Ok(scale)
     }
 
     pub fn quantize_voct_ascending(&self, voct: f32) -> Option<ScaleNote> {
@@ -48,8 +52,21 @@ impl<const N: usize> Scale<N> {
     }
 
     pub fn get_note_by_index_ascending(&self, index: usize) -> Option<ScaleNote> {
-        let lowest_tonic = self.lowest_tonic();
-        self.get_note_in_interval_ascending(ScaleNote::new(lowest_tonic, 0), index as i16)
+        let base_note = self.lowest_available_note();
+        self.get_note_in_interval_ascending(base_note, index as i16)
+    }
+
+    fn calculate_lowest_available_note(&mut self) {
+        let mut base_note_cursor = ScaleNote::new(self.lowest_tonic(), 0);
+        while let Some(lower_note) = self.get_note_in_interval_ascending(base_note_cursor, -1) {
+            base_note_cursor = lower_note;
+        }
+        self.lowest = Some(base_note_cursor);
+    }
+
+    fn lowest_available_note(&self) -> ScaleNote {
+        // PANIC: This is ok as long as the attribute is initialized in `new`.
+        self.lowest.unwrap()
     }
 
     pub fn steps_in_octave(&self) -> u8 {
