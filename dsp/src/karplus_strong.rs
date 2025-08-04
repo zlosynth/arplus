@@ -92,8 +92,6 @@ impl KarplusStrong {
             .zip(right_buffer.iter_mut())
             .enumerate()
         {
-            // TODO: Make it so with burst input, the minimum contour is
-            // lengthen, so the input is always affecting the result.
             let new_noise_sample = if let Some(buffer_noise) = noise_buffer {
                 buffer_noise[i] * self.noise_envelope.pop() * self.pluck
             } else {
