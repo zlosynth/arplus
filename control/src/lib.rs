@@ -270,7 +270,11 @@ impl Controller {
         *needs_save |= (size_cv_value.is_none() && changed_size)
             || (size_cv_value.is_none() && chord_cv_value.is_none() && changed_chord);
 
-        if size_pot.activation_movement() || (size_cv_value.is_none() && changed_size) {
+        if size_pot.activation_movement()
+            || (size_cv_value.is_none()
+                && changed_size
+                && !self.parameters.cv_assignment.just_changed())
+        {
             let size = parameter.selected_size();
             display_request.set_queried_attribute(Screen::size(size));
         } else if chord_pot.activation_movement()
@@ -409,7 +413,10 @@ impl Controller {
         } else if tone_cv.is_some() && (tone_pot.activation_movement() || octave_changed) {
             let selected = parameter.selected_octave_index();
             display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tonic_cv.is_none() && tonic_changed {
+        } else if tonic_cv.is_none()
+            && tonic_changed
+            && !self.parameters.cv_assignment.just_changed()
+        {
             let selected = parameter.selected_tonic();
             display_request.set_queried_attribute(Screen::tonic(selected));
         }

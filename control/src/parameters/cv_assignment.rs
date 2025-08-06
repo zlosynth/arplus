@@ -2,6 +2,7 @@ use super::primitives::toggle::{PersistentConfig as TogglePersistentConfig, Togg
 
 pub struct CvAssignmentHandler {
     toggle: Toggle,
+    just_changed: bool,
 }
 
 #[derive(Clone, Copy, defmt::Format, PartialEq, Default, Debug)]
@@ -28,6 +29,7 @@ impl CvAssignmentHandler {
     pub fn new(config: PersistentConfig) -> Self {
         Self {
             toggle: Toggle::new(config.toggle, CvAssignment::LAST_ATTRIBUTE as usize + 1),
+            just_changed: false,
         }
     }
 
@@ -38,7 +40,9 @@ impl CvAssignmentHandler {
     }
 
     pub fn reconcile_button(&mut self, toggle: bool) -> bool {
-        self.toggle.reconcile(toggle)
+        let changed = self.toggle.reconcile(toggle);
+        self.just_changed = changed;
+        changed
     }
 
     pub fn selected(&self) -> CvAssignment {
@@ -52,6 +56,10 @@ impl CvAssignmentHandler {
             defmt::error!("Attempted to create CvAssignment from invalid index");
             CvAssignment::default()
         })
+    }
+
+    pub fn just_changed(&self) -> bool {
+        self.just_changed
     }
 }
 
