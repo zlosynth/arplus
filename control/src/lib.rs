@@ -244,7 +244,7 @@ impl Controller {
         self.reconcile_arp_mode(display_request, needs_save);
         self.reconcile_stereo_mode(display_request, needs_save);
         self.reconcile_width();
-        self.reconcile_gain();
+        self.reconcile_strings(display_request, needs_save);
         self.reconcile_cv_assignment(display_request, needs_save);
     }
 
@@ -330,11 +330,27 @@ impl Controller {
         parameter.reconcile(pot.value(), cv_value);
     }
 
-    fn reconcile_gain(&mut self) {
-        let pot = &self.inputs.pots.gain;
-        let cv_value = self.gain_cv();
-        let parameter = &mut self.parameters.gain;
-        parameter.reconcile(pot.value(), cv_value);
+    fn reconcile_strings(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        needs_save: &mut bool,
+    ) {
+        let pot = &self.inputs.pots.strings;
+        let cv_value = self.strings_cv();
+        let parameter = &mut self.parameters.strings;
+
+        let changed_length = parameter.reconcile(pot.value(), cv_value);
+
+        *needs_save |= changed_length;
+
+        if pot.activation_movement()
+            || (cv_value.is_none()
+                && changed_length
+                && !self.parameters.cv_assignment.just_changed())
+        {
+            let length = parameter.value();
+            display_request.set_queried_attribute(Screen::strings(length));
+        }
     }
 
     fn reconcile_contour(&mut self) {
@@ -584,10 +600,14 @@ impl Controller {
             resonance: self.parameters.resonance.value(),
             cutoff: self.parameters.cutoff.value(),
             trigger: trigger_attributes,
-            gain: self.parameters.gain.value(),
+            // NOTE: The gain is set quite low, so even when all strings are
+            // playing loud, it does not produce excessive clipping and rough
+            // saturation.
+            gain: 1.0 / 7.0,
             chord_size: self.parameters.chord.selected_size(),
             width: self.parameters.width.value(),
             stereo_mode: self.parameters.stereo_mode.selected().into(),
+            strings: self.parameters.strings.value(),
         }
     }
 
@@ -661,8 +681,8 @@ impl Controller {
         self.assignable_cv(CvAssignment::Pluck)
     }
 
-    fn gain_cv(&self) -> Option<f32> {
-        self.assignable_cv(CvAssignment::Gain)
+    fn strings_cv(&self) -> Option<f32> {
+        self.assignable_cv(CvAssignment::Strings)
     }
 
     fn width_cv(&self) -> Option<f32> {

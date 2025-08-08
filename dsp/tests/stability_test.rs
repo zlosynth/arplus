@@ -20,7 +20,7 @@ fn check_stability(
     contour: f32,
     pluck: f32,
     is_root: bool,
-    gain: f32,
+    strings: usize,
     chord_size: usize,
     trigger_interval: f32,
     width: f32,
@@ -44,10 +44,11 @@ fn check_stability(
         resonance,
         cutoff,
         trigger: None,
-        gain,
+        gain: 1.0,
         chord_size,
         width,
         stereo_mode: StereoMode::Haas,
+        strings,
     };
 
     let mut buffer = [(0.0, 0.0); 64];
@@ -85,10 +86,10 @@ fn stability_with_high_cutoff() {
     let contour = 0.4;
     let pluck = 0.99;
     let is_root = false;
-    let gain = 0.7;
     let chord_size = 6;
     let trigger_interval = 2.965139;
     let width = 0.0;
+    let strings = 8;
     check_stability(
         resonance,
         cutoff,
@@ -96,7 +97,7 @@ fn stability_with_high_cutoff() {
         contour,
         pluck,
         is_root,
-        gain,
+        strings,
         chord_size,
         trigger_interval,
         width,
@@ -113,7 +114,7 @@ proptest! {
         contour in 0.0..=1.0f32,
         pluck in 0.0..=1.0f32,
         is_root: bool,
-        gain in 0.0..=1.0f32,
+        strings in 1..=8usize,
         chord_size in 0..=7usize,
         trigger_interval in 0.1..3.0f32,
         width in 0.0..=1.0f32,
@@ -125,7 +126,7 @@ proptest! {
             contour,
             pluck,
             is_root,
-            gain,
+            strings,
             chord_size,
             trigger_interval,
             width,

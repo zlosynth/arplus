@@ -29,6 +29,7 @@ pub use crate::random::Random;
 
 pub struct Dsp {
     strings: [String; 8],
+    active_strings_len: usize,
     root_strings_len: usize,
     active_root_string_index: usize,
     active_rest_string_index: usize,
@@ -53,6 +54,7 @@ pub struct Attributes {
     pub chord_size: usize,
     pub width: f32,
     pub stereo_mode: StereoMode,
+    pub strings: usize,
 }
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
@@ -83,6 +85,7 @@ impl Dsp {
                 String::new(sample_rate, memory_manager),
                 String::new(sample_rate, memory_manager),
             ],
+            active_strings_len: 8,
             root_strings_len: 4,
             active_root_string_index: 0,
             active_rest_string_index: 0,
@@ -186,11 +189,14 @@ impl Dsp {
         }
 
         self.stereo_mode = attributes.stereo_mode;
+        self.active_strings_len = attributes.strings;
 
-        if matches!(attributes.stereo_mode, StereoMode::PingPong) {
-            // XXX: Ping pong does not distinguish between root and
-            // rest, so it can consistently shift left and right,
-            // no matter how big is the chord.
+        // XXX: When only a single string is available, it is
+        // shared between root and the rest.
+        // XXX: Ping pong does not distinguish between root and
+        // rest, so it can consistently shift left and right,
+        // no matter how big is the chord.
+        if self.active_strings_len == 1 || matches!(attributes.stereo_mode, StereoMode::PingPong) {
             self.share_strings_between_root_and_rest();
         } else {
             self.set_root_strings_len(attributes.chord_size);
@@ -198,26 +204,22 @@ impl Dsp {
 
         if let Some(trigger) = attributes.trigger {
             let (string_index, next_string_index) = {
-                match self.stereo_mode {
-                    StereoMode::PingPong => {
-                        let string_index = self.shared_string_index();
-                        self.bump_shared_string_index();
-                        let next_string_index = self.shared_string_index();
-                        (string_index, next_string_index)
-                    }
-                    _ => {
-                        if trigger.is_root {
-                            let string_index = self.root_string_index();
-                            self.bump_root_string_index();
-                            let next_string_index = self.root_string_index();
-                            (string_index, next_string_index)
-                        } else {
-                            let string_index = self.rest_string_index();
-                            self.bump_rest_string_index();
-                            let next_string_index = self.rest_string_index();
-                            (string_index, next_string_index)
-                        }
-                    }
+                if self.active_strings_len == 1 || matches!(self.stereo_mode, StereoMode::PingPong)
+                {
+                    let string_index = self.shared_string_index();
+                    self.bump_shared_string_index();
+                    let next_string_index = self.shared_string_index();
+                    (string_index, next_string_index)
+                } else if trigger.is_root {
+                    let string_index = self.root_string_index();
+                    self.bump_root_string_index();
+                    let next_string_index = self.root_string_index();
+                    (string_index, next_string_index)
+                } else {
+                    let string_index = self.rest_string_index();
+                    self.bump_rest_string_index();
+                    let next_string_index = self.rest_string_index();
+                    (string_index, next_string_index)
                 }
             };
 
@@ -230,15 +232,21 @@ impl Dsp {
                 0.99,
                 trigger.frequency,
                 trigger.contour + minimal_burst_interval,
-                trigger.pluck,
+                // NOTE: Increase the pluck range for external input, so it
+                // can compensate for it's weaker amplitude.
+                trigger.pluck * if self.burst_input { 4.0 } else { 1.0 },
                 attributes.cutoff,
                 attributes.width,
                 random,
             );
             string.is_root = trigger.is_root;
 
-            let next_string = &mut self.strings[next_string_index];
-            next_string.karplus_strong.reset();
+            // NOTE: If only a single string is available, the preemptive
+            // reset cannot be done.
+            if string_index != next_string_index {
+                let next_string = &mut self.strings[next_string_index];
+                next_string.karplus_strong.reset();
+            }
         }
 
         self.overdrive.gain = attributes.gain;
@@ -251,9 +259,11 @@ impl Dsp {
         // adjusted if the number of strings changes.
         assert_eq!(self.strings.len(), 8);
 
-        let new_root_strings_len = match len {
-            1..=2 => 4, // NOTE: Even with size 1, interval can be used for non-root
-            3..=6 => 3,
+        let new_root_strings_len = match (len, self.active_strings_len) {
+            (_, 1..=3) => 1,
+            (_, 4) => 2,
+            (1..=2, _) => (self.active_strings_len / 2).max(1), // This must be never 0
+            (3, 7..=8) => 3,
             _ => 2,
         };
 
@@ -267,7 +277,7 @@ impl Dsp {
     }
 
     fn share_strings_between_root_and_rest(&mut self) {
-        self.root_strings_len = self.strings.len();
+        self.root_strings_len = self.active_strings_len;
         self.active_rest_string_index = 0;
     }
 
@@ -286,7 +296,7 @@ impl Dsp {
 
     fn bump_rest_string_index(&mut self) {
         self.active_rest_string_index += 1;
-        if self.active_rest_string_index >= self.strings.len() {
+        if self.active_rest_string_index >= self.active_strings_len {
             self.active_rest_string_index = self.root_strings_len;
         }
     }

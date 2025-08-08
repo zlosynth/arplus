@@ -3,7 +3,6 @@ mod chord;
 mod contour;
 mod cutoff;
 mod cv_assignment;
-mod gain;
 mod pluck;
 mod primitives;
 mod reset_next;
@@ -11,6 +10,7 @@ mod resonance;
 mod scale;
 mod scale_offsets;
 mod stereo_mode;
+mod strings;
 mod trigger;
 mod width;
 
@@ -20,6 +20,7 @@ use cv_assignment::PersistentConfig as CvAssignmentPersistentConfig;
 use scale::PersistentConfig as ScalePersistentConfig;
 use scale_offsets::PersistentConfig as ScaleOffsetsPersistentConfig;
 use stereo_mode::PersistentConfig as StereoModePersistentConfig;
+use strings::PersistentConfig as StringsPersistentConfig;
 
 use crate::chords::Chords;
 use crate::scales::Scales;
@@ -29,13 +30,13 @@ pub use self::chord::Chord;
 pub use self::contour::Contour;
 pub use self::cutoff::Cutoff;
 pub use self::cv_assignment::{CvAssignment, CvAssignmentHandler};
-pub use self::gain::Gain;
 pub use self::pluck::Pluck;
 pub use self::reset_next::ResetNext;
 pub use self::resonance::Resonance;
 pub use self::scale::Scale;
 pub use self::scale_offsets::{ScaleOffsets, MAX_STEPS as SCALE_OFFSET_MAX_STEPS};
 pub use self::stereo_mode::{StereoMode, StereoModeHandler};
+pub use self::strings::Strings;
 pub use self::trigger::Trigger;
 pub use self::width::Width;
 
@@ -49,7 +50,7 @@ pub struct Parameters {
     pub trigger: Trigger,
     pub reset_next: ResetNext,
     pub pluck: Pluck,
-    pub gain: Gain,
+    pub strings: Strings,
     pub width: Width,
     pub stereo_mode: StereoModeHandler,
     pub cv_assignment: CvAssignmentHandler,
@@ -64,6 +65,7 @@ pub struct PersistentConfig {
     pub stereo_mode: StereoModePersistentConfig,
     pub cv_mapping: CvAssignmentPersistentConfig,
     pub scale_offsets: ScaleOffsetsPersistentConfig,
+    pub strings: StringsPersistentConfig,
 }
 
 impl Parameters {
@@ -79,7 +81,7 @@ impl Parameters {
             arp_mode: ArpMode::new(config.arp_mode),
             trigger: Trigger::new(),
             reset_next: ResetNext::new(),
-            gain: Gain::new(),
+            strings: Strings::new(config.strings),
             width: Width::new(),
             stereo_mode: StereoModeHandler::new(config.stereo_mode),
             cv_assignment: CvAssignmentHandler::new(config.cv_mapping),
@@ -91,6 +93,7 @@ impl Parameters {
         PersistentConfig {
             chord: self.chord.copy_config(),
             scale: self.scale.copy_config(),
+            strings: self.strings.copy_config(),
             arp_mode: self.arp_mode.copy_config(),
             stereo_mode: self.stereo_mode.copy_config(),
             cv_mapping: self.cv_assignment.copy_config(),

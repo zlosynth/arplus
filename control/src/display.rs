@@ -43,6 +43,7 @@ pub enum Screen {
     CvAssignment(CvAssignmentScreen),
     StereoMode(StereoModeScreen),
     Offset(OffsetScreen),
+    Strings(StringsScreen),
 }
 
 #[derive(Debug, defmt::Format, PartialEq)]
@@ -115,6 +116,11 @@ pub enum OffsetScreen {
     Lock,
     Unlock,
     Reset,
+}
+
+#[derive(Debug, defmt::Format, PartialEq)]
+pub struct StringsScreen {
+    length: usize,
 }
 
 impl Display {
@@ -257,6 +263,10 @@ impl Screen {
         Screen::Offset(OffsetScreen::Reset)
     }
 
+    pub fn strings(length: usize) -> Self {
+        Screen::Strings(StringsScreen::with_length(length))
+    }
+
     pub fn leds(&self, clock: usize) -> [bool; 8] {
         match self {
             Screen::Step(s) => s.leds(),
@@ -272,6 +282,7 @@ impl Screen {
             Screen::CvAssignment(s) => s.leds(),
             Screen::ToneCalibration(s) => s.leds(clock),
             Screen::Offset(s) => s.leds(clock),
+            Screen::Strings(s) => s.leds(),
         }
     }
 }
@@ -591,5 +602,19 @@ impl OffsetScreen {
                 }
             }
         }
+    }
+}
+
+impl StringsScreen {
+    pub fn with_length(length: usize) -> Self {
+        Self { length }
+    }
+
+    fn leds(&self) -> [bool; 8] {
+        let mut leds = [false; 8];
+        for led in leds[..self.length].iter_mut() {
+            *led = true;
+        }
+        leds
     }
 }

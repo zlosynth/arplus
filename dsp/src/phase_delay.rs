@@ -17,32 +17,24 @@ pub fn phase_delay(cutoff: f32, q: f32) -> f32 {
         let x = 0.0;
         let y = (q - TABLE_1_Q_MIN) / (TABLE_1_Q_MAX - TABLE_1_Q_MIN);
         interpolate(TABLE_1, x, y)
-    } else if (TABLE_1_C_MIN..=TABLE_1_C_MAX).contains(&cutoff)
-        && (TABLE_1_Q_MIN..=TABLE_1_Q_MAX).contains(&q)
-    {
+    } else if (TABLE_1_C_MIN..=TABLE_1_C_MAX).contains(&cutoff) {
         let x = (cutoff - TABLE_1_C_MIN) / (TABLE_1_C_MAX - TABLE_1_C_MIN);
         let y = (q - TABLE_1_Q_MIN) / (TABLE_1_Q_MAX - TABLE_1_Q_MIN);
         interpolate(TABLE_1, x, y)
-    } else if (TABLE_2_C_MIN..=TABLE_2_C_MAX).contains(&cutoff)
-        && (TABLE_2_Q_MIN..=TABLE_2_Q_MAX).contains(&q)
-    {
+    } else if (TABLE_2_C_MIN..=TABLE_2_C_MAX).contains(&cutoff) {
         let x = (cutoff - TABLE_2_C_MIN) / (TABLE_2_C_MAX - TABLE_2_C_MIN);
         let y = (q - TABLE_2_Q_MIN) / (TABLE_2_Q_MAX - TABLE_2_Q_MIN);
         interpolate(TABLE_2, x, y)
-    } else if (TABLE_3_C_MIN..=TABLE_3_C_MAX).contains(&cutoff)
-        && (TABLE_3_Q_MIN..=TABLE_3_Q_MAX).contains(&q)
-    {
+    } else if (TABLE_3_C_MIN..=TABLE_3_C_MAX).contains(&cutoff) {
         let x = (cutoff - TABLE_3_C_MIN) / (TABLE_3_C_MAX - TABLE_3_C_MIN);
         let y = (q - TABLE_3_Q_MIN) / (TABLE_3_Q_MAX - TABLE_3_Q_MIN);
         interpolate(TABLE_3, x, y)
-    } else if (TABLE_4_C_MIN..=TABLE_4_C_MAX).contains(&cutoff)
-        && (TABLE_4_Q_MIN..=TABLE_4_Q_MAX).contains(&q)
-    {
+    } else if (TABLE_4_C_MIN..=TABLE_4_C_MAX).contains(&cutoff) {
         let x = (cutoff - TABLE_4_C_MIN) / (TABLE_4_C_MAX - TABLE_4_C_MIN);
         let y = (q - TABLE_4_Q_MIN) / (TABLE_4_Q_MAX - TABLE_4_Q_MIN);
         interpolate(TABLE_4, x, y)
     } else {
-        defmt::warn!("Phase delay above range for cutoff={:?}", cutoff);
+        defmt::warn!("Phase delay above range for cutoff={:?} q={:?}", cutoff, q);
         let x = 1.0;
         let y = (q - TABLE_4_Q_MIN) / (TABLE_4_Q_MAX - TABLE_4_Q_MIN);
         interpolate(TABLE_4, x, y)

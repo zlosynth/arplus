@@ -32,7 +32,7 @@ pub struct Pots {
     pub cutoff: Pot,
     pub resonance: Pot,
     pub pluck: Pot,
-    pub gain: Pot,
+    pub strings: Pot,
     pub width: Pot,
 }
 
@@ -77,7 +77,7 @@ impl Inputs {
                 cutoff: Pot::new(),
                 resonance: Pot::new(),
                 pluck: Pot::new(),
-                gain: Pot::new(),
+                strings: Pot::new(),
                 width: Pot::new(),
             },
             cvs: Cvs {
@@ -113,7 +113,7 @@ impl Inputs {
         self.pots.cutoff.reconcile(snapshot.pots[5]);
         self.pots.contour.reconcile(snapshot.pots[6]);
         self.pots.pluck.reconcile(snapshot.pots[7]);
-        self.pots.gain.reconcile(snapshot.pots[8]);
+        self.pots.strings.reconcile(snapshot.pots[8]);
         self.pots.width.reconcile(snapshot.pots[9]);
 
         self.cvs.tone.reconcile(snapshot.cvs[0]);

@@ -21,7 +21,7 @@ pub enum CvAssignment {
     Group,
     Scale,
     Pluck,
-    Gain,
+    Strings,
     Width,
 }
 
