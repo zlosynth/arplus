@@ -10,7 +10,7 @@ DIAGRAMS = \
 	graphics/block-stereo.pdf \
 	graphics/block-scale-customization.pdf \
 	graphics/block-quantized-cv-output.pdf \
-	graphics/block-gain.pdf \
+	graphics/block-strings.pdf \
 	graphics/block-cv-mapping.pdf
 
 Manual.pdf: main.pdf scales.pdf chords.pdf
