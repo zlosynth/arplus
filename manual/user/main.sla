@@ -450,13 +450,13 @@
                 <para/>
                 <ITEXT FCOLOR="White" CH="- 31 different scales and chords of up to 8 notes"/>
                 <para/>
+                <ITEXT CH="- Configurable scales"/>
+                <para/>
                 <ITEXT FCOLOR="White" CH="- CV-controllable arpeggiator patterns"/>
                 <para/>
                 <ITEXT FCOLOR="White" CH="- Quantized 1V/oct output"/>
                 <para/>
-                <ITEXT FCOLOR="White" CH="- Dedicated output channel for the root note"/>
-                <para/>
-                <ITEXT CH="- TODO: update this page"/>
+                <ITEXT FCOLOR="White" CH="- Three different stereo output modes"/>
                 <trail/>
             </StoryText>
         </PAGEOBJECT>
