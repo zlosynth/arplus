@@ -12,7 +12,7 @@ use crate::Random;
 const SAMPLES: usize = 8192;
 
 // Magic numbers producing the result I like the most.
-const ATTACK: f32 = 0.02;
+const ATTACK: f32 = 0.1;
 const DECAY: f32 = 0.14;
 const TRESHOLD: f32 = 0.5;
 const ENV_MAX: f32 = 1.0;
@@ -120,7 +120,7 @@ impl KarplusStrong {
                 const MAX_Q: f32 = 0.9;
                 let q = MIN_Q + self.resonance * (MAX_Q - MIN_Q);
                 let compressed_q =
-                    (q - self.envelope_follower.level().min(ENV_MAX) * ENV_COEF).clamp(0.5, MAX_Q);
+                    (q - self.envelope_follower.level().min(ENV_MAX) * ENV_COEF).clamp(0.2, MAX_Q);
 
                 self.filter.set_q_factor(compressed_q);
                 self.filter.tick(mixed_sample)
