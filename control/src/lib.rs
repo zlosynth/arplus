@@ -603,7 +603,7 @@ impl Controller {
             // NOTE: The gain is set quite low, so even when all strings are
             // playing loud, it does not produce excessive clipping and rough
             // saturation.
-            gain: 1.0 / 7.0,
+            gain: 1.0 / 4.0,
             chord_size: self.parameters.chord.selected_size(),
             width: self.parameters.width.value(),
             stereo_mode: self.parameters.stereo_mode.selected().into(),
