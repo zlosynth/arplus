@@ -1,4 +1,6 @@
-use crate::scales::{GroupId, ProjectedScale, QuarterTone, ScaleNote, Scales, Tonic};
+use crate::scales::{
+    GroupId, ProjectedScale, QuarterTone, ScaleNote, Scales, SelectedScalePerGroup, Tonic,
+};
 
 use super::primitives::continuous::Continuous;
 use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersistentConfig};
@@ -22,6 +24,7 @@ pub struct Scale {
     cv_controls_scale: bool,
     pot_tonic: Discrete,
     cv_tonic: Discrete,
+    selected_scale_per_group: SelectedScalePerGroup,
     scale_cache: Option<ProjectedScale>,
 }
 
@@ -35,6 +38,7 @@ pub struct PersistentConfig {
     cv_group: DiscretePersistentConfig,
     button_scale: TogglePersistentConfig,
     cv_scale: DiscretePersistentConfig,
+    selected_scale_per_group: SelectedScalePerGroup,
 }
 
 impl Scale {
@@ -87,6 +91,7 @@ impl Scale {
             cv_controls_scale: false,
             pot_tonic: Discrete::new(config.pot_tonic, 12, 0.1, 1.0),
             cv_tonic: Discrete::new(config.cv_tonic, 12 * 2 + 1, 0.1, 10.0),
+            selected_scale_per_group: config.selected_scale_per_group,
             scale_cache: None,
         };
         s.update_scale_cache();
@@ -122,25 +127,31 @@ impl Scale {
             self.button_group.reconcile(group_toggle)
         };
 
+        let selected_group_index = if group_cv.is_some() {
+            // PANIC: This is called only after the value was just
+            // reconciled. Because of that, it will be always in sync
+            // and is therefore guaranteed to succeed casting.
+            self.cv_group.selected_value().try_into().unwrap()
+        } else {
+            // PANIC: Ditto.
+            self.button_group.selected_value().try_into().unwrap()
+        };
+
         if changed_group || switched_group_cv {
-            let selected_group = if group_cv.is_some() {
-                // PANIC: This is called only after the value was just
-                // reconciled. Because of that, it will be always in sync
-                // and is therefore guaranteed to succeed casting.
-                self.cv_group.selected_value().try_into().unwrap()
-            } else {
-                // PANIC: Ditto.
-                self.button_group.selected_value().try_into().unwrap()
-            };
-            let scales_in_group = self.library.number_of_scales(selected_group);
+            let scales_in_group = self.library.number_of_scales(selected_group_index);
             self.button_scale.set_output_values(scales_in_group);
+            self.button_scale
+                .set_value(self.selected_scale_per_group[selected_group_index as usize]);
             self.cv_scale.set_output_values(scales_in_group);
         }
 
         let changed_scale = if let Some(scale_cv) = scale_cv {
             self.cv_scale.reconcile(scale_cv)
         } else {
-            self.button_scale.reconcile(scale_toggle)
+            let changed = self.button_scale.reconcile(scale_toggle);
+            let selected_scale_index = self.button_scale.selected_value();
+            self.selected_scale_per_group[selected_group_index as usize] = selected_scale_index;
+            changed
         };
 
         let changed_tonic = {
@@ -256,6 +267,7 @@ impl Scale {
             cv_tonic: self.cv_tonic.copy_config(),
             cv_group: self.cv_group.copy_config(),
             cv_scale: self.cv_scale.copy_config(),
+            selected_scale_per_group: self.selected_scale_per_group.clone(),
         }
     }
 

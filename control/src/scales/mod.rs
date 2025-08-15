@@ -15,6 +15,7 @@ pub use self::tonic::Tonic;
 
 pub type Scale = LibraryScale<24>;
 pub type ProjectedScale = GenericProjectedScale<24>;
+pub type SelectedScalePerGroup = [usize; Scales::GROUPS];
 
 pub struct Scales {
     diatonic: LibraryGroup<7, 7>,

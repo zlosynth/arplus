@@ -48,4 +48,8 @@ impl Toggle {
 
         self.values = output_values;
     }
+
+    pub fn set_value(&mut self, value: usize) {
+        self.selected_value = value;
+    }
 }
