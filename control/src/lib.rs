@@ -422,7 +422,10 @@ impl Controller {
             display_request.set_queried_attribute(Screen::scale(selected));
         } else if tone_cv.is_none()
             && (tone_pot.activation_movement()
-                || (note_changed && !group_changed && !scale_changed))
+                || (note_changed
+                    && !group_changed
+                    && !scale_changed
+                    && !self.parameters.cv_assignment.just_changed()))
         {
             let selected = parameter.selected_note().index();
             display_request.set_queried_attribute(Screen::note(selected as usize));
