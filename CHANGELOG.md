@@ -15,6 +15,7 @@ backwards compatibility.
   direction.
 * Allow using a custom "noise" burst source.
 * Make it possible to control the number of strummed strings.
+* Persist the last selected scale per group.
 
 ## 0.1.1
 
