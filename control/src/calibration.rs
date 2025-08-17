@@ -33,7 +33,7 @@ impl Calibration {
         let offset = if scaled_bottom_fract > 0.5 {
             1.0 - scaled_bottom_fract
         } else {
-            -1.0 * scaled_bottom_fract
+            -scaled_bottom_fract
         };
 
         Ok(Self { offset, scaling })

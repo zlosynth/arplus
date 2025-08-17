@@ -267,7 +267,7 @@ impl Scale {
             cv_tonic: self.cv_tonic.copy_config(),
             cv_group: self.cv_group.copy_config(),
             cv_scale: self.cv_scale.copy_config(),
-            selected_scale_per_group: self.selected_scale_per_group.clone(),
+            selected_scale_per_group: self.selected_scale_per_group,
         }
     }
 
