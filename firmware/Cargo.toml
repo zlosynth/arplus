@@ -34,7 +34,11 @@ stm32h7xx-hal = { version = "0.16", features = [
   "revision_v",
   "defmt",
 ] }
-daisy = { version = "0.11.0", features = ["patch_sm", "sampling_rate_96khz", "block_length_64"] }
+# XXX: Use a custom v0.11.0 fork. This adjusted version keeps the block length
+# of 64 samples, but it reverts the fix of audio clock accuracy. The reason for
+# that is that Arplus' tuning was adjusted based on the previous badly timed
+# clock, and I do not want to go through the tuning process again.
+daisy = { git = "https://github.com/zlosynth/daisy.git", branch = "without_ppl_fix", features = ["patch_sm", "sampling_rate_96khz", "block_length_64"] }
 fugit = "0.3"
 nb = "1"
 heapless = "0.7"
