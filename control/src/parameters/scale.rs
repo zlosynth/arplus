@@ -155,8 +155,11 @@ impl Scale {
         };
 
         let changed_tonic = {
+            let old_tonic = self.selected_tonic();
             let tonic_cv = tonic_cv.unwrap_or(0.0) + 5.0;
-            self.pot_tonic.reconcile(tonic_pot) || self.cv_tonic.reconcile(tonic_cv)
+            self.pot_tonic.reconcile(tonic_pot);
+            self.cv_tonic.reconcile(tonic_cv);
+            old_tonic != self.selected_tonic()
         };
 
         if changed_group || changed_scale || changed_tonic || switched_cv {
