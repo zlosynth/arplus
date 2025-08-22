@@ -375,13 +375,10 @@ impl Controller {
         let tonic_cv = self.tonic_cv();
         let parameter = &mut self.parameters.scale;
 
-        let offset_config_active =
-            self.inputs.buttons.rsnx.pressed() && !self.parameters.scale_offsets.locked();
-
         let group_held = is_button_held(group_button);
         let scale_held = is_button_held(scale_button);
-        let group_tapped = was_button_tapped(group_button) && !offset_config_active;
-        let scale_tapped = was_button_tapped(scale_button) && !offset_config_active;
+        let group_tapped = was_button_tapped(group_button) && !self.inputs.buttons.rsnx.pressed();
+        let scale_tapped = was_button_tapped(scale_button) && !self.inputs.buttons.rsnx.pressed();
 
         let (note_changed, octave_changed, group_changed, scale_changed, tonic_changed) = parameter
             .reconcile_note_tonic_group_and_scale(
@@ -513,7 +510,7 @@ impl Controller {
 
         parameter.set_cv_control(cv_value.is_some());
 
-        if was_button_tapped(button) && cv_value.is_none() {
+        if was_button_tapped(button) && cv_value.is_none() && !self.inputs.buttons.rsnx.pressed() {
             *needs_save |= parameter.reconcile_button(true);
         } else if let Some(cv_value) = cv_value {
             parameter.reconcile_cv(cv_value);
