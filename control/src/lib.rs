@@ -568,7 +568,7 @@ impl Controller {
         &mut self,
         display_request: &mut display_request::DisplayRequest,
     ) -> DSPAttributes {
-        let trigger_attributes = if self.parameters.trigger.triggered_n1() {
+        let trigger_attributes = if self.parameters.trigger.triggered_n4() {
             self.arp.apply_config(
                 build_arp_config(&mut self.parameters),
                 &mut self.random_generator,
