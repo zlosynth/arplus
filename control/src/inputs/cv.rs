@@ -3,6 +3,7 @@ use crate::calibration::Calibration;
 pub struct Cv {
     just_plugged: bool,
     value: Option<f32>,
+    raw_value: Option<f32>,
     calibration: Option<Calibration>,
 }
 
@@ -16,6 +17,7 @@ impl Cv {
         Self {
             just_plugged: false,
             value: None,
+            raw_value: None,
             calibration: None,
         }
     }
@@ -24,6 +26,7 @@ impl Cv {
         Self {
             just_plugged: false,
             value: None,
+            raw_value: None,
             calibration: Some(config.calibration),
         }
     }
@@ -37,6 +40,7 @@ impl Cv {
     pub fn reconcile(&mut self, value: Option<f32>) {
         self.just_plugged = self.value.is_none() && value.is_some();
 
+        self.raw_value = value;
         self.value = if let Some(calibration) = self.calibration {
             value.map(|x| calibration.apply(x))
         } else {
@@ -46,6 +50,10 @@ impl Cv {
 
     pub fn value(&self) -> Option<f32> {
         self.value
+    }
+
+    pub fn raw_value(&self) -> Option<f32> {
+        self.raw_value
     }
 
     pub fn just_plugged(&self) -> bool {

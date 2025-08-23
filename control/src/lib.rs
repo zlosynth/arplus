@@ -124,7 +124,7 @@ impl Controller {
             }
             State::CalibratingQuant(_) => (),
             State::CalibratingTone(CalibrationPhase::Octave1) => {
-                if let Some(value) = tone_cv.value() {
+                if let Some(value) = tone_cv.raw_value() {
                     if button.clicked() {
                         display_request
                             .set_tone_calibration_phase(Screen::tone_calibration_octave_2());
@@ -137,7 +137,7 @@ impl Controller {
                 }
             }
             State::CalibratingTone(CalibrationPhase::Octave2(octave_1)) => {
-                if let Some(value) = tone_cv.value() {
+                if let Some(value) = tone_cv.raw_value() {
                     if button.clicked() {
                         if tone_cv.update_calibration(*octave_1, value).is_ok() {
                             defmt::info!(
@@ -190,7 +190,7 @@ impl Controller {
                     return;
                 }
 
-                if let Some(value) = tone_cv.value() {
+                if let Some(value) = tone_cv.raw_value() {
                     *state = State::CalibratingQuant(CalibrationPhase::Octave2(value));
                     self.quantized_output.force_octave_2();
                 } else {
@@ -199,7 +199,7 @@ impl Controller {
                 }
             }
             State::CalibratingQuant(CalibrationPhase::Octave2(octave_1)) => {
-                if let Some(value) = tone_cv.value() {
+                if let Some(value) = tone_cv.raw_value() {
                     self.quantized_output.remove_force();
                     if self
                         .quantized_output
