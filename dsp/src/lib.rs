@@ -38,6 +38,7 @@ pub struct Dsp {
     stereo_mode: StereoMode,
     width: f32,
     burst_input: bool,
+    single_string_pong_left: bool,
 }
 
 pub struct String {
@@ -94,6 +95,7 @@ impl Dsp {
             stereo_mode: StereoMode::Haas,
             width: 0.0,
             burst_input: false,
+            single_string_pong_left: true,
         }
     }
 
@@ -148,13 +150,13 @@ impl Dsp {
                 }
             }
             StereoMode::PingPong => {
-                for (i, string) in self.strings.iter_mut().enumerate() {
-                    let focus = if i % 2 == 0 {
+                if self.active_strings_len == 1 {
+                    let focus = if self.single_string_pong_left {
                         karplus_strong::StereoMode::FocusLeft
                     } else {
                         karplus_strong::StereoMode::FocusRight
                     };
-                    string.karplus_strong.populate_add(
+                    self.strings[0].karplus_strong.populate_add(
                         &mut buffer_left,
                         &mut buffer_right,
                         noise_buffer,
@@ -162,6 +164,22 @@ impl Dsp {
                         self.width,
                         random,
                     );
+                } else {
+                    for (i, string) in self.strings.iter_mut().enumerate() {
+                        let focus = if i % 2 == 0 {
+                            karplus_strong::StereoMode::FocusLeft
+                        } else {
+                            karplus_strong::StereoMode::FocusRight
+                        };
+                        string.karplus_strong.populate_add(
+                            &mut buffer_left,
+                            &mut buffer_right,
+                            noise_buffer,
+                            focus,
+                            self.width,
+                            random,
+                        );
+                    }
                 }
             }
         }
@@ -206,6 +224,7 @@ impl Dsp {
             let (string_index, next_string_index) = {
                 if self.active_strings_len == 1 || matches!(self.stereo_mode, StereoMode::PingPong)
                 {
+                    self.single_string_pong_left = !self.single_string_pong_left;
                     let string_index = self.shared_string_index();
                     self.bump_shared_string_index();
                     let next_string_index = self.shared_string_index();
