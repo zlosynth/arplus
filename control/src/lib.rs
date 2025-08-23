@@ -52,6 +52,7 @@ enum State {
 
 enum CalibrationPhase {
     Octave1,
+    CountdownToOctave2(f32, u8),
     Octave2(f32),
 }
 
@@ -136,6 +137,9 @@ impl Controller {
                     *state = State::Normal;
                 }
             }
+            State::CalibratingTone(CalibrationPhase::CountdownToOctave2(_, _)) => {
+                // This phase is not used for tone calibration, only for quant calibration
+            }
             State::CalibratingTone(CalibrationPhase::Octave2(octave_1)) => {
                 if let Some(value) = tone_cv.raw_value() {
                     if button.clicked() {
@@ -190,16 +194,26 @@ impl Controller {
                     return;
                 }
 
-                if let Some(value) = tone_cv.raw_value() {
-                    *state = State::CalibratingQuant(CalibrationPhase::Octave2(value));
+                if let Some(value) = tone_cv.value() {
+                    // NOTE: It is set already here, so the CV gets a chance
+                    // to stabilize before the countdown is complete.
                     self.quantized_output.force_octave_2();
+                    *state =
+                        State::CalibratingQuant(CalibrationPhase::CountdownToOctave2(value, 10));
                 } else {
                     display_request.set_calibration_result(Screen::calibration_failure());
                     *state = State::Normal;
                 }
             }
+            State::CalibratingQuant(CalibrationPhase::CountdownToOctave2(octave_1, countdown)) => {
+                if *countdown == 0 {
+                    *state = State::CalibratingQuant(CalibrationPhase::Octave2(*octave_1));
+                } else {
+                    *countdown -= 1;
+                }
+            }
             State::CalibratingQuant(CalibrationPhase::Octave2(octave_1)) => {
-                if let Some(value) = tone_cv.raw_value() {
+                if let Some(value) = tone_cv.value() {
                     self.quantized_output.remove_force();
                     if self
                         .quantized_output
