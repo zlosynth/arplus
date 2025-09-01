@@ -23,15 +23,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.5346297"
-     inkscape:cx="628.49036"
-     inkscape:cy="430.72279"
+     inkscape:zoom="1.3311261"
+     inkscape:cx="303.12681"
+     inkscape:cy="129.96515"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
      inkscape:window-y="49"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g138"
+     inkscape:current-layer="g139"
      showguides="false">
     <sodipodi:guide
        position="38.13536,89.424329"
@@ -4119,57 +4119,57 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="185.52492"
-           id="tspan65-6">1. Select a scale</tspan><tspan
+           id="tspan65-6">1. Unlock the scale edit mode</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="190.4576"
-           id="tspan96" /><tspan
+           id="tspan10" /><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="195.39027"
-           id="tspan75">2. Unlock the scale:</tspan><tspan
+           id="tspan23" /><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="200.32295"
-           id="tspan81" /><tspan
+           id="tspan89"></tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="205.25562"
-           id="tspan82" /><tspan
+           id="tspan18"></tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="210.18829"
-           id="tspan83" /><tspan
+           id="tspan19"></tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="215.12097"
-           id="tspan84" /><tspan
+           id="tspan20"></tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="220.05365"
-           id="tspan85" /><tspan
+           id="tspan21"></tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="224.98633"
-           id="tspan76" /><tspan
+           id="tspan22">2. Select a scale</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="229.91901"
-           id="tspan86" /><tspan
+           id="tspan8" /><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
            y="234.85168"
-           id="tspan89">3. Trigger a note</tspan><tspan
+           id="tspan9">3. Trigger a note</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="104.66103"
@@ -4230,7 +4230,7 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="173.68735"
            y="195.39027"
-           id="tspan110">6. Lock the scale:</tspan></text>
+           id="tspan110">6. Lock the scale edit mode</tspan></text>
       <path
          id="rect14-0-5-8-9"
          style="stroke-width:0.4;stroke-dashoffset:2.19213"
@@ -4263,7 +4263,7 @@
       </g>
       <g
          id="g96"
-         transform="translate(-7.3078389,7.3677822)">
+         transform="translate(-7.3078389,-3.6322178)">
         <text
            xml:space="preserve"
            style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
@@ -4747,7 +4747,7 @@
       </g>
       <g
          id="g95"
-         transform="translate(-11.988366,9.797266)">
+         transform="translate(-11.988366,11.297266)">
         <text
            xml:space="preserve"
            style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
@@ -5199,7 +5199,7 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
            y="185.24043"
-           id="tspan65-6-2">1. Select a scale</tspan><tspan
+           id="tspan28">1. Unlock the scale edit mode</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
@@ -5209,17 +5209,17 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
            y="195.10579"
-           id="tspan81-9">2. Unlock the scale</tspan><tspan
+           id="tspan83-0">2. Select a scale</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
            y="200.03847"
-           id="tspan82-4" /><tspan
+           id="tspan25" /><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
            y="204.97113"
-           id="tspan83-0">3. Reset the steps:</tspan><tspan
+           id="tspan26">3. Reset the steps:</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
@@ -5259,7 +5259,7 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
            y="244.43254"
-           id="tspan78-4">4. Lock the scale</tspan><tspan
+           id="tspan78-4">4. Lock the scale edit mode</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:start;text-anchor:start;stroke-width:0.264583"
            x="250.05716"
