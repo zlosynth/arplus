@@ -6,17 +6,17 @@ use arplus_dsp as dsp;
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Debug, defmt::Format)]
 pub enum StereoMode {
-    Haas = 0,
+    PingPong = 0,
     RootRest,
-    PingPong,
+    Haas,
 }
 
 impl From<StereoMode> for dsp::StereoMode {
     fn from(value: StereoMode) -> Self {
         match value {
-            StereoMode::Haas => dsp::StereoMode::Haas,
-            StereoMode::RootRest => dsp::StereoMode::RootRest,
             StereoMode::PingPong => dsp::StereoMode::PingPong,
+            StereoMode::RootRest => dsp::StereoMode::RootRest,
+            StereoMode::Haas => dsp::StereoMode::Haas,
         }
     }
 }
@@ -63,12 +63,12 @@ impl StereoModeHandler {
 
 impl Default for StereoMode {
     fn default() -> Self {
-        Self::Haas
+        Self::RootRest
     }
 }
 
 impl StereoMode {
-    pub const LAST_MODE: Self = Self::PingPong;
+    pub const LAST_MODE: Self = Self::Haas;
 
     pub fn index(self) -> usize {
         self as usize

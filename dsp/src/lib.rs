@@ -68,9 +68,9 @@ pub struct TriggerAttributes {
 
 #[derive(Clone, Copy, Debug, defmt::Format)]
 pub enum StereoMode {
-    Haas,
-    RootRest,
     PingPong,
+    RootRest,
+    Haas,
 }
 
 impl Dsp {
@@ -92,7 +92,7 @@ impl Dsp {
             active_rest_string_index: 0,
             overdrive: Overdrive::new(),
             dc_blocker: [DCBlocker::new(), DCBlocker::new()],
-            stereo_mode: StereoMode::Haas,
+            stereo_mode: StereoMode::RootRest,
             width: 0.0,
             burst_input: false,
             single_string_pong_left: true,
