@@ -485,9 +485,11 @@ impl Controller {
                 if requested_increase {
                     defmt::info!("Requested scales offset increase");
                     *needs_save |= parameter.request_increase(group_index, scale_index, note_index);
+                    self.parameters.trigger.trigger();
                 } else if requested_decrease {
                     defmt::info!("Requested scales offset decrease");
                     *needs_save |= parameter.request_decrease(group_index, scale_index, note_index);
+                    self.parameters.trigger.trigger();
                 }
             }
 
