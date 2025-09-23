@@ -168,7 +168,6 @@
 		(property "Reference" "R3"
 			(at -3.08 0.01 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "f11555b6-36dd-4382-9215-89a7c03dbde2")
 			(effects
 				(font
@@ -205,6 +204,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "ff2cc166-c80b-4d79-8c3d-e5fe9644a04c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "68c722bb-ebd6-4c57-84e8-44daba0b6ad1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -368,7 +379,6 @@
 		(property "Reference" "J1"
 			(at 1.27 -2.33 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "f97223f3-79c0-45c6-aeaf-ce453ec8fbf3")
 			(effects
 				(font
@@ -416,7 +426,7 @@
 		(path "/f4d7155b-4ef8-4cca-9c7a-e02dfcf2bc4f")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 3.87 -1.33)
 			(end 3.87 11.49)
@@ -730,7 +740,6 @@
 		(property "Reference" "R4"
 			(at -3.08 0.01 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "11405cc6-0225-4bf3-92ea-3d2c1c4d7334")
 			(effects
 				(font
@@ -767,6 +776,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2c14e955-df83-4839-8ca4-ab727c307a42")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "c19a901f-93c0-4ddb-9fbb-1f13e0f48906")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -930,7 +951,6 @@
 		(property "Reference" "R7"
 			(at -3.06 -0.05 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "093e5371-b2ca-4d3c-b8b6-ffef2308d444")
 			(effects
 				(font
@@ -967,6 +987,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "0d9e6140-70a0-4dc9-81b1-c7d6b59c427f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d97b7c7c-3ea9-49b6-8164-2e0a579b5bb1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1128,9 +1160,8 @@
 		(descr "Capacitor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf, https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
 		(tags "capacitor handsolder")
 		(property "Reference" "C4"
-			(at 0 -1.68 0)
+			(at 0 1.77 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "22718c70-5bcf-47d0-b02e-691bbd18b341")
 			(effects
 				(font
@@ -1345,7 +1376,6 @@
 		(property "Reference" "R5"
 			(at -3.08 0.01 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "d82ef589-cf28-4d04-9732-210091677cf2")
 			(effects
 				(font
@@ -1382,6 +1412,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "c9be564d-1f64-4869-8094-88333a6cb282")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "a5f6f4e3-ead6-476a-9b7d-947e6225b3ea")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1543,9 +1585,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R26"
-			(at 2.7072 -0.023 0)
+			(at 3.42 -0.09 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "b4e2bf68-a6db-4443-8493-dbf824a333c5")
 			(effects
 				(font
@@ -1582,6 +1623,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "d5725539-bbb5-4fd7-86ca-d49c71115b72")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "9162d1b9-8ac9-46ec-82e4-8a51da985b03")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1743,9 +1796,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R9"
-			(at 0 -1.65 90)
+			(at 3.09 -0.05 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "8d54fc8d-1453-4ac5-b82a-b1669420e727")
 			(effects
 				(font
@@ -1784,6 +1836,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "8a0348e7-cc1f-4f25-b0d7-64aed31fee19")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "4d6e6d10-9bea-4d5a-a5c0-e2134b3ea19d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1993,7 +2057,7 @@
 		(path "/742b031b-801c-4ee5-bd28-d552a5e95657")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -31.175 -20)
 			(end -31.175 -6)
@@ -2643,9 +2707,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R22"
-			(at 0 -1.65 90)
+			(at 3.47 -0.11 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "1697463a-60fd-4b4f-8cfe-55ad820c68d8")
 			(effects
 				(font
@@ -2684,6 +2747,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "56671c49-73b4-4d4e-8e14-135d2209fa64")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "b2102dde-8cbb-4a75-a71e-1bff59b818d2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2847,7 +2922,6 @@
 		(property "Reference" "R6"
 			(at -3.06 -0.08 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "da852cab-0371-41b4-b808-444574eb16d3")
 			(effects
 				(font
@@ -2884,6 +2958,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "9b1e9003-01d8-4d05-95ca-04981f8de791")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8a20bef3-355b-411d-b2c2-e7448f8e7246")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3045,9 +3131,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R24"
-			(at 0 -1.65 90)
+			(at 3.47 -0.11 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "1d90e681-c6c7-4ff1-ac6e-e6cc28e23e89")
 			(effects
 				(font
@@ -3086,6 +3171,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "8143fb5c-e2ad-43a0-812b-77578bebc77f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "346ee4b5-7133-4627-9037-3c9ac6dfa57b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3247,10 +3344,9 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R27"
-			(at 0 -1.65 90)
+			(at 3.6 -0.04 90)
 			(layer "F.SilkS")
-			(hide yes)
-			(uuid "d4e2fed0-64eb-4c87-853b-abaa9b43465a")
+			(uuid "cd89dd44-ae81-4591-a6e8-bcf261d7016d")
 			(effects
 				(font
 					(size 1 1)
@@ -3261,7 +3357,7 @@
 		(property "Value" "1k"
 			(at 0 1.65 90)
 			(layer "F.Fab")
-			(uuid "b95e2e67-3698-4b68-a7d8-0204feede6c5")
+			(uuid "8e0da4d9-cd48-408f-a649-3f2f1e2d0fc3")
 			(effects
 				(font
 					(size 1 1)
@@ -3274,7 +3370,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e7d6760a-be52-4d23-a293-fa7e5a92499a")
+			(uuid "210db045-3230-45dd-8a09-5bf70e259ae6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3287,7 +3383,19 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "a32b35da-0c95-4fc0-aa3e-71174670905a")
+			(uuid "5dee5335-3fc5-4e87-a7d6-e06331b25f3e")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d20c1523-17b9-4339-af79-0287a920423f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3451,7 +3559,6 @@
 		(property "Reference" "C12"
 			(at 0 -1.68 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "8295a3a1-b265-44d4-b1a2-fc0dc21068d2")
 			(effects
 				(font
@@ -3651,9 +3758,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R25"
-			(at 2.6818 -0.0234 0)
+			(at 3.51 -0.0234 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "3d117de6-564a-4b65-9a6d-874b91a3df24")
 			(effects
 				(font
@@ -3690,6 +3796,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "a809548b-8818-4dae-a500-95448b6bff2b")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "0d554965-af5c-45a1-ad6b-4ffd2c1077a6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3851,9 +3969,8 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R23"
-			(at 0 -1.65 90)
+			(at 3.47 -0.11 90)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "b983bd2a-f192-46f1-98cb-e9361086d33c")
 			(effects
 				(font
@@ -3892,6 +4009,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "916be086-6153-4bfb-82de-4f92b29b931c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "4d6a9a14-cf4a-42c3-a8f1-8a832881acd9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4053,9 +4182,8 @@
 		(descr "SOIC, 16 Pin (JEDEC MS-012AC, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_16.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U1"
-			(at 0 -5.9 0)
+			(at 1.95 6.315 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "22a0f85a-ac2e-4826-ae95-8fce45293aa6")
 			(effects
 				(font
@@ -4092,6 +4220,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "ffed1014-b01f-4d1c-b7bf-fef212691a63")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C5947"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "ab4b206a-ea6c-42b1-9e0a-b91a0745464f")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4437,9 +4577,8 @@
 		(descr "SOIC, 16 Pin (JEDEC MS-012AC, https://www.analog.com/media/en/package-pcb-resources/package/pkg_pdf/soic_narrow-r/r_16.pdf), generated with kicad-footprint-generator ipc_gullwing_generator.py")
 		(tags "SOIC SO")
 		(property "Reference" "U5"
-			(at 0 -5.9 0)
+			(at 2.455 6.435 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "b57faef3-caad-4bfe-8542-0cf85852256b")
 			(effects
 				(font
@@ -4476,6 +4615,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "7d46d343-128e-4189-bf81-f138058ffe0b")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C21379"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "69f374af-34e2-464d-8103-05fa24294237")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4823,7 +4974,6 @@
 		(property "Reference" "R8"
 			(at -3.06 0 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "ec9c856b-2418-443e-a75f-3aff19204722")
 			(effects
 				(font
@@ -4860,6 +5010,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "aef3499b-e802-4d76-bc27-5a3ea829295d")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "3da541d3-b8a3-47ff-92f1-64228b3cc24c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5021,10 +5183,9 @@
 		(descr "Resistor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 72, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "resistor handsolder")
 		(property "Reference" "R1"
-			(at -2.99 -0.04 0)
+			(at 0.01 1.93 0)
 			(layer "F.SilkS")
-			(hide yes)
-			(uuid "c63798bf-1e9f-427b-8472-148a53002f4e")
+			(uuid "23cd91b8-7a03-486a-a25c-7c164b398407")
 			(effects
 				(font
 					(size 1 1)
@@ -5035,7 +5196,7 @@
 		(property "Value" "1k"
 			(at 0 1.65 0)
 			(layer "F.Fab")
-			(uuid "a9d56975-d578-4fd3-9d2a-c7aeac2f174b")
+			(uuid "cfda60e0-a261-4b66-b546-3623cdf8393b")
 			(effects
 				(font
 					(size 1 1)
@@ -5047,7 +5208,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2a8d8e32-dd0c-4d8c-a623-7d109d5798ea")
+			(uuid "04ad08b1-171b-4788-beac-e2af7f470e71")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5059,7 +5220,19 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "310722dd-aba2-47ed-b8cd-d7edbfd31bac")
+			(uuid "5e4c30f2-d409-402d-970f-b77ae9ebf5d1")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "6506ecf8-b826-4871-abec-1c1ce66fd433")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5223,7 +5396,6 @@
 		(property "Reference" "R2"
 			(at -3.08 0.01 0)
 			(layer "F.SilkS")
-			(hide yes)
 			(uuid "76207b32-63ef-46d9-bbbd-11392bf18cbc")
 			(effects
 				(font
@@ -5260,6 +5432,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "317cfb1c-55a6-4885-b11b-1a0666ccfe5d")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C17513"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e4697834-70bb-4e9a-aeb4-2d921d10766a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5424,7 +5608,6 @@
 		(property "Reference" "J8"
 			(at -3.816666 -0.79 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "a2853df7-7bd1-4446-b412-fd988e88b3e0")
 			(effects
 				(font
@@ -5474,7 +5657,7 @@
 		(path "/a9b172e8-47af-4024-a1e0-b3566b9075f0")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -5782,9 +5965,8 @@
 		(descr "LED, diameter 3.0mm, 2 pins, generated by kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D2"
-			(at 4.946 0.165856 90)
+			(at 4.37 0.1786 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "e6781a70-e428-41a5-902c-0a9df2f2f4f4")
 			(effects
 				(font
@@ -5834,7 +6016,7 @@
 		(path "/1dafff7b-971f-4416-8a9e-9eca6b18f3c7")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -6028,7 +6210,6 @@
 		(property "Reference" "D6"
 			(at 4.356 -0.489844 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "0013d4a0-87ba-4d65-9d97-6d3853027bc7")
 			(effects
 				(font
@@ -6078,7 +6259,7 @@
 		(path "/fc15e4f0-4b49-45c2-a68f-7b9386f08121")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -6270,9 +6451,8 @@
 		(descr "https://www.omron.com/ecb/products/pdf/en-b3f.pdf")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW3"
-			(at 4.76 -2.24 0)
+			(at 1.72 -2.3 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "ced5a639-1112-4276-989e-652d65e8a83f")
 			(effects
 				(font
@@ -6321,7 +6501,7 @@
 		(path "/93c55ef8-b24b-4d3d-8daf-9fb780ec9bb6")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 5.5 1)
 			(end 1 1)
@@ -6620,9 +6800,8 @@
 		(descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
 		(tags "potentiometer vertical 9mm single")
 		(property "Reference" "RV6"
-			(at 6.71 4.64 270)
+			(at 11.3 -2.37 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "92515142-51d8-4cd8-a89e-ab3c3e8c63dc")
 			(effects
 				(font
@@ -6676,7 +6855,7 @@
 		(path "/4fdf9aa7-9d24-4e24-9788-9a45cb6b3c97")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 9.41 -7.37)
@@ -6940,9 +7119,8 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW8"
-			(at 4.52 -2.21 0)
+			(at 1.99 -2.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "5c388b16-03c3-4d9c-993b-c76116089f1e")
 			(effects
 				(font
@@ -6995,7 +7173,7 @@
 		(path "/303f2280-a0e9-45c7-8c4a-55935da35749")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 1)
 			(end 5.5 1)
@@ -7296,7 +7474,6 @@
 		(property "Reference" "J14"
 			(at -4.03 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "6c954cf5-1bf2-4738-ac86-b75007fa21ff")
 			(effects
 				(font
@@ -7350,7 +7527,7 @@
 		(path "/156a7750-d974-4816-b975-a6335aa3fd26")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -12.48)
 			(end -4.5 -1.98)
@@ -7660,7 +7837,6 @@
 		(property "Reference" "J4"
 			(at 3.766666 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "6daf4c24-2237-4ab7-9dbf-1e019eb8676e")
 			(effects
 				(font
@@ -7714,7 +7890,7 @@
 		(path "/788f8383-fd07-44a6-bff8-711f4e40cf4a")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -12.48)
 			(end 4.5 -1.98)
@@ -8024,7 +8200,6 @@
 		(property "Reference" "RV5"
 			(at 11.09 -2.4822 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "69a84acf-5892-4636-9302-eb6dea1a4e96")
 			(effects
 				(font
@@ -8074,7 +8249,7 @@
 		(path "/ba353832-178c-4933-bd33-42f78edc5a98")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -8338,9 +8513,8 @@
 		(descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
 		(tags "potentiometer vertical 9mm single")
 		(property "Reference" "RV10"
-			(at 6.71 4.64 90)
+			(at 11.215 -2.45 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "308f39b1-5087-45b5-8622-7ed4b78e7ff5")
 			(effects
 				(font
@@ -8392,7 +8566,7 @@
 		(path "/a901b903-0978-46b4-9fc6-cb53a235dfb4")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 9.41 -7.37)
@@ -8656,9 +8830,8 @@
 		(descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
 		(tags "potentiometer vertical 9mm single")
 		(property "Reference" "RV9"
-			(at 6.71 4.64 90)
+			(at 11.11 -2.47 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "d78a1de3-d0f3-4b9f-ba94-dac01ca17b46")
 			(effects
 				(font
@@ -8710,7 +8883,7 @@
 		(path "/aaee1be4-ec18-492e-ad14-d9fec3048b18")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 9.41 -7.37)
@@ -8976,7 +9149,6 @@
 		(property "Reference" "RV7"
 			(at 11.375 -2.66 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "bef77673-716c-44c0-bec9-5ccc35ce39de")
 			(effects
 				(font
@@ -9026,7 +9198,7 @@
 		(path "/a30018a6-d9ce-4d2b-9e15-045e00798eec")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -9290,9 +9462,8 @@
 		(descr "LED, diameter 3.0mm, 2 pins, generated by kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D1"
-			(at 4.976 0.137256 90)
+			(at 4.4 0.15 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "4ee2471f-e6da-492b-8f98-66fa0ec098c3")
 			(effects
 				(font
@@ -9342,7 +9513,7 @@
 		(path "/0111ded6-274d-4d05-834e-c115639265e9")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -9536,7 +9707,6 @@
 		(property "Reference" "J13"
 			(at -4.03 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "66da5977-1dba-4c8f-abb8-18b00fb87dcc")
 			(effects
 				(font
@@ -9586,7 +9756,7 @@
 		(path "/3e3f0e10-b6a9-4591-9464-d5baa8e7ffee")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -9896,7 +10066,6 @@
 		(property "Reference" "J7"
 			(at -4.03 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "e9b77c63-bc0b-4cc0-9766-c64889cc5e5e")
 			(effects
 				(font
@@ -9946,7 +10115,7 @@
 		(path "/33e17429-0c6b-4afb-b9e5-f23650cd8966")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -10254,9 +10423,8 @@
 		(descr "LED, diameter 3.0mm, 2 pins, generated by kicad-footprint-generator")
 		(tags "LED")
 		(property "Reference" "D3"
-			(at 4.996 0.164356 90)
+			(at 4.42 0.1771 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "96e7fbfb-f9a2-4362-8369-6908aea2c17f")
 			(effects
 				(font
@@ -10306,7 +10474,7 @@
 		(path "/5a4bfb56-ed83-422e-912e-e7ee4743bff0")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -10498,9 +10666,8 @@
 		(descr "https://www.omron.com/ecb/products/pdf/en-b3f.pdf")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW7"
-			(at 1.78 -2.16 180)
+			(at 1.78 -2.16 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "e6237be3-16c1-4c4f-8dee-37ad5df83ad9")
 			(effects
 				(font
@@ -10523,7 +10690,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 0 0 270)
+			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "c101049a-7c41-4588-a51e-57212d549eae")
@@ -10535,7 +10702,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 270)
+			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "713c87ac-cdc6-4e82-968e-f4800c2e89fb")
@@ -10549,7 +10716,7 @@
 		(path "/e0619cff-474a-4723-b51c-9115257f9efa")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 5.5 1)
 			(end 1 1)
@@ -10850,7 +11017,6 @@
 		(property "Reference" "SW4"
 			(at 4.84 -2.35 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "20fb7513-fbee-4f1d-aa7c-4e39395f8f04")
 			(effects
 				(font
@@ -10899,7 +11065,7 @@
 		(path "/b1eaa100-2371-4972-858a-2805f8df3407")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -11198,9 +11364,8 @@
 		(descr "Potentiometer, vertical, 9mm, single, http://www.taiwanalpha.com.tw/downloads?target=products&id=113")
 		(tags "potentiometer vertical 9mm single")
 		(property "Reference" "RV4"
-			(at 6.71 4.64 270)
+			(at 11.35 -2.48 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "ab8c145e-1c4a-44e0-a9e8-c385bc78e1d1")
 			(effects
 				(font
@@ -11252,7 +11417,7 @@
 		(path "/99782230-0226-461c-ba2c-5bc13090d3ee")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 9.41 -7.37)
@@ -11518,7 +11683,6 @@
 		(property "Reference" "D5"
 			(at 4.406 -0.498444 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "34e0310e-84e1-42b2-a3d6-85043e540eb8")
 			(effects
 				(font
@@ -11568,7 +11732,7 @@
 		(path "/201ce74e-fc2e-4c4e-9e68-2c50a3e8b436")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -11762,7 +11926,6 @@
 		(property "Reference" "D8"
 			(at 4.246 -0.602744 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "bc627b27-ce1e-4758-99a7-b21ee03ceb04")
 			(effects
 				(font
@@ -11812,7 +11975,7 @@
 		(path "/1e04bc59-8d7c-4e0e-986f-bce9f3b59866")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -12006,7 +12169,6 @@
 		(property "Reference" "J3"
 			(at 3.75 -0.99 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "635a6af8-b006-4716-9fc1-44acc2c6513f")
 			(effects
 				(font
@@ -12056,7 +12218,7 @@
 		(path "/21186212-4409-4985-95a8-b98ac844f01a")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -12366,7 +12528,6 @@
 		(property "Reference" "J10"
 			(at 3.745 -0.99 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "be20d426-ce4f-4bb0-8ae8-27e3e12ee36d")
 			(effects
 				(font
@@ -12416,7 +12577,7 @@
 		(path "/953ab2ae-72eb-436f-b0a7-6e2ac604d67d")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -12726,7 +12887,6 @@
 		(property "Reference" "SW6"
 			(at 4.82 -2.28 180)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "0627c37d-a541-4ca9-9f36-977beffae0b5")
 			(effects
 				(font
@@ -12775,7 +12935,7 @@
 		(path "/46bb242a-b155-4c41-916e-1fe4c06f0ade")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 -5.5)
 			(end 5.5 -5.5)
@@ -13076,7 +13236,6 @@
 		(property "Reference" "RV3"
 			(at 11.3 -2.54 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "80607aef-959f-49f7-8bdb-cc3cfa2ed3d4")
 			(effects
 				(font
@@ -13126,7 +13285,7 @@
 		(path "/1fe32871-8639-48c8-a31d-7eb81c24d72c")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -13392,7 +13551,6 @@
 		(property "Reference" "J5"
 			(at -3.88 -1.11 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "020a08ee-41ed-410f-9d38-3bc2b4054ddc")
 			(effects
 				(font
@@ -13446,7 +13604,7 @@
 		(path "/af77ac8b-f865-4d83-8126-dff1a042dc22")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -12.48)
 			(end 4.5 -1.98)
@@ -13754,9 +13912,8 @@
 		(descr "https://www.omron.com/ecb/products/pdf/en-b3f.pdf")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW1"
-			(at 1.78 -2.22 180)
+			(at 1.78 -2.22 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "aea7fe24-9df4-479e-b254-3a530948e86a")
 			(effects
 				(font
@@ -13779,7 +13936,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 0 0 270)
+			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "db13ba42-6029-4aaf-bb3a-db9971bc78fe")
@@ -13791,7 +13948,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 270)
+			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "897b0b69-4f64-4409-8f0b-abef72d64ff2")
@@ -13805,7 +13962,7 @@
 		(path "/1f95f420-23b0-4bf2-831d-5e2f43db2f27")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 5.5 1)
 			(end 1 1)
@@ -14106,7 +14263,6 @@
 		(property "Reference" "J9"
 			(at 3.852 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "5e744376-d715-4d40-921c-a1538ae8f8af")
 			(effects
 				(font
@@ -14160,7 +14316,7 @@
 		(path "/cce755d0-7aa6-43c5-af91-7cd4f257533c")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -12.48)
 			(end 4.5 -1.98)
@@ -14470,7 +14626,6 @@
 		(property "Reference" "RV2"
 			(at 11.1706 -2.5457 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "629577ba-6883-4792-a313-8c3be4ac124a")
 			(effects
 				(font
@@ -14520,7 +14675,7 @@
 		(path "/65ebf082-de7d-4430-b306-0530c86bc310")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -14786,7 +14941,6 @@
 		(property "Reference" "RV1"
 			(at 11.2206 -2.8072 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "bde264c5-d5dc-448c-b374-60b70e6d8f14")
 			(effects
 				(font
@@ -14836,7 +14990,7 @@
 		(path "/34586bf0-70ba-4226-b2ff-559d6e95a137")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -15102,7 +15256,6 @@
 		(property "Reference" "SW5"
 			(at 1.8 -2.19 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "ec34824d-2b52-41b8-a452-ce83ce10a604")
 			(effects
 				(font
@@ -15155,7 +15308,7 @@
 		(path "/296292d8-88df-4c29-ad16-9b0708fc8f6f")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 1 1)
 			(end 5.5 1)
@@ -15456,7 +15609,6 @@
 		(property "Reference" "J6"
 			(at -4.03 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "d1c9dc43-aace-49b9-88f1-b777b1ecf457")
 			(effects
 				(font
@@ -15506,7 +15658,7 @@
 		(path "/f9774f13-15a0-4237-b976-b12258e65af3")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -15816,7 +15968,6 @@
 		(property "Reference" "RV8"
 			(at 11.22 -2.57 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "22c37274-4f60-456b-a7bd-be6ab42cfb0b")
 			(effects
 				(font
@@ -15866,7 +16017,7 @@
 		(path "/45ebba10-4f2f-4d21-848d-a07acf0f973b")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 12.47 -7.37)
 			(end 12.47 2.37)
@@ -16132,7 +16283,6 @@
 		(property "Reference" "J12"
 			(at -4.03 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "6bf6516b-417d-43b4-94a5-d515fb2a104d")
 			(effects
 				(font
@@ -16182,7 +16332,7 @@
 		(path "/e3214644-c739-42dc-984c-b9ad3c271cf7")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -4.5 -1.98)
 			(end -4.5 -12.48)
@@ -16492,7 +16642,6 @@
 		(property "Reference" "J11"
 			(at 3.367332 -1.08 0)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "055619f8-8a91-45d4-b5c5-0dfe5293a491")
 			(effects
 				(font
@@ -16542,7 +16691,7 @@
 		(path "/68a979f4-0c66-4df3-84aa-51e7d2e105d5")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start 4.5 -1.98)
 			(end 4.5 -12.48)
@@ -16852,7 +17001,6 @@
 		(property "Reference" "D4"
 			(at 4.406 -0.477044 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "43d0fefe-162a-47a4-be8d-1522d5021ccb")
 			(effects
 				(font
@@ -16902,7 +17050,7 @@
 		(path "/03c27961-b2bf-47f3-99f0-24728bced7b0")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -17096,7 +17244,6 @@
 		(property "Reference" "D7"
 			(at 4.386 -0.493488 90)
 			(layer "B.SilkS")
-			(hide yes)
 			(uuid "44867dcf-6e02-4637-8ad9-5f0b7d9718d1")
 			(effects
 				(font
@@ -17146,7 +17293,7 @@
 		(path "/2573c3bb-a12f-436f-8e5e-c2d8eaa29c5e")
 		(sheetname "/")
 		(sheetfile "Module.kicad_sch")
-		(attr through_hole exclude_from_pos_files)
+		(attr through_hole exclude_from_pos_files exclude_from_bom)
 		(fp_line
 			(start -0.29 -1.236)
 			(end -0.29 -1.08)
@@ -17944,6 +18091,18 @@
 				(thickness 0.15)
 			)
 			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Blue\npot"
+		(at 102.01 76.3 0)
+		(layer "B.SilkS")
+		(uuid "d4f9b329-8074-4fcb-8324-9c09e38f4431")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify mirror)
 		)
 	)
 	(gr_text "Jack"
