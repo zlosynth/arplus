@@ -4,9 +4,10 @@ Quantizer, arpeggiator, and string synthesizer in a single module.
 
 * Karplus-Strong string synthesis with 8-voice polyphony
 * 31 different scales and chords of up to 8 notes
+* Configurable scales
 * CV-controllable arpeggiator patterns
 * Quantized 1V/oct output
-* Dedicated output channel for the root note
+* Three different stereo output modes
 * Based around Electro-Smith's [Daisy Patch SM](https://www.electro-smith.com/daisy/patch-sm) platform
 * Programmed in Rust
 
