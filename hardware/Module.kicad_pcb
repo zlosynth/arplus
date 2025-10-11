@@ -216,6 +216,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C8598"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "280ea7ed-9e71-463d-b312-e87ab830e3ca")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/386532e8-ef8b-49c7-a1ee-d71feb06ccc4")
 		(sheetname "/")
@@ -702,6 +714,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "28d03d1f-2f26-4d1a-b5b8-d9bd439a46c4")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C494835"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "74b8f289-7ff4-45a5-a5b0-4ab4ad4519b9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1712,6 +1736,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C1015"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "5dc6fa4e-9a11-4c6e-a366-3281a7e2109c")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "Inductor_* L_* *Ferrite*")
 		(path "/be1d7d4b-36e5-4ca5-83ed-e67485261d8e")
 		(sheetname "/")
@@ -2337,6 +2373,18 @@
 				)
 			)
 		)
+		(property "LCSC" "C8598"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e4c79074-8f29-4cea-b07e-33dba3b18126")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/776fc412-1e76-4cae-869c-6be8354c5e13")
 		(sheetname "/")
@@ -2612,6 +2660,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "6ab5259c-0174-4a9d-adab-4037286e7e3f")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C494835"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "2918efc2-7e63-46aa-af40-bf51a0903d7b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5226,6 +5286,18 @@
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "7e3183e3-4986-489c-99df-7705200542fa")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C1015"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "563befdc-c985-4467-9d11-a53a272cf936")
 			(effects
 				(font
 					(size 1.27 1.27)
