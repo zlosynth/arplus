@@ -23,17 +23,6 @@
    /Title  (Arplus - Build Manual)
 }
 
-\pretitle{%
-  \begin{center}
-  \Huge
-}
-\posttitle{%
-  \\
-  \vspace{2cm}
-  \includegraphics[width=16cm]{diagram-schema.pdf}
-  \end{center}
-}
-
 \begin{document}
 
 \title{Arplus -- Build Manual}
@@ -64,8 +53,6 @@ first. Make sure you understand all the steps before you start soldering.
   \item Side-cutters
 \end{itemize}
 
-\clearpage
-
 \section{Bill of materials}
 
 Start by unpacking all baggies into a bowl so you don't lose any components.
@@ -74,15 +61,22 @@ Start by unpacking all baggies into a bowl so you don't lose any components.
   1 \texttimes & Front panel \\
   1 \texttimes & PCB (the black board) \\
   1 \texttimes & Daisy Patch Submodule (the yellow board) \\
-  4 \texttimes & Green D-shaped potentiometer, nut and washer \\
-  3 \texttimes & Blue trim potentiometer \\
-  6 \texttimes & Tactile button \\
-  10 \texttimes & 3.5mm jack socket, nut and washer \\
+  4 \texttimes & Green D-shaped potentiometer, nut, washer, and knob \\
+  6 \texttimes & Blue trim potentiometer \\
+  7 \texttimes & Tactile button \\
+  12 \texttimes & 3.5mm jack socket, nut and washer \\
   8 \texttimes & Red LED \\
   1 \texttimes & Male connector 2\texttimes5 \\
-  4 \texttimes & Female connector 2\texttimes5 \\
-  4 \texttimes & Knob
+  4 \texttimes & Female connector 2\texttimes5
 \end{tabular}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{p01.jpg}
+  \caption{All the components laid out}
+\end{figure}
+
+\clearpage
 
 \section{Power}
 
@@ -118,12 +112,6 @@ connectors.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{p01.jpg}
-  \caption{All the components laid out}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
   \includegraphics[width=\linewidth]{p02.jpg}
   \caption{Connectors mounted on the submodule}
   \label{daisy}
@@ -132,9 +120,11 @@ connectors.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{p03.jpg}
-  \caption{The power, I2C and submodule connectors}
+  \caption{The power and submodule connectors}
   \label{connectors}
 \end{figure}
+
+\clearpage
 
 \section{Front panel}
 
@@ -146,7 +136,7 @@ parts sitting in the front panel.
   \item Place the 4 green D-shaped potentiometers in ``Green pot''
     footprints, do not solder them yet. The big legs on the sides are used to
     snap the pot in.
-  \item Similarly, place the 3 blue trimmer potentiometers in the ``Blue pot''
+  \item Similarly, place the 6 blue trimmer potentiometers in the ``Blue pot''
     footprints.
   \item Put all jack sockets into the PCB.
   \item Put LEDs in place. Pay attention to the markings on the PCB explaining
@@ -160,37 +150,21 @@ parts sitting in the front panel.
     sockets in place with their nuts. Use care not to scratch the panel. Plastic
     tools are prefered, and steel drivers should also serve well. If you only
     have pliers, put them in a thick plastic bag. Protect the panel!
+  \item Confirm that all the buttons can be easily clicked and return to their
+    resting position. If they don't, loosen the potentiometers and jacks, and
+    realign the panel.
 \end{enumerate}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{p04.jpg}
-  \caption{Rear of the panel before soldering}
-  \label{Before soldering}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{p05.jpg}
-  \caption{Taped LED holes}
-  \label{masking}
-\end{figure}
-
-% \clearpage
 
 Once all the components are placed correctly, move on to soldering.
 
 \begin{enumerate}
   \item Solder in all the potentiometers and jacks. Only solder the three
     smaller terminals of each potentiometer.
+  \item Solder all the buttons.
   \item Use a masking tape on the portion of the panel with holes for LEDs, see
     Figure \ref{masking}. Push the LEDs against the tape, so they are even with
     the panel surface.
   \item Solder the LEDs. Then snap their legs off and remove the tape.
-  \item Use tweezers to align each button. About 2 mm of it should be
-    sticking out of the panel. Test that it can be easily clicked and
-    returns to its resting position. If it does not, angle its body.
-  \item Once the button is in a satisfying position, solder its legs.
 \end{enumerate}
 
 \section{Knobs}
@@ -203,6 +177,22 @@ You can now put knobs on the potentiometers.
   they are scratching the nut.
 \end{enumerate}
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{p04.jpg}
+  \caption{Side of the panel before soldering}
+  \label{Before soldering}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{p05.jpg}
+  \caption{Taped LED holes}
+  \label{masking}
+\end{figure}
+
+\clearpage
+
 \section{Final assembly}
 
 Connect the Daisy Patch Submodule to the main black PCB to complete the build.
@@ -213,17 +203,11 @@ The module is now complete. Have fun!
 
 You can find the user manual on \url{https://zlosynth.com/arplus-user-manual.pdf}.
 
-\vspace{2cm}
+\newpage
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{p06.jpg}
-  \caption{\centering Top, left, bottom and right side view of the assembled module}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{p07.jpg}
   \caption{Front view of the assembled module}
 \end{figure}
 

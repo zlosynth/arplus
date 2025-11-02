@@ -1,16 +1,15 @@
-DIAGRAMS = \
-	diagram-schema.pdf
+PHOTOS = \
+	p01.jpg \
+	p02.jpg \
+	p03.jpg \
+	p04.jpg \
+	p05.jpg \
+	p06.jpg
 
-pdf: pdf-images manual.tex
+pdf: $(PHOTOS) pdf-images manual.tex
 	pdflatex manual.tex
 	pdflatex manual.tex
 	touch $@
-
-pdf-images: $(DIAGRAMS)
-	touch $@
-
-diagram-%.pdf: diagram-%.svg
-	inkscape --export-text-to-path -D $< -o $@ --export-latex
 
 .PHONY: clean
 clean:
