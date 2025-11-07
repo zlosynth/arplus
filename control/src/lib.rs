@@ -355,7 +355,7 @@ impl Controller {
 
         let changed_length = parameter.reconcile(pot.value(), cv_value);
 
-        *needs_save |= changed_length;
+        *needs_save |= cv_value.is_none() && changed_length;
 
         if pot.activation_movement()
             || (cv_value.is_none()
