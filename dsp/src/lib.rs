@@ -180,7 +180,7 @@ impl Dsp {
         self.overdrive.process(&mut buffer_right);
 
         buffer.iter_mut().enumerate().for_each(|(i, x)| {
-            *x = (buffer_left[i], buffer_right[i]);
+            *x = (buffer_right[i], buffer_left[i]);
         })
     }
 
