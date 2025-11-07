@@ -29,6 +29,7 @@ pub use crate::random::Random;
 
 pub struct Dsp {
     strings: [String; 8],
+    requested_strings_len: usize,
     active_strings_len: usize,
     root_strings_len: usize,
     active_root_string_index: usize,
@@ -38,7 +39,6 @@ pub struct Dsp {
     stereo_mode: StereoMode,
     width: f32,
     burst_input: bool,
-    single_string_pong_left: bool,
 }
 
 pub struct String {
@@ -86,6 +86,7 @@ impl Dsp {
                 String::new(sample_rate, memory_manager),
                 String::new(sample_rate, memory_manager),
             ],
+            requested_strings_len: 6,
             active_strings_len: 8,
             root_strings_len: 4,
             active_root_string_index: 0,
@@ -95,7 +96,6 @@ impl Dsp {
             stereo_mode: StereoMode::RootRest,
             width: 0.0,
             burst_input: false,
-            single_string_pong_left: true,
         }
     }
 
@@ -151,13 +151,7 @@ impl Dsp {
             }
             StereoMode::PingPong => {
                 for (i, string) in self.strings.iter_mut().enumerate() {
-                    let focus = if i == 0 && self.active_strings_len == 1 {
-                        if self.single_string_pong_left {
-                            karplus_strong::StereoMode::FocusLeft
-                        } else {
-                            karplus_strong::StereoMode::FocusRight
-                        }
-                    } else if i % 2 == 0 {
+                    let focus = if i % 2 == 0 {
                         karplus_strong::StereoMode::FocusLeft
                     } else {
                         karplus_strong::StereoMode::FocusRight
@@ -197,14 +191,18 @@ impl Dsp {
         }
 
         self.stereo_mode = attributes.stereo_mode;
-        self.active_strings_len = attributes.strings;
 
-        // XXX: When only a single string is available, it is
-        // shared between root and the rest.
+        self.requested_strings_len = attributes.strings.clamp(1, 6);
+        self.active_strings_len = if self.requested_strings_len == 1 {
+            2
+        } else {
+            self.requested_strings_len + 2
+        };
+
         // XXX: Ping pong does not distinguish between root and
         // rest, so it can consistently shift left and right,
         // no matter how big is the chord.
-        if self.active_strings_len == 1 || matches!(attributes.stereo_mode, StereoMode::PingPong) {
+        if matches!(attributes.stereo_mode, StereoMode::PingPong) {
             self.share_strings_between_root_and_rest();
         } else {
             self.set_root_strings_len(attributes.chord_size);
@@ -212,9 +210,7 @@ impl Dsp {
 
         if let Some(trigger) = attributes.trigger {
             let (string_index, next_string_index) = {
-                if self.active_strings_len == 1 || matches!(self.stereo_mode, StereoMode::PingPong)
-                {
-                    self.single_string_pong_left = !self.single_string_pong_left;
+                if matches!(self.stereo_mode, StereoMode::PingPong) {
                     let string_index = self.shared_string_index();
                     self.bump_shared_string_index();
                     let next_string_index = self.shared_string_index();
@@ -250,9 +246,13 @@ impl Dsp {
             );
             string.is_root = trigger.is_root;
 
-            // NOTE: If only a single string is available, the preemptive
-            // reset cannot be done.
-            if string_index != next_string_index {
+            if self.requested_strings_len == 1 {
+                if string_index == 0 {
+                    self.strings[1].karplus_strong.reset();
+                } else if string_index == 1 {
+                    self.strings[0].karplus_strong.reset();
+                }
+            } else {
                 let next_string = &mut self.strings[next_string_index];
                 next_string.karplus_strong.reset();
             }
@@ -269,8 +269,8 @@ impl Dsp {
         assert_eq!(self.strings.len(), 8);
 
         let new_root_strings_len = match (len, self.active_strings_len) {
-            (_, 1..=3) => 1,
-            (_, 4) => 2,
+            (_, 2) => 1, // requested_strings_len=1 results in active_strings_len=2
+            (_, 4) => 2, // requested_strings_len=2 results in active_strings_len=2
             (1..=2, _) => (self.active_strings_len / 2).max(1), // This must be never 0
             (3, 7..=8) => 3,
             _ => 2,

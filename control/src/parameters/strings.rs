@@ -2,7 +2,7 @@ use super::primitives::discrete::{Discrete, PersistentConfig as DiscretePersiste
 use super::primitives::math;
 
 const MIN_LENGTH: usize = 1;
-const MAX_LENGTH: usize = 8;
+const MAX_LENGTH: usize = 6;
 
 pub struct Strings {
     length: Discrete,
