@@ -28,8 +28,4 @@ impl Trigger {
         self.triggered_n1 = self.triggered;
         self.triggered = button_pushed || cv_triggered;
     }
-
-    pub fn trigger(&mut self) {
-        self.triggered = true;
-    }
 }

@@ -13,6 +13,7 @@ pub struct Arpeggiator {
     state: State,
     voct_cache: f32,
     note_index_cache: u8,
+    chord_degree_cache: i16,
 }
 
 // ALLOW: All the values are constructed via `try_from_index`.
@@ -71,6 +72,7 @@ impl Arpeggiator {
             chord: config.chord,
             voct_cache: 0.0,
             note_index_cache: 0,
+            chord_degree_cache: 0,
         }
     }
 
@@ -264,8 +266,21 @@ impl Arpeggiator {
             .map(|mut n| {
                 self.note_index_cache = n.index();
                 self.voct_cache = n.tone().voct();
+                self.chord_degree_cache = chord_degree;
                 n.offset_tone(*scale_offsets.get(n.index() as usize).unwrap_or(&0));
                 (n, chord_degree)
+            })
+    }
+
+    pub fn replay_last(
+        &self,
+        scale_offsets: &[i8; SCALE_OFFSET_MAX_STEPS],
+    ) -> Option<(ScaleNote, i16)> {
+        self.scale
+            .get_note_in_interval_ascending(self.root, self.chord_degree_cache)
+            .map(|mut n| {
+                n.offset_tone(*scale_offsets.get(n.index() as usize).unwrap_or(&0));
+                (n, self.chord_degree_cache)
             })
     }
 

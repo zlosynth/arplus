@@ -42,6 +42,7 @@ pub struct Controller {
     arp: Arpeggiator,
     random_generator: RandomGenerator,
     state: State,
+    pending_replay_trigger: bool,
 }
 
 enum State {
@@ -78,6 +79,7 @@ impl Controller {
             quantized_output: QuantizedOutput::with_config(save.quantized_output),
             random_generator: RandomGenerator::with_seed(seed),
             state: State::Normal,
+            pending_replay_trigger: false,
         }
     }
 
@@ -485,11 +487,11 @@ impl Controller {
                 if requested_increase {
                     defmt::info!("Requested scales offset increase");
                     *needs_save |= parameter.request_increase(group_index, scale_index, note_index);
-                    self.parameters.trigger.trigger();
+                    self.pending_replay_trigger = true;
                 } else if requested_decrease {
                     defmt::info!("Requested scales offset decrease");
                     *needs_save |= parameter.request_decrease(group_index, scale_index, note_index);
-                    self.parameters.trigger.trigger();
+                    self.pending_replay_trigger = true;
                 }
             }
 
@@ -581,33 +583,15 @@ impl Controller {
         &mut self,
         display_request: &mut display_request::DisplayRequest,
     ) -> DSPAttributes {
-        let trigger_attributes = if self.parameters.trigger.triggered_n4() {
+        let trigger_attributes = if self.pending_replay_trigger {
+            self.pending_replay_trigger = false;
+            self.generate_note_trigger(display_request, true)
+        } else if self.parameters.trigger.triggered_n4() {
             self.arp.apply_config(
                 build_arp_config(&mut self.parameters),
                 &mut self.random_generator,
             );
-
-            let group_index = self.parameters.scale.selected_group_id() as usize;
-            let scale_index = self.parameters.scale.selected_scale_index();
-
-            if let Some((note, index)) = self.arp.pop(
-                &mut self.random_generator,
-                self.parameters
-                    .scale_offsets
-                    .scale_offsets_ref(group_index, scale_index),
-            ) {
-                display_request.set_fallback_attribute(Screen::step(note.index() as usize));
-                let dsp_trigger_attributes = DSPTriggerAttributes {
-                    frequency: note.tone().frequency(),
-                    contour: self.parameters.contour.value(),
-                    pluck: self.parameters.pluck.value(),
-                    is_root: index == 0,
-                };
-                defmt::debug!("DSP trigger attributes={:?}", dsp_trigger_attributes);
-                Some(dsp_trigger_attributes)
-            } else {
-                None
-            }
+            self.generate_note_trigger(display_request, false)
         } else {
             None
         };
@@ -625,6 +609,41 @@ impl Controller {
             stereo_mode: self.parameters.stereo_mode.selected().into(),
             strings: self.parameters.strings.value(),
         }
+    }
+
+    fn generate_note_trigger(
+        &mut self,
+        display_request: &mut display_request::DisplayRequest,
+        replay: bool,
+    ) -> Option<DSPTriggerAttributes> {
+        let group_index = self.parameters.scale.selected_group_id() as usize;
+        let scale_index = self.parameters.scale.selected_scale_index();
+        let scale_offsets = self
+            .parameters
+            .scale_offsets
+            .scale_offsets_ref(group_index, scale_index);
+
+        let note_and_index = if replay {
+            self.arp.replay_last(scale_offsets)
+        } else {
+            self.arp.pop(&mut self.random_generator, scale_offsets)
+        };
+
+        note_and_index.map(|(note, index)| {
+            display_request.set_fallback_attribute(Screen::step(note.index() as usize));
+            let dsp_trigger_attributes = DSPTriggerAttributes {
+                frequency: note.tone().frequency(),
+                contour: self.parameters.contour.value(),
+                pluck: self.parameters.pluck.value(),
+                is_root: index == 0,
+            };
+            defmt::debug!(
+                "DSP {} trigger attributes={:?}",
+                if replay { "replay" } else { "" },
+                dsp_trigger_attributes
+            );
+            dsp_trigger_attributes
+        })
     }
 
     fn apply_display_request(&mut self, mut display_request: display_request::DisplayRequest) {
