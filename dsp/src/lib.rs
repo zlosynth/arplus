@@ -150,13 +150,19 @@ impl Dsp {
                 }
             }
             StereoMode::PingPong => {
-                if self.active_strings_len == 1 {
-                    let focus = if self.single_string_pong_left {
+                for (i, string) in self.strings.iter_mut().enumerate() {
+                    let focus = if i == 0 && self.active_strings_len == 1 {
+                        if self.single_string_pong_left {
+                            karplus_strong::StereoMode::FocusLeft
+                        } else {
+                            karplus_strong::StereoMode::FocusRight
+                        }
+                    } else if i % 2 == 0 {
                         karplus_strong::StereoMode::FocusLeft
                     } else {
                         karplus_strong::StereoMode::FocusRight
                     };
-                    self.strings[0].karplus_strong.populate_add(
+                    string.karplus_strong.populate_add(
                         &mut buffer_left,
                         &mut buffer_right,
                         noise_buffer,
@@ -164,22 +170,6 @@ impl Dsp {
                         self.width,
                         random,
                     );
-                } else {
-                    for (i, string) in self.strings.iter_mut().enumerate() {
-                        let focus = if i % 2 == 0 {
-                            karplus_strong::StereoMode::FocusLeft
-                        } else {
-                            karplus_strong::StereoMode::FocusRight
-                        };
-                        string.karplus_strong.populate_add(
-                            &mut buffer_left,
-                            &mut buffer_right,
-                            noise_buffer,
-                            focus,
-                            self.width,
-                            random,
-                        );
-                    }
                 }
             }
         }
