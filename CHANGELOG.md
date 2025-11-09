@@ -6,7 +6,10 @@ backwards compatibility.
 
 ## Unreleased
 
-* Add support for haas and ping pong output modes, with haas as the default.
+## 1.0.0
+
+* I am happy with the result.
+* Add support for root/rest, haas and ping pong output modes.
 * Tweak resonance range to be responsive end to end.
 * Change contour range to 0.0 to 0.4 seconds linear up to 12 o'clock and
   0.4 to 10 logarithmic above that.
@@ -16,6 +19,7 @@ backwards compatibility.
 * Allow using a custom "noise" burst source.
 * Make it possible to control the number of strummed strings.
 * Persist the last selected scale per group.
+* Fix some pops and clicks.
 
 ## 0.1.1
 
@@ -24,4 +28,4 @@ backwards compatibility.
 
 ## 0.1.0
 
-* The module is good to go.
+* The module is good to go for the first sound of testing.

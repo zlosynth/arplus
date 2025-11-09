@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "arplus-control"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "arplus-dsp",
  "crc",
@@ -16,7 +16,7 @@ dependencies = [
 
 [[package]]
 name = "arplus-dsp"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "defmt",
  "libm",
@@ -24,7 +24,7 @@ dependencies = [
 
 [[package]]
 name = "arplus-firmware"
-version = "0.1.1"
+version = "1.0.0"
 dependencies = [
  "arplus-control",
  "arplus-dsp",
