@@ -448,9 +448,10 @@ impl Controller {
         } else if tone_cv.is_some() && (tone_pot.activation_movement() || octave_changed) {
             let selected = parameter.selected_octave_index();
             display_request.set_queried_attribute(Screen::octave(selected));
-        } else if tonic_cv.is_none()
+        } else if (tonic_cv.is_none()
             && tonic_changed
-            && !self.parameters.cv_assignment.just_changed()
+            && !self.parameters.cv_assignment.just_changed())
+            || tonic_pot.activation_movement()
         {
             let selected = parameter.selected_tonic();
             display_request.set_queried_attribute(Screen::tonic(selected));
