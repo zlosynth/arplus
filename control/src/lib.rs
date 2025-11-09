@@ -43,6 +43,7 @@ pub struct Controller {
     random_generator: RandomGenerator,
     state: State,
     pending_replay_trigger: bool,
+    rsnx_other_button_used: bool,
 }
 
 enum State {
@@ -80,6 +81,7 @@ impl Controller {
             random_generator: RandomGenerator::with_seed(seed),
             state: State::Normal,
             pending_replay_trigger: false,
+            rsnx_other_button_used: false,
         }
     }
 
@@ -315,7 +317,27 @@ impl Controller {
         let button = &self.inputs.buttons.rsnx;
         let cv = &self.inputs.gates.rsnx;
         let parameter = &mut self.parameters.reset_next;
-        parameter.reconcile(button.clicked(), cv.triggered());
+
+        // Reset flag when RESET button is first pressed
+        if button.clicked() {
+            self.rsnx_other_button_used = false;
+        }
+
+        // Track if any other button is pressed while RESET is held
+        if button.pressed()
+            && (self.inputs.buttons.group.pressed()
+                || self.inputs.buttons.scale.pressed()
+                || self.inputs.buttons.arp.pressed()
+                || self.inputs.buttons.trigger.pressed()
+                || self.inputs.buttons.stereo.pressed()
+                || self.inputs.buttons.cv_assignment.pressed())
+        {
+            self.rsnx_other_button_used = true;
+        }
+
+        // Only act on release if no other buttons were used during hold
+        let button_triggered = button.released() && !self.rsnx_other_button_used;
+        parameter.reconcile(button_triggered, cv.triggered());
     }
 
     fn reconcile_resonance(&mut self) {
