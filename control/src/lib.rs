@@ -418,7 +418,10 @@ impl Controller {
                 && tonic_cv.is_none()
                 && note_changed);
 
-        if group_changed || scale_changed || tonic_changed {
+        if (group_changed && group_cv.is_none())
+            || (scale_changed && scale_cv.is_none())
+            || (tonic_changed && tonic_cv.is_none())
+        {
             defmt::info!(
                 "Selected group={:?} scale={:?} tonic={:?}",
                 parameter.selected_group_id(),
