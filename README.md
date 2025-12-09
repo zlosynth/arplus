@@ -2,7 +2,12 @@
 
 Quantizer, arpeggiator, and string synthesizer in a single module. 
 
+<p align="center">
+   <img src="panel.jpg" alt="Panel" width="500" />
+</p>
+
 * Karplus-Strong string synthesis with 6-voice polyphony
+* External audio input for custom excitation sources
 * 31 different scales and chords of up to 8 notes
 * Configurable scales
 * CV-controllable arpeggiator patterns
