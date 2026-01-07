@@ -23,16 +23,17 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.5235684"
-     inkscape:cx="246.46087"
-     inkscape:cy="324.23881"
+     inkscape:zoom="2.5947496"
+     inkscape:cx="864.24526"
+     inkscape:cy="129.10687"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
      inkscape:window-y="49"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     showguides="false">
+     inkscape:current-layer="g23"
+     showguides="false"
+     showgrid="false">
     <sodipodi:guide
        position="122.73493,-28.507599"
        orientation="0,-1"
@@ -1899,28 +1900,32 @@
            x="270.70105"
            y="13.01552"
            id="tspan25-0-9">CV offset</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-         x="260.90924"
-         y="29.142359"
-         id="text23-2-2"><tspan
-           sodipodi:role="line"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+      <g
+         id="g3"
+         transform="translate(0.15686567)">
+        <text
+           xml:space="preserve"
+           style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
            x="260.90924"
            y="29.142359"
-           id="tspan24-8-6">-5 V</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-         x="281.42902"
-         y="29.142359"
-         id="text23-2-2-9"><tspan
-           sodipodi:role="line"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           id="text23-2-2"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+             x="260.90924"
+             y="29.142359"
+             id="tspan24-8-6">−</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
            x="281.42902"
            y="29.142359"
-           id="tspan24-8-6-8">+5 V</tspan></text>
+           id="text23-2-2-9"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+             x="281.42902"
+             y="29.142359"
+             id="tspan24-8-6-8">+</tspan></text>
+      </g>
       <g
          id="g11"
          transform="translate(-177.23599,-186.89117)">

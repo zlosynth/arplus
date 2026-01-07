@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.74403293"
-     inkscape:cx="358.18307"
-     inkscape:cy="209.66814"
+     inkscape:zoom="1.364447"
+     inkscape:cx="116.16428"
+     inkscape:cy="515.95994"
      inkscape:window-width="1916"
      inkscape:window-height="1029"
      inkscape:window-x="0"
@@ -4641,28 +4641,32 @@
          x="208.09428"
          y="270.93637"
          id="tspan25-0-9">CV offset</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="198.30247"
-       y="287.06323"
-       id="text23-2-2"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="198.30247"
-         y="287.06323"
-         id="tspan24-8-6">-5 V</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
-       x="218.82225"
-       y="287.06323"
-       id="text23-2-2-9"><tspan
-         sodipodi:role="line"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="218.82225"
-         y="287.06323"
-         id="tspan24-8-6-8">+5 V</tspan></text>
+    <g
+       id="g3"
+       transform="translate(-62.449892,257.92087)">
+      <text
+         xml:space="preserve"
+         style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+         x="260.90924"
+         y="29.142359"
+         id="text23-2-2-2"><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="260.90924"
+           y="29.142359"
+           id="tspan24-8-6-6">−</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:3.88056px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+         x="281.42902"
+         y="29.142359"
+         id="text23-2-2-9-6"><tspan
+           sodipodi:role="line"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.88056px;font-family:'Latin Modern Sans';-inkscape-font-specification:'Latin Modern Sans';text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="281.42902"
+           y="29.142359"
+           id="tspan24-8-6-8-4">+</tspan></text>
+    </g>
     <g
        id="g11"
        transform="translate(-239.84275,71.0297)">
