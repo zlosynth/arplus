@@ -3,7 +3,7 @@
 Quantizer, arpeggiator, and string synthesizer in a single module. 
 
 <p align="center">
-   <img src="panel.jpg" alt="Panel" width="500" />
+   <img src="modules.jpg" alt="Photo of the module" />
 </p>
 
 * Karplus-Strong string synthesis with 6-voice polyphony
