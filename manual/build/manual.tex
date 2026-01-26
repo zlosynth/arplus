@@ -45,6 +45,10 @@ would be difficult and may break the module. Also, use care not to touch the
 pre-soldered SMD parts with the soldering iron. Read through the whole manual
 first. Make sure you understand all the steps before you start soldering.
 
+Electronic components are sensitive to static electricity. Before handling the PCB, ground yourself by touching a grounded metal object or use an anti-static wrist strap.
+
+\newpage
+
 \section{Tools required}
 
 \begin{itemize}
@@ -195,6 +199,16 @@ You can now put knobs on the potentiometers.
 \section{Final assembly}
 
 Connect the Daisy Patch Submodule to the main black PCB to complete the build.
+
+\section{Testing and inspection}
+
+Before powering up the module, perform these checks to prevent damage:
+
+\begin{itemize}
+  \item Visually inspect all solder joints for missed connections, cold joints, and solder bridges.
+  \item Always connect power with the system off. Verify the red stripe on the ribbon cable aligns with -12V on the PCB.
+  \item If you can, test the module in an isolated case first to prevent damage to your entire Eurorack system if there are assembly errors.
+\end{itemize}
 
 \section{Congratulations}
 
