@@ -6,7 +6,7 @@ PHOTOS = \
 	p05.jpg \
 	p06.jpg
 
-pdf: $(PHOTOS) pdf-images manual.tex
+pdf: $(PHOTOS) manual.tex
 	pdflatex manual.tex
 	pdflatex manual.tex
 	touch $@

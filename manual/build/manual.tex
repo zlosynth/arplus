@@ -130,6 +130,21 @@ connectors.
 
 \clearpage
 
+\section{Inspection}
+\label{inspection}
+
+Visually inspect all solder joints before continuing with the build. Look for the following problems:
+
+\begin{itemize}
+  \item Missed connection -- a pin that was not soldered at all. Fix it by adding solder to the joint.
+  \item Cold joint -- a dull, grainy, or lumpy joint instead of a smooth shiny one. Fix it by reheating the joint until the solder flows again. Add a small amount of fresh solder if needed.
+  \item Solder bridge -- excess solder connecting two adjacent pads or pins that should not be connected. Try reheating the bridge and separating the pads with the tip of the soldering iron. Alternatively, place solder wick over the bridge, press it with a hot iron, and lift the wick away to absorb the excess solder.
+\end{itemize}
+
+If you spot a problem, fix it before moving on.
+
+\newpage
+
 \section{Front panel}
 
 Now when all the internal parts are soldered, the next step is to assemble
@@ -138,7 +153,7 @@ parts sitting in the front panel.
 \begin{enumerate}
   \item Snap in the buttons.
   \item Place the 4 green D-shaped potentiometers in ``Green pot''
-    footprints. If the big legs are hard to snap in, flatten them with pliers first. Do not solder the legs yet.
+    footprints. If the big legs are hard to snap in, flatten them with pliers first.
   \item Similarly, place the 6 blue trimmer potentiometers in the ``Blue pot''
     footprints.
   \item Put all jack sockets into the PCB.
@@ -161,14 +176,15 @@ parts sitting in the front panel.
 Once all the components are placed correctly, move on to soldering.
 
 \begin{enumerate}
-  \item Solder in all the potentiometers and jacks. Only solder the three
-    smaller terminals of each potentiometer.
+  \item Solder in all the potentiometers and jacks.
   \item Solder all the buttons.
   \item Use a masking tape on the portion of the panel with holes for LEDs, see
     Figure \ref{masking}. Push the LEDs against the tape, so they are even with
     the panel surface.
   \item Solder the LEDs. Then snap their legs off and remove the tape.
 \end{enumerate}
+
+Repeat the inspection procedure described in Section~\ref{inspection}.
 
 \section{Knobs}
 
@@ -194,18 +210,17 @@ You can now put knobs on the potentiometers.
   \label{masking}
 \end{figure}
 
-\clearpage
-
 \section{Final assembly}
 
 Connect the Daisy Patch Submodule to the main black PCB to complete the build.
 
-\section{Testing and inspection}
+\newpage
+
+\section{Testing}
 
 Before powering up the module, perform these checks to prevent damage:
 
 \begin{itemize}
-  \item Visually inspect all solder joints for missed connections, cold joints, and solder bridges.
   \item Always connect power with the system off. Verify the red stripe on the ribbon cable aligns with -12V on the PCB.
   \item If you can, test the module in an isolated case first to prevent damage to your entire Eurorack system if there are assembly errors.
 \end{itemize}
@@ -215,8 +230,6 @@ Before powering up the module, perform these checks to prevent damage:
 The module is now complete. Have fun!
 
 You can find the user manual on \url{https://zlosynth.com/arplus-user-manual.pdf}.
-
-\newpage
 
 \begin{figure}[h]
   \centering
