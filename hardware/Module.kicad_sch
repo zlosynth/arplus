@@ -8243,7 +8243,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 57.15 255.27 0)
 			(effects
 				(font
@@ -10094,7 +10094,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 101.6 233.68 0)
 			(effects
 				(font
@@ -12792,7 +12792,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 78.74 214.63 0)
 			(effects
 				(font
@@ -13359,7 +13359,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 101.6 214.63 0)
 			(effects
 				(font
@@ -13432,7 +13432,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 125.73 214.63 0)
 			(effects
 				(font
@@ -13576,7 +13576,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Custom:Potentiometer_Thonk_Trimmer"
+		(property "Footprint" "BetterFootprints:Potentiometer_Trimmer_SongHuei"
 			(at 101.6 254 0)
 			(effects
 				(font
