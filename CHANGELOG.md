@@ -6,6 +6,8 @@ backwards compatibility.
 
 ## Unreleased
 
+* Use better footprints.
+
 ## 1.0.0
 
 * I am happy with the result.
