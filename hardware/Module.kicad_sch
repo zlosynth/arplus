@@ -4056,12 +4056,6 @@
 		(uuid "09727705-dc2d-46eb-bef0-291ee7676365")
 	)
 	(junction
-		(at 317.5 45.72)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "11af38f7-91f9-4c44-963f-3d09a23489cd")
-	)
-	(junction
 		(at 95.25 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4074,22 +4068,22 @@
 		(uuid "368716fe-6fa5-44a7-8f2f-0c57d94a0724")
 	)
 	(junction
+		(at 330.2 48.26)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3691ec59-efc2-45fc-9f3b-077980ac67e4")
+	)
+	(junction
 		(at 115.57 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4a84d855-f765-4982-b849-a8bb925499dc")
 	)
 	(junction
-		(at 330.2 48.26)
+		(at 330.2 38.1)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "4d6582c7-b88b-4f81-8d4c-ac07bd2a62c0")
-	)
-	(junction
-		(at 317.5 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "56f7c8ae-cfb7-430e-97d3-6235882e0ec2")
+		(uuid "4bca8584-3c06-4287-a8ac-ef3035ac559b")
 	)
 	(junction
 		(at 134.62 33.02)
@@ -4102,12 +4096,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6fb011ca-101d-445f-9f6f-4bd4d92fc48d")
-	)
-	(junction
-		(at 330.2 38.1)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "835a6e1d-e6ca-4264-aca2-4bcb70065ebf")
 	)
 	(junction
 		(at 76.2 33.02)
@@ -4138,12 +4126,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f1528b01-4b70-4227-8434-f61b42dd5916")
-	)
-	(junction
-		(at 317.5 43.18)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f9fe753a-82ca-43c0-bce0-a7c6abd932df")
 	)
 	(no_connect
 		(at 220.98 77.47)
@@ -4374,16 +4356,6 @@
 			(type default)
 		)
 		(uuid "42284eae-8a81-4e47-8820-b7828230887b")
-	)
-	(wire
-		(pts
-			(xy 317.5 43.18) (xy 330.2 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4b33490f-684c-4b95-af04-c4acefdb931f")
 	)
 	(wire
 		(pts
@@ -4707,16 +4679,6 @@
 	)
 	(wire
 		(pts
-			(xy 317.5 40.64) (xy 330.2 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cbb45139-d66f-4a0d-b085-89bdae101442")
-	)
-	(wire
-		(pts
 			(xy 302.26 176.53) (xy 302.26 175.26)
 		)
 		(stroke
@@ -4764,16 +4726,6 @@
 			(type default)
 		)
 		(uuid "e17179a5-471a-46a1-b45c-98e445d3577d")
-	)
-	(wire
-		(pts
-			(xy 317.5 45.72) (xy 330.2 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e50d9e28-9163-4c58-91cb-e8f337e524c6")
 	)
 	(wire
 		(pts
@@ -9501,7 +9453,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
+		(property "Footprint" "BetterFootprints:Potentiometer_Alpha"
 			(at 57.15 213.36 0)
 			(effects
 				(font
@@ -10562,7 +10514,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
+		(property "Footprint" "BetterFootprints:Potentiometer_Alpha"
 			(at 78.74 255.27 0)
 			(effects
 				(font
@@ -10919,7 +10871,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
+		(property "Footprint" "BetterFootprints:Potentiometer_Alpha"
 			(at 57.15 233.68 0)
 			(effects
 				(font
@@ -11323,7 +11275,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Custom:Daisy_Patch_SM"
+		(property "Footprint" "BetterFootprints:DaisySM_4_Connfly"
 			(at 198.12 97.79 0)
 			(effects
 				(font
@@ -14008,7 +13960,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Potentiometer_THT:Potentiometer_Alpha_RD901F-40-00D_Single_Vertical"
+		(property "Footprint" "BetterFootprints:Potentiometer_Alpha"
 			(at 78.74 233.68 0)
 			(effects
 				(font
@@ -15835,15 +15787,15 @@
 	(symbol
 		(lib_id "Connector_Generic:Conn_02x05_Odd_Even")
 		(at 322.58 43.18 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "f4d7155b-4ef8-4cca-9c7a-e02dfcf2bc4f")
 		(property "Reference" "J1"
-			(at 323.85 32.385 0)
+			(at 323.85 53.975 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15851,14 +15803,14 @@
 			)
 		)
 		(property "Value" "POWER"
-			(at 323.85 34.925 0)
+			(at 323.85 51.435 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical"
+		(property "Footprint" "BetterFootprints:Power_Connector_Connfly"
 			(at 322.58 43.18 0)
 			(effects
 				(font

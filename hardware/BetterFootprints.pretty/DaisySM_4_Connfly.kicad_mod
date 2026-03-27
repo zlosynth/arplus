@@ -317,7 +317,7 @@
 		(uuid "9d40b082-aec2-46de-9158-53064b185a72")
 	)
 	(pad "A9" thru_hole circle
-		(at 29.52 12.94)
+		(at 29.52 13.03)
 		(size 1.9 1.9)
 		(drill 0.9)
 		(layers "*.Cu" "*.Mask")
@@ -325,7 +325,7 @@
 		(uuid "c31f156f-71e5-4b16-b4c3-65d9aee41d1b")
 	)
 	(pad "A10" thru_hole circle
-		(at 32.08 12.73 270)
+		(at 32.08 12.64 270)
 		(size 1.9 1.9)
 		(drill 0.9)
 		(layers "*.Cu" "*.Mask")
