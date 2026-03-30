@@ -13,4 +13,4 @@ pdf: $(PHOTOS) manual.tex
 
 .PHONY: clean
 clean:
-	rm -rf *.pdf *.pdf_tex *.log *.aux .auctex-auto
+	rm -rf *.pdf *.pdf_tex *.log *.aux .auctex-auto pdf
