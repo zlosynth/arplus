@@ -6,6 +6,8 @@ backwards compatibility.
 
 ## Unreleased
 
+* Increase PCB edge clearance.
+
 ## 1.0.1
 
 * Use better footprints.
