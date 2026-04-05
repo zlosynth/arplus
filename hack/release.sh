@@ -16,7 +16,7 @@ make
 rm -rf release
 mkdir release
 
-pushd firmware && cargo objcopy --release -- -O binary ../release/arplus-firmware-${version}.bin && popd
+pushd firmware && cargo +1.86.0 objcopy --release -- -O binary ../release/arplus-firmware-${version}.bin && popd
 
 make manual/user manual/build
 cp manual/user/Manual.pdf release/arplus-user-manual.pdf
