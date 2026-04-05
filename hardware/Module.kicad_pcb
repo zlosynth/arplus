@@ -7,6 +7,14 @@
 		(legacy_teardrops no)
 	)
 	(paper "A4")
+	(title_block
+		(title "Arplus")
+		(rev "v1.0.1")
+		(company "Petr Horáček")
+		(comment 1 "petr@zlosynth.com")
+		(comment 2 "https://github.com/zlosynth/arplus")
+		(comment 3 "CC BY-SA")
+	)
 	(layers
 		(0 "F.Cu" signal)
 		(2 "B.Cu" signal)
@@ -18542,7 +18550,7 @@
 			(justify left bottom)
 		)
 	)
-	(gr_text "arplus board v0.1.0"
+	(gr_text "arplus board v1.0.1"
 		(at 49.24 149.42 270)
 		(layer "F.SilkS")
 		(uuid "2e9d1928-b878-4c29-acfa-f555ddadf66a")
