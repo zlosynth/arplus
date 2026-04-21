@@ -3,8 +3,7 @@ PHOTOS = \
 	p02.jpg \
 	p03.jpg \
 	p04.jpg \
-	p05.jpg \
-	p06.jpg
+	p05.jpg
 
 pdf: $(PHOTOS) manual.tex
 	pdflatex manual.tex
